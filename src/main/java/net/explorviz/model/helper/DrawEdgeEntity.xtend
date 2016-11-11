@@ -1,15 +1,15 @@
 package net.explorviz.model.helper;
 
-import de.cau.cs.kieler.klay.layered.graph.LEdge
 import java.util.ArrayList
 import java.util.List
 import org.eclipse.xtend.lib.annotations.Accessors
-import net.explorviz.math.Vector3f;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+import net.explorviz.math.Vector3f
+//import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+//import org.eclipse.elk.alg.layered.graph.LEdge
 
-@JsonIgnoreProperties("kielerEdgeReferences")
+//@JsonIgnoreProperties("kielerEdgeReferences")
 abstract class DrawEdgeEntity extends BaseEntity {
-	@Accessors transient val List<LEdge> kielerEdgeReferences = new ArrayList<LEdge>
+	//@Accessors transient val List<LEdge> kielerEdgeReferences = new ArrayList<LEdge>
 
 	@Accessors transient var float lineThickness
 	@Accessors transient var float positionZ
