@@ -60,6 +60,14 @@
 
 		<dependency>
 			<groupId>org.eclipse.elk</groupId>
+			<artifactId>graph</artifactId>
+			<scope>system</scope>
+			<version>0.1</version>
+			<systemPath>${project.basedir}/lib/org.eclipse.elk.graph_0.1.0.201607121925.jar</systemPath>
+		</dependency>
+
+		<dependency>
+			<groupId>org.eclipse.elk</groupId>
 			<artifactId>alg.layered</artifactId>
 			<scope>system</scope>
 			<version>0.1</version>
@@ -103,6 +111,13 @@
 					<mainClass>net.explorviz.server.main.App</mainClass>
 				</configuration>
 				<dependencies>
+					<dependency>
+						<groupId>org.eclipse.elk</groupId>
+						<artifactId>graph</artifactId>
+						<scope>system</scope>
+						<version>0.1</version>
+						<systemPath>${project.basedir}/lib/org.eclipse.elk.graph_0.1.0.201607121925.jar</systemPath>
+					</dependency>
 					<dependency>
 						<groupId>org.eclipse.elk</groupId>
 						<artifactId>alg.layered</artifactId>

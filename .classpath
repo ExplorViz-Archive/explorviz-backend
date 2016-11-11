@@ -27,6 +27,7 @@
 	<classpathentry kind="lib" path="/monitoring/lib/aspectjweaver-1.8.5.jar"/>
 	<classpathentry kind="lib" path="lib/org.eclipse.elk.alg.layered_0.1.0.201607121925.jar"/>
 	<classpathentry kind="lib" path="lib/org.eclipse.elk.core_0.1.0.201607121925.jar"/>
+	<classpathentry kind="lib" path="lib/org.eclipse.elk.graph_0.1.0.201607121925.jar"/>
 	<classpathentry kind="src" output="target/test-classes" path="src/test/java">
 		<attributes>
 			<attribute name="optional" value="true"/>
