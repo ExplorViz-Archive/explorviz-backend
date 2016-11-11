@@ -7,6 +7,7 @@ import javax.ws.rs.GET
 import javax.ws.rs.Path
 import net.explorviz.server.repository.LandscapeRepositoryModel
 import net.explorviz.model.Landscape
+import net.explorviz.layout.LayoutService
 
 @Path("currentLandscape")
 class LandscapeResource {
@@ -22,6 +23,6 @@ class LandscapeResource {
 	@GET
 	@Path("/landscape")
 	def Landscape getLandscape() {
-		this.service.getLastPeriodLandscape()
+		LayoutService::layoutLandscape(this.service.getLastPeriodLandscape())		
 	}
 }

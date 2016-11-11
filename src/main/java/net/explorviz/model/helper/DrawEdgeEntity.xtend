@@ -5,7 +5,9 @@ import java.util.List
 import org.eclipse.xtend.lib.annotations.Accessors
 import net.explorviz.math.Vector3f
 import org.eclipse.elk.alg.layered.graph.LEdge
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 
+@JsonIgnoreProperties("kielerEdgeReferences")
 abstract class DrawEdgeEntity extends BaseEntity {
 	@Accessors transient val List<LEdge> kielerEdgeReferences = new ArrayList<LEdge>
 

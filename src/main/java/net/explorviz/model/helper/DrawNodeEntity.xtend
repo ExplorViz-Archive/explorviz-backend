@@ -6,7 +6,9 @@ import org.eclipse.elk.alg.layered.graph.LGraph
 import org.eclipse.elk.alg.layered.graph.LPort
 import java.util.Map
 import java.util.HashMap
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 
+@JsonIgnoreProperties("kielerGraphReference", "kielerNodeReference", "sourcePorts", "targetPorts")
 abstract class DrawNodeEntity extends BaseEntity {
 	@Accessors String name
 
