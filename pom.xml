@@ -1,0 +1,195 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>net.explorViz</groupId>
+	<artifactId>explorviz-ui-backend</artifactId>
+	<packaging>jar</packaging>
+	<version>1.0-SNAPSHOT</version>
+	<name>explorviz-ui-backend</name>
+
+	<properties>
+		<org.mapstruct.version>1.1.0.CR1</org.mapstruct.version>
+		<checkstyle.skip>true</checkstyle.skip>
+		<jersey.version>2.23</jersey.version>
+		<org.glassfish.hk2.version>2.4.0-b34</org.glassfish.hk2.version>
+		<jackson.version>2.7.5</jackson.version>
+		
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+
+	<dependencies>
+
+		<dependency>
+			<groupId>org.glassfish.jersey.containers</groupId>
+			<artifactId>jersey-container-grizzly2-http</artifactId>
+			<version>${jersey.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.esotericsoftware</groupId>
+			<artifactId>kryo</artifactId>
+			<version>4.0.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.glassfish.jersey.media</groupId>
+			<artifactId>jersey-media-json-jackson</artifactId>
+			<version>${jersey.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.eclipse.xtend</groupId>
+			<artifactId>org.eclipse.xtend.lib</artifactId>
+			<version>2.9.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.maven.plugins</groupId>
+			<artifactId>maven-shade-plugin</artifactId>
+			<version>2.4.3</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.mapstruct</groupId>
+			<artifactId>mapstruct-jdk8</artifactId>
+			<version>${org.mapstruct.version}</version>
+		</dependency>
+
+		<!-- external dependencys in ${project.basedir}/lib -->
+
+		<dependency>
+			<groupId>de.cau.cs.kieler</groupId>
+			<artifactId>core</artifactId>
+			<scope>system</scope>
+			<version>0.15</version>
+			<systemPath>${project.basedir}/lib/de.cau.cs.kieler.core-0.15.0.201602160301.jar</systemPath>
+		</dependency>
+
+		<dependency>
+			<groupId>de.cau.cs.kieler</groupId>
+			<artifactId>klay.layered</artifactId>
+			<scope>system</scope>
+			<version>0.13</version>
+			<systemPath>${project.basedir}/lib/de.cau.cs.kieler.klay.layered-0.13.0.201602160301.jar</systemPath>
+		</dependency>
+
+		<dependency>
+			<groupId>net.explorviz</groupId>
+			<artifactId>common</artifactId>
+			<scope>system</scope>
+			<version>1.0</version>
+			<systemPath>${project.basedir}/lib/explorviz-common.jar</systemPath>
+		</dependency>
+
+		<dependency>
+			<groupId>net.explorviz</groupId>
+			<artifactId>worker</artifactId>
+			<scope>system</scope>
+			<version>1.0</version>
+			<systemPath>${project.basedir}/lib/explorviz-worker.jar</systemPath>
+		</dependency>
+
+	</dependencies>
+
+
+	<build>
+		<plugins>
+			<plugin>
+				<version>1.5.0</version>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>exec-maven-plugin</artifactId>
+				<configuration>
+					<mainClass>net.explorviz.server.main.App</mainClass>
+				</configuration>
+				<dependencies>
+					<dependency>
+						<groupId>net.explorviz</groupId>
+						<artifactId>common</artifactId>
+						<version>1.0</version>
+						<type>jar</type>
+						<scope>system</scope>
+						<systemPath>${project.basedir}/lib/explorviz-common.jar</systemPath>
+					</dependency>
+					<dependency>
+						<groupId>net.explorviz</groupId>
+						<artifactId>worker</artifactId>
+						<version>1.0</version>
+						<type>jar</type>
+						<scope>system</scope>
+						<systemPath>${project.basedir}/lib/explorviz-worker.jar</systemPath>
+					</dependency>
+				</dependencies>
+			</plugin>
+			<plugin>
+				<groupId>org.eclipse.xtend</groupId>
+				<artifactId>xtend-maven-plugin</artifactId>
+				<version>2.9.0</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>compile</goal>
+							<goal>testCompile</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${project.build.directory}/xtend-gen/main</outputDirectory>
+							<testOutputDirectory>${project.build.directory}/xtend-gen/test</testOutputDirectory>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<version>2.1</version>
+				<executions>
+					<execution>
+						<id>copy-dependencies</id>
+						<phase>package</phase>
+						<goals>
+							<goal>copy-dependencies</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${project.build.directory}/lib</outputDirectory>
+							<overWriteReleases>false</overWriteReleases>
+							<overWriteSnapshots>false</overWriteSnapshots>
+							<overWriteIfNewer>true</overWriteIfNewer>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.5.1</version>
+				<configuration>
+					<source>1.8</source> <!-- or higher, depending on your project -->
+					<target>1.8</target> <!-- or higher, depending on your project -->
+					<annotationProcessorPaths>
+						<path>
+							<groupId>org.mapstruct</groupId>
+							<artifactId>mapstruct-processor</artifactId>
+							<version>${org.mapstruct.version}</version>
+						</path>
+					</annotationProcessorPaths>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+	<profiles>
+		<profile>
+			<id>release</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-assembly-plugin</artifactId>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+
+</project>
+
