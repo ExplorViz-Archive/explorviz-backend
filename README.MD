@@ -12,3 +12,5 @@ Quick start with dummy monitoring:
 4. Navigate to [localhost:8080/currentLandscape/landscape](http://localhost:8080/currentLandscape/landscape)
 
 **Important**: Changes that are related to dependency injections require a recompilation of the application. Use the maven config `explorviz-ui-backend-compile-exec` to recompile and start the server. Then, start the Test app again.
+
+[![Stories in Ready](https://badge.waffle.io/ExplorViz/explorviz-ui-backend.png?label=ready&title=Ready)](http://waffle.io/ExplorViz/explorviz-ui-backend
