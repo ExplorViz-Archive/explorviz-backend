@@ -15,6 +15,7 @@ import net.explorviz.model.Clazz
 import net.explorviz.model.DatabaseQuery
 import net.explorviz.math.Vector3f
 import net.explorviz.math.Vector4f
+import java.io.Serializable
 
 @JsonTypeInfo(use=JsonTypeInfo.Id.NAME, include=JsonTypeInfo.As.PROPERTY, property="type")
 @JsonIdentityInfo(generator=ObjectIdGenerators.IntSequenceGenerator, property="id")
@@ -36,6 +37,7 @@ import net.explorviz.math.Vector4f
 	@JsonSubTypes.Type(value=Clazz, name="clazz"),
 	@JsonSubTypes.Type(value=DatabaseQuery, name="databaseQuery"),
 	@JsonSubTypes.Type(value=Vector3f, name="vector3f"),
-	@JsonSubTypes.Type(value=Vector4f, name="vector4f"))
-abstract class BaseEntity {
+	@JsonSubTypes.Type(value=Vector4f, name="vector4f"),
+	@JsonSubTypes.Type(value=Draw3DEdgeEntity, name="draw3DEdgeEntity"))
+abstract class BaseEntity implements Serializable {
 }

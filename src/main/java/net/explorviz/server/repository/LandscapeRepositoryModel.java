@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import com.esotericsoftware.kryo.Kryo;
+import org.nustaq.serialization.FSTConfiguration;
 
 import net.explorviz.server.main.Configuration;
 import net.explorviz.model.Application;
@@ -26,7 +26,7 @@ public class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiver {
 
 	private Landscape lastPeriodLandscape;
 	private final Landscape internalLandscape;
-	private final Kryo kryo;
+	private final FSTConfiguration fstConf;
 	private final InsertionRepositoryPart insertionRepositoryPart;
 	private final RemoteCallRepositoryPart remoteCallRepositoryPart;
 	
@@ -66,7 +66,7 @@ public class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiver {
 	}
 
 	private LandscapeRepositoryModel() {
-		kryo = initKryo();
+		fstConf = initFSTConf();
 
 		if (LOAD_LAST_LANDSCAPE_ON_LOAD) {
 			Landscape readLandscape = null;
@@ -85,14 +85,16 @@ public class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiver {
 		remoteCallRepositoryPart = new RemoteCallRepositoryPart();
 
 		internalLandscape.updateLandscapeAccess(java.lang.System.nanoTime());
+		
+		Landscape l = fstConf.deepCopy(internalLandscape);
 
-		lastPeriodLandscape = LandscapePreparer.prepareLandscape(kryo.copy(internalLandscape));
+		lastPeriodLandscape = LandscapePreparer.prepareLandscape(l);
 
 		new TimeSignalReader(TimeUnit.SECONDS.toMillis(Configuration.outputIntervalSeconds), this).start();
 	}
 
-	public Kryo initKryo() {
-		return RepositoryStorage.createKryoInstance();
+	public FSTConfiguration initFSTConf() {
+		return RepositoryStorage.createFSTConfiguration();
 	}
 
 	public void reset() {
@@ -111,7 +113,10 @@ public class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiver {
 		synchronized (internalLandscape) {
 			synchronized (lastPeriodLandscape) {
 				RepositoryStorage.writeToFile(internalLandscape, java.lang.System.currentTimeMillis());
-				lastPeriodLandscape = LandscapePreparer.prepareLandscape(kryo.copy(internalLandscape));
+				
+				Landscape l = fstConf.deepCopy(internalLandscape);
+				
+				lastPeriodLandscape = LandscapePreparer.prepareLandscape(l);
 
 				remoteCallRepositoryPart.checkForTimedoutRemoteCalls();
 

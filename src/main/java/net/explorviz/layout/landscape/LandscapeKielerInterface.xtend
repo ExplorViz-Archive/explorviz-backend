@@ -91,8 +91,12 @@ class LandscapeKielerInterface {
 
 	def private static void addNodes(Landscape landscape) {
 		for (system : landscape.systems) {
-			system.sourcePorts.clear()
-			system.targetPorts.clear()
+
+			if (system.sourcePorts != null)
+				system.sourcePorts.clear()
+
+			if (system.targetPorts != null)
+				system.targetPorts.clear()
 
 			if (!system.opened) {
 				val systemKielerNode = new LNode(topLevelKielerGraph)
@@ -130,8 +134,13 @@ class LandscapeKielerInterface {
 				systemKielerGraph.setProperty(LayeredOptions::CONTENT_ALIGNMENT, ContentAlignment::centerCenter)
 
 				for (nodeGroup : system.nodeGroups) {
-					nodeGroup.sourcePorts.clear()
-					nodeGroup.targetPorts.clear()
+
+					if (nodeGroup.sourcePorts != null)
+						nodeGroup.sourcePorts.clear()
+
+					if (nodeGroup.targetPorts != null)
+						nodeGroup.targetPorts.clear()
+
 					if (nodeGroup.visible) {
 						createNodeGroup(systemKielerGraph, nodeGroup)
 					}
@@ -166,8 +175,13 @@ class LandscapeKielerInterface {
 			var yCoord = 0d
 
 			for (node : nodeGroup.nodes) {
-				node.sourcePorts.clear()
-				node.targetPorts.clear()
+
+				if (node.sourcePorts != null)
+					node.sourcePorts.clear()
+
+				if (node.targetPorts != null)
+					node.targetPorts.clear()
+
 				if (node.visible) {
 					createNodeAndItsApplications(nodeGroupKielerGraph, node)
 					val position = node.kielerNodeReference.position
@@ -178,8 +192,13 @@ class LandscapeKielerInterface {
 			}
 		} else {
 			for (node : nodeGroup.nodes) {
-				node.sourcePorts.clear()
-				node.targetPorts.clear()
+
+				if (node.sourcePorts != null)
+					node.sourcePorts.clear()
+
+				if (node.targetPorts != null)
+					node.targetPorts.clear()
+
 				if (node.visible) {
 					createNodeAndItsApplications(parentGraph, node)
 				}
@@ -211,8 +230,12 @@ class LandscapeKielerInterface {
 		nodeKielerGraph.setProperty(LayeredOptions::CONTENT_ALIGNMENT, ContentAlignment::centerCenter)
 
 		for (application : node.applications) {
-			application.sourcePorts.clear()
-			application.targetPorts.clear()
+
+			if (application.sourcePorts != null)
+				application.sourcePorts.clear()
+
+			if (application.targetPorts != null)
+				application.targetPorts.clear()
 
 			val applicationKielerNode = new LNode(nodeKielerGraph)
 			nodeKielerGraph.layerlessNodes.add(applicationKielerNode)
@@ -229,8 +252,12 @@ class LandscapeKielerInterface {
 
 	def private static addEdges(Landscape landscape) {
 		for (communication : landscape.applicationCommunication) {
-			communication.kielerEdgeReferences.clear()
-			communication.points.clear()
+
+			if (communication.kielerEdgeReferences != null)
+				communication.kielerEdgeReferences.clear()
+
+			if (communication.points != null)
+				communication.points.clear()
 
 			var appSource = communication.source
 			var appTarget = communication.target

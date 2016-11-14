@@ -29,5 +29,11 @@
 	<classpathentry kind="lib" path="lib/org.eclipse.elk.graph_0.1.0.201607121925.jar"/>
 	<classpathentry kind="lib" path="lib/org.eclipse.emf.ecore_2.12.0.v20160420-0247.jar"/>
 	<classpathentry kind="lib" path="lib/org.eclipse.emf.common_2.12.0.v20160420-0247.jar"/>
+	<classpathentry kind="src" output="target/test-classes" path="src/test/java">
+		<attributes>
+			<attribute name="optional" value="true"/>
+			<attribute name="maven.pomderived" value="true"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

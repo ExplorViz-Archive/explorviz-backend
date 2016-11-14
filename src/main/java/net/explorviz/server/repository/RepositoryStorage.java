@@ -5,9 +5,9 @@ import java.util.*;
 import java.util.Map.Entry;
 import java.util.concurrent.TimeUnit;
 
-import com.esotericsoftware.kryo.Kryo;
-import com.esotericsoftware.kryo.io.Input;
-import com.esotericsoftware.kryo.io.Output;
+import org.nustaq.serialization.FSTConfiguration;
+import org.nustaq.serialization.FSTObjectInput;
+import org.nustaq.serialization.FSTObjectOutput;
 
 import net.explorviz.server.main.Configuration;
 import net.explorviz.model.*;
@@ -24,12 +24,12 @@ public class RepositoryStorage {
 	private static String FOLDER_FOR_TARGET_MODEL;
 	private static String FILENAME_FOR_TARGET_MODEL = "targetModel" + Configuration.MODEL_EXTENSION;
 
-	private static final Kryo kryoWriter;
+	private static final FSTConfiguration fstConf;
 
 	private static final int HISTORY_INTERVAL_IN_MINUTES = 24 * 60; // one day
 
 	static {
-		kryoWriter = createKryoInstance();
+		fstConf = createFSTConfiguration();
 
 		FOLDER = FileSystemHelper.getExplorVizDirectory() + "/" + "landscapeRepository";
 		FOLDER_FOR_TARGET_MODEL = FileSystemHelper.getExplorVizDirectory();
@@ -39,24 +39,24 @@ public class RepositoryStorage {
 		new File(FOLDER).mkdir();
 	}
 
-	public static Kryo createKryoInstance() {
-		final Kryo result = new Kryo();
-		result.register(Landscape.class);
-		result.register(System.class);
-		result.register(NodeGroup.class);
-		result.register(Node.class);
-		result.register(Communication.class);
-		result.register(CommunicationTileAccumulator.class);
-		result.register(CommunicationAccumulator.class);
-		result.register(Application.class);
-		result.register(ELanguage.class);
-		result.register(Component.class);
-		result.register(Clazz.class);
-		result.register(RuntimeInformation.class);
-		result.register(DatabaseQuery.class);
-		result.register(CommunicationClazz.class);
-		result.register(CommunicationAppAccumulator.class);
-		result.register(Point.class);
+	public static FSTConfiguration createFSTConfiguration() {
+		final FSTConfiguration result = FSTConfiguration.createDefaultConfiguration();
+		result.registerClass(Landscape.class);
+		result.registerClass(System.class);
+		result.registerClass(NodeGroup.class);
+		result.registerClass(Node.class);
+		result.registerClass(Communication.class);
+		result.registerClass(CommunicationTileAccumulator.class);
+		result.registerClass(CommunicationAccumulator.class);
+		result.registerClass(Application.class);
+		result.registerClass(ELanguage.class);
+		result.registerClass(Component.class);
+		result.registerClass(Clazz.class);
+		result.registerClass(RuntimeInformation.class);
+		result.registerClass(DatabaseQuery.class);
+		result.registerClass(CommunicationClazz.class);
+		result.registerClass(CommunicationAppAccumulator.class);
+		result.registerClass(Point.class);
 
 		return result;
 	}
@@ -81,16 +81,22 @@ public class RepositoryStorage {
 
 	private static void writeToFileGeneric(final Landscape landscape, final String destFolder,
 			final String destFilename) {
-		Output output = null;
+		FSTObjectOutput output = null;
 		try {
-			output = new Output(new FileOutputStream(destFolder + "/" + destFilename));
-			kryoWriter.writeObject(output, landscape);
+			output = fstConf.getObjectOutput(new FileOutputStream(destFolder + "/" + destFilename));
+			output.writeObject(landscape, Landscape.class);
 			output.close();
 		} catch (final FileNotFoundException e) {
 			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
 		} finally {
 			if (output != null) {
-				output.close();
+				try {
+					output.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 			}
 		}
 	}
@@ -115,10 +121,23 @@ public class RepositoryStorage {
 
 	public static Landscape readFromFileGeneric(final String sourceFolder,
 			final String sourceFilename) throws FileNotFoundException {
-		final Input input = new Input(new FileInputStream(sourceFolder + "/" + sourceFilename));
-		final Kryo kryoReader = createKryoInstance();
-		final Landscape landscape = kryoReader.readObject(input, Landscape.class);
-		input.close();
+		
+		final FileInputStream stream = new FileInputStream(sourceFolder + "/" + sourceFilename);
+		
+		final FSTObjectInput input = fstConf.getObjectInput(stream);
+		Landscape landscape = null;
+		try {
+			landscape = (Landscape) input.readObject(Landscape.class);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		try {
+			stream.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		return landscape;
 	}
 
