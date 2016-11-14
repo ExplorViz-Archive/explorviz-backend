@@ -36,7 +36,7 @@ public class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiver {
 
 	public static synchronized LandscapeRepositoryModel getInstance() {
 		if (LandscapeRepositoryModel.INSTANCE == null) {
-			LandscapeRepositoryModel.INSTANCE = new LandscapeRepositoryModel();
+			LandscapeRepositoryModel.INSTANCE = new LandscapeRepositoryModel();			
 		}
 		return LandscapeRepositoryModel.INSTANCE;
 	}
