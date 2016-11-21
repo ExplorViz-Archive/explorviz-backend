@@ -4,6 +4,10 @@ import net.explorviz.model.helper.BaseEntity;
 
 public class Vector3f extends BaseEntity{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	public float x, y, z;
 
 	public Vector3f() {
