@@ -13,8 +13,8 @@ public class ExplorViz extends ResourceConfig {
 		register(JacksonFeature.class);
 		register(LandscapeResource.class);
 		register(GeneralExceptionMapper.class);
-		register(CORSResponseFilter.class);
 		register(AuthorizationFilter.class);
 		register(AuthenticationHandler.class);
+
 	}
 }
