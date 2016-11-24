@@ -3,10 +3,6 @@ package net.explorviz.math;
 import net.explorviz.model.helper.BaseEntity;
 
 public class Vector4f extends BaseEntity {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
 	public float x, y, z, w;
 
 	public Vector4f() {
