@@ -9,7 +9,6 @@ import net.explorviz.server.repository.LandscapeRepositoryModel
 import net.explorviz.model.Landscape
 import net.explorviz.layout.LayoutService
 import javax.annotation.security.PermitAll
-import javax.annotation.security.RolesAllowed
 
 @Path("currentLandscape")
 @PermitAll
@@ -22,7 +21,7 @@ class LandscapeResource {
 		this.service = service
 	}
 
-	@RolesAllowed("admin")
+	//@RolesAllowed("admin")
 	@Produces(MediaType.APPLICATION_JSON)
 	@GET
 	@Path("/landscape")
