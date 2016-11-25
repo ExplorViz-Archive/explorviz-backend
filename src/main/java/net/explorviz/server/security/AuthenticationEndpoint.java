@@ -12,6 +12,9 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
 @Path("/sessions")
 public class AuthenticationEndpoint {
 
@@ -25,17 +28,17 @@ public class AuthenticationEndpoint {
 //		String username = credentials.getUsername();
 //		String password = credentials.getPassword();
 		
-		System.out.println("username: " + username);
-		System.out.println("password: " + password);
-		
 		if (authenticate(username, password)) {
-			// Issue a token for the user
+	
 			String token = issueToken(username);
 			
-			System.out.println("token: " + token);
-
-			// Return the token on the response
-			return Response.ok(token).build();
+			JsonNodeFactory factory = JsonNodeFactory.instance;
+			ObjectNode jsonNode = factory.objectNode();
+			jsonNode.put("token", token);
+				
+			return Response.ok(jsonNode).build();
+			
+			
 		} else {
 			return Response.status(Response.Status.UNAUTHORIZED).build();
 		}
