@@ -39,6 +39,7 @@ public class AuthenticationEndpoint {
 			JsonNodeFactory factory = JsonNodeFactory.instance;
 			ObjectNode jsonNode = factory.objectNode();
 			jsonNode.put("token", token);
+			jsonNode.put("username", username);
 				
 			return Response.ok(jsonNode).build();
 			
