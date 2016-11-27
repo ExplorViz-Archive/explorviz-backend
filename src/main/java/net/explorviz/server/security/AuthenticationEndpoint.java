@@ -17,6 +17,8 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 @Path("/sessions")
 public class AuthenticationEndpoint {
+	
+	public static String token = null;
 
 	@POST
 	@Produces("application/json")
@@ -31,6 +33,8 @@ public class AuthenticationEndpoint {
 		if (authenticate(username, password)) {
 	
 			String token = issueToken(username);
+			
+			AuthenticationEndpoint.token = token;
 			
 			JsonNodeFactory factory = JsonNodeFactory.instance;
 			ObjectNode jsonNode = factory.objectNode();

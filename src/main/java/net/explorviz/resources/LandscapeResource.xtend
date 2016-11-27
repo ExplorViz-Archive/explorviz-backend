@@ -10,6 +10,7 @@ import net.explorviz.layout.LayoutService
 import javax.ws.rs.PathParam
 import com.fasterxml.jackson.databind.node.JsonNodeFactory
 import com.fasterxml.jackson.databind.node.ObjectNode
+import net.explorviz.server.security.Secured
 
 @Path("landscapes")
 class LandscapeResource {
@@ -21,6 +22,7 @@ class LandscapeResource {
 		this.service = service
 	}
 
+	@Secured
 	@Produces(MediaType.APPLICATION_JSON)
 	@GET
 	//@Path("/{landscapeId}")

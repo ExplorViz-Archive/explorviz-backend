@@ -4,6 +4,7 @@ import org.glassfish.jersey.jackson.JacksonFeature;
 import org.glassfish.jersey.server.ResourceConfig;
 
 import net.explorviz.resources.LandscapeResource;
+import net.explorviz.server.filters.AuthenticationRequestFilter;
 import net.explorviz.server.filters.CORSResponseFilter;
 import net.explorviz.server.security.AuthenticationEndpoint;
 
@@ -15,6 +16,7 @@ public class ExplorViz extends ResourceConfig {
 		
 		// Authentication & Authorization
 		register(AuthenticationEndpoint.class);
+		register(AuthenticationRequestFilter.class);
 		register(CORSResponseFilter.class);
 		
 		// resources
