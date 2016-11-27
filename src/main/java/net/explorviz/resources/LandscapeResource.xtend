@@ -23,17 +23,21 @@ class LandscapeResource {
 
 	@Produces(MediaType.APPLICATION_JSON)
 	@GET
-	@Path("/{landscapeId}")
+	//@Path("/{landscapeId}")
 	def ObjectNode getLandscape(@PathParam("landscapeId") String landscapeId) {
 		
 		var JsonNodeFactory factory = JsonNodeFactory.instance
 		
 		var data = factory.objectNode		
 				
-		var l = LayoutService::layoutLandscape(this.service.getLastPeriodLandscape())	
+		var l = LayoutService::layoutLandscape(this.service.getLastPeriodLandscape())
 		
-		data.putPOJO("data", l)
+		var innerData = factory.objectNode	
+			
+		innerData.put("type", "landscape")	
+		innerData.put("id", 1)
+		innerData.putPOJO("attributes", l)
 		
-		data		
+		data.putPOJO("data", innerData)	
 	}
 }
