@@ -16,7 +16,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /***
  * Provides the endpoint for authentication: http:\/\/*IP*:*Port*\/sessions.
- * Clients obtain their JWT here.
+ * Clients obtain their authentication token here.
  * 
  * @author akr
  *
@@ -27,7 +27,15 @@ public class AuthenticationEndpoint {
 	public static String token = null;
 
 	/***
+	 * Creates and returns a randomized token for users. A client request must
+	 * send "username=admin&password=123456" in the body of a POST request. If
+	 * authentication of credentials succeeds, a randomized token will be
+	 * returned.
 	 * 
+	 * Tokens, their expiration dates and the related users are stored on the
+	 * backend. Every frontend request must send this token in its
+	 * "Authorization" header, since all other resources are token-based secured
+	 * and only accessible with a valid token.
 	 * 
 	 * @author akr
 	 * @param username
@@ -45,7 +53,7 @@ public class AuthenticationEndpoint {
 
 		if (authenticate(username, password)) {
 
-			String token = issueToken(username);
+			String token = issueToken();
 
 			AuthenticationEndpoint.token = token;
 
@@ -61,11 +69,24 @@ public class AuthenticationEndpoint {
 		}
 	}
 
+	/***
+	 * Authenticates user and password against database.
+	 * 
+	 * @author akr
+	 * @param username
+	 * @param password
+	 * @return True if the authentication succeeds, otherwise false.
+	 */
 	private boolean authenticate(String username, String password) {
 		return true;
 	}
 
-	private String issueToken(String username) {
+	/***
+	 * Creates token for future client requests.
+	 * 
+	 * @return Randomized token string
+	 */
+	private String issueToken() {
 		Random random = new SecureRandom();
 		return new BigInteger(130, random).toString(32);
 	}
