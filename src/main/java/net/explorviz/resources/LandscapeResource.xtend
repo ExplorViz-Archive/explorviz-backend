@@ -25,7 +25,7 @@ class LandscapeResource {
 	@Secured
 	@Produces(MediaType.APPLICATION_JSON)
 	@GET
-	//@Path("/{landscapeId}")
+	@Path("/{landscapeId}")
 	def ObjectNode getLandscape(@PathParam("landscapeId") String landscapeId) {
 		
 		var JsonNodeFactory factory = JsonNodeFactory.instance
