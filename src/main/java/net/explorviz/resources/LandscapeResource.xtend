@@ -11,6 +11,7 @@ import javax.ws.rs.PathParam
 import com.fasterxml.jackson.databind.node.JsonNodeFactory
 import com.fasterxml.jackson.databind.node.ObjectNode
 import net.explorviz.server.security.Secured
+import net.explorviz.model.Landscape
 
 @Path("landscapes")
 class LandscapeResource {
@@ -40,6 +41,6 @@ class LandscapeResource {
 		innerData.put("id", 1)
 		innerData.putPOJO("attributes", l)
 		
-		data.putPOJO("data", innerData)	
+		data.putPOJO("landscape", l)
 	}
 }
