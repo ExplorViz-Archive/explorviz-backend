@@ -31,61 +31,58 @@ class LandscapeResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@GET
 	@Path("/{landscapeId}")	
-	def JSONAPIDocument<LandscapeTest> getLandscape(@PathParam("landscapeId") String landscapeId) {
+	def byte[] getLandscape(@PathParam("landscapeId") String landscapeId) {
 		
-		var landscape = LayoutService.layoutLandscape(service.lastPeriodLandscape)
+//		var landscape = LayoutService.layoutLandscape(service.lastPeriodLandscape)
 
 		// harcoded
-		var JsonNodeFactory factory = JsonNodeFactory.instance
+//		var JsonNodeFactory factory = JsonNodeFactory.instance
+//
+//		var response = factory.objectNode
+//
+//		var dataObject = factory.objectNode
+//
+//		response.set("data", dataObject)
+//
+//		dataObject.put("id", "1")
+//		dataObject.put("type", "landscape")
+//
+//		var landscapeAttributes = factory.objectNode
+//		landscapeAttributes.put("hash", 124572345)
+//		landscapeAttributes.put("activities", 34234234)
+//
+//		dataObject.set("attributes", landscapeAttributes)
+//
+//		var relationships = factory.objectNode
+//
+//		var relationshipsSystemData = factory.objectNode
+//		relationshipsSystemData.put("id", "2")
+//		relationshipsSystemData.put("type", "system")
+//
+//		var relationshipsData = factory.objectNode
+//		relationshipsData.set("data", relationshipsSystemData)
+//
+//		relationships.set("systems", relationshipsData)
+//
+//		dataObject.set("relationships", relationships)
+//
+//		var included = factory.arrayNode
+//
+//		response.set("included", included)
+//
+//		var system = factory.objectNode
+//
+//		system.put("id", "2")
+//		system.put("type", "system")
+//
+//		var systemAttributes = factory.objectNode
+//		systemAttributes.put("opened", false)
+//		systemAttributes.put("name", "<UNKNOWN-APPLICATION>")
+//
+//		system.set("attributes", systemAttributes)
+//
+//		included.add(system)
 
-		var response = factory.objectNode
-
-		var dataObject = factory.objectNode
-
-		response.set("data", dataObject)
-
-		dataObject.put("id", "1")
-		dataObject.put("type", "landscape")
-
-		var landscapeAttributes = factory.objectNode
-		landscapeAttributes.put("hash", 124572345)
-		landscapeAttributes.put("activities", 34234234)
-
-		dataObject.set("attributes", landscapeAttributes)
-
-		var relationships = factory.objectNode
-
-		var relationshipsSystemData = factory.objectNode
-		relationshipsSystemData.put("id", "2")
-		relationshipsSystemData.put("type", "system")
-
-		var relationshipsData = factory.objectNode
-		relationshipsData.set("data", relationshipsSystemData)
-
-		relationships.set("systems", relationshipsData)
-
-		dataObject.set("relationships", relationships)
-
-		var included = factory.arrayNode
-
-		response.set("included", included)
-
-		var system = factory.objectNode
-
-		system.put("id", "2")
-		system.put("type", "system")
-
-		var systemAttributes = factory.objectNode
-		systemAttributes.put("opened", false)
-		systemAttributes.put("name", "<UNKNOWN-APPLICATION>")
-
-		system.set("attributes", systemAttributes)
-
-		included.add(system)
-
-		//response
-		
-		//
 		
 		var ResourceConverter converter = new ResourceConverter(LandscapeTest)		
 		converter.enableSerializationOption(SerializationFeature.INCLUDE_RELATIONSHIP_ATTRIBUTES);
@@ -93,22 +90,15 @@ class LandscapeResource {
 		
 		var l = new LandscapeTest
 		l.hash = 12412124
-		l.activities = 234234
+		l.activities = 234234	
 		
+		// this needs to be generated in a way		
+		l.id = "1"	
 		
 		var JSONAPIDocument<LandscapeTest> document = new JSONAPIDocument<LandscapeTest>(l)
 		
-		document
-//		
-//		converter.write(LandscapeTest)
-//		
-//		
-//		var jsonDoc = new JSONAPIDocument(l)
-//		
-//		println(jsonDoc)
-//		
-//		return jsonDoc
-
+		converter.writeDocument(document)
+	
 //		{
 //  "data": {
 //    "id": "1",

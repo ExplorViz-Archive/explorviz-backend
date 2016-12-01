@@ -7,6 +7,6 @@ import com.github.jasminb.jsonapi.annotations.Type
 
 @Type("landscape")
 class LandscapeTest extends BaseEntity {
-	@Accessors long hash
-	@Accessors long activities
+	@Accessors private long hash
+	@Accessors private long activities
 }
