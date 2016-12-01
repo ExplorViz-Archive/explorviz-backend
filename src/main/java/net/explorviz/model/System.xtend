@@ -4,10 +4,14 @@ import java.util.ArrayList
 import java.util.List
 import org.eclipse.xtend.lib.annotations.Accessors
 import net.explorviz.model.helper.DrawNodeEntity
+import com.github.jasminb.jsonapi.annotations.Relationship
+import com.github.jasminb.jsonapi.annotations.Type
 
+@Type('system')
 class System extends DrawNodeEntity {
 	@Accessors List<NodeGroup> nodeGroups = new ArrayList<NodeGroup>
 
+	@Relationship("parent")
 	@Accessors Landscape parent
 
 	var boolean opened = true

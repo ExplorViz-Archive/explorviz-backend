@@ -10,6 +10,12 @@ import javax.ws.rs.PathParam
 import com.fasterxml.jackson.databind.node.JsonNodeFactory
 import com.fasterxml.jackson.databind.node.ObjectNode
 import net.explorviz.server.security.Secured
+import com.github.jasminb.jsonapi.ResourceConverter
+import net.explorviz.model.Landscape
+import com.github.jasminb.jsonapi.SerializationFeature
+import com.github.jasminb.jsonapi.JSONAPIDocument
+import net.explorviz.layout.LayoutService
+import net.explorviz.model.LandscapeTest
 
 @Path("landscapes")
 class LandscapeResource {
@@ -24,8 +30,10 @@ class LandscapeResource {
 	@Secured
 	@Produces(MediaType.APPLICATION_JSON)
 	@GET
-	@Path("/{landscapeId}")
-	def ObjectNode getLandscape(@PathParam("landscapeId") String landscapeId) {
+	@Path("/{landscapeId}")	
+	def JSONAPIDocument<LandscapeTest> getLandscape(@PathParam("landscapeId") String landscapeId) {
+		
+		var landscape = LayoutService.layoutLandscape(service.lastPeriodLandscape)
 
 		// harcoded
 		var JsonNodeFactory factory = JsonNodeFactory.instance
@@ -75,7 +83,31 @@ class LandscapeResource {
 
 		included.add(system)
 
-		response
+		//response
+		
+		//
+		
+		var ResourceConverter converter = new ResourceConverter(LandscapeTest)		
+		converter.enableSerializationOption(SerializationFeature.INCLUDE_RELATIONSHIP_ATTRIBUTES);
+				
+		
+		var l = new LandscapeTest
+		l.hash = 12412124
+		l.activities = 234234
+		
+		
+		var JSONAPIDocument<LandscapeTest> document = new JSONAPIDocument<LandscapeTest>(l)
+		
+		document
+//		
+//		converter.write(LandscapeTest)
+//		
+//		
+//		var jsonDoc = new JSONAPIDocument(l)
+//		
+//		println(jsonDoc)
+//		
+//		return jsonDoc
 
 //		{
 //  "data": {

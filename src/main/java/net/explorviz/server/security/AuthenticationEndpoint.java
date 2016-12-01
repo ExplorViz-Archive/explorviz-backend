@@ -14,6 +14,7 @@ import javax.ws.rs.core.Response;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+
 /***
  * Provides the endpoint for authentication: http:\/\/*IP*:*Port*\/sessions.
  * Clients obtain their authentication token here.
@@ -59,14 +60,15 @@ public class AuthenticationEndpoint {
 
 			JsonNodeFactory factory = JsonNodeFactory.instance;
 			ObjectNode jsonNode = factory.objectNode();
-			jsonNode.put("token", token);
 			jsonNode.put("username", username);
+			jsonNode.put("token", token);
 
 			return Response.ok(jsonNode).build();
 
 		} else {
 			return Response.status(Response.Status.UNAUTHORIZED).build();
 		}
+
 	}
 
 	/***
