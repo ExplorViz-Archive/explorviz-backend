@@ -29,18 +29,64 @@ class LandscapeResource {
 	@Path("/{landscapeId}")
 	def ObjectNode getLandscape(@PathParam("landscapeId") String landscapeId) {
 		
+		// harcoded
+		
 		var JsonNodeFactory factory = JsonNodeFactory.instance
 		
-		var data = factory.objectNode		
-				
-		var l = LayoutService::layoutLandscape(this.service.getLastPeriodLandscape())
+		var response = factory.objectNode
 		
-		var innerData = factory.objectNode	
-			
-		innerData.put("type", "landscape")	
-		innerData.put("id", 1)
-		innerData.putPOJO("attributes", l)
+		var dataLandscapeArray = factory.arrayNode
 		
-		data.putPOJO("landscape", l)
+		response.set("data", dataLandscapeArray)
+		
+		var landscape = factory.objectNode
+		
+		landscape.put("id", "1")
+		landscape.put("type", "landscape")
+
+		
+		var landscapeAttributes = factory.objectNode
+		landscapeAttributes.put("hash", 124572345)
+		landscapeAttributes.put("activities", 34234234)		
+		
+		landscape.set("attributes", landscapeAttributes)
+		
+		dataLandscapeArray.add(landscape)
+		
+		var relationships = factory.objectNode
+		
+		var relationshipsSystemData = factory.objectNode
+		relationshipsSystemData.put("id", "2")
+		relationshipsSystemData.put("type", "system")
+
+		
+		var relationshipsData = factory.objectNode
+		relationshipsData.set("data", relationshipsSystemData)
+		
+		relationships.set("systems", relationshipsData)
+		
+		var relationshipsOuter = factory.objectNode
+		relationshipsOuter.set("relationships", relationships)
+		
+		dataLandscapeArray.add(relationshipsOuter)
+		
+		var included = factory.arrayNode
+		
+		response.set("included", included)
+		
+		var system = factory.objectNode
+		
+		system.put("id", "2")
+		system.put("type", "system")
+		
+		var systemAttributes = factory.objectNode
+		systemAttributes.put("opened", false)
+		systemAttributes.put("name", "<UNKNOWN-APPLICATION>")			
+		
+		system.set("attributes", systemAttributes)
+		
+		included.add(system)
+
+		response
 	}
 }
