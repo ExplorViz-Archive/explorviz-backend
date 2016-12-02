@@ -6,7 +6,7 @@ import org.eclipse.xtend.lib.annotations.Accessors
 import com.fasterxml.jackson.annotation.JsonIdentityInfo
 import com.fasterxml.jackson.annotation.ObjectIdGenerators
 
-@JsonIdentityInfo(generator = ObjectIdGenerators.StringIdGenerator, property = "id")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator, property = "id")
 abstract class BaseEntity implements Serializable{
 	
 	@Id	
