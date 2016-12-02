@@ -9,10 +9,18 @@ import net.explorviz.model.NodeGroup;
 import net.explorviz.model.System;
 
 public class LandscapePreparer {
+	
+	private static int idCounter = 0;
+	
 	public static Landscape prepareLandscape(final Landscape landscape) {
 		if (landscape == null) {
-			return new Landscape();
+			Landscape l = new Landscape();
+			l.setId(String.valueOf(idCounter));
+			idCounter = 0;
+			return l;
 		}
+		
+		landscape.setId(String.valueOf(idCounter));
 
 		for (final System system : landscape.getSystems()) {
 			for (final NodeGroup nodeGroup : system.getNodeGroups()) {
@@ -49,6 +57,8 @@ public class LandscapePreparer {
 		for (final Communication commu : landscape.getApplicationCommunication()) {
 			createApplicationInAndOutgoing(commu);
 		}
+		
+		idCounter = 0;
 
 		return landscape;
 	}
