@@ -16,6 +16,8 @@ import com.github.jasminb.jsonapi.SerializationFeature
 import com.github.jasminb.jsonapi.JSONAPIDocument
 import net.explorviz.layout.LayoutService
 import net.explorviz.model.LandscapeTest
+import net.explorviz.model.TestA
+import net.explorviz.model.TestB
 
 @Path("landscapes")
 class LandscapeResource {
@@ -83,21 +85,29 @@ class LandscapeResource {
 //
 //		included.add(system)
 
+
+		// test akr //
 		
-		var ResourceConverter converter = new ResourceConverter(LandscapeTest)		
-		converter.enableSerializationOption(SerializationFeature.INCLUDE_RELATIONSHIP_ATTRIBUTES);
-				
+		var ResourceConverter converter2 = new ResourceConverter(TestA,TestB)		
+		converter2.enableSerializationOption(SerializationFeature.INCLUDE_RELATIONSHIP_ATTRIBUTES)		
 		
-		var l = new LandscapeTest
-		l.hash = 12412124
-		l.activities = 234234	
+		var testa = new TestA
+		testa.id = "1"
+		testa.title = "ok"
 		
-		// this needs to be generated in a way		
-		l.id = "1"	
+		var testb = new TestB
+		testb.id = "2"
+		testb.title = "why"
+		testb.parent = testa
 		
-		var JSONAPIDocument<LandscapeTest> document = new JSONAPIDocument<LandscapeTest>(l)
+		testa.articles.add(testb)
 		
-		converter.writeDocument(document)
+		
+		var JSONAPIDocument<TestA> document2 = new JSONAPIDocument<TestA>(testa)
+		
+		converter2.writeDocument(document2)
+		
+		// end //
 	
 //		{
 //  "data": {
