@@ -7,7 +7,7 @@ import net.explorviz.model.helper.DrawNodeEntity
 import com.github.jasminb.jsonapi.annotations.Relationship
 import com.github.jasminb.jsonapi.annotations.Type
 
-@Type('system')
+@Type("system")
 class System extends DrawNodeEntity {
 	@Accessors List<NodeGroup> nodeGroups = new ArrayList<NodeGroup>
 

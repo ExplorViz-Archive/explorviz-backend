@@ -16,7 +16,7 @@ class Landscape extends BaseEntity {
 	@Accessors long hash
 	@Accessors long activities
 
-	@JsonIgnore
+	@Relationship("systems")
 	@Accessors List<System> systems = new ArrayList<System>
 
 	@JsonIgnore
