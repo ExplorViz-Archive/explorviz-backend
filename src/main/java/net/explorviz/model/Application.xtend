@@ -8,7 +8,7 @@ import net.explorviz.model.helper.DrawNodeEntity
 import net.explorviz.model.helper.CommunicationAppAccumulator
 
 class Application extends DrawNodeEntity {
-	@Accessors var int id
+	//@Accessors var int id
 
 	@Accessors var boolean database
 

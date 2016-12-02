@@ -9,15 +9,27 @@ import net.explorviz.model.NodeGroup;
 import net.explorviz.model.System;
 
 public class LandscapePreparer {
+	
+	private static int idCounter = 1;
+	
 	public static Landscape prepareLandscape(final Landscape landscape) {
 		if (landscape == null) {
-			return new Landscape();
+			Landscape l = new Landscape();
+			l.setId(String.valueOf(idCounter));
+			idCounter = 1;
+			return l;
 		}
+		
+		landscape.setId(String.valueOf(idCounter++));
 
 		for (final System system : landscape.getSystems()) {
+			system.setId(String.valueOf(idCounter++));
 			for (final NodeGroup nodeGroup : system.getNodeGroups()) {
+				nodeGroup.setId(String.valueOf(idCounter++));
 				for (final Node node : nodeGroup.getNodes()) {
+					node.setId(String.valueOf(idCounter++));
 					for (final Application application : node.getApplications()) {
+						application.setId(String.valueOf(idCounter++));
 						final Component foundationComponent = new Component();
 						foundationComponent.setFoundation(true);
 						foundationComponent.setOpened(true);
@@ -27,9 +39,12 @@ public class LandscapePreparer {
 						//foundationComponent.setColor(ColorDefinitions.componentFoundationColor);
 
 						foundationComponent.getChildren().addAll(application.getComponents());
+						
+						foundationComponent.setId(String.valueOf(idCounter++));
 
 						for (final Component child : foundationComponent.getChildren()) {
 							setComponentAttributes(child, 0, true);
+							child.setId(String.valueOf(idCounter++));
 						}
 
 						application.getComponents().clear();
@@ -48,7 +63,10 @@ public class LandscapePreparer {
 
 		for (final Communication commu : landscape.getApplicationCommunication()) {
 			createApplicationInAndOutgoing(commu);
+			commu.setId(String.valueOf(idCounter++));
 		}
+		
+		idCounter = 1;
 
 		return landscape;
 	}
@@ -82,6 +100,7 @@ public class LandscapePreparer {
 
 		for (final Component child : component.getChildren()) {
 			setComponentAttributes(child, index + 1, openNextLevel);
+			child.setId(String.valueOf(idCounter++));
 		}
 	}
 

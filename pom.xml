@@ -12,7 +12,7 @@
 		<checkstyle.skip>true</checkstyle.skip>
 		<jersey.version>2.23</jersey.version>
 		<org.glassfish.hk2.version>2.4.0-b34</org.glassfish.hk2.version>
-		<jackson.version>2.7.5</jackson.version>
+		<jackson.version>2.7.1</jackson.version>
 
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
@@ -26,10 +26,38 @@
 		</dependency>
 
 		<dependency>
+			<groupId>com.github.jasminb</groupId>
+			<artifactId>jsonapi-converter</artifactId>
+			<version>0.5</version>
+		</dependency>
+
+		<dependency>
 			<groupId>org.glassfish.jersey.media</groupId>
 			<artifactId>jersey-media-json-jackson</artifactId>
 			<version>${jersey.version}</version>
 		</dependency>
+		
+		<!-- # IMPORTANT: Needed for jsonapi-converter, else NoClassDefFound -->		
+
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-core</artifactId>
+			<version>${jackson.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+			<version>${jackson.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-annotations</artifactId>
+			<version>${jackson.version}</version>
+		</dependency>
+		
+		<!-- # -->
 
 		<dependency>
 			<groupId>org.eclipse.xtend</groupId>

@@ -6,40 +6,39 @@ import javax.ws.rs.Produces
 import javax.ws.rs.GET
 import javax.ws.rs.Path
 import net.explorviz.server.repository.LandscapeRepositoryModel
-import net.explorviz.layout.LayoutService
 import javax.ws.rs.PathParam
-import com.fasterxml.jackson.databind.node.JsonNodeFactory
-import com.fasterxml.jackson.databind.node.ObjectNode
 import net.explorviz.server.security.Secured
+import com.github.jasminb.jsonapi.ResourceConverter
+import net.explorviz.model.Landscape
+import com.github.jasminb.jsonapi.JSONAPIDocument
+import net.explorviz.layout.LayoutService
 
 @Path("landscapes")
 class LandscapeResource {
 
 	var LandscapeRepositoryModel service
+	var ResourceConverter converter
 
 	@Inject
-	def LandscapeResource(LandscapeRepositoryModel service) {
+	def LandscapeResource(LandscapeRepositoryModel service, ResourceConverter converter) {
 		this.service = service
+		this.converter = converter
 	}
 
 	@Secured
 	@Produces(MediaType.APPLICATION_JSON)
 	@GET
 	@Path("/{landscapeId}")
-	def ObjectNode getLandscape(@PathParam("landscapeId") String landscapeId) {
+	def byte[] getLandscape(@PathParam("landscapeId") String landscapeId) {
+
+		var landscape = LayoutService.layoutLandscape(service.lastPeriodLandscape)
+
+		// IDs need to be generated in some way: atm in LandscapePreparer => bad imho
+		// landscape.id = "1"		
 		
-		var JsonNodeFactory factory = JsonNodeFactory.instance
-		
-		var data = factory.objectNode		
-				
-		var l = LayoutService::layoutLandscape(this.service.getLastPeriodLandscape())
-		
-		var innerData = factory.objectNode	
-			
-		innerData.put("type", "landscape")	
-		innerData.put("id", 1)
-		innerData.putPOJO("attributes", l)
-		
-		data.putPOJO("data", innerData)	
+		var JSONAPIDocument<Landscape> document = new JSONAPIDocument<Landscape>(landscape)
+
+		this.converter.writeDocument(document)
+
 	}
 }

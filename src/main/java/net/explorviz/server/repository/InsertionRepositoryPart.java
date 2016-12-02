@@ -214,7 +214,7 @@ public class InsertionRepositoryPart {
 			application = new Application();
 
 			application.setDatabase(isApplicationDatabase(applicationName));
-			application.setId((node.getName() + "_" + applicationName).hashCode());
+			//application.setId((node.getName() + "_" + applicationName).hashCode());
 			application.setLastUsage(java.lang.System.currentTimeMillis());
 			application.setName(applicationName);
 
