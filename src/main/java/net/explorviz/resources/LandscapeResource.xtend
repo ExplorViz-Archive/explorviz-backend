@@ -10,7 +10,6 @@ import javax.ws.rs.PathParam
 import net.explorviz.server.security.Secured
 import com.github.jasminb.jsonapi.ResourceConverter
 import net.explorviz.model.Landscape
-import com.github.jasminb.jsonapi.SerializationFeature
 import com.github.jasminb.jsonapi.JSONAPIDocument
 import net.explorviz.layout.LayoutService
 
@@ -18,10 +17,12 @@ import net.explorviz.layout.LayoutService
 class LandscapeResource {
 
 	var LandscapeRepositoryModel service
+	var ResourceConverter converter
 
 	@Inject
-	def LandscapeResource(LandscapeRepositoryModel service) {
+	def LandscapeResource(LandscapeRepositoryModel service, ResourceConverter converter) {
 		this.service = service
+		this.converter = converter
 	}
 
 	@Secured
@@ -30,17 +31,14 @@ class LandscapeResource {
 	@Path("/{landscapeId}")
 	def byte[] getLandscape(@PathParam("landscapeId") String landscapeId) {
 
-		var landscape = LayoutService.layoutLandscape(service.lastPeriodLandscape)	
-		
-		// IDs need to be generated in some way
-		//landscape.id = "1"	
-		
-		var ResourceConverter converter = new ResourceConverter(Landscape, net.explorviz.model.System)
-		converter.enableSerializationOption(SerializationFeature.INCLUDE_RELATIONSHIP_ATTRIBUTES)
+		var landscape = LayoutService.layoutLandscape(service.lastPeriodLandscape)
 
+		// IDs need to be generated in some way: atm in LandscapePreparer => bad imho
+		// landscape.id = "1"		
+		
 		var JSONAPIDocument<Landscape> document = new JSONAPIDocument<Landscape>(landscape)
 
-		converter.writeDocument(document)
-		
+		this.converter.writeDocument(document)
+
 	}
 }
