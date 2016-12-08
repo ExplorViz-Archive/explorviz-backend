@@ -5,13 +5,14 @@ import org.glassfish.hk2.api.Factory;
 import com.github.jasminb.jsonapi.ResourceConverter;
 import com.github.jasminb.jsonapi.SerializationFeature;
 import net.explorviz.model.Landscape;
+import net.explorviz.model.NodeGroup;
 
 public class ResourceConverterFactory implements Factory<ResourceConverter> {
 
 	private ResourceConverter converter;
 
 	public ResourceConverterFactory() {
-		this.converter =  new ResourceConverter(Landscape.class, net.explorviz.model.System.class);
+		this.converter =  new ResourceConverter(Landscape.class, net.explorviz.model.System.class, NodeGroup.class);
 		this.converter.enableSerializationOption(SerializationFeature.INCLUDE_RELATIONSHIP_ATTRIBUTES);
 	}
 
