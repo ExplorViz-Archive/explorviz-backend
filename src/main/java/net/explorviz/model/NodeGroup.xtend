@@ -6,10 +6,14 @@ import org.eclipse.xtend.lib.annotations.Accessors
 import java.util.Collections
 import java.util.Comparator
 import net.explorviz.model.helper.DrawNodeEntity
+import com.github.jasminb.jsonapi.annotations.Relationship
+import com.github.jasminb.jsonapi.annotations.Type
 
+@Type("nodegroup")
 class NodeGroup extends DrawNodeEntity {
 	@Accessors List<Node> nodes = new ArrayList<Node>
 
+	@Relationship("parent")
 	@Accessors System parent
 
 	@Accessors var boolean visible = true
