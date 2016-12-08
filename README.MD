@@ -1,9 +1,9 @@
 # ExplorViz UI Backend
 <a href="https://travis-ci.org/ExplorViz/explorviz-ui-backend"><img src="https://travis-ci.org/ExplorViz/explorviz-ui-backend.svg?branch=master" alt="Build Status"></a>
-[![Stories in Backlog](https://badge.waffle.io/ExplorViz/explorviz-ui-backend.png?label=ready&title=Backlog)](http://waffle.io/ExplorViz/explorviz-ui-backend)
+[![Stories in Backlog](https://badge.waffle.io/ExplorViz/explorviz-ui-backend.png?label=backlog&title=Backlog)](http://waffle.io/ExplorViz/explorviz-ui-backend)
 [![Stories in Ready](https://badge.waffle.io/ExplorViz/explorviz-ui-backend.png?label=ready&title=Ready)](http://waffle.io/ExplorViz/explorviz-ui-backend)
-[![Stories in Progress](https://badge.waffle.io/ExplorViz/explorviz-ui-backend.png?label=ready&title=In%20Progress)](http://waffle.io/ExplorViz/explorviz-ui-backend)
-[![Stories in Done](https://badge.waffle.io/ExplorViz/explorviz-ui-backend.png?label=ready&title=Done)](http://waffle.io/ExplorViz/explorviz-ui-backend)
+[![Stories in Progress](https://badge.waffle.io/ExplorViz/explorviz-ui-backend.png?in%20progress=ready&title=In%20Progress)](http://waffle.io/ExplorViz/explorviz-ui-backend)
+[![Stories in Done](https://badge.waffle.io/ExplorViz/explorviz-ui-backend.png?label=done&title=Done)](http://waffle.io/ExplorViz/explorviz-ui-backend)
 
 
 This project is a wip replica of ExplorViz's visualization component. It substitutes [GWT](http://www.gwtproject.org/) and it's (asynchronous) RPC framework with [Jersey](https://jersey.java.net/) for creating a RESTful API. This is only the backend, you will need the (to be developed) frontend as well.
