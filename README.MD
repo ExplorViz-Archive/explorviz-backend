@@ -2,7 +2,7 @@
 <a href="https://travis-ci.org/ExplorViz/explorviz-ui-backend"><img src="https://travis-ci.org/ExplorViz/explorviz-ui-backend.svg?branch=master" alt="Build Status"></a>
 [![Stories in Backlog](https://badge.waffle.io/ExplorViz/explorviz-ui-backend.png?label=backlog&title=Backlog)](http://waffle.io/ExplorViz/explorviz-ui-backend)
 [![Stories in Ready](https://badge.waffle.io/ExplorViz/explorviz-ui-backend.png?label=ready&title=Ready)](http://waffle.io/ExplorViz/explorviz-ui-backend)
-[![Stories in Progress](https://badge.waffle.io/ExplorViz/explorviz-ui-backend.png?label=in%20progress&title=In%20Progress](http://waffle.io/ExplorViz/explorviz-ui-backend)
+[![Stories in Progress](https://badge.waffle.io/ExplorViz/explorviz-ui-backend.png?label=in%20progress&title=In%20Progress)](http://waffle.io/ExplorViz/explorviz-ui-backend)
 [![Stories in Done](https://badge.waffle.io/ExplorViz/explorviz-ui-backend.png?label=done&title=Done)](http://waffle.io/ExplorViz/explorviz-ui-backend)
 
 
