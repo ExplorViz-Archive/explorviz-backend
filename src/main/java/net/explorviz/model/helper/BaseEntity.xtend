@@ -9,6 +9,6 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator, property = "id")
 abstract class BaseEntity implements Serializable{
 	
-	@Id	
+	@Id
     @Accessors private String id;
 }

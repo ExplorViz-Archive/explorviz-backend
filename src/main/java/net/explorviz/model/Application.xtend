@@ -6,7 +6,10 @@ import org.eclipse.xtend.lib.annotations.Accessors
 import net.explorviz.model.helper.ELanguage
 import net.explorviz.model.helper.DrawNodeEntity
 import net.explorviz.model.helper.CommunicationAppAccumulator
+import com.github.jasminb.jsonapi.annotations.Type
+import com.github.jasminb.jsonapi.annotations.Relationship
 
+@Type("application")
 class Application extends DrawNodeEntity {
 	//@Accessors var int id
 
@@ -16,8 +19,10 @@ class Application extends DrawNodeEntity {
 
 	@Accessors long lastUsage
 
+	@Relationship("parent")
 	@Accessors Node parent
 
+	@Relationship("components")
 	@Accessors var List<Component> components = new ArrayList<Component>
 
 	@Accessors var List<CommunicationClazz> communications = new ArrayList<CommunicationClazz>

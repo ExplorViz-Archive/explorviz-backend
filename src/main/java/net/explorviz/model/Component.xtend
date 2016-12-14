@@ -5,18 +5,24 @@ import org.eclipse.xtend.lib.annotations.Accessors
 import java.util.List
 import net.explorviz.model.helper.Draw3DNodeEntity
 import net.explorviz.math.Vector4f
+import com.github.jasminb.jsonapi.annotations.Type
+import com.github.jasminb.jsonapi.annotations.Relationship
 
+@Type("component")
 class Component extends Draw3DNodeEntity {
 	@Accessors var String name
 	@Accessors var String fullQualifiedName
 	@Accessors var boolean synthetic = false
 	@Accessors var boolean foundation = false
 
+	@Relationship("children")
 	@Accessors var List<Component> children = new ArrayList<Component>
 	@Accessors var List<Clazz> clazzes = new ArrayList<Clazz>
 
+	@Relationship("parentComponent")
 	@Accessors Component parentComponent
 
+	@Relationship("belongingApplication")
 	@Accessors Application belongingApplication
 
 	@Accessors var Vector4f color

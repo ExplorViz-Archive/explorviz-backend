@@ -4,7 +4,10 @@ import java.util.ArrayList
 import java.util.List
 import org.eclipse.xtend.lib.annotations.Accessors
 import net.explorviz.model.helper.DrawNodeEntity
+import com.github.jasminb.jsonapi.annotations.Type
+import com.github.jasminb.jsonapi.annotations.Relationship
 
+@Type("node")
 class Node extends DrawNodeEntity {
 	@Accessors String ipAddress
 
@@ -12,10 +15,12 @@ class Node extends DrawNodeEntity {
 	@Accessors long freeRAM
 	@Accessors long usedRAM
 
+	@Relationship("applications")
 	@Accessors List<Application> applications = new ArrayList<Application>
 
 	@Accessors var boolean visible = true
 
+	@Relationship("parent")
 	@Accessors NodeGroup parent
 
 	public def String getDisplayName() {
