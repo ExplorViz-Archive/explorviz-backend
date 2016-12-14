@@ -25,11 +25,14 @@ class Application extends DrawNodeEntity {
 	@Relationship("components")
 	@Accessors var List<Component> components = new ArrayList<Component>
 
+
 	@Accessors var List<CommunicationClazz> communications = new ArrayList<CommunicationClazz>
 
 	@Accessors val transient List<CommunicationAppAccumulator> communicationsAccumulated = new ArrayList<CommunicationAppAccumulator>
 
+	@Relationship("incomingCommunications")
 	@Accessors var List<Communication> incomingCommunications = new ArrayList<Communication>
+	
 	@Accessors var List<Communication> outgoingCommunications = new ArrayList<Communication>
 	
 	@Accessors var List<DatabaseQuery> databaseQueries = new ArrayList<DatabaseQuery>

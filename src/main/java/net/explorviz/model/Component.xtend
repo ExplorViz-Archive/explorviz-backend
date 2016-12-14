@@ -17,6 +17,8 @@ class Component extends Draw3DNodeEntity {
 
 	@Relationship("children")
 	@Accessors var List<Component> children = new ArrayList<Component>
+	
+	@Relationship("clazz")
 	@Accessors var List<Clazz> clazzes = new ArrayList<Clazz>
 
 	@Relationship("parentComponent")

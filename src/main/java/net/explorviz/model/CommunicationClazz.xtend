@@ -4,7 +4,9 @@ import java.util.HashMap
 import java.util.Map
 import org.eclipse.xtend.lib.annotations.Accessors
 import net.explorviz.model.helper.BaseEntity
+import com.github.jasminb.jsonapi.annotations.Type
 
+@Type("communicationclazz")
 class CommunicationClazz extends BaseEntity{
 	var requestsCacheCount = 0
 

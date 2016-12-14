@@ -5,12 +5,17 @@ import org.eclipse.xtend.lib.annotations.Accessors
 import java.util.HashSet
 import java.util.Set
 import net.explorviz.model.helper.Draw3DNodeEntity
+import com.github.jasminb.jsonapi.annotations.Type
+import com.github.jasminb.jsonapi.annotations.Relationship
 
+@Type("clazz")
 class Clazz extends Draw3DNodeEntity {
 	@Accessors var int instanceCount = 0
 	@Accessors val transient Set<Integer> objectIds = new HashSet<Integer>()
 
+	@Relationship("parent")
 	@Accessors Component parent
+	
 	@Accessors var boolean visible = false
 
 

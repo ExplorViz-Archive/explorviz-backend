@@ -11,6 +11,8 @@ import com.github.jasminb.jsonapi.annotations.Type
 
 @Type("nodegroup")
 class NodeGroup extends DrawNodeEntity {
+	
+	@Relationship("parent")
 	@Accessors List<Node> nodes = new ArrayList<Node>
 
 	@Relationship("parent")
