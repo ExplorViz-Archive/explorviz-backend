@@ -30,6 +30,10 @@ class Component extends Draw3DNodeEntity {
 	@Accessors var Vector4f color
 
 	var boolean opened = false
+	
+	new(String id) {
+		this.id = id
+	}
 
 	def boolean isOpened() {
 		opened

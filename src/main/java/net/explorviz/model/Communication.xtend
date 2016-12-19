@@ -16,5 +16,9 @@ class Communication extends DrawEdgeEntity {
 
 	@Accessors Clazz sourceClazz
 	@Accessors Clazz targetClazz
+	
+	new(String id) {
+		this.id = id
+	}
 
 }

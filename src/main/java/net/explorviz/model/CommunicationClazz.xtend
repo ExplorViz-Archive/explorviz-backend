@@ -5,6 +5,7 @@ import java.util.Map
 import org.eclipse.xtend.lib.annotations.Accessors
 import net.explorviz.model.helper.BaseEntity
 import com.github.jasminb.jsonapi.annotations.Type
+import net.explorviz.server.repository.InsertionRepositoryPart
 
 @Type("communicationclazz")
 class CommunicationClazz extends BaseEntity{
@@ -17,11 +18,15 @@ class CommunicationClazz extends BaseEntity{
 	@Accessors Clazz target
 	
 	@Accessors boolean hidden = false
+	
+	new(String id) {
+		this.id = id
+	}
 
 	def void addRuntimeInformation(Long traceId, int calledTimes, int orderIndex, int requests, float averageResponseTime, float overallTraceDuration) {
 		var runtime = traceIdToRuntimeMap.get(traceId)
 		if (runtime == null) {
-			runtime = new RuntimeInformation()
+			runtime = new RuntimeInformation(String.valueOf(InsertionRepositoryPart.counter.addAndGet(1)))
 			runtime.calledTimes = calledTimes
 			runtime.orderIndexes.add(orderIndex)
 			runtime.requests = requests

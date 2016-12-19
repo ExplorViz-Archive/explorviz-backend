@@ -12,4 +12,8 @@ class RuntimeInformation extends BaseEntity{
 	@Accessors float averageResponseTimeInNanoSec
 	
 	@Accessors Set<Integer> orderIndexes = new HashSet<Integer> 
+	
+	new(String id) {
+		this.id = id
+	}
 }

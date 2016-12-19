@@ -1,7 +1,7 @@
 package net.explorviz.server.repository;
 
 import java.util.*;
-
+import java.util.concurrent.atomic.AtomicInteger;
 
 import net.explorviz.server.repository.helper.Signature;
 import net.explorviz.server.repository.helper.SignatureParser;
@@ -34,6 +34,8 @@ public class InsertionRepositoryPart {
 	private final Map<String, Node> nodeCache = new HashMap<String, Node>();
 	private final Map<String, Application> applicationCache = new HashMap<String, Application>();
 	private final Map<Application, Map<String, Clazz>> clazzCache = new HashMap<Application, Map<String, Clazz>>();
+	
+	public final static AtomicInteger counter = new AtomicInteger(2);
 
 	public void insertIntoModel(final IRecord inputIRecord, final Landscape landscape,
 			final RemoteCallRepositoryPart remoteCallRepositoryPart) {
@@ -115,6 +117,9 @@ public class InsertionRepositoryPart {
 				}
 			}
 		}
+		
+		counter.set(2);
+		
 	}
 
 	private System seekOrCreateSystem(final Landscape landscape, final String systemname) {
@@ -124,7 +129,7 @@ public class InsertionRepositoryPart {
 			}
 		}
 
-		final System system = new System();
+		final System system = new System(String.valueOf(counter.addAndGet(1)));
 		system.setName(systemname);
 		system.setParent(landscape);
 		landscape.getSystems().add(system);
@@ -156,7 +161,7 @@ public class InsertionRepositoryPart {
 		Node node = nodeCache.get(nodeName);
 
 		if (node == null) {
-			node = new Node();
+			node = new Node(String.valueOf(counter.addAndGet(1)));
 			node.setIpAddress(hostApplicationRecord.getIpaddress());
 			node.setName(hostApplicationRecord.getHostname());
 			nodeCache.put(nodeName, node);
@@ -177,7 +182,7 @@ public class InsertionRepositoryPart {
 			}
 		}
 
-		final NodeGroup nodeGroup = new NodeGroup();
+		final NodeGroup nodeGroup = new NodeGroup(String.valueOf(counter.addAndGet(1)));
 		nodeGroup.setName(node.getIpAddress());
 		system.getNodeGroups().add(nodeGroup);
 		nodeGroup.setParent(system);
@@ -211,7 +216,7 @@ public class InsertionRepositoryPart {
 		Application application = applicationCache.get(node.getName() + "_" + applicationName);
 
 		if (application == null) {
-			application = new Application();
+			application = new Application(String.valueOf(counter.addAndGet(1)));
 
 			application.setDatabase(isApplicationDatabase(applicationName));
 			//application.setId((node.getName() + "_" + applicationName).hashCode());
@@ -329,7 +334,7 @@ public class InsertionRepositoryPart {
 
 					if (abstractBeforeEventRecord instanceof BeforeJDBCOperationEventRecord) {
 						final BeforeJDBCOperationEventRecord jdbcOperationEventRecord = (BeforeJDBCOperationEventRecord) abstractBeforeEventRecord;
-						final DatabaseQuery databaseQuery = new DatabaseQuery();
+						final DatabaseQuery databaseQuery = new DatabaseQuery(String.valueOf(counter.addAndGet(1)));
 						databaseQuery.setSQLStatement(jdbcOperationEventRecord.getSqlStatement());
 						currentApplication.getDatabaseQueries().add(databaseQuery);
 					}
@@ -400,6 +405,8 @@ public class InsertionRepositoryPart {
 			} else if (event instanceof BeforeUnknownReceivedRemoteCallRecord) {
 			}
 		}
+		
+		
 	}
 
 	public static String getClazzName(
@@ -446,7 +453,7 @@ public class InsertionRepositoryPart {
 			}
 		}
 
-		final CommunicationClazz commu = new CommunicationClazz();
+		final CommunicationClazz commu = new CommunicationClazz(String.valueOf(counter.addAndGet(1)));
 
 		commu.setSource(caller);
 		commu.setTarget(callee);
@@ -504,7 +511,7 @@ public class InsertionRepositoryPart {
 							component, index + 1);
 				}
 			}
-			final Component component = new Component();
+			final Component component = new Component(String.valueOf(counter.addAndGet(1)));
 			String fullQNameComponent = "";
 			for (int i = 0; i <= index; i++) {
 				fullQNameComponent += splittedName[i] + ".";
@@ -527,7 +534,7 @@ public class InsertionRepositoryPart {
 				}
 
 				if (parent == null) {
-					final Component component = new Component();
+					final Component component = new Component(String.valueOf(counter.addAndGet(1)));
 					component.setFullQualifiedName(DEFAULT_COMPONENT_NAME);
 					component.setName(DEFAULT_COMPONENT_NAME);
 					component.setParentComponent(null);
@@ -543,7 +550,7 @@ public class InsertionRepositoryPart {
 				}
 			}
 
-			final Clazz clazz = new Clazz();
+			final Clazz clazz = new Clazz(String.valueOf(counter.addAndGet(1)));
 			clazz.setName(currentPart);
 			clazz.setFullQualifiedName(fullQName);
 			clazz.setParent(parent);

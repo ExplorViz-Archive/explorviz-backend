@@ -36,6 +36,10 @@ class Application extends DrawNodeEntity {
 	@Accessors var List<Communication> outgoingCommunications = new ArrayList<Communication>
 	
 	@Accessors var List<DatabaseQuery> databaseQueries = new ArrayList<DatabaseQuery>
+	
+	new(String id) {
+		this.id = id
+	}
 
 
 	def void clearAllPrimitiveObjects() {

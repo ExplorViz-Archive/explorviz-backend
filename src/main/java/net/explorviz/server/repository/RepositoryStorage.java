@@ -67,7 +67,7 @@ public class RepositoryStorage {
 		} catch (final FileNotFoundException e) {
 		}
 
-		return new Landscape();
+		return new Landscape("1");
 	}
 
 	public static void saveTargetArchitecture(final Landscape landscape) {

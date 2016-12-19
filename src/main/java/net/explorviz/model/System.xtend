@@ -21,6 +21,11 @@ class System extends DrawNodeEntity {
 //	public static val Vector4f plusColor = ColorDefinitions::systemPlusColor
 //	public static val Vector4f foregroundColor = ColorDefinitions::systemForegroundColor
 //	public static val Vector4f backgroundColor = ColorDefinitions::systemBackgroundColor
+	
+	new(String id) {
+		this.id = id
+	}
+		
 	def boolean isOpened() {
 		opened
 	}

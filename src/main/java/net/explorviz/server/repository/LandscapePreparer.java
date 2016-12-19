@@ -10,27 +10,17 @@ import net.explorviz.model.System;
 
 public class LandscapePreparer {
 	
-	private static int idCounter = 1;
-	
 	public static Landscape prepareLandscape(final Landscape landscape) {
 		if (landscape == null) {
-			Landscape l = new Landscape();
-			l.setId(String.valueOf(idCounter));
-			idCounter = 1;
+			Landscape l = new Landscape("1");
 			return l;
 		}
-		
-		landscape.setId(String.valueOf(idCounter++));
 
-		for (final System system : landscape.getSystems()) {
-			system.setId(String.valueOf(idCounter++));
-			for (final NodeGroup nodeGroup : system.getNodeGroups()) {
-				nodeGroup.setId(String.valueOf(idCounter++));
-				for (final Node node : nodeGroup.getNodes()) {
-					node.setId(String.valueOf(idCounter++));
-					for (final Application application : node.getApplications()) {
-						application.setId(String.valueOf(idCounter++));
-						final Component foundationComponent = new Component();
+		for (final System system : landscape.getSystems()) {			
+			for (final NodeGroup nodeGroup : system.getNodeGroups()) {				
+				for (final Node node : nodeGroup.getNodes()) {					
+					for (final Application application : node.getApplications()) {						
+						final Component foundationComponent = new Component("2");
 						foundationComponent.setFoundation(true);
 						foundationComponent.setOpened(true);
 						foundationComponent.setName(application.getName());
@@ -39,12 +29,9 @@ public class LandscapePreparer {
 						//foundationComponent.setColor(ColorDefinitions.componentFoundationColor);
 
 						foundationComponent.getChildren().addAll(application.getComponents());
-						
-						foundationComponent.setId(String.valueOf(idCounter++));
 
 						for (final Component child : foundationComponent.getChildren()) {
-							setComponentAttributes(child, 0, true);
-							child.setId(String.valueOf(idCounter++));
+							setComponentAttributes(child, 0, true);							
 						}
 
 						application.getComponents().clear();
@@ -62,11 +49,8 @@ public class LandscapePreparer {
 		}
 
 		for (final Communication commu : landscape.getApplicationCommunication()) {
-			createApplicationInAndOutgoing(commu);
-			commu.setId(String.valueOf(idCounter++));
-		}
-		
-		idCounter = 1;
+			createApplicationInAndOutgoing(commu);			
+		}	
 
 		return landscape;
 	}
@@ -99,8 +83,7 @@ public class LandscapePreparer {
 		}
 
 		for (final Component child : component.getChildren()) {
-			setComponentAttributes(child, index + 1, openNextLevel);
-			child.setId(String.valueOf(idCounter++));
+			setComponentAttributes(child, index + 1, openNextLevel);			
 		}
 	}
 

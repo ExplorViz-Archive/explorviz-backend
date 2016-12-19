@@ -31,6 +31,10 @@ class Landscape extends BaseEntity {
 	@JsonIgnore
 	@Accessors val transient List<CommunicationAccumulator> communicationsAccumulated = new ArrayList<CommunicationAccumulator>(
 		4)
+		
+	new(String id) {
+		this.id = id
+	}
 
 	def void updateLandscapeAccess(long timeInNano) {
 		setHash(timeInNano)

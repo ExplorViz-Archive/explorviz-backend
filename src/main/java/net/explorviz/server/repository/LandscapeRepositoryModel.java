@@ -73,12 +73,12 @@ public class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiver {
 			try {
 				readLandscape = RepositoryStorage.readFromFile(java.lang.System.currentTimeMillis());
 			} catch (final FileNotFoundException e) {
-				readLandscape = new Landscape();
+				readLandscape = new Landscape("1");
 			}
 
 			internalLandscape = readLandscape;
 		} else {
-			internalLandscape = new Landscape();
+			internalLandscape = new Landscape("1");
 		}
 
 		insertionRepositoryPart = new InsertionRepositoryPart();

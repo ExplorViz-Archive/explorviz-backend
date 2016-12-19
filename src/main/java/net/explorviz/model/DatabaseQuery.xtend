@@ -8,4 +8,8 @@ class DatabaseQuery extends BaseEntity{
 	@Accessors String returnValue
 	
 	@Accessors long timeInNanos
+	
+	new(String id) {
+		this.id = id
+	}
 }

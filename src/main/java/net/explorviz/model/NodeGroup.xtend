@@ -23,6 +23,10 @@ class NodeGroup extends DrawNodeEntity {
 //	public static val Vector4f plusColor = ColorDefinitions::nodeGroupPlusColor
 //	public static val Vector4f backgroundColor = ColorDefinitions::nodeGroupBackgroundColor
 	var boolean opened
+	
+	new(String id) {
+		this.id = id
+	}
 
 	def boolean isOpened() {
 		opened
