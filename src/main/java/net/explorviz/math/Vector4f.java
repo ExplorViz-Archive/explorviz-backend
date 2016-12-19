@@ -1,9 +1,9 @@
 package net.explorviz.math;
 
-import net.explorviz.model.helper.BaseEntity;
+import java.io.Serializable;
 
-public class Vector4f extends BaseEntity {
-	
+public class Vector4f implements Serializable{
+
 	private static final long serialVersionUID = 1L;
 	
 	public float x, y, z, w;

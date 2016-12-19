@@ -4,9 +4,9 @@ import java.util.ArrayList
 import org.eclipse.xtend.lib.annotations.Accessors
 import java.util.List
 import net.explorviz.model.helper.Draw3DNodeEntity
-import net.explorviz.math.Vector4f
 import com.github.jasminb.jsonapi.annotations.Type
 import com.github.jasminb.jsonapi.annotations.Relationship
+import net.explorviz.math.Vector4f
 
 @Type("component")
 class Component extends Draw3DNodeEntity {

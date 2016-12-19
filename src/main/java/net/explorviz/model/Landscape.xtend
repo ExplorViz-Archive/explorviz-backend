@@ -19,13 +19,11 @@ class Landscape extends BaseEntity {
 	@Relationship("systems")
 	@Accessors List<System> systems = new ArrayList<System>
 
-	@JsonIgnore
+	@Relationship("applicationCommunication")
 	@Accessors List<Communication> applicationCommunication = new ArrayList<Communication>
-
-	@JsonIgnore
+	
 	@Accessors Map<Long, String> events = new TreeMap<Long, String>
-
-	@JsonIgnore
+	
 	@Accessors Map<Long, String> errors = new TreeMap<Long, String>
 
 	@JsonIgnore

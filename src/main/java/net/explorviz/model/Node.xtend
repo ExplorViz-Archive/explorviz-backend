@@ -6,6 +6,8 @@ import org.eclipse.xtend.lib.annotations.Accessors
 import net.explorviz.model.helper.DrawNodeEntity
 import com.github.jasminb.jsonapi.annotations.Type
 import com.github.jasminb.jsonapi.annotations.Relationship
+import net.explorviz.math.Vector4f
+import net.explorviz.model.helper.ColorDefinitions
 
 @Type("node")
 class Node extends DrawNodeEntity {
@@ -22,6 +24,8 @@ class Node extends DrawNodeEntity {
 
 	@Relationship("parent")
 	@Accessors NodeGroup parent
+	
+	@Accessors Vector4f backgroundColor = ColorDefinitions::nodeGroupBackgroundColor
 	
 	new(String id) {
 		this.id = id
