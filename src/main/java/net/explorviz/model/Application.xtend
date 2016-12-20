@@ -8,6 +8,8 @@ import net.explorviz.model.helper.DrawNodeEntity
 import net.explorviz.model.helper.CommunicationAppAccumulator
 import com.github.jasminb.jsonapi.annotations.Type
 import com.github.jasminb.jsonapi.annotations.Relationship
+import net.explorviz.model.helper.ColorDefinitions
+import net.explorviz.math.Vector4f
 
 @Type("application")
 class Application extends DrawNodeEntity {
@@ -23,19 +25,21 @@ class Application extends DrawNodeEntity {
 	@Accessors Node parent
 
 	@Relationship("components")
-	@Accessors var List<Component> components = new ArrayList<Component>
+	@Accessors List<Component> components = new ArrayList<Component>
 
 
-	@Accessors var List<CommunicationClazz> communications = new ArrayList<CommunicationClazz>
+	@Accessors List<CommunicationClazz> communications = new ArrayList<CommunicationClazz>
 
 	@Accessors val transient List<CommunicationAppAccumulator> communicationsAccumulated = new ArrayList<CommunicationAppAccumulator>
 
 	@Relationship("incomingCommunications")
-	@Accessors var List<Communication> incomingCommunications = new ArrayList<Communication>
+	@Accessors List<Communication> incomingCommunications = new ArrayList<Communication>
 	
-	@Accessors var List<Communication> outgoingCommunications = new ArrayList<Communication>
+	@Accessors List<Communication> outgoingCommunications = new ArrayList<Communication>
 	
-	@Accessors var List<DatabaseQuery> databaseQueries = new ArrayList<DatabaseQuery>
+	@Accessors List<DatabaseQuery> databaseQueries = new ArrayList<DatabaseQuery>
+	
+	@Accessors Vector4f backgroundColor = ColorDefinitions::applicationBackgroundColor
 	
 	new(String id) {
 		this.id = id
