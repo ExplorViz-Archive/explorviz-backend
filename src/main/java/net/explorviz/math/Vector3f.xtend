@@ -81,7 +81,7 @@ class Vector3f implements Serializable {
 
 	override boolean equals(Object other) {
 		if (other instanceof Vector3f) {
-			val Vector3f otherVector = (other as Vector3f)
+			val Vector3f otherVector = other
 			return (checkFloatEquals(x, otherVector.x) && checkFloatEquals(y, otherVector.y) &&
 				checkFloatEquals(z, otherVector.z))
 		}
