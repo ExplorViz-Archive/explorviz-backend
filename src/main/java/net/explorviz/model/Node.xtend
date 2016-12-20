@@ -25,7 +25,7 @@ class Node extends DrawNodeEntity {
 	@Relationship("parent")
 	@Accessors NodeGroup parent
 	
-	@Accessors Vector4f color = ColorDefinitions::nodeForegroundColor
+	@Accessors Vector4f color = ColorDefinitions::nodeBackgroundColor
 	
 	new(String id) {
 		this.id = id
