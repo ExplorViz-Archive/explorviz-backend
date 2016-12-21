@@ -11,17 +11,20 @@ class Communication extends DrawEdgeEntity {
 	@Accessors String technology
 
 	@Accessors float averageResponseTimeInNanoSec
+	
+	@Relationship("parent")
+	@Accessors Landscape parent
 
 	@Relationship("source")
 	@Accessors Application source
 	
-	@Relationship("source")
+	@Relationship("target")
 	@Accessors Application target
 
-	@Relationship("source")
+	@Relationship("sourceClazz")
 	@Accessors Clazz sourceClazz
 	
-	@Relationship("source")
+	@Relationship("targetClazz")
 	@Accessors Clazz targetClazz
 	
 	new(String id) {

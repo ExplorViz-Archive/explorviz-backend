@@ -341,6 +341,7 @@ class LandscapeDummyCreator {
 		communication.source = source
 		communication.target = target
 		communication.requests = requests
+		communication.parent = landscape
 		landscape.applicationCommunication.add(communication)
 	}
 
