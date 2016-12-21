@@ -18,7 +18,7 @@ class NodeGroup extends DrawNodeEntity {
 	@Accessors List<Node> nodes = new ArrayList<Node>
 
 	@Relationship("parent")
-	@Accessors System parent
+	@Accessors var System parent
 
 	@Accessors boolean visible = true
 

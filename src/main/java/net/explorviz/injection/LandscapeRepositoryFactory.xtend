@@ -15,6 +15,6 @@ class LandscapeRepositoryFactory implements Factory<LandscapeRepositoryModel> {
 	}
 
 	override LandscapeRepositoryModel provide() {
-		return model
+		return model		
 	}
 }

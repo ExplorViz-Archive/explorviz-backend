@@ -12,6 +12,7 @@ import com.github.jasminb.jsonapi.ResourceConverter
 import net.explorviz.model.Landscape
 import com.github.jasminb.jsonapi.JSONAPIDocument
 import net.explorviz.layout.LayoutService
+import net.explorviz.server.repository.LandscapeDummyCreator
 
 @Path("landscapes")
 class LandscapeResource {
@@ -29,12 +30,10 @@ class LandscapeResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@GET
 	@Path("/{landscapeId}")
-	def byte[] getLandscape(@PathParam("landscapeId") String landscapeId) {
+	def byte[] getLandscape(@PathParam("landscapeId") String landscapeId) {		
 
-		var landscape = LayoutService.layoutLandscape(service.lastPeriodLandscape)
-
-		// IDs need to be generated in some way: atm in LandscapePreparer => bad imho
-		// landscape.id = "1"		
+		//var landscape = LayoutService.layoutLandscape(service.lastPeriodLandscape)
+		var landscape = LayoutService.layoutLandscape(LandscapeDummyCreator::createDummyLandscape)
 		
 		var JSONAPIDocument<Landscape> document = new JSONAPIDocument<Landscape>(landscape)
 
