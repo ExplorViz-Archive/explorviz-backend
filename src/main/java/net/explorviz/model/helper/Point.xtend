@@ -1,9 +1,9 @@
 package net.explorviz.model.helper;
 
 import org.eclipse.xtend.lib.annotations.Accessors
+import java.io.Serializable
 
-
-class Point extends BaseEntity{
+class Point implements Serializable{
 	@Accessors float x
 	@Accessors float y
 

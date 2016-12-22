@@ -11,13 +11,15 @@ import net.explorviz.model.Component
 import net.explorviz.model.Landscape
 import net.explorviz.model.Node
 import net.explorviz.model.NodeGroup
+import net.explorviz.model.helper.CommunicationAccumulator
+import net.explorviz.model.helper.CommunicationTileAccumulator
 
 class ResourceConverterFactory implements Factory<ResourceConverter> {
 	ResourceConverter converter
 
 	new() {
 		this.converter = new ResourceConverter(Landscape, net.explorviz.model.System, NodeGroup, Node, Application,
-			Component, Clazz, CommunicationClazz, Communication)
+			Component, Clazz, CommunicationClazz, Communication, CommunicationAccumulator, CommunicationTileAccumulator)
 		this.converter.enableSerializationOption(SerializationFeature.INCLUDE_RELATIONSHIP_ATTRIBUTES)
 	}
 
