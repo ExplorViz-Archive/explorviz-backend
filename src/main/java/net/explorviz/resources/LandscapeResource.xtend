@@ -14,7 +14,7 @@ import com.github.jasminb.jsonapi.JSONAPIDocument
 import net.explorviz.layout.LayoutService
 import net.explorviz.server.repository.LandscapeDummyCreator
 
-@Path("landscapes")
+@Path("landscape")
 class LandscapeResource {
 
 	var LandscapeRepositoryModel service
@@ -29,7 +29,7 @@ class LandscapeResource {
 	@Secured
 	@Produces(MediaType.APPLICATION_JSON)
 	@GET
-	@Path("/{landscapeId}")
+	@Path("/by-id/{landscapeId}")
 	def byte[] getLandscape(@PathParam("landscapeId") String landscapeId) {		
 
 		//var landscape = LayoutService.layoutLandscape(service.lastPeriodLandscape)
@@ -38,6 +38,19 @@ class LandscapeResource {
 		var JSONAPIDocument<Landscape> document = new JSONAPIDocument<Landscape>(landscape)
 
 		this.converter.writeDocument(document)
+	}
+	
+	@Secured
+	@Produces(MediaType.APPLICATION_JSON)
+	@GET
+	@Path("/latest-landscape")
+	def byte[] getLatestLandscape() {		
 
+		//var landscape = LayoutService.layoutLandscape(service.lastPeriodLandscape)
+		var landscape = LayoutService.layoutLandscape(LandscapeDummyCreator::createDummyLandscape)
+		
+		var JSONAPIDocument<Landscape> document = new JSONAPIDocument<Landscape>(landscape)
+
+		this.converter.writeDocument(document)
 	}
 }
