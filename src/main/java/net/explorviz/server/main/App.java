@@ -8,8 +8,7 @@ import java.util.logging.Logger;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
 
-import net.explorviz.server.repository.LandscapeRepositoryModel;
-import net.explorviz.server.repository.RepositoryStarter;
+import net.explorviz.server.repository.LandscapeExchangeService;
 
 import org.glassfish.grizzly.http.server.HttpServer;
 
@@ -29,7 +28,7 @@ public class App {
 			}));
 			server.start();
 			
-			startRepo();
+			LandscapeExchangeService.startRepository();
 
 			System.out.println("Server started. Traces should be processed. (Start Test App now)");
 
@@ -43,15 +42,4 @@ public class App {
 		return new ExplorViz();
 	}
 
-	private static void startRepo() {
-		final LandscapeRepositoryModel model = LandscapeRepositoryModel.getInstance();
-
-		new Thread(new Runnable() {
-
-			@Override
-			public void run() {
-				new RepositoryStarter().start(model);
-			}
-		}).start();
-	}
 }

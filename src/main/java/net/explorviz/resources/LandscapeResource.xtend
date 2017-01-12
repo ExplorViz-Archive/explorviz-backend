@@ -13,27 +13,36 @@ import net.explorviz.model.Landscape
 import com.github.jasminb.jsonapi.JSONAPIDocument
 import net.explorviz.layout.LayoutService
 import net.explorviz.server.repository.LandscapeDummyCreator
+import net.explorviz.server.repository.LandscapeExchangeService
+import java.io.FileNotFoundException
 
 @Path("landscape")
 class LandscapeResource {
 
-	var LandscapeRepositoryModel service
+	var LandscapeRepositoryModel model
 	var ResourceConverter converter
+	var LandscapeExchangeService service
 
 	@Inject
-	def LandscapeResource(LandscapeRepositoryModel service, ResourceConverter converter) {
-		this.service = service
+	def LandscapeResource(LandscapeRepositoryModel model, ResourceConverter converter, LandscapeExchangeService service) {
+		this.model = model
 		this.converter = converter
+		this.service = service
 	}
 
 	@Secured
 	@Produces(MediaType.APPLICATION_JSON)
 	@GET
-	@Path("/by-id/{landscapeId}")
-	def byte[] getLandscape(@PathParam("landscapeId") String landscapeId) {		
+	@Path("/by-timestamp/{timestamp}")
+	def byte[] getLandscape(@PathParam("timestamp") long timestamp) {	
+		
+		var Landscape landscape
 
-		//var landscape = LayoutService.layoutLandscape(service.lastPeriodLandscape)
-		var landscape = LayoutService.layoutLandscape(LandscapeDummyCreator::createDummyLandscape)
+		try{
+			landscape = LayoutService.layoutLandscape(service.getLandscape(timestamp))
+		} catch(FileNotFoundException e) {
+			// return (as Json object, that no file was found)
+		}		
 		
 		var JSONAPIDocument<Landscape> document = new JSONAPIDocument<Landscape>(landscape)
 
@@ -46,7 +55,7 @@ class LandscapeResource {
 	@Path("/latest-landscape")
 	def byte[] getLatestLandscape() {		
 
-		//var landscape = LayoutService.layoutLandscape(service.lastPeriodLandscape)
+		//var landscape = LayoutService.layoutLandscape(model.lastPeriodLandscape)
 		var landscape = LayoutService.layoutLandscape(LandscapeDummyCreator::createDummyLandscape)
 		
 		var JSONAPIDocument<Landscape> document = new JSONAPIDocument<Landscape>(landscape)
