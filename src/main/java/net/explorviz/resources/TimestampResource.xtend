@@ -40,9 +40,13 @@ class TimestampResource {
 		data.put("type", "timestamp-array")
 		data.put("id", "1")
 		
-		var listToJson = objectMapper.writeValueAsString(timestamps)
+		var timestampsJson = objectMapper.writeValueAsString(timestamps)
+		
+		var attributes = factory.objectNode
 	
-		data.put("attributes", listToJson)
+		data.set("attributes", attributes)
+		
+		attributes.put("timestamps", timestampsJson)
 		
 		objectMapper.writeValueAsBytes(response)
 	}
