@@ -15,6 +15,8 @@ import net.explorviz.layout.LayoutService
 import net.explorviz.server.repository.LandscapeDummyCreator
 import net.explorviz.server.repository.LandscapeExchangeService
 import java.io.FileNotFoundException
+import com.fasterxml.jackson.databind.node.JsonNodeFactory
+import com.fasterxml.jackson.databind.ObjectMapper
 
 @Path("landscape")
 class LandscapeResource {
@@ -24,7 +26,8 @@ class LandscapeResource {
 	var LandscapeExchangeService service
 
 	@Inject
-	def LandscapeResource(LandscapeRepositoryModel model, ResourceConverter converter, LandscapeExchangeService service) {
+	def LandscapeResource(LandscapeRepositoryModel model, ResourceConverter converter,
+		LandscapeExchangeService service) {
 		this.model = model
 		this.converter = converter
 		this.service = service
@@ -34,30 +37,42 @@ class LandscapeResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@GET
 	@Path("/by-timestamp/{timestamp}")
-	def byte[] getLandscape(@PathParam("timestamp") long timestamp) {	
-		
+	def byte[] getLandscape(@PathParam("timestamp") long timestamp) {
+
 		var Landscape landscape
 
-		try{
+		try {
 			landscape = LayoutService.layoutLandscape(service.getLandscape(timestamp))
-		} catch(FileNotFoundException e) {
-			// return (as Json object, that no file was found)
-		}		
+		} catch (FileNotFoundException e) {
+			var factory = JsonNodeFactory.instance
+
+			var response = factory.objectNode
+			var error = factory.objectNode
+
+			response.set("error", error)
+
+			error.put("type", "NoSuchFileFound")
+			error.put("detail", "Your request contains a non-valid or unknown landscape timestamp.")
 		
+			var objectMapper = new ObjectMapper
+			
+			objectMapper.writeValueAsBytes(response)
+		}
+
 		var JSONAPIDocument<Landscape> document = new JSONAPIDocument<Landscape>(landscape)
 
 		this.converter.writeDocument(document)
 	}
-	
+
 	@Secured
 	@Produces(MediaType.APPLICATION_JSON)
 	@GET
 	@Path("/latest-landscape")
-	def byte[] getLatestLandscape() {		
+	def byte[] getLatestLandscape() {
 
-		//var landscape = LayoutService.layoutLandscape(model.lastPeriodLandscape)
+		// var landscape = LayoutService.layoutLandscape(model.lastPeriodLandscape)
 		var landscape = LayoutService.layoutLandscape(LandscapeDummyCreator::createDummyLandscape)
-		
+
 		var JSONAPIDocument<Landscape> document = new JSONAPIDocument<Landscape>(landscape)
 
 		this.converter.writeDocument(document)

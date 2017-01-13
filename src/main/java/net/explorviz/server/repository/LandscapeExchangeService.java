@@ -16,7 +16,8 @@ public class LandscapeExchangeService {
 	@SuppressWarnings("unused")
 	private static Long activity = null;
 
-	private static String FULL_FOLDER = FileSystemHelper.getExplorVizDirectory() + File.separator + "replay";
+	private static String REPLAY_FOLDER = FileSystemHelper.getExplorVizDirectory() + File.separator + "replay";
+	private static String REPOSITORY_FOLDER = FileSystemHelper.getExplorVizDirectory() + File.separator + "landscapeRepository";
 
 	public Landscape getLandscapeByTimestampAndActivity(final long timestamp, final long activity) {
 		LandscapeExchangeService.timestamp = timestamp;
@@ -35,7 +36,47 @@ public class LandscapeExchangeService {
 	public List<String> getReplayNames() {
 		final List<String> names = new ArrayList<String>();
 
-		final File directory = new File(FULL_FOLDER);
+		final File directory = new File(REPLAY_FOLDER);
+
+		final File[] fList = directory.listFiles();
+
+		for (final File f : fList) {
+
+			final String filename = f.getName();
+
+			if (filename.endsWith(".expl")) {
+
+				// first validation check -> filename
+				long timestamp;
+				//long activity;
+
+				try {
+					timestamp = Long.parseLong(filename.split("-")[0]);
+					//activity = Long.parseLong(filename.split("-")[1].split(".expl")[0]);
+				} catch (final NumberFormatException e) {
+					continue;
+				}
+
+				// second validation check -> deserialization
+				try {
+					//getLandscape(timestamp, activity);
+					getLandscape(timestamp);
+				} catch (final Exception e) {
+					continue;
+				}
+
+				names.add(filename);
+			}
+
+		}
+
+		return names;
+	}
+	
+	public List<String> getNamesInRepo() {
+		final List<String> names = new ArrayList<String>();
+
+		final File directory = new File(REPOSITORY_FOLDER);
 
 		final File[] fList = directory.listFiles();
 

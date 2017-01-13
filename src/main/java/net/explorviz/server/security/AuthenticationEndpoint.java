@@ -80,7 +80,7 @@ public class AuthenticationEndpoint {
 	 * @return True if the authentication succeeds, otherwise false.
 	 */
 	private boolean authenticate(String username, String password) {
-		if(username.length() == 0 || password.length() == 0) {
+		if(username == null || password == null || username.length() == 0 || password.length() == 0) {
 			return false;
 		}
 		return true;
