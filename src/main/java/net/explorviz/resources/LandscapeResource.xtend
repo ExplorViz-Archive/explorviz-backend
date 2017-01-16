@@ -70,8 +70,8 @@ class LandscapeResource {
 	@Path("/latest-landscape")
 	def byte[] getLatestLandscape() {
 
-		// var landscape = LayoutService.layoutLandscape(model.lastPeriodLandscape)
-		var landscape = LayoutService.layoutLandscape(LandscapeDummyCreator::createDummyLandscape)
+		var landscape = LayoutService.layoutLandscape(model.lastPeriodLandscape)
+		//var landscape = LayoutService.layoutLandscape(LandscapeDummyCreator::createDummyLandscape)
 
 		var JSONAPIDocument<Landscape> document = new JSONAPIDocument<Landscape>(landscape)
 
