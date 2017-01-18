@@ -3,8 +3,11 @@ package net.explorviz.server.repository;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import net.explorviz.model.Landscape;
+import net.explorviz.model.Timestamp;
+import net.explorviz.model.TimestampStorage;
 import net.explorviz.server.main.FileSystemHelper;
 
 public class LandscapeExchangeService {
@@ -71,6 +74,45 @@ public class LandscapeExchangeService {
 		}
 
 		return names;
+	}
+	
+	public TimestampStorage getTimestampObjectsInRepo() {
+		final File directory = new File(REPOSITORY_FOLDER);
+		final File[] fList = directory.listFiles();
+
+		TimestampStorage timestampStorage = new TimestampStorage("1");
+		AtomicInteger id = new AtomicInteger();
+		
+		for (final File f : fList) {
+			
+			final String filename = f.getName();
+
+			if (filename.endsWith(".expl")) {
+
+				// first validation check -> filename
+				long timestamp;
+				//long activity;
+
+				try {
+					timestamp = Long.parseLong(filename.split("-")[0]);
+					//activity = Long.parseLong(filename.split("-")[1].split(".expl")[0]);
+				} catch (final NumberFormatException e) {
+					continue;
+				}
+
+				// second validation check -> deserialization
+				try {
+					//getLandscape(timestamp, activity);
+					getLandscape(timestamp);
+				} catch (final Exception e) {
+					continue;
+				}
+
+				Timestamp newTimestamp = new Timestamp(id.getAndIncrement(), timestamp);
+				timestampStorage.addTimestamp(newTimestamp);		
+			}
+		}
+		return timestampStorage;
 	}
 	
 	public List<String> getNamesInRepo() {
