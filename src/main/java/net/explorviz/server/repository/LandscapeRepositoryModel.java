@@ -122,7 +122,12 @@ public class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiver {
 
 				Landscape l = fstConf.deepCopy(internalLandscape);
 
-				lastPeriodLandscape = LandscapePreparer.prepareLandscape(l);
+				if (!Configuration.DUMMY_MODE) {
+					lastPeriodLandscape = LandscapePreparer.prepareLandscape(l);
+				}
+				else {
+					lastPeriodLandscape = LayoutService.layoutLandscape(LandscapeDummyCreator.createDummyLandscape());
+				}
 
 				remoteCallRepositoryPart.checkForTimedoutRemoteCalls();
 
