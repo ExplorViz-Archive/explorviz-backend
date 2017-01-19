@@ -12,7 +12,6 @@ import com.github.jasminb.jsonapi.ResourceConverter
 import net.explorviz.model.Landscape
 import com.github.jasminb.jsonapi.JSONAPIDocument
 import net.explorviz.layout.LayoutService
-import net.explorviz.server.repository.LandscapeDummyCreator
 import net.explorviz.server.repository.LandscapeExchangeService
 import java.io.FileNotFoundException
 import com.fasterxml.jackson.databind.node.JsonNodeFactory
@@ -70,9 +69,7 @@ class LandscapeResource {
 	@Path("/latest-landscape")
 	def byte[] getLatestLandscape() {
 
-		//var landscape = LayoutService.layoutLandscape(model.lastPeriodLandscape)
-		var landscape = LayoutService.layoutLandscape(LandscapeDummyCreator::createDummyLandscape)
-
+		var landscape = LayoutService.layoutLandscape(model.lastPeriodLandscape)
 		var JSONAPIDocument<Landscape> document = new JSONAPIDocument<Landscape>(landscape)
 
 		this.converter.writeDocument(document)

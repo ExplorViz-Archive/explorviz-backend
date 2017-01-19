@@ -8,6 +8,7 @@ import java.util.concurrent.TimeUnit;
 import org.nustaq.serialization.FSTConfiguration;
 
 import net.explorviz.server.main.Configuration;
+import net.explorviz.layout.LayoutService;
 import net.explorviz.model.Application;
 import net.explorviz.model.Clazz;
 import net.explorviz.model.Communication;
@@ -29,14 +30,12 @@ public class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiver {
 	private final FSTConfiguration fstConf;
 	private final InsertionRepositoryPart insertionRepositoryPart;
 	private final RemoteCallRepositoryPart remoteCallRepositoryPart;
-	
+
 	private static LandscapeRepositoryModel INSTANCE = null;
-	
-	
 
 	public static synchronized LandscapeRepositoryModel getInstance() {
 		if (LandscapeRepositoryModel.INSTANCE == null) {
-			LandscapeRepositoryModel.INSTANCE = new LandscapeRepositoryModel();			
+			LandscapeRepositoryModel.INSTANCE = new LandscapeRepositoryModel();
 		}
 		return LandscapeRepositoryModel.INSTANCE;
 	}
@@ -85,7 +84,7 @@ public class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiver {
 		remoteCallRepositoryPart = new RemoteCallRepositoryPart();
 
 		internalLandscape.updateLandscapeAccess(java.lang.System.nanoTime());
-		
+
 		Landscape l = fstConf.deepCopy(internalLandscape);
 
 		lastPeriodLandscape = LandscapePreparer.prepareLandscape(l);
@@ -112,10 +111,17 @@ public class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiver {
 	public void periodicTimeSignal(final long timestamp) {
 		synchronized (internalLandscape) {
 			synchronized (lastPeriodLandscape) {
-				RepositoryStorage.writeToFile(internalLandscape, java.lang.System.currentTimeMillis());
-				
+
+				if (!Configuration.DUMMY_MODE) {
+					RepositoryStorage.writeToFile(internalLandscape, java.lang.System.currentTimeMillis());
+				}
+				else {
+					Landscape dummyLandscape = LayoutService.layoutLandscape(LandscapeDummyCreator.createDummyLandscape());
+					RepositoryStorage.writeToFile(dummyLandscape, java.lang.System.currentTimeMillis());
+				}		
+
 				Landscape l = fstConf.deepCopy(internalLandscape);
-				
+
 				lastPeriodLandscape = LandscapePreparer.prepareLandscape(l);
 
 				remoteCallRepositoryPart.checkForTimedoutRemoteCalls();

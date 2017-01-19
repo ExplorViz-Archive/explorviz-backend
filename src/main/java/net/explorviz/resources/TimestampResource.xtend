@@ -10,7 +10,6 @@ import net.explorviz.server.repository.LandscapeExchangeService
 import com.github.jasminb.jsonapi.JSONAPIDocument
 import com.github.jasminb.jsonapi.ResourceConverter
 import net.explorviz.model.TimestampStorage
-import net.explorviz.model.Landscape
 
 @Path("timestamp")
 class TimestampResource {
@@ -23,38 +22,6 @@ class TimestampResource {
 		this.converter = converter
 		this.service = service
 	}
-	
-	/* 
-	@Secured
-	@Produces(MediaType.APPLICATION_JSON)
-	@GET
-	@Path("/show-timestamps")
-	def byte[] getTimestamps(@PathParam("timestamp") long timestamp) {
-		var timestamps = this.service.namesInRepo
-		
-		var factory = JsonNodeFactory.instance
-		
-		var objectMapper = new ObjectMapper
-
-		var response = factory.objectNode
-		var data = factory.objectNode
-	
-		response.set("data", data)
-	
-		data.put("type", "timestamp-array")
-		data.put("id", "1")
-		
-		var timestampsJson = objectMapper.writeValueAsString(timestamps)
-		
-		var attributes = factory.objectNode
-	
-		data.set("attributes", attributes)
-		
-		attributes.put("timestamps", timestampsJson)
-		
-		objectMapper.writeValueAsBytes(response)
-	}
-	*/
 	
 	@Secured
 	@Produces(MediaType.APPLICATION_JSON)

@@ -9,29 +9,29 @@ import net.explorviz.model.NodeGroup;
 import net.explorviz.model.System;
 
 public class LandscapePreparer {
-	
+
 	public static Landscape prepareLandscape(final Landscape landscape) {
 		if (landscape == null) {
 			Landscape l = new Landscape("1");
 			return l;
 		}
 
-		for (final System system : landscape.getSystems()) {			
-			for (final NodeGroup nodeGroup : system.getNodeGroups()) {				
-				for (final Node node : nodeGroup.getNodes()) {					
-					for (final Application application : node.getApplications()) {						
+		for (final System system : landscape.getSystems()) {
+			for (final NodeGroup nodeGroup : system.getNodeGroups()) {
+				for (final Node node : nodeGroup.getNodes()) {
+					for (final Application application : node.getApplications()) {
 						final Component foundationComponent = new Component("2");
 						foundationComponent.setFoundation(true);
 						foundationComponent.setOpened(true);
 						foundationComponent.setName(application.getName());
 						foundationComponent.setFullQualifiedName(application.getName());
 						foundationComponent.setBelongingApplication(application);
-						//foundationComponent.setColor(ColorDefinitions.componentFoundationColor);
+						// foundationComponent.setColor(ColorDefinitions.componentFoundationColor);
 
 						foundationComponent.getChildren().addAll(application.getComponents());
 
 						for (final Component child : foundationComponent.getChildren()) {
-							setComponentAttributes(child, 0, true);							
+							setComponentAttributes(child, 0, true);
 						}
 
 						application.getComponents().clear();
@@ -49,8 +49,8 @@ public class LandscapePreparer {
 		}
 
 		for (final Communication commu : landscape.getApplicationCommunication()) {
-			createApplicationInAndOutgoing(commu);			
-		}	
+			createApplicationInAndOutgoing(commu);
+		}
 
 		return landscape;
 	}
@@ -70,20 +70,20 @@ public class LandscapePreparer {
 
 		if ((index % 2) == 1) {
 			if (component.isSynthetic()) {
-				//component.setColor(ColorDefinitions.componentSyntheticColor);
+				// component.setColor(ColorDefinitions.componentSyntheticColor);
 			} else {
-			//	component.setColor(ColorDefinitions.componentFirstColor);
+				// component.setColor(ColorDefinitions.componentFirstColor);
 			}
 		} else {
 			if (component.isSynthetic()) {
-			//	component.setColor(ColorDefinitions.componentSyntheticSecondColor);
+				// component.setColor(ColorDefinitions.componentSyntheticSecondColor);
 			} else {
-				//component.setColor(ColorDefinitions.componentSecondColor);
+				// component.setColor(ColorDefinitions.componentSecondColor);
 			}
 		}
 
 		for (final Component child : component.getChildren()) {
-			setComponentAttributes(child, index + 1, openNextLevel);			
+			setComponentAttributes(child, index + 1, openNextLevel);
 		}
 	}
 

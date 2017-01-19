@@ -80,7 +80,7 @@ public class LandscapeExchangeService {
 		final File directory = new File(REPOSITORY_FOLDER);
 		final File[] fList = directory.listFiles();
 
-		TimestampStorage timestampStorage = new TimestampStorage("1");
+		TimestampStorage timestampStorage = new TimestampStorage("0");
 		AtomicInteger id = new AtomicInteger();
 		
 		for (final File f : fList) {
@@ -91,11 +91,11 @@ public class LandscapeExchangeService {
 
 				// first validation check -> filename
 				long timestamp;
-				//long activity;
+				long activity;
 
 				try {
 					timestamp = Long.parseLong(filename.split("-")[0]);
-					//activity = Long.parseLong(filename.split("-")[1].split(".expl")[0]);
+					activity = Long.parseLong(filename.split("-")[1].split(".expl")[0]);
 				} catch (final NumberFormatException e) {
 					continue;
 				}
@@ -108,13 +108,14 @@ public class LandscapeExchangeService {
 					continue;
 				}
 
-				Timestamp newTimestamp = new Timestamp(id.getAndIncrement(), timestamp);
+				Timestamp newTimestamp = new Timestamp(id.getAndIncrement(), timestamp, activity);
 				timestampStorage.addTimestamp(newTimestamp);		
 			}
 		}
 		return timestampStorage;
 	}
 	
+	@Deprecated
 	public List<String> getNamesInRepo() {
 		final List<String> names = new ArrayList<String>();
 

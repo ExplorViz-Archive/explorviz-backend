@@ -98,4 +98,5 @@ class Configuration {
 	
 	public static var TIMESHIFT_INTERVAL_IN_MINUTES = 10
 	public static final String MODEL_EXTENSION = ".expl"
+	public static var DUMMY_MODE = true
 }

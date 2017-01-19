@@ -12,9 +12,11 @@ class Timestamp extends BaseEntity {
 	@Accessors TimestampStorage parent
 	
 	@Accessors long timestamp
+	@Accessors long calls
 		
-	new(Integer id, long timestamp) {
+	new(Integer id, long timestamp, long calls) {
 		this.id = Integer.toString(id)
 		this.timestamp = timestamp
+		this.calls = calls
 	}
 }
