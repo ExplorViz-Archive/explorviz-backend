@@ -13,8 +13,9 @@ import com.github.jasminb.jsonapi.annotations.Relationship
 @Type("landscape")
 class Landscape extends BaseEntity {
 	@Accessors long hash
+	@Accessors long timestamp
 	@Accessors long activities
-
+	
 	@Relationship("systems")
 	@Accessors List<System> systems = new ArrayList<System>
 
@@ -35,6 +36,10 @@ class Landscape extends BaseEntity {
 
 	def void updateLandscapeAccess(long timeInNano) {
 		setHash(timeInNano)
+	}
+	
+	def void updateTimestamp(long timestamp) {
+		setTimestamp(timestamp)
 	}
 
 	def void destroy() {

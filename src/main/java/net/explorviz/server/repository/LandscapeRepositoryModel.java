@@ -118,9 +118,10 @@ public class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiver {
 					lastPeriodLandscape = LandscapePreparer.prepareLandscape(l);
 				}
 				else {
-					Landscape dummyLandscape = LayoutService.layoutLandscape(LandscapeDummyCreator.createDummyLandscape());
-					dummyLandscape.setHash(timestamp);
-					RepositoryStorage.writeToFile(dummyLandscape, timestamp);	
+					long dummyTimestamp = java.lang.System.currentTimeMillis();
+					Landscape dummyLandscape = LandscapeDummyCreator.createDummyLandscape();
+					dummyLandscape.setTimestamp(dummyTimestamp);
+					RepositoryStorage.writeToFile(dummyLandscape, dummyTimestamp);	
 					lastPeriodLandscape = dummyLandscape;
 				}
 
