@@ -4,11 +4,8 @@ import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-
 import org.nustaq.serialization.FSTConfiguration;
-
 import net.explorviz.server.main.Configuration;
-import net.explorviz.layout.LayoutService;
 import net.explorviz.model.Application;
 import net.explorviz.model.Clazz;
 import net.explorviz.model.Communication;
@@ -112,16 +109,21 @@ public class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiver {
 		synchronized (internalLandscape) {
 			synchronized (lastPeriodLandscape) {
 
+				// TODO: passed timestamp meaning?
+				// => using own created timestamp for creating landscape
+				
+				long requestedTimestamp = java.lang.System.currentTimeMillis();
+				
 				if (!Configuration.DUMMY_MODE) {
-					RepositoryStorage.writeToFile(internalLandscape, java.lang.System.currentTimeMillis());
+					RepositoryStorage.writeToFile(internalLandscape, requestedTimestamp);
 					Landscape l = fstConf.deepCopy(internalLandscape);
+					l.setTimestamp(requestedTimestamp);
 					lastPeriodLandscape = LandscapePreparer.prepareLandscape(l);
 				}
 				else {
-					long dummyTimestamp = java.lang.System.currentTimeMillis();
 					Landscape dummyLandscape = LandscapeDummyCreator.createDummyLandscape();
-					dummyLandscape.setTimestamp(dummyTimestamp);
-					RepositoryStorage.writeToFile(dummyLandscape, dummyTimestamp);	
+					dummyLandscape.setTimestamp(requestedTimestamp);
+					RepositoryStorage.writeToFile(dummyLandscape, requestedTimestamp);	
 					lastPeriodLandscape = dummyLandscape;
 				}
 
