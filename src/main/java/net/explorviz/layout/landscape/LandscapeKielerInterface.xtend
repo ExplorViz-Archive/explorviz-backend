@@ -70,7 +70,7 @@ class LandscapeKielerInterface {
 		setLayoutPropertiesGraph(topLevelKielerGraph)
 
 		addNodes(landscape)
-		addEdges(landscape)
+		//addEdges(landscape)
 
 		layouter.doCompoundLayout(topLevelKielerGraph, new BasicProgressMonitor())
 	}
@@ -420,7 +420,7 @@ class LandscapeKielerInterface {
 			}
 		}
 
-		addBendPointsInAbsoluteCoordinates(landscape)
+		//addBendPointsInAbsoluteCoordinates(landscape)
 
 		for (system : landscape.systems) {
 			for (nodeGroup : system.nodeGroups) {
