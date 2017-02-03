@@ -18,6 +18,29 @@ class TimestampStorage extends BaseEntity {
 	}
 	
 	def void addTimestamp(Timestamp t) {
-		timestamps.add(t);
+		timestamps.add(t)
+	}
+	
+	def List<Timestamp> filterTimestamps(long fromTimestamp) {
+		if (!this.timestamps.empty) {
+					
+			val length = this.timestamps.size;
+			var position = 0;
+			
+			// iterate backwards		
+			for (i : length >.. 0) {
+				val element = this.timestamps.get(i)
+				if (element.timestamp.equals(fromTimestamp)) {
+					position = this.timestamps.indexOf(element)
+					return this.timestamps.subList(position, length)
+				}
+			}
+			
+			// if timestamp not found => return empty list				
+			return new ArrayList<Timestamp>
+		}
+		else {
+			return new ArrayList<Timestamp>
+		}
 	}
 }

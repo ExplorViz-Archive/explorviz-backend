@@ -101,12 +101,12 @@ public class LandscapeExchangeService {
 				}
 
 				// second validation check -> deserialization
-				try {
-					//getLandscape(timestamp, activity);
-					getLandscape(timestamp);
-				} catch (final Exception e) {
-					continue;
-				}
+//				try {
+//					//getLandscape(timestamp, activity);
+//					getLandscape(timestamp);
+//				} catch (final Exception e) {
+//					continue;
+//				}
 
 				Timestamp newTimestamp = new Timestamp(id.getAndIncrement(), timestamp, activity);
 				timestampStorage.addTimestamp(newTimestamp);		
