@@ -119,7 +119,7 @@ class LandscapeKielerInterface {
 				system.kielerNodeReference.setProperty(InternalProperties::NESTED_LGRAPH, systemKielerGraph)
 				setLayoutPropertiesGraph(systemKielerGraph)
 
-				val insets = systemKielerGraph.insets
+				val insets = systemKielerGraph.padding
 				insets.left = PADDING * CONVERT_TO_KIELER_FACTOR
 				insets.right = PADDING * CONVERT_TO_KIELER_FACTOR
 				insets.top = 8 * PADDING * CONVERT_TO_KIELER_FACTOR
@@ -164,7 +164,7 @@ class LandscapeKielerInterface {
 
 			nodeGroupKielerGraph.setProperty(Properties::CROSS_MIN, CrossingMinimizationStrategy::LAYER_SWEEP)
 
-			val insets = nodeGroupKielerGraph.insets
+			val insets = nodeGroupKielerGraph.padding
 			insets.left = PADDING * CONVERT_TO_KIELER_FACTOR
 			insets.right = PADDING * CONVERT_TO_KIELER_FACTOR
 			insets.top = PADDING * CONVERT_TO_KIELER_FACTOR
@@ -217,7 +217,7 @@ class LandscapeKielerInterface {
 		node.kielerNodeReference.setProperty(InternalProperties::NESTED_LGRAPH, nodeKielerGraph)
 		setLayoutPropertiesGraph(nodeKielerGraph)
 
-		val insets = nodeKielerGraph.insets
+		val insets = nodeKielerGraph.padding
 		insets.left = PADDING * CONVERT_TO_KIELER_FACTOR
 		insets.right = PADDING * CONVERT_TO_KIELER_FACTOR
 		insets.top = PADDING * CONVERT_TO_KIELER_FACTOR
@@ -451,7 +451,7 @@ class LandscapeKielerInterface {
 	}
 
 	def private static setAbsolutePositionForNode(DrawNodeEntity node, DrawNodeEntity parent) {
-		val insets = parent.kielerGraphReference.insets
+		val insets = parent.kielerGraphReference.padding
 		val offset = parent.kielerGraphReference.offset
 		node.positionX = parent.positionX + node.positionX + insets.left as float + offset.x as float
 		node.positionY = parent.positionY + node.positionY - insets.top as float - offset.y as float
@@ -485,7 +485,7 @@ class LandscapeKielerInterface {
 							// self edges..
 							var LPort sourcePort = edge.getSource();
 							sourcePoint = KVector.sum(sourcePort.getPosition(), sourcePort.getAnchor());
-							var sourceInsets = sourcePort.getNode().getInsets();
+							var sourceInsets = sourcePort.getNode().padding
 							sourcePoint.add(-sourceInsets.left, -sourceInsets.top);
 							var nestedGraph = sourcePort.getNode().getProperty(InternalProperties.NESTED_LGRAPH);
 							if (nestedGraph != null) {
@@ -514,8 +514,8 @@ class LandscapeKielerInterface {
 							var insetTop = 0f
 
 							if (parentNode.kielerGraphReference != null) {
-								insetLeft = parentNode.kielerGraphReference.insets.left as float
-								insetTop = parentNode.kielerGraphReference.insets.top as float
+								insetLeft = parentNode.kielerGraphReference.padding.left as float
+								insetTop = parentNode.kielerGraphReference.padding.top as float
 							}
 
 							if (parentNode instanceof System) {

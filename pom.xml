@@ -116,7 +116,7 @@
 		<dependency>
 			<groupId>org.eclipse.elk</groupId>
 			<artifactId>core</artifactId>
-			<version>0.1</version>
+			<version>0.2</version>
 		</dependency>
 
 		<dependency>

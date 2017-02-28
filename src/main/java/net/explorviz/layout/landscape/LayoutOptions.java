@@ -29,7 +29,6 @@ import org.eclipse.elk.core.options.PortLabelPlacement;
 import org.eclipse.elk.core.options.PortSide;
 import org.eclipse.elk.core.options.SizeConstraint;
 import org.eclipse.elk.core.options.SizeOptions;
-import org.eclipse.elk.core.util.nodespacing.Spacing.Margins;
 import org.eclipse.elk.graph.properties.IProperty;
 import org.eclipse.elk.graph.properties.Property;
 
@@ -76,13 +75,6 @@ public final class LayoutOptions {
     public static final IProperty<Integer> ANIMATION_TIME_FACTOR = new Property<Integer>(
             "de.cau.cs.kieler.animTimeFactor", 100);
 
-    /**
-     * For each side of a node, this property can reserve additional space before and after the
-     * ports on each side. For example, a top spacing of 20 makes sure that the first port on the
-     * western and eastern side is 20 units away from the northern border.
-     */
-    public static final IProperty<Margins> ADDITIONAL_PORT_SPACE = new Property<Margins>(
-            "de.cau.cs.kieler.additionalPortSpace", null);
 
     /**
      * Whether the associated node is to be interpreted as a comment box. In that case its placement
@@ -149,15 +141,6 @@ public final class LayoutOptions {
      */
     public static final IProperty<Boolean> LAYOUT_ANCESTORS = new Property<Boolean>(
             "de.cau.cs.kieler.layoutAncestors", false);
-
-    /**
-     * Margins define additional space around the actual bounds of a graph element. For instance,
-     * ports or labels being placed on the outside of a node's border might introduce such a margin.
-     * The margin is used to guarantee non-overlap of other graph elements with those ports or
-     * labels. [programmatically set]
-     */
-    public static final IProperty<Margins> MARGINS = new Property<Margins>(
-            "de.cau.cs.kieler.margins", new Margins());
 
     /**
      * The minimal height of a node. [programmatically set]
@@ -468,7 +451,7 @@ public final class LayoutOptions {
     public static final IProperty<EnumSet<SizeOptions>> SIZE_OPTIONS =
             new Property<EnumSet<SizeOptions>>("de.cau.cs.kieler.sizeOptions", EnumSet.of(
                     SizeOptions.DEFAULT_MINIMUM_SIZE,
-                    SizeOptions.APPLY_ADDITIONAL_INSETS));
+                    SizeOptions.COMPUTE_PADDING));
     
     /**
      * Overall spacing between elements. This is mostly interpreted as the minimal distance between
