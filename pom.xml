@@ -4,9 +4,18 @@
 
 	<groupId>net.explorViz</groupId>
 	<artifactId>explorviz-ui-backend</artifactId>
-	<packaging>jar</packaging>
+	<packaging>war</packaging>
 	<version>1.0-SNAPSHOT</version>
 	<name>explorviz-ui-backend</name>
+
+	<repositories>
+		<!-- custom repo for non-maven dependencies -->
+		<repository>
+			<id>project.local</id>
+			<name>project</name>
+			<url>file:${project.basedir}/custom-maven-dependencies</url>
+		</repository>
+	</repositories>
 
 	<properties>
 		<checkstyle.skip>true</checkstyle.skip>
@@ -14,10 +23,30 @@
 		<org.glassfish.hk2.version>2.4.0-b34</org.glassfish.hk2.version>
 		<jackson.version>2.7.1</jackson.version>
 
+		<jetty.version>9.3.11.v20160721</jetty.version>
+
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
 	<dependencies>
+
+		<dependency>
+			<groupId>org.glassfish.jersey.containers</groupId>
+			<artifactId>jersey-container-servlet</artifactId>
+			<version>${jersey.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.eclipse.jetty</groupId>
+			<artifactId>jetty-servlet</artifactId>
+			<version>${jetty.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.eclipse.jetty</groupId>
+			<artifactId>jetty-webapp</artifactId>
+			<version>${jetty.version}</version>
+		</dependency>
 
 		<dependency>
 			<groupId>org.glassfish.jersey.containers</groupId>
@@ -36,8 +65,8 @@
 			<artifactId>jersey-media-json-jackson</artifactId>
 			<version>${jersey.version}</version>
 		</dependency>
-		
-		<!-- # IMPORTANT: Needed for jsonapi-converter, else NoClassDefFound -->		
+
+		<!-- # IMPORTANT: Needed for jsonapi-converter, else NoClassDefFound -->
 
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
@@ -56,7 +85,7 @@
 			<artifactId>jackson-annotations</artifactId>
 			<version>${jackson.version}</version>
 		</dependency>
-		
+
 		<!-- # -->
 
 		<dependency>
@@ -64,75 +93,54 @@
 			<artifactId>org.eclipse.xtend.lib</artifactId>
 			<version>2.9.0</version>
 		</dependency>
-
-		<dependency>
-			<groupId>org.apache.maven.plugins</groupId>
-			<artifactId>maven-shade-plugin</artifactId>
-			<version>2.4.3</version>
-		</dependency>
-
+		<!-- <dependency> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-shade-plugin</artifactId> 
+			<version>2.4.3</version> </dependency> -->
 		<dependency>
 			<groupId>de.ruedigermoeller</groupId>
 			<artifactId>fst</artifactId>
 			<version>2.47</version>
 		</dependency>
 
-		<!-- external dependencys in ${project.basedir}/lib -->
-
 		<dependency>
 			<groupId>org.eclipse.elk</groupId>
 			<artifactId>graph</artifactId>
-			<scope>system</scope>
-			<version>0.1</version>
-			<systemPath>${project.basedir}/lib/org.eclipse.elk.graph_0.1.0.201607121925.jar</systemPath>
+			<version>0.2</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.eclipse.elk</groupId>
 			<artifactId>alg.layered</artifactId>
-			<scope>system</scope>
-			<version>0.1</version>
-			<systemPath>${project.basedir}/lib/org.eclipse.elk.alg.layered_0.1.0.201607121925.jar</systemPath>
+			<version>0.2</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.eclipse.elk</groupId>
 			<artifactId>core</artifactId>
-			<scope>system</scope>
 			<version>0.1</version>
-			<systemPath>${project.basedir}/lib/org.eclipse.elk.core_0.1.0.201607121925.jar</systemPath>
 		</dependency>
 
 		<dependency>
 			<groupId>org.eclipse.emf</groupId>
-			<artifactId>core</artifactId>
-			<scope>system</scope>
+			<artifactId>ecore</artifactId>
 			<version>2.12</version>
-			<systemPath>${project.basedir}/lib/org.eclipse.emf.ecore_2.12.0.v20160420-0247.jar</systemPath>
 		</dependency>
 
 		<dependency>
 			<groupId>org.eclipse.emf</groupId>
 			<artifactId>common</artifactId>
-			<scope>system</scope>
 			<version>2.12</version>
-			<systemPath>${project.basedir}/lib/org.eclipse.emf.common_2.12.0.v20160420-0247.jar</systemPath>
 		</dependency>
 
 		<dependency>
 			<groupId>net.explorviz</groupId>
 			<artifactId>common</artifactId>
-			<scope>system</scope>
 			<version>1.0</version>
-			<systemPath>${project.basedir}/lib/explorviz-common.jar</systemPath>
 		</dependency>
 
 		<dependency>
 			<groupId>net.explorviz</groupId>
 			<artifactId>worker</artifactId>
-			<scope>system</scope>
 			<version>1.0</version>
-			<systemPath>${project.basedir}/lib/explorviz-worker.jar</systemPath>
 		</dependency>
 
 	</dependencies>
@@ -140,6 +148,22 @@
 
 	<build>
 		<plugins>
+			<plugin>
+				<groupId>org.eclipse.jetty</groupId>
+				<artifactId>jetty-maven-plugin</artifactId>
+				<version>${jetty.version}</version>
+				<configuration>
+					<httpConnector>
+						<port>8080</port>
+					</httpConnector>
+					<scanIntervalSeconds>0</scanIntervalSeconds>
+					<webApp>
+						<contextPath>/</contextPath>
+						<webInfIncludeJarPattern>.*/.*jersey-[^/]\.jar$</webInfIncludeJarPattern>
+					</webApp>
+					<war>${project.build.directory}/${project.build.finalName}.war</war>
+				</configuration>
+			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -156,60 +180,7 @@
 				<artifactId>exec-maven-plugin</artifactId>
 				<configuration>
 					<mainClass>net.explorviz.server.main.App</mainClass>
-				</configuration>
-				<dependencies>
-					<dependency>
-						<groupId>org.eclipse.emf</groupId>
-						<artifactId>core</artifactId>
-						<scope>system</scope>
-						<version>2.12</version>
-						<systemPath>${project.basedir}/lib/org.eclipse.emf.ecore_2.12.0.v20160420-0247.jar</systemPath>
-					</dependency>
-					<dependency>
-						<groupId>org.eclipse.emf</groupId>
-						<artifactId>common</artifactId>
-						<scope>system</scope>
-						<version>2.12</version>
-						<systemPath>${project.basedir}/lib/org.eclipse.emf.common_2.12.0.v20160420-0247.jar</systemPath>
-					</dependency>
-					<dependency>
-						<groupId>org.eclipse.elk</groupId>
-						<artifactId>graph</artifactId>
-						<scope>system</scope>
-						<version>0.1</version>
-						<systemPath>${project.basedir}/lib/org.eclipse.elk.graph_0.1.0.201607121925.jar</systemPath>
-					</dependency>
-					<dependency>
-						<groupId>org.eclipse.elk</groupId>
-						<artifactId>alg.layered</artifactId>
-						<scope>system</scope>
-						<version>0.1</version>
-						<systemPath>${project.basedir}/lib/org.eclipse.elk.alg.layered_0.1.0.201607121925.jar</systemPath>
-					</dependency>
-					<dependency>
-						<groupId>org.eclipse.elk</groupId>
-						<artifactId>core</artifactId>
-						<scope>system</scope>
-						<version>0.1</version>
-						<systemPath>${project.basedir}/lib/org.eclipse.elk.core_0.1.0.201607121925.jar</systemPath>
-					</dependency>
-					<dependency>
-						<groupId>net.explorviz</groupId>
-						<artifactId>common</artifactId>
-						<version>1.0</version>
-						<type>jar</type>
-						<scope>system</scope>
-						<systemPath>${project.basedir}/lib/explorviz-common.jar</systemPath>
-					</dependency>
-					<dependency>
-						<groupId>net.explorviz</groupId>
-						<artifactId>worker</artifactId>
-						<version>1.0</version>
-						<type>jar</type>
-						<scope>system</scope>
-						<systemPath>${project.basedir}/lib/explorviz-worker.jar</systemPath>
-					</dependency>
-				</dependencies>
+				</configuration>				
 			</plugin>
 			<plugin>
 				<groupId>org.eclipse.xtend</groupId>
@@ -231,22 +202,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-dependency-plugin</artifactId>
-				<version>2.1</version>
-				<executions>
-					<execution>
-						<id>copy-dependencies</id>
-						<phase>package</phase>
-						<goals>
-							<goal>copy-dependencies</goal>
-						</goals>
-						<configuration>
-							<outputDirectory>${project.build.directory}/lib</outputDirectory>
-							<overWriteReleases>false</overWriteReleases>
-							<overWriteSnapshots>false</overWriteSnapshots>
-							<overWriteIfNewer>true</overWriteIfNewer>
-						</configuration>
-					</execution>
-				</executions>
+				<version>2.1</version>				
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
