@@ -454,10 +454,7 @@ class LandscapeDummyCreator {
 	def private static createNeo4JDummyApplication(Application application) {
 		val org = createComponent("org", null, application)
 		application.components.add(org)
-		println("ID von ORG: " + org.id)
 		val neo4j = createComponent("neo4j", org, application)
-		
-		println("ID von neo4j: " + neo4j.id)
 
 		val graphdb = createComponent("graphdb", neo4j, application)
 		val graphDbClazz = createClazz("Label", graphdb, 20)
