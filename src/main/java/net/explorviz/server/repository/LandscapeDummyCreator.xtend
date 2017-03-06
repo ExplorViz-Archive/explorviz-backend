@@ -16,7 +16,7 @@ import java.util.Random
 class LandscapeDummyCreator {
 	var static int applicationId = 0
 	
-	var static int counter = 1;
+	public var static int counter = 1;
 
 	def static createSimpleExample() {
 		applicationId = 0
@@ -289,11 +289,14 @@ class LandscapeDummyCreator {
 		createCommunication(provenance1, neo4j, landscape, 100)
 		createCommunication(provenance2, neo4j, landscape, 200)
 		createCommunication(provenance3, neo4j, landscape, 300)
-		createCommunication(provenance4, neo4j, landscape, 100)
+		createCommunication(provenance4, neo4j, landscape, 100)		
+		
+		val preparedLandscape = LandscapePreparer.prepareLandscape(landscape)
 		
 		counter = 1;
-
-		LandscapePreparer.prepareLandscape(landscape)		
+		
+		preparedLandscape
+		
 	}
 
 	def private static createNodeGroup(String name, Landscape parent, System system) {
@@ -451,7 +454,10 @@ class LandscapeDummyCreator {
 	def private static createNeo4JDummyApplication(Application application) {
 		val org = createComponent("org", null, application)
 		application.components.add(org)
+		println("ID von ORG: " + org.id)
 		val neo4j = createComponent("neo4j", org, application)
+		
+		println("ID von neo4j: " + neo4j.id)
 
 		val graphdb = createComponent("graphdb", neo4j, application)
 		val graphDbClazz = createClazz("Label", graphdb, 20)

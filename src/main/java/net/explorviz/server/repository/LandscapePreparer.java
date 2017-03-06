@@ -7,20 +7,30 @@ import net.explorviz.model.Landscape;
 import net.explorviz.model.Node;
 import net.explorviz.model.NodeGroup;
 import net.explorviz.model.System;
+import net.explorviz.server.main.Configuration;
 
 public class LandscapePreparer {
 
 	public static Landscape prepareLandscape(final Landscape landscape) {
 		if (landscape == null) {
-			Landscape l = new Landscape("1");
+			Landscape l = new Landscape("");
 			return l;
+		}
+		
+		int id;
+		
+		if(Configuration.DUMMY_MODE) {
+			id = LandscapeDummyCreator.counter;
+		} else {
+			id = InsertionRepositoryPart.counter.get();
 		}
 
 		for (final System system : landscape.getSystems()) {
 			for (final NodeGroup nodeGroup : system.getNodeGroups()) {
 				for (final Node node : nodeGroup.getNodes()) {
-					for (final Application application : node.getApplications()) {
-						final Component foundationComponent = new Component("2");
+					for (final Application application : node.getApplications()) {						 
+						
+						final Component foundationComponent = new Component(String.valueOf(++id));
 						foundationComponent.setFoundation(true);
 						foundationComponent.setOpened(true);
 						foundationComponent.setName(application.getName());
