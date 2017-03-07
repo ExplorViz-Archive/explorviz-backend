@@ -14,7 +14,7 @@ import org.glassfish.grizzly.http.server.HttpServer;
 
 public class App {
 
-	private static final URI BASE_URI = URI.create("http://0.0.0.0:8080/");
+	private static final URI BASE_URI = URI.create("http://0.0.0.0:8081/");
 
 	public static void main(String[] args) {
 		try {

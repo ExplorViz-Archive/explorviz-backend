@@ -7,7 +7,6 @@ import net.explorviz.model.Landscape;
 import net.explorviz.model.Node;
 import net.explorviz.model.NodeGroup;
 import net.explorviz.model.System;
-import net.explorviz.server.main.Configuration;
 
 public class LandscapePreparer {
 
@@ -16,21 +15,13 @@ public class LandscapePreparer {
 			Landscape l = new Landscape("");
 			return l;
 		}
-		
-		int id;
-		
-		if(Configuration.DUMMY_MODE) {
-			id = LandscapeDummyCreator.counter;
-		} else {
-			id = InsertionRepositoryPart.counter.get();
-		}
 
 		for (final System system : landscape.getSystems()) {
 			for (final NodeGroup nodeGroup : system.getNodeGroups()) {
 				for (final Node node : nodeGroup.getNodes()) {
 					for (final Application application : node.getApplications()) {						 
 						
-						final Component foundationComponent = new Component(String.valueOf(++id));
+						final Component foundationComponent = new Component("0");
 						foundationComponent.setFoundation(true);
 						foundationComponent.setOpened(true);
 						foundationComponent.setName(application.getName());
@@ -44,8 +35,8 @@ public class LandscapePreparer {
 							setComponentAttributes(child, 0, true);
 						}
 
-						application.getComponents().clear();
-						application.getComponents().add(foundationComponent);
+						//application.getComponents().clear();
+						//application.getComponents().add(foundationComponent);
 					}
 				}
 

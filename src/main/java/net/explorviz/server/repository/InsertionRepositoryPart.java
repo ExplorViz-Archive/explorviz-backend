@@ -40,8 +40,6 @@ public class InsertionRepositoryPart {
 	public void insertIntoModel(final IRecord inputIRecord, final Landscape landscape,
 			final RemoteCallRepositoryPart remoteCallRepositoryPart) {
 		
-		counter.set(2);
-		
 		if (inputIRecord instanceof Trace) {
 			final Trace trace = (Trace) inputIRecord;
 
