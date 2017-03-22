@@ -11,7 +11,6 @@ import net.explorviz.server.security.Secured
 import com.github.jasminb.jsonapi.ResourceConverter
 import net.explorviz.model.Landscape
 import com.github.jasminb.jsonapi.JSONAPIDocument
-import net.explorviz.layout.LayoutService
 import net.explorviz.server.repository.LandscapeExchangeService
 import java.io.FileNotFoundException
 import com.fasterxml.jackson.databind.node.JsonNodeFactory
@@ -41,7 +40,7 @@ class LandscapeResource {
 		var Landscape landscape
 
 		try {
-			landscape = LayoutService.layoutLandscape(service.getLandscape(timestamp))
+			landscape = service.getLandscape(timestamp)
 		} catch (FileNotFoundException e) {
 			var factory = JsonNodeFactory.instance
 
