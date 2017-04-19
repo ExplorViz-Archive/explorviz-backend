@@ -11,6 +11,8 @@ import com.github.jasminb.jsonapi.JSONAPIDocument
 import com.github.jasminb.jsonapi.ResourceConverter
 import net.explorviz.model.TimestampStorage
 import javax.ws.rs.QueryParam
+import net.explorviz.model.Timestamp
+import java.util.List
 
 @Path("timestamp")
 class TimestampResource {
@@ -27,7 +29,7 @@ class TimestampResource {
 	/**
 	 * Returns all avaiable timestamps (landscapes) on the server
 	 */
-	@Secured
+	//@Secured
 	@Produces(MediaType.APPLICATION_JSON)
 	@GET
 	@Path("/show-timestamps")
@@ -37,8 +39,15 @@ class TimestampResource {
 		var timestampStorage = new TimestampStorage("0")
 		timestampStorage = this.service.timestampObjectsInRepo
 
-		// filter all avaiable timestamps from 'fromTimestamp' to now
-		val filteredTimestamps = timestampStorage.filterTimestamps(fromOldest, fromTimestamp, intervalSize)
+		var List<Timestamp> filteredTimestamps
+		
+		if(fromOldest) {
+			filteredTimestamps = timestampStorage.filterTimestampsFromOldest(intervalSize)
+		} 
+		else {
+			filteredTimestamps = timestampStorage.filterTimestampsFromTimestamp(fromTimestamp, intervalSize)
+		}		
+		
 		val filteredTimestampStorage = new TimestampStorage("0")
 		filteredTimestampStorage.timestamps = filteredTimestamps
 
