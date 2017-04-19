@@ -13,7 +13,7 @@ Use the predefined maven configurations in *explorviz-ui-backend/runConfigs* to 
 Quick start with dummy monitoring:
 
 1. Download the Eclipse IDE for Java and DSL Developers
-2. Download and import the projects [explorviz-ui-backend](https://github.com/ExplorViz/common) and [monitoringTestApplication](https://github.com/ExplorViz/monitoringTestApplication).
+2. Download and import the projects [explorviz-ui-backend](https://github.com/ExplorViz/explorviz-ui-backend) and [monitoringTestApplication](https://github.com/ExplorViz/monitoringTestApplication).
 3. Start **explorviz-ui-backend** via predefined maven config
 4. Start the [monitoringTestApplication](https://github.com/ExplorViz/monitoringTestApplication) via .bat or .sh file
 5. (Optional) Navigate to e.g. [localhost:8080/landscapes/1](http://localhost:8080/landscapes/1)
