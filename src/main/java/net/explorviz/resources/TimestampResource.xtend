@@ -29,7 +29,7 @@ class TimestampResource {
 	/**
 	 * Returns all avaiable timestamps (landscapes) on the server
 	 */
-	//@Secured
+	@Secured
 	@Produces(MediaType.APPLICATION_JSON)
 	@GET
 	@Path("/show-timestamps")
