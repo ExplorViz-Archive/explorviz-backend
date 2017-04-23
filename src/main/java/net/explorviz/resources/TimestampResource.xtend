@@ -14,6 +14,7 @@ import javax.ws.rs.QueryParam
 import net.explorviz.model.Timestamp
 import java.util.List
 
+@Secured
 @Path("timestamp")
 class TimestampResource {
 
@@ -27,9 +28,9 @@ class TimestampResource {
 	}
 
 	/**
-	 * Returns all avaiable timestamps (landscapes) on the server
+	 * Returns all timestamps on the server with respect
+	 * to passed query parameters
 	 */
-	@Secured
 	@Produces(MediaType.APPLICATION_JSON)
 	@GET
 	@Path("/show-timestamps")

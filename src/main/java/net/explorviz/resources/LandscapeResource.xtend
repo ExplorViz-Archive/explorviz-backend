@@ -16,6 +16,7 @@ import java.io.FileNotFoundException
 import com.fasterxml.jackson.databind.node.JsonNodeFactory
 import com.fasterxml.jackson.databind.ObjectMapper
 
+@Secured
 @Path("landscape")
 class LandscapeResource {
 
@@ -31,7 +32,7 @@ class LandscapeResource {
 		this.service = service
 	}
 
-	@Secured
+	
 	@Produces(MediaType.APPLICATION_JSON)
 	@GET
 	@Path("/by-timestamp/{timestamp}")
@@ -62,7 +63,6 @@ class LandscapeResource {
 		this.converter.writeDocument(document)
 	}
 
-	@Secured
 	@Produces(MediaType.APPLICATION_JSON)
 	@GET
 	@Path("/latest-landscape")
