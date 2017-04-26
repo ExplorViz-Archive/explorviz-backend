@@ -11,10 +11,9 @@ import com.github.jasminb.jsonapi.JSONAPIDocument
 import com.github.jasminb.jsonapi.ResourceConverter
 import net.explorviz.model.TimestampStorage
 import javax.ws.rs.QueryParam
-import net.explorviz.model.Timestamp
-import java.util.List
+import javax.ws.rs.PathParam
 
-@Secured
+//@Secured
 @Path("timestamp")
 class TimestampResource {
 
@@ -27,28 +26,69 @@ class TimestampResource {
 		this.service = service
 	}
 
-	/**
-	 * Returns all timestamps on the server with respect
-	 * to passed query parameters
-	 */
 	@Produces(MediaType.APPLICATION_JSON)
 	@GET
-	@Path("/show-timestamps")
-	def byte[] getTimestamps(@QueryParam("fromOldest") boolean fromOldest, @QueryParam("fromTimestamp") long fromTimestamp,
+	@Path("/after-timestamp/{timestamp}")
+	def byte[] getSubsequentTimestamps(@PathParam("timestamp") long timestamp,
 		@QueryParam("intervalSize") int intervalSize) {
 
 		var timestampStorage = new TimestampStorage("0")
 		timestampStorage = this.service.timestampObjectsInRepo
 
-		var List<Timestamp> filteredTimestamps
-		
-		if(fromOldest) {
-			filteredTimestamps = timestampStorage.filterTimestampsFromOldest(intervalSize)
-		} 
-		else {
-			filteredTimestamps = timestampStorage.filterTimestampsFromTimestamp(fromTimestamp, intervalSize)
-		}		
-		
+		var filteredTimestamps = timestampStorage.filterTimestampsAfterTimestamp(timestamp, intervalSize)
+
+		val filteredTimestampStorage = new TimestampStorage("0")
+		filteredTimestampStorage.timestamps = filteredTimestamps
+
+		var JSONAPIDocument<TimestampStorage> document = new JSONAPIDocument<TimestampStorage>(filteredTimestampStorage)
+		this.converter.writeDocument(document)
+	}
+
+	@Produces(MediaType.APPLICATION_JSON)
+	@GET
+	@Path("/before-timestamp/{timestamp}")
+	def byte[] getPreviousTimestamps(@PathParam("timestamp") long timestamp,
+		@QueryParam("intervalSize") int intervalSize) {
+
+		var timestampStorage = new TimestampStorage("0")
+		timestampStorage = this.service.timestampObjectsInRepo
+
+		var filteredTimestamps = timestampStorage.filterTimestampsBeforeTimestamp(timestamp, intervalSize)
+
+		val filteredTimestampStorage = new TimestampStorage("0")
+		filteredTimestampStorage.timestamps = filteredTimestamps
+
+		var JSONAPIDocument<TimestampStorage> document = new JSONAPIDocument<TimestampStorage>(filteredTimestampStorage)
+		this.converter.writeDocument(document)
+	}
+
+	@Produces(MediaType.APPLICATION_JSON)
+	@GET
+	@Path("/from-oldest")
+	def byte[] getOldestTimestamps(@QueryParam("intervalSize") int intervalSize) {
+
+		var timestampStorage = new TimestampStorage("0")
+		timestampStorage = this.service.timestampObjectsInRepo
+
+		var filteredTimestamps = timestampStorage.filterOldestTimestamps(intervalSize)
+
+		val filteredTimestampStorage = new TimestampStorage("0")
+		filteredTimestampStorage.timestamps = filteredTimestamps
+
+		var JSONAPIDocument<TimestampStorage> document = new JSONAPIDocument<TimestampStorage>(filteredTimestampStorage)
+		this.converter.writeDocument(document)
+	}
+
+	@Produces(MediaType.APPLICATION_JSON)
+	@GET
+	@Path("/from-recent")
+	def byte[] getNewestTimestamps(@QueryParam("intervalSize") int intervalSize) {
+
+		var timestampStorage = new TimestampStorage("0")
+		timestampStorage = this.service.timestampObjectsInRepo
+
+		var filteredTimestamps = timestampStorage.filterMostRecentTimestamps(intervalSize)
+
 		val filteredTimestampStorage = new TimestampStorage("0")
 		filteredTimestampStorage.timestamps = filteredTimestamps
 

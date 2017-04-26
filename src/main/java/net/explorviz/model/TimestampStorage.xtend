@@ -21,42 +21,75 @@ class TimestampStorage extends BaseEntity {
 		timestamps.add(t)
 	}
 
-	def List<Timestamp> filterTimestampsFromTimestamp(long fromTimestamp, int intervalSize) {
-		if (!this.timestamps.empty) {
+	def List<Timestamp> filterTimestampsAfterTimestamp(long timestamp, int intervalSize) {
 
-			val length = this.timestamps.size
+		if (intervalSize == 0) {
+			return this.timestamps
+		}
 
-			if (fromTimestamp == 0 && intervalSize == 0) {
-				return this.timestamps
-			}
+		val length = this.timestamps.size
 
-			var position = 0;
-			// iterate backwards and find passed timestamp	
-			for (i : length >.. 0) {
+		var position = 0;
+		// iterate backwards and find passed timestamp	
+		for (i : length >.. 0) {
 
-				val element = this.timestamps.get(i)
+			val element = this.timestamps.get(i)
 
-				if (element.timestamp.equals(fromTimestamp)) {
+			if (element.timestamp.equals(timestamp)) {
 
-					position = this.timestamps.indexOf(element)
+				position = this.timestamps.indexOf(element)
 
-					if (intervalSize != 0) {
-						if (position + intervalSize + 1 >= length) {
-							return this.timestamps.subList(position, length)
-						} else {
-							return this.timestamps.subList(position, intervalSize + position)
-						}
-					} else {
-						// all timestamps starting at position
+				if (intervalSize != 0) {
+					if (position + intervalSize > length) {
 						return this.timestamps.subList(position, length)
+					} else {
+						return this.timestamps.subList(position, position + intervalSize)
 					}
-
+				} else {
+					// all timestamps starting at position
+					return this.timestamps.subList(position, length)
 				}
+
 			}
 		}
+		return new ArrayList<Timestamp>
 	}
 
-	def List<Timestamp> filterTimestampsFromOldest(int intervalSize) {
+	def List<Timestamp> filterTimestampsBeforeTimestamp(long fromTimestamp, int intervalSize) {
+
+		val length = this.timestamps.size
+
+		if (fromTimestamp == 0 && intervalSize == 0) {
+			return this.timestamps
+		}
+
+		var position = 0;
+		// iterate backwards and find passed timestamp	
+		for (i : length >.. 0) {
+
+			val element = this.timestamps.get(i)
+
+			if (element.timestamp.equals(fromTimestamp)) {
+
+				position = this.timestamps.indexOf(element)
+
+				if (intervalSize != 0) {
+					if (position - intervalSize < 0) {
+						return this.timestamps.subList(0, position)
+					} else {
+						return this.timestamps.subList(position - intervalSize, position)
+					}
+				} else {
+					// all timestamps starting at position
+					return this.timestamps.subList(position, length)
+				}
+
+			}
+		}
+		return new ArrayList<Timestamp>
+	}
+
+	def List<Timestamp> filterOldestTimestamps(int intervalSize) {
 		if (!this.timestamps.empty) {
 
 			val length = this.timestamps.size;
@@ -65,14 +98,34 @@ class TimestampStorage extends BaseEntity {
 				if (intervalSize + 1 >= length) {
 					return this.timestamps.subList(0, length)
 				} else {
-					return this.timestamps.subList(0, 0 + intervalSize)
+					return this.timestamps.subList(0, intervalSize)
 				}
 
 			} else {
-				// all timestamps
 				return this.timestamps.subList(0, length)
 			}
-			
+
+		} else {
+			return new ArrayList<Timestamp>
+		}
+	}
+
+	def List<Timestamp> filterMostRecentTimestamps(int intervalSize) {
+		if (!this.timestamps.empty) {
+
+			val length = this.timestamps.size;
+
+			if (intervalSize != 0) {
+				if (intervalSize + 1 >= length) {
+					return this.timestamps.subList(0, length)
+				} else {
+					return this.timestamps.subList(length - intervalSize, length)
+				}
+
+			} else {
+				return this.timestamps.subList(0, length)
+			}
+
 		} else {
 			return new ArrayList<Timestamp>
 		}
