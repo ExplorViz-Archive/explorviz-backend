@@ -1,8 +1,11 @@
 package net.explorviz.server.main
 
+import net.explorviz.server.exceptions.mapper.GeneralExceptionMapper
+import net.explorviz.server.exceptions.mapper.PathParamExceptionMapper
+import net.explorviz.server.exceptions.mapper.QueryParamExceptionMapper
+import net.explorviz.server.security.AuthenticationEndpoint
 import org.glassfish.jersey.jackson.JacksonFeature
 import org.glassfish.jersey.server.ResourceConfig
-import net.explorviz.server.security.AuthenticationEndpoint
 
 class ExplorViz extends ResourceConfig {
 	new() {
@@ -16,7 +19,9 @@ class ExplorViz extends ResourceConfig {
 		// resources
 		packages("net.explorviz.resources")
 		
-		// exception handling
+		// exception handling (mind the order !)
+		register(QueryParamExceptionMapper)
+		register(PathParamExceptionMapper)
 		register(GeneralExceptionMapper)
 		
 		// register plugins (For development: read plugin structure at github docs)

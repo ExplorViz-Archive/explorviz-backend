@@ -1,4 +1,4 @@
-package net.explorviz.server.main;
+package net.explorviz.server.exceptions.mapper;
 
 
 import com.fasterxml.jackson.core.JsonProcessingException;

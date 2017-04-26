@@ -6,6 +6,7 @@ import java.util.ArrayList
 import com.github.jasminb.jsonapi.annotations.Relationship
 import java.util.List
 import org.eclipse.xtend.lib.annotations.Accessors
+import org.glassfish.jersey.server.ParamException.QueryParamException
 
 @Type("timestampstorage")
 class TimestampStorage extends BaseEntity {
@@ -23,10 +24,6 @@ class TimestampStorage extends BaseEntity {
 
 	def List<Timestamp> filterTimestampsAfterTimestamp(long timestamp, int intervalSize) {
 
-		if (intervalSize == 0) {
-			return this.timestamps
-		}
-
 		val length = this.timestamps.size
 
 		var position = 0;
@@ -39,15 +36,21 @@ class TimestampStorage extends BaseEntity {
 
 				position = this.timestamps.indexOf(element)
 
-				if (intervalSize != 0) {
-					if (position + intervalSize > length) {
-						return this.timestamps.subList(position, length)
+				try {
+
+					if (intervalSize != 0) {
+						if (position + intervalSize > length) {
+							return this.timestamps.subList(position, length)
+						} else {
+							return this.timestamps.subList(position, position + intervalSize)
+						}
 					} else {
-						return this.timestamps.subList(position, position + intervalSize)
+						// all timestamps starting at position
+						return this.timestamps.subList(position, length)
 					}
-				} else {
-					// all timestamps starting at position
-					return this.timestamps.subList(position, length)
+
+				} catch (IllegalArgumentException e) {
+					throw new QueryParamException(e, "Error in query parameter(s)", "10")
 				}
 
 			}
@@ -59,10 +62,6 @@ class TimestampStorage extends BaseEntity {
 
 		val length = this.timestamps.size
 
-		if (fromTimestamp == 0 && intervalSize == 0) {
-			return this.timestamps
-		}
-
 		var position = 0;
 		// iterate backwards and find passed timestamp	
 		for (i : length >.. 0) {
@@ -73,15 +72,21 @@ class TimestampStorage extends BaseEntity {
 
 				position = this.timestamps.indexOf(element)
 
-				if (intervalSize != 0) {
-					if (position - intervalSize < 0) {
-						return this.timestamps.subList(0, position)
+				try {
+
+					if (intervalSize != 0) {
+						if (position - intervalSize < 0) {
+							return this.timestamps.subList(0, position)
+						} else {
+							return this.timestamps.subList(position - intervalSize, position)
+						}
 					} else {
-						return this.timestamps.subList(position - intervalSize, position)
+						// all timestamps starting at position
+						return this.timestamps.subList(0, position)
 					}
-				} else {
-					// all timestamps starting at position
-					return this.timestamps.subList(position, length)
+
+				} catch (IllegalArgumentException e) {
+					throw new QueryParamException(e, "Error in query parameter(s)", "10")
 				}
 
 			}
@@ -90,45 +95,52 @@ class TimestampStorage extends BaseEntity {
 	}
 
 	def List<Timestamp> filterOldestTimestamps(int intervalSize) {
-		if (!this.timestamps.empty) {
+		if (this.timestamps.empty)
+			return new ArrayList<Timestamp>
 
-			val length = this.timestamps.size;
+		val length = this.timestamps.size;
+
+		try {
 
 			if (intervalSize != 0) {
-				if (intervalSize + 1 >= length) {
+				if (intervalSize >= length) {
 					return this.timestamps.subList(0, length)
 				} else {
 					return this.timestamps.subList(0, intervalSize)
 				}
 
 			} else {
-				return this.timestamps.subList(0, length)
+				return this.timestamps
 			}
 
-		} else {
-			return new ArrayList<Timestamp>
+		} catch (IllegalArgumentException e) {
+			throw new QueryParamException(e, "Error in query parameter(s)", "10")
 		}
+
 	}
 
 	def List<Timestamp> filterMostRecentTimestamps(int intervalSize) {
-		if (!this.timestamps.empty) {
+		if (this.timestamps.empty)
+			return new ArrayList<Timestamp>
 
-			val length = this.timestamps.size;
+		val length = this.timestamps.size;
+
+		try {
 
 			if (intervalSize != 0) {
-				if (intervalSize + 1 >= length) {
+				if (intervalSize >= length) {
 					return this.timestamps.subList(0, length)
 				} else {
 					return this.timestamps.subList(length - intervalSize, length)
 				}
-
 			} else {
-				return this.timestamps.subList(0, length)
+				return this.timestamps
 			}
 
-		} else {
-			return new ArrayList<Timestamp>
+		} catch (IllegalArgumentException e) {
+			throw new QueryParamException(e, "Error in query parameter(s)", "10")
 		}
+
 	}
 
 }
