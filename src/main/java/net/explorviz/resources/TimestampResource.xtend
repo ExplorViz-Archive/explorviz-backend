@@ -13,7 +13,7 @@ import net.explorviz.model.TimestampStorage
 import javax.ws.rs.QueryParam
 import javax.ws.rs.PathParam
 
-//@Secured
+@Secured
 @Path("timestamp")
 class TimestampResource {
 
