@@ -5,17 +5,14 @@ setup_git() {
   git config --global user.name "Travis CI"
 }
 
-commit_build_files() {
-  git checkout
-  cp target/explorviz-ui-backend-*.war explorviz-backend.war  
+commit_and_push() {
+  git clone https://$PersonalAccessToken@github.com/ExplorViz/explorviz-docker.git
+  cd explorviz-docker
+  cp /home/travis/build/ExplorViz/explorviz-ui-backend/target/explorviz-ui-backend-1.0-SNAPSHOT.war explorviz-backend.war
   git add explorviz-backend.war
   git commit --message "Travis build: $TRAVIS_BUILD_NUMBER"
-}
-
-upload_files() {
-  git push --quiet https://$PersonalAccessToken@github.com/explorviz/explorviz-docker.git > /dev/null 2>&1
+  git push --quiet https://$PersonalAccessToken@github.com/Explorviz/explorviz-docker.git > /dev/null 2>&1
 }
 
 setup_git
-commit_build_files
-upload_files
+commit_and_push
