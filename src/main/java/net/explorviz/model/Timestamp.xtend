@@ -11,12 +11,10 @@ class Timestamp extends BaseEntity {
 	@Relationship("parent")
 	@Accessors TimestampStorage parent
 	
-	@Accessors long timestamp
 	@Accessors long calls
 		
-	new(Integer id, long timestamp, long calls) {
-		this.id = Integer.toString(id)
-		this.timestamp = timestamp
+	new(String id, long calls) {
+		this.id = id
 		this.calls = calls
 	}
 }

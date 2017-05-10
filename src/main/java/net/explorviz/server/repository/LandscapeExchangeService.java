@@ -3,7 +3,6 @@ package net.explorviz.server.repository;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import net.explorviz.model.Landscape;
 import net.explorviz.model.Timestamp;
@@ -81,7 +80,6 @@ public class LandscapeExchangeService {
 		final File[] fList = directory.listFiles();
 
 		TimestampStorage timestampStorage = new TimestampStorage("0");
-		AtomicInteger id = new AtomicInteger();
 		
 		for (final File f : fList) {
 			
@@ -108,7 +106,7 @@ public class LandscapeExchangeService {
 //					continue;
 //				}
 
-				Timestamp newTimestamp = new Timestamp(id.getAndIncrement(), timestamp, activity);
+				Timestamp newTimestamp = new Timestamp(String.valueOf(timestamp), activity);
 				timestampStorage.addTimestamp(newTimestamp);		
 			}
 		}
