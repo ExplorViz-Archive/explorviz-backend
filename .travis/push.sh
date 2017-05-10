@@ -1,10 +1,6 @@
 #!/bin/sh
 
 setup_git() {
-  touch ~/.ssh/id_rsa
-  chmod 600 ~/.ssh/id_rsa
-  echo ${deploy-key} > ~/.ssh/id_rsa
-  git config core.sshCommand "ssh -i ~/.ssh/id_rsa -F /dev/null" 
   git config --global user.email "travis@travis-ci.org"
   git config --global user.name "Travis CI"
 }
@@ -17,8 +13,7 @@ commit_build_files() {
 }
 
 upload_files() {
-  git remote add https://git@github.com/explorviz/explorviz-docker.git > /dev/null 2>&1
-  git push --quiet > /dev/null 2>&1
+  git push --quiet https://$PersonalAccessToken@github.com/explorviz/explorviz-docker.git > /dev/null 2>&1
 }
 
 setup_git
