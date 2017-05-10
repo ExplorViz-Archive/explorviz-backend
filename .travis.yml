@@ -3,6 +3,9 @@ language: java
 jdk:
 - oraclejdk8
 
+before_script:
+  - chmod +x .travis/push.sh
+
 before_install:
 
 script: mvn compile war:war

@@ -5,7 +5,7 @@ setup_git() {
   git config --global user.name "Travis CI"
 }
 
-commit_and_push() {
+commit_and_push() {	
   git clone https://$PersonalAccessToken@github.com/ExplorViz/explorviz-docker.git
   cd explorviz-docker
   cp /home/travis/build/ExplorViz/explorviz-ui-backend/target/explorviz-ui-backend-1.0-SNAPSHOT.war explorviz-backend.war
