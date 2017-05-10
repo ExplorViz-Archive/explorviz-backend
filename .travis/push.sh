@@ -11,7 +11,7 @@ commit_and_push() {
   cp /home/travis/build/ExplorViz/explorviz-ui-backend/target/explorviz-ui-backend-1.0-SNAPSHOT.war explorviz-backend.war
   git add explorviz-backend.war
   git commit --message "Travis build: $TRAVIS_BUILD_NUMBER"
-  git push --quiet https://$PersonalAccessToken@github.com/Explorviz/explorviz-docker.git > /dev/null 2>&1
+  git push https://$PersonalAccessToken@github.com/Explorviz/explorviz-docker.git > /dev/null 2>&1
 }
 
 setup_git
