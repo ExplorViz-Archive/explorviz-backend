@@ -1,10 +1,11 @@
 #!/bin/sh
 
 setup_git() {
-  SSH_KEY=${deploy-key} | travis encrypt --add
+  SSH_KEY = ${deploy-key}
   touch ~/.ssh/id_rsa
+  chmod 600 ~/.ssh/id_rsa
   echo SSH_KEY > ~/.ssh/id_rsa
-  git config git config core.sshCommand "ssh -i ~/.ssh/id_rsa -F /dev/null" 
+  git config core.sshCommand "ssh -i ~/.ssh/id_rsa -F /dev/null" 
   git config --global user.email "travis@travis-ci.org"
   git config --global user.name "Travis CI"
 }
