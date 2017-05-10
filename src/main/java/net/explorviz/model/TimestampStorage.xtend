@@ -32,7 +32,7 @@ class TimestampStorage extends BaseEntity {
 
 			val element = this.timestamps.get(i)
 
-			if (element.id.equals(timestamp)) {
+			if (element.id.equals(String.valueOf(timestamp))) {
 
 				position = this.timestamps.indexOf(element)
 
@@ -68,7 +68,7 @@ class TimestampStorage extends BaseEntity {
 
 			val element = this.timestamps.get(i)
 
-			if (element.id.equals(fromTimestamp)) {
+			if (element.id.equals(String.valueOf(fromTimestamp))) {
 
 				position = this.timestamps.indexOf(element)
 
