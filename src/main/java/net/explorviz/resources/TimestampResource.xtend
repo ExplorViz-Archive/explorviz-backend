@@ -9,9 +9,10 @@ import net.explorviz.server.security.Secured
 import net.explorviz.server.repository.LandscapeExchangeService
 import com.github.jasminb.jsonapi.JSONAPIDocument
 import com.github.jasminb.jsonapi.ResourceConverter
-import net.explorviz.model.TimestampStorage
 import javax.ws.rs.QueryParam
 import javax.ws.rs.PathParam
+import java.util.List
+import net.explorviz.model.Timestamp
 
 @Secured
 @Path("timestamp")
@@ -32,16 +33,12 @@ class TimestampResource {
 	def byte[] getSubsequentTimestamps(@PathParam("timestamp") long timestamp,
 		@QueryParam("intervalSize") int intervalSize) {
 
-		var timestampStorage = new TimestampStorage("0")
-		timestampStorage = this.service.timestampObjectsInRepo
+		var timestampStorage = this.service.timestampObjectsInRepo
 
 		var filteredTimestamps = timestampStorage.filterTimestampsAfterTimestamp(timestamp, intervalSize)
 
-		val filteredTimestampStorage = new TimestampStorage("0")
-		filteredTimestampStorage.timestamps = filteredTimestamps
-
-		var JSONAPIDocument<TimestampStorage> document = new JSONAPIDocument<TimestampStorage>(filteredTimestampStorage)
-		this.converter.writeDocument(document)
+		var JSONAPIDocument<List<Timestamp>> document = new JSONAPIDocument<List<Timestamp>>(filteredTimestamps)
+		this.converter.writeDocumentCollection(document)
 	}
 
 	@Produces(MediaType.APPLICATION_JSON)
@@ -50,16 +47,12 @@ class TimestampResource {
 	def byte[] getPreviousTimestamps(@PathParam("timestamp") long timestamp,
 		@QueryParam("intervalSize") int intervalSize) {
 
-		var timestampStorage = new TimestampStorage("0")
-		timestampStorage = this.service.timestampObjectsInRepo
+		var timestampStorage = this.service.timestampObjectsInRepo
 
 		var filteredTimestamps = timestampStorage.filterTimestampsBeforeTimestamp(timestamp, intervalSize)
 
-		val filteredTimestampStorage = new TimestampStorage("0")
-		filteredTimestampStorage.timestamps = filteredTimestamps
-
-		var JSONAPIDocument<TimestampStorage> document = new JSONAPIDocument<TimestampStorage>(filteredTimestampStorage)
-		this.converter.writeDocument(document)
+		var JSONAPIDocument<List<Timestamp>> document = new JSONAPIDocument<List<Timestamp>>(filteredTimestamps)
+		this.converter.writeDocumentCollection(document)
 	}
 
 	@Produces(MediaType.APPLICATION_JSON)
@@ -67,16 +60,12 @@ class TimestampResource {
 	@Path("/from-oldest")
 	def byte[] getOldestTimestamps(@QueryParam("intervalSize") int intervalSize) {
 
-		var timestampStorage = new TimestampStorage("0")
-		timestampStorage = this.service.timestampObjectsInRepo
+		var timestampStorage = this.service.timestampObjectsInRepo
 
 		var filteredTimestamps = timestampStorage.filterOldestTimestamps(intervalSize)
 
-		val filteredTimestampStorage = new TimestampStorage("0")
-		filteredTimestampStorage.timestamps = filteredTimestamps
-
-		var JSONAPIDocument<TimestampStorage> document = new JSONAPIDocument<TimestampStorage>(filteredTimestampStorage)
-		this.converter.writeDocument(document)
+		var JSONAPIDocument<List<Timestamp>> document = new JSONAPIDocument<List<Timestamp>>(filteredTimestamps)
+		this.converter.writeDocumentCollection(document)
 	}
 
 	@Produces(MediaType.APPLICATION_JSON)
@@ -84,16 +73,13 @@ class TimestampResource {
 	@Path("/from-recent")
 	def byte[] getNewestTimestamps(@QueryParam("intervalSize") int intervalSize) {
 
-		var timestampStorage = new TimestampStorage("0")
-		timestampStorage = this.service.timestampObjectsInRepo
+		var timestampStorage = this.service.timestampObjectsInRepo
 
 		var filteredTimestamps = timestampStorage.filterMostRecentTimestamps(intervalSize)
 
-		val filteredTimestampStorage = new TimestampStorage("0")
-		filteredTimestampStorage.timestamps = filteredTimestamps
 
-		var JSONAPIDocument<TimestampStorage> document = new JSONAPIDocument<TimestampStorage>(filteredTimestampStorage)
-		this.converter.writeDocument(document)
+		var JSONAPIDocument<List<Timestamp>> document = new JSONAPIDocument<List<Timestamp>>(filteredTimestamps)
+		this.converter.writeDocumentCollection(document)
 	}
 
 }
