@@ -5,7 +5,6 @@ import java.util.List
 import org.eclipse.xtend.lib.annotations.Accessors
 import net.explorviz.model.helper.ELanguage
 import net.explorviz.model.helper.DrawNodeEntity
-import net.explorviz.model.helper.CommunicationAppAccumulator
 import com.github.jasminb.jsonapi.annotations.Type
 import com.github.jasminb.jsonapi.annotations.Relationship
 import net.explorviz.model.helper.ColorDefinitions
@@ -13,8 +12,6 @@ import net.explorviz.math.Vector4f
 
 @Type("application")
 class Application extends DrawNodeEntity {
-	//@Accessors var int id
-
 	@Accessors var boolean database
 
 	@Accessors var ELanguage programmingLanguage
@@ -27,16 +24,19 @@ class Application extends DrawNodeEntity {
 	@Relationship("components")
 	@Accessors List<Component> components = new ArrayList<Component>
 
-
+	@Relationship("communications")
 	@Accessors List<CommunicationClazz> communications = new ArrayList<CommunicationClazz>
 
-	@Accessors val transient List<CommunicationAppAccumulator> communicationsAccumulated = new ArrayList<CommunicationAppAccumulator>
+	//@Relationship("communicationsAccumulated")
+	//@Accessors val transient List<CommunicationAppAccumulator> communicationsAccumulated = new ArrayList<CommunicationAppAccumulator>
 
 	@Relationship("incomingCommunications")
 	@Accessors List<Communication> incomingCommunications = new ArrayList<Communication>
 	
+	@Relationship("outgoingCommunications")
 	@Accessors List<Communication> outgoingCommunications = new ArrayList<Communication>
 	
+	@Relationship("databaseQueries")
 	@Accessors List<DatabaseQuery> databaseQueries = new ArrayList<DatabaseQuery>
 	
 	@Accessors Vector4f backgroundColor = ColorDefinitions::applicationBackgroundColor

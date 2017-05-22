@@ -445,6 +445,9 @@ class LandscapeDummyCreator {
 
 		commu.source = source
 		commu.target = target
+		
+		//source.communicationClazz = commu
+		//target.communicationClazz = commu
 
 		application.communications.add(commu)
 

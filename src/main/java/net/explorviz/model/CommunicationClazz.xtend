@@ -6,15 +6,20 @@ import org.eclipse.xtend.lib.annotations.Accessors
 import net.explorviz.model.helper.BaseEntity
 import com.github.jasminb.jsonapi.annotations.Type
 import net.explorviz.server.repository.InsertionRepositoryPart
+import com.github.jasminb.jsonapi.annotations.Relationship
 
 @Type("communicationclazz")
 class CommunicationClazz extends BaseEntity{
-	var requestsCacheCount = 0
+	
+	@Accessors int requestsCacheCount = 0
 
 	@Accessors String methodName
 	@Accessors Map<Long, RuntimeInformation> traceIdToRuntimeMap = new HashMap<Long, RuntimeInformation>
 
+	@Relationship("source")
 	@Accessors Clazz source
+	
+	@Relationship("target")
 	@Accessors Clazz target
 	
 	@Accessors boolean hidden = false
@@ -51,9 +56,5 @@ class CommunicationClazz extends BaseEntity{
 	def void reset() {
 		requestsCacheCount = 0
 		traceIdToRuntimeMap.clear()
-	}
-
-	def int getRequests() {
-		requestsCacheCount
 	}
 }

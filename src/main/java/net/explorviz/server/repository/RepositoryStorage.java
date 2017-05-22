@@ -13,7 +13,6 @@ import net.explorviz.server.main.Configuration;
 import net.explorviz.model.*;
 import net.explorviz.model.System;
 import net.explorviz.model.helper.CommunicationAccumulator;
-import net.explorviz.model.helper.CommunicationAppAccumulator;
 import net.explorviz.model.helper.CommunicationTileAccumulator;
 import net.explorviz.model.helper.Point;
 import net.explorviz.model.helper.ELanguage;
@@ -55,7 +54,6 @@ public class RepositoryStorage {
 		result.registerClass(RuntimeInformation.class);
 		result.registerClass(DatabaseQuery.class);
 		result.registerClass(CommunicationClazz.class);
-		result.registerClass(CommunicationAppAccumulator.class);
 		result.registerClass(Point.class);
 
 		return result;

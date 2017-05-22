@@ -15,13 +15,14 @@ import net.explorviz.model.helper.CommunicationAccumulator
 import net.explorviz.model.helper.CommunicationTileAccumulator
 import net.explorviz.model.TimestampStorage
 import net.explorviz.model.Timestamp
+import net.explorviz.model.DatabaseQuery
 
 class ResourceConverterFactory implements Factory<ResourceConverter> {
 	ResourceConverter converter
 
 	new() {
 		this.converter = new ResourceConverter(TimestampStorage, Timestamp, Landscape, net.explorviz.model.System, NodeGroup, Node, Application,
-			Component, Clazz, CommunicationClazz, Communication, CommunicationAccumulator, CommunicationTileAccumulator)
+			Component, Clazz, CommunicationClazz, Communication, CommunicationAccumulator, CommunicationTileAccumulator, DatabaseQuery)
 		this.converter.enableSerializationOption(SerializationFeature.INCLUDE_RELATIONSHIP_ATTRIBUTES)
 	}
 
