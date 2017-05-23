@@ -33,7 +33,7 @@ class Node extends DrawNodeEntity {
 
 	public def String getDisplayName() {
 		if (this.parent.opened) {
-			if (this.name != null && !this.name.empty && !this.name.startsWith("<")) {
+			if (this.name !== null && !this.name.empty && !this.name.startsWith("<")) {
 				this.name
 			} else {
 				this.ipAddress

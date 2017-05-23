@@ -429,7 +429,7 @@ class LandscapeDummyCreator {
 		component.name = name
 		component.parentComponent = parent
 		component.belongingApplication = app
-		if (parent != null) {
+		if (parent !== null) {
 			component.fullQualifiedName = parent.fullQualifiedName + "." + name
 			parent.children.add(component)
 		} else {

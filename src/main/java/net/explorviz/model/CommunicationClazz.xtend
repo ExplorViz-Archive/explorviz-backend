@@ -30,7 +30,7 @@ class CommunicationClazz extends BaseEntity{
 
 	def void addRuntimeInformation(Long traceId, int calledTimes, int orderIndex, int requests, float averageResponseTime, float overallTraceDuration) {
 		var runtime = traceIdToRuntimeMap.get(traceId)
-		if (runtime == null) {
+		if (runtime === null) {
 			runtime = new RuntimeInformation(String.valueOf(InsertionRepositoryPart.counter.addAndGet(1)))
 			runtime.calledTimes = calledTimes
 			runtime.orderIndexes.add(orderIndex)
