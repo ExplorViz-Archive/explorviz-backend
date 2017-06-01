@@ -6,7 +6,6 @@ import java.util.List
 import net.explorviz.model.helper.Draw3DNodeEntity
 import com.github.jasminb.jsonapi.annotations.Type
 import com.github.jasminb.jsonapi.annotations.Relationship
-import net.explorviz.math.Vector4f
 
 @Type("component")
 class Component extends Draw3DNodeEntity {
@@ -18,7 +17,7 @@ class Component extends Draw3DNodeEntity {
 	@Relationship("children")
 	@Accessors var List<Component> children = new ArrayList<Component>
 	
-	@Relationship("clazz")
+	@Relationship("clazzes")
 	@Accessors var List<Clazz> clazzes = new ArrayList<Clazz>
 
 	@Relationship("parentComponent")
@@ -26,8 +25,6 @@ class Component extends Draw3DNodeEntity {
 
 	@Relationship("belongingApplication")
 	@Accessors Application belongingApplication
-
-	@Accessors var Vector4f color
 
 	var boolean opened = false
 	

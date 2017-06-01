@@ -6,8 +6,6 @@ import org.eclipse.xtend.lib.annotations.Accessors
 import net.explorviz.model.helper.DrawNodeEntity
 import com.github.jasminb.jsonapi.annotations.Relationship
 import com.github.jasminb.jsonapi.annotations.Type
-import net.explorviz.math.Vector4f
-import net.explorviz.model.helper.ColorDefinitions
 
 @Type("system")
 class System extends DrawNodeEntity {
@@ -19,10 +17,6 @@ class System extends DrawNodeEntity {
 	@Accessors Landscape parent
 
 	var boolean opened = true
-
-	@Accessors Vector4f plusColor = ColorDefinitions::systemPlusColor
-	@Accessors Vector4f foregroundColor = ColorDefinitions::systemForegroundColor
-	@Accessors Vector4f backgroundColor = ColorDefinitions::systemBackgroundColor
 	
 	new(String id) {
 		this.id = id

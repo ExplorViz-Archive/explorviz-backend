@@ -8,8 +8,6 @@ import java.util.Comparator
 import net.explorviz.model.helper.DrawNodeEntity
 import com.github.jasminb.jsonapi.annotations.Relationship
 import com.github.jasminb.jsonapi.annotations.Type
-import net.explorviz.math.Vector4f
-import net.explorviz.model.helper.ColorDefinitions
 
 @Type("nodegroup")
 class NodeGroup extends DrawNodeEntity {
@@ -21,9 +19,6 @@ class NodeGroup extends DrawNodeEntity {
 	@Accessors var System parent
 
 	@Accessors boolean visible = true
-
-	@Accessors Vector4f plusColor = ColorDefinitions::nodeGroupPlusColor
-	@Accessors Vector4f backgroundColor = ColorDefinitions::nodeGroupBackgroundColor
 	
 	var boolean opened
 	

@@ -16,9 +16,6 @@ class Clazz extends Draw3DNodeEntity {
 	@Relationship("parent")
 	@Accessors Component parent
 	
-	//@Relationship("communicationClazz")
-	//@Accessors CommunicationClazz communicationClazz
-	
 	@Accessors var boolean visible = false
 	
 	new(String id) {
