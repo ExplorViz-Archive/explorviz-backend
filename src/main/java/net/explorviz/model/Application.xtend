@@ -7,8 +7,6 @@ import net.explorviz.model.helper.ELanguage
 import net.explorviz.model.helper.DrawNodeEntity
 import com.github.jasminb.jsonapi.annotations.Type
 import com.github.jasminb.jsonapi.annotations.Relationship
-import net.explorviz.model.helper.ColorDefinitions
-import net.explorviz.math.Vector4f
 
 @Type("application")
 class Application extends DrawNodeEntity {
@@ -38,8 +36,6 @@ class Application extends DrawNodeEntity {
 	
 	@Relationship("databaseQueries")
 	@Accessors List<DatabaseQuery> databaseQueries = new ArrayList<DatabaseQuery>
-	
-	@Accessors Vector4f backgroundColor = ColorDefinitions::applicationBackgroundColor
 	
 	new(String id) {
 		this.id = id
