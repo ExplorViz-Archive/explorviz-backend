@@ -51,6 +51,8 @@ public class AuthenticationEndpoint {
 	@Produces("application/json")
 	@Consumes("application/x-www-form-urlencoded")
 	public Response authenticateUser(@FormParam("username") String username, @FormParam("password") String password) {
+		
+		System.out.println(username + " " + password);
 
 		if (authenticate(username, password)) {
 
@@ -66,7 +68,8 @@ public class AuthenticationEndpoint {
 			return Response.ok(jsonNode).build();
 
 		} else {
-			return Response.status(Response.Status.UNAUTHORIZED).build();
+			return Response.status(Response.Status.UNAUTHORIZED).type("text/plain")
+					.entity("You have entered an invalid username or password").build();
 		}
 
 	}
