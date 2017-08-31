@@ -51,8 +51,6 @@ public class AuthenticationEndpoint {
 	@Produces("application/json")
 	@Consumes("application/x-www-form-urlencoded")
 	public Response authenticateUser(@FormParam("username") String username, @FormParam("password") String password) {
-		
-		System.out.println(username + " " + password);
 
 		if (authenticate(username, password)) {
 
