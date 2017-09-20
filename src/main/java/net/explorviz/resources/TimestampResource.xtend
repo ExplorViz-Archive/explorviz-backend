@@ -22,7 +22,7 @@ class TimestampResource {
 	var ResourceConverter converter
 
 	@Inject
-	def LandscapeResource(ResourceConverter converter, LandscapeExchangeService service) {
+	new (ResourceConverter converter, LandscapeExchangeService service) {
 		this.converter = converter
 		this.service = service
 	}

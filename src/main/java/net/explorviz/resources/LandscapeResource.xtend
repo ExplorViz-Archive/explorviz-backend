@@ -25,7 +25,7 @@ class LandscapeResource {
 	var LandscapeExchangeService service
 
 	@Inject
-	def LandscapeResource(LandscapeRepositoryModel model, ResourceConverter converter,
+	new (LandscapeRepositoryModel model, ResourceConverter converter,
 		LandscapeExchangeService service) {
 		this.model = model
 		this.converter = converter

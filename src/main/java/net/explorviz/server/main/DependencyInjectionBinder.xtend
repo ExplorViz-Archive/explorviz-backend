@@ -7,6 +7,7 @@ import net.explorviz.injection.ResourceConverterFactory
 import net.explorviz.server.repository.LandscapeRepositoryModel
 import javax.inject.Singleton
 import net.explorviz.server.repository.LandscapeExchangeService
+import net.explorviz.server.repository.HibernateSessionFactory
 
 class DependencyInjectionBinder extends AbstractBinder {
 	override void configure() {
@@ -14,5 +15,6 @@ class DependencyInjectionBinder extends AbstractBinder {
 		this.bindFactory(ResourceConverterFactory).to(ResourceConverter).in(Singleton)
 		
 		this.bind(LandscapeExchangeService).to(LandscapeExchangeService).in(Singleton)
+		this.bind(HibernateSessionFactory).to(HibernateSessionFactory).in(Singleton)
 	}
 }
