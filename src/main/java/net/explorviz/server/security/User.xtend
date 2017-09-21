@@ -4,25 +4,23 @@ import org.eclipse.xtend.lib.annotations.Accessors
 import javax.persistence.Entity
 import javax.persistence.Table
 import javax.persistence.Id
-import javax.persistence.GeneratedValue
 
-@Entity
+@Entity(name = "USERS")
 @Table(name = "USERS")
 class User {
+
 	
 	@Id 
-    @GeneratedValue
-	@Accessors int id
-	
 	@Accessors String username
 	@Accessors String hashedPassword
-	@Accessors String salt
+	@Accessors String token
 	
-	new (int id, String username, String hashedPassword, String salt) {
-		this.id = id
+	new (String username, String hashedPassword) {
 		this.username = username
 		this.hashedPassword = hashedPassword
-		this.salt = salt
 	}
+	
+	// Default constructor for Hibernate
+	new() {}
 	
 }

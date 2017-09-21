@@ -14,6 +14,8 @@ import org.hibernate.SessionFactory;
 
 import net.explorviz.server.repository.HibernateSessionFactory;
 import net.explorviz.server.repository.LandscapeExchangeService;
+import net.explorviz.server.security.PasswordStorage;
+import net.explorviz.server.security.PasswordStorage.CannotPerformOperationException;
 import net.explorviz.server.security.User;
 
 import org.glassfish.grizzly.http.server.HttpServer;
@@ -21,8 +23,9 @@ import org.glassfish.grizzly.http.server.HttpServer;
 public class App {
 
 	private static final URI BASE_URI = URI.create("http://0.0.0.0:8081/");
-	
-	@Inject static SessionFactory sessionFactory;
+
+	@Inject
+	static SessionFactory sessionFactory;
 
 	public static void main(String[] args) {
 		try {
@@ -34,22 +37,33 @@ public class App {
 					server.shutdownNow();
 				}
 			}));
-			
-			server.start();
-			
-			Session session = HibernateSessionFactory.getInstance().openSession();
-			session.beginTransaction();
-			session.save( new User(1, "admin", "hashedPassword", "salt"));
-			session.getTransaction().commit();
-			session.close();
-			
-			LandscapeExchangeService.startRepository();
 
+			server.start();
+
+			// Start ExplorViz Listener
+			LandscapeExchangeService.startRepository();
 			System.out.println("Server started. Traces should be processed. (Start Test App now)");
+
+			createDummyUser();
 
 			Thread.currentThread().join();
 		} catch (IOException | InterruptedException ex) {
 			Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
+		}
+
+	}
+
+	public static void createDummyUser() {
+		try {
+			String hashedPassword = PasswordStorage.createHash("admin");
+			Session session = HibernateSessionFactory.getInstance().openSession();
+			session.beginTransaction();
+			session.save(new User("admin", hashedPassword));
+			session.getTransaction().commit();
+			session.close();
+		} catch (CannotPerformOperationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 

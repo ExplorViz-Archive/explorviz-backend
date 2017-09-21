@@ -11,9 +11,14 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 
+import org.hibernate.Session;
+
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import net.explorviz.server.repository.HibernateSessionFactory;
+import net.explorviz.server.security.PasswordStorage.CannotPerformOperationException;
+import net.explorviz.server.security.PasswordStorage.InvalidHashException;
 
 /***
  * Provides the endpoint for authentication: http:\/\/*IP*:*Port*\/sessions.
@@ -24,8 +29,6 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
  */
 @Path("/sessions")
 public class AuthenticationEndpoint {
-
-	public static String token = null;
 
 	/***
 	 * Creates and returns a randomized token for users. A client request must
@@ -56,7 +59,20 @@ public class AuthenticationEndpoint {
 
 			String token = issueToken();
 
-			AuthenticationEndpoint.token = token;
+			Session session = HibernateSessionFactory.getInstance().openSession();
+
+			User currentUser = null;
+
+			session.beginTransaction();
+			currentUser = session.find(User.class, username);
+
+			if (currentUser != null) {
+				currentUser.setToken(token);
+				session.update(currentUser);
+			}
+
+			session.getTransaction().commit();
+			session.close();
 
 			JsonNodeFactory factory = JsonNodeFactory.instance;
 			ObjectNode jsonNode = factory.objectNode();
@@ -81,10 +97,26 @@ public class AuthenticationEndpoint {
 	 * @return True if the authentication succeeds, otherwise false.
 	 */
 	private boolean authenticate(String username, String password) {
-		if(username == null || password == null || username.length() == 0 || password.length() == 0) {
+
+		Session session = HibernateSessionFactory.getInstance().openSession();
+
+		User currentUser = null;
+
+		session.beginTransaction();
+		currentUser = session.find(User.class, username);
+		session.getTransaction().commit();
+		session.close();
+
+		try {
+			if (currentUser != null && PasswordStorage.verifyPassword(password, currentUser.getHashedPassword())) {
+				return true;
+			}
+		} catch (CannotPerformOperationException | InvalidHashException e) {
+			e.printStackTrace();
 			return false;
 		}
-		return true;
+
+		return false;
 	}
 
 	/***
