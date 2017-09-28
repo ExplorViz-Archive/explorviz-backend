@@ -98,15 +98,12 @@ public class AuthenticationEndpoint {
 	 */
 	private boolean authenticate(String username, String password) {
 
-		Session session = HibernateSessionFactory.getInstance().openSession();
-
 		User currentUser = null;
-
-		session.beginTransaction();
+		
+		Session session = HibernateSessionFactory.beginTransaction();
 		currentUser = session.find(User.class, username);
-		session.getTransaction().commit();
-		session.close();
-
+		HibernateSessionFactory.commitTransactionAndClose(session);
+		
 		try {
 			if (currentUser != null && PasswordStorage.verifyPassword(password, currentUser.getHashedPassword())) {
 				return true;

@@ -85,17 +85,23 @@
 			<artifactId>jackson-annotations</artifactId>
 			<version>${jackson.version}</version>
 		</dependency>
-		
+
 		<dependency>
-		    <groupId>com.h2database</groupId>
-		    <artifactId>h2</artifactId>
-		    <version>1.4.196</version>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<version>1.4.196</version>
 		</dependency>
-		
+
 		<dependency>
-		    <groupId>org.hibernate</groupId>
-		    <artifactId>hibernate-core</artifactId>
-		    <version>5.2.11.Final</version>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-core</artifactId>
+			<version>5.2.11.Final</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-c3p0</artifactId>
+			<version>5.2.11.Final</version>
 		</dependency>
 
 		<!-- # -->
@@ -105,8 +111,7 @@
 			<artifactId>org.eclipse.xtend.lib</artifactId>
 			<version>2.9.0</version>
 		</dependency>
-		<!-- <dependency> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-shade-plugin</artifactId> 
-			<version>2.4.3</version> </dependency> -->
+
 		<dependency>
 			<groupId>de.ruedigermoeller</groupId>
 			<artifactId>fst</artifactId>
@@ -192,7 +197,7 @@
 				<artifactId>exec-maven-plugin</artifactId>
 				<configuration>
 					<mainClass>net.explorviz.server.main.App</mainClass>
-				</configuration>				
+				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.eclipse.xtend</groupId>
@@ -214,7 +219,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-dependency-plugin</artifactId>
-				<version>2.1</version>				
+				<version>2.1</version>
 			</plugin>
 		</plugins>
 	</build>

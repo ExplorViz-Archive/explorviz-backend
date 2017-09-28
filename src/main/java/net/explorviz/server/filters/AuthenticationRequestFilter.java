@@ -61,7 +61,6 @@ public class AuthenticationRequestFilter implements ContainerRequestFilter {
 		session.close();
 
 		if (currentUser == null) {
-			System.out.println("USER us null");
 			return false;
 		}
 

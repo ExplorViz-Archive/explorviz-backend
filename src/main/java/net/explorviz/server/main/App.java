@@ -5,12 +5,9 @@ import java.net.URI;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.inject.Inject;
-
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 
 import net.explorviz.server.repository.HibernateSessionFactory;
 import net.explorviz.server.repository.LandscapeExchangeService;
@@ -23,9 +20,6 @@ import org.glassfish.grizzly.http.server.HttpServer;
 public class App {
 
 	private static final URI BASE_URI = URI.create("http://0.0.0.0:8081/");
-
-	@Inject
-	static SessionFactory sessionFactory;
 
 	public static void main(String[] args) {
 		try {
@@ -56,13 +50,12 @@ public class App {
 	public static void createDummyUser() {
 		try {
 			String hashedPassword = PasswordStorage.createHash("admin");
-			Session session = HibernateSessionFactory.getInstance().openSession();
-			session.beginTransaction();
+			
+			Session session = HibernateSessionFactory.beginTransaction();
 			session.save(new User("admin", hashedPassword));
-			session.getTransaction().commit();
-			session.close();
+			HibernateSessionFactory.commitTransactionAndClose(session);
+			
 		} catch (CannotPerformOperationException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
