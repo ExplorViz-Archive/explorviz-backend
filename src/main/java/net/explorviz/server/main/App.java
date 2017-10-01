@@ -7,15 +7,13 @@ import java.util.logging.Logger;
 
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
-import org.hibernate.Session;
+import org.glassfish.jersey.servlet.ServletContainer;
 
-import net.explorviz.server.repository.HibernateSessionFactory;
 import net.explorviz.server.repository.LandscapeExchangeService;
-import net.explorviz.server.security.PasswordStorage;
-import net.explorviz.server.security.PasswordStorage.CannotPerformOperationException;
-import net.explorviz.server.security.User;
 
 import org.glassfish.grizzly.http.server.HttpServer;
+import org.glassfish.grizzly.servlet.ServletRegistration;
+import org.glassfish.grizzly.servlet.WebappContext;
 
 public class App {
 
@@ -23,41 +21,33 @@ public class App {
 
 	public static void main(String[] args) {
 		try {
-
-			final HttpServer server = GrizzlyHttpServerFactory.createHttpServer(BASE_URI, createApp(), false);
-			Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
-				@Override
-				public void run() {
-					server.shutdownNow();
-				}
-			}));
-
-			server.start();
+			startHTTPServer();
 
 			// Start ExplorViz Listener
 			LandscapeExchangeService.startRepository();
 			System.out.println("Server started. Traces should be processed. (Start Test App now)");
 
-			createDummyUser();
-
 			Thread.currentThread().join();
-		} catch (IOException | InterruptedException ex) {
+		} catch (InterruptedException | IOException ex) {
 			Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
 		}
 
 	}
 
-	public static void createDummyUser() {
-		try {
-			String hashedPassword = PasswordStorage.createHash("admin");
-			
-			Session session = HibernateSessionFactory.beginTransaction();
-			session.save(new User("admin", hashedPassword));
-			HibernateSessionFactory.commitTransactionAndClose(session);
-			
-		} catch (CannotPerformOperationException e) {
-			e.printStackTrace();
-		}
+	private static void startHTTPServer() throws IOException {
+
+		final ResourceConfig resourceConfig = new ExplorViz();
+		HttpServer httpServer = GrizzlyHttpServerFactory.createHttpServer(BASE_URI);
+
+		WebappContext context = new WebappContext("WebappContext", "/" + "webapp");
+		context.addListener("net.explorviz.server.main.SetupListener");
+		//context.addServlet("ServletContainer", new ServletContainer(resourceConfig));
+		
+		ServletRegistration registration = context.addServlet("ServletContainer", new ServletContainer(resourceConfig));
+		registration.addMapping("/*");
+
+		context.deploy(httpServer);
+		httpServer.start();
 	}
 
 	public static ResourceConfig createApp() {

@@ -4,6 +4,7 @@ import java.math.BigInteger;
 import java.security.SecureRandom;
 import java.util.Random;
 
+import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.POST;
@@ -29,6 +30,13 @@ import net.explorviz.server.security.PasswordStorage.InvalidHashException;
  */
 @Path("/sessions")
 public class AuthenticationEndpoint {
+	
+	private HibernateSessionFactory sessionFactory;
+	
+	@Inject
+	public AuthenticationEndpoint(HibernateSessionFactory sessionFactory) {
+		this.sessionFactory = sessionFactory;
+	}
 
 	/***
 	 * Creates and returns a randomized token for users. A client request must
@@ -59,7 +67,7 @@ public class AuthenticationEndpoint {
 
 			String token = issueToken();
 
-			Session session = HibernateSessionFactory.getInstance().openSession();
+			Session session = sessionFactory.beginTransaction();
 
 			User currentUser = null;
 
@@ -71,8 +79,7 @@ public class AuthenticationEndpoint {
 				session.update(currentUser);
 			}
 
-			session.getTransaction().commit();
-			session.close();
+			sessionFactory.commitTransactionAndClose(session);
 
 			JsonNodeFactory factory = JsonNodeFactory.instance;
 			ObjectNode jsonNode = factory.objectNode();
@@ -100,9 +107,9 @@ public class AuthenticationEndpoint {
 
 		User currentUser = null;
 		
-		Session session = HibernateSessionFactory.beginTransaction();
+		Session session = sessionFactory.beginTransaction();
 		currentUser = session.find(User.class, username);
-		HibernateSessionFactory.commitTransactionAndClose(session);
+		sessionFactory.commitTransactionAndClose(session);
 		
 		try {
 			if (currentUser != null && PasswordStorage.verifyPassword(password, currentUser.getHashedPassword())) {

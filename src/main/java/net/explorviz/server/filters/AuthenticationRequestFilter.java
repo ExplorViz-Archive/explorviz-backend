@@ -3,6 +3,7 @@ package net.explorviz.server.filters;
 import java.io.IOException;
 
 import javax.annotation.Priority;
+import javax.inject.Inject;
 import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
 import javax.ws.rs.ext.Provider;
@@ -23,6 +24,13 @@ import net.explorviz.server.security.User;
 @Provider
 @Priority(Priorities.AUTHENTICATION)
 public class AuthenticationRequestFilter implements ContainerRequestFilter {
+	
+	private HibernateSessionFactory sessionFactory;
+	
+	@Inject
+	public AuthenticationRequestFilter(HibernateSessionFactory sessionFactory) {
+		this.sessionFactory = sessionFactory;
+	}
 
 	@Override
 	public void filter(ContainerRequestContext requestContext) throws IOException {
@@ -45,8 +53,7 @@ public class AuthenticationRequestFilter implements ContainerRequestFilter {
 	private boolean validateToken(String token) {
 		User currentUser = null;
 		
-		Session session = HibernateSessionFactory.getInstance().openSession();
-		session.beginTransaction();
+		Session session = sessionFactory.beginTransaction();
 		
 		TypedQuery<User> query = session.createQuery("FROM USERS where token = :token ", User.class);
 		query.setParameter("token", token);
@@ -57,8 +64,7 @@ public class AuthenticationRequestFilter implements ContainerRequestFilter {
 			return false;
 		}
 		
-		session.getTransaction().commit();
-		session.close();
+		sessionFactory.commitTransactionAndClose(session);
 
 		if (currentUser == null) {
 			return false;
