@@ -223,6 +223,15 @@
 					<war>${project.build.directory}/${project.build.finalName}.war</war>
 				</configuration>
 			</plugin>
+			<!-- Necessary for Servlet 3.0, since error is thrown -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<version>2.6</version>
+				<configuration>
+					<failOnMissingWebXml>false</failOnMissingWebXml>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 
