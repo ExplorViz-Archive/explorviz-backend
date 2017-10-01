@@ -16,7 +16,7 @@ class HibernateSessionFactory {
 		this.servletContext = servletContext
 	}
 
-	private SessionFactory INSTANCE = null
+	private static SessionFactory INSTANCE = null
 
 	def synchronized beginTransaction() {
 		val session = getInstance().openSession();
@@ -30,17 +30,12 @@ class HibernateSessionFactory {
 	}
 
 	def synchronized getInstance() {
-		if (INSTANCE != null) {
+		if (INSTANCE !== null) {
 			return INSTANCE
 		} else {
 			// config in src/main/webapp/WEB-INF/hibernate.cfg.xml
-			val pathToHibernateConf = servletContext.contextPath + "/WEB-INF/hibernate.cfg.xml"
-			println(pathToHibernateConf)
-			
-			//
+			val pathToHibernateConf = "/WEB-INF/hibernate.cfg.xml"		
 			val configFile = servletContext.getResource(pathToHibernateConf);
-			println(configFile)
-			//
 			
 			val StandardServiceRegistry registry = new StandardServiceRegistryBuilder().configure(configFile).build();
 			try {

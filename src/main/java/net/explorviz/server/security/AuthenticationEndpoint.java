@@ -66,12 +66,11 @@ public class AuthenticationEndpoint {
 		if (authenticate(username, password)) {
 
 			String token = issueToken();
-
-			Session session = sessionFactory.beginTransaction();
-
 			User currentUser = null;
 
-			session.beginTransaction();
+			// retrieve user
+			Session session = sessionFactory.beginTransaction();
+
 			currentUser = session.find(User.class, username);
 
 			if (currentUser != null) {

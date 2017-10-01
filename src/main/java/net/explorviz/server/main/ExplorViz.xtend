@@ -6,7 +6,9 @@ import net.explorviz.server.exceptions.mapper.QueryParamExceptionMapper
 import net.explorviz.server.security.AuthenticationEndpoint
 import org.glassfish.jersey.jackson.JacksonFeature
 import org.glassfish.jersey.server.ResourceConfig
+import javax.ws.rs.ApplicationPath
 
+@ApplicationPath("")
 class ExplorViz extends ResourceConfig {
 	new() {
 		register(new DependencyInjectionBinder())
