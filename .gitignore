@@ -7,10 +7,9 @@ build
 bin                                                                             
 .classpath                                                                      
 .project                                                                        
-.settings                                                                       
+.settings/*                                                                     
                                                                                 
 .DS_Store
-
 
 extensions/*
 
