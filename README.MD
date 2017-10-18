@@ -17,11 +17,11 @@ Quick start with dummy monitoring:
 3. $[explorviz-ui-backend-folder]/gradle eclipse (to generate eclipse files)
 4. Import project into eclipse: via Import -> Gradle -> Existing Gradle project -> explorviz-ui-backend
 5. Eclipse: explorviz-ui-backend-core: Project -> Clean (to generate xtend files (xtend-gen)) 
-6. Start **explorviz-ui-backend** via Eclipse Tab: Gradle Tasks -> explorviz-ui-backend -> gretty -> appStart
+6. Start **explorviz-ui-backend** via Eclipse Tab: Gradle Tasks -> `explorviz-ui-backend -> gretty -> appStart`
 7. Start the [monitoringTestApplication](https://github.com/ExplorViz/monitoringTestApplication) via .bat or .sh file
 8. (Optional) Navigate to e.g. [localhost:8080/landscapes/1](http://localhost:8080/landscapes/1)
 9. Start the [explorviz-ui-frontend](https://github.com/ExplorViz/explorviz-ui-frontend).
 
-**Important**: Changes that are related to dependency injections require a recompilation of the application. Use the maven config `explorviz-ui-backend-compile-exec` to recompile and start the server. Then, start the Test app again.
+**Important**: Changes that are related to dependency injections require a recompilation of the application. Use the gradle task `explorviz-ui-backend -> gretty -> appRestart` to recompile and start the server. Then, start the Test app again.
 
 
