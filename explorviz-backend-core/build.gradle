@@ -16,9 +16,11 @@ dependencies {
 	
     // Xtend
     compile 'org.eclipse.xtend:org.eclipse.xtend.lib:2.9.0'
+    compile 'org.eclipse.xtext:org.eclipse.xtext.xbase.lib:2.8.0'
 
     testImplementation 'junit:junit:4.12'
 }
+
 
 
 xtend {
@@ -26,3 +28,4 @@ xtend {
     suppressWarningsAnnotation = true
   }  
 }
+
