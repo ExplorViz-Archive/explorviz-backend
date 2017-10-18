@@ -1,4 +1,3 @@
-apply plugin: 'eclipse'
 apply plugin: 'war'
 apply plugin: 'org.akhikhl.gretty'
 
@@ -43,6 +42,7 @@ allprojects {
         mavenCentral()
     }    
     apply plugin: 'java-library'
+	apply plugin: 'eclipse'
 }
 
 
