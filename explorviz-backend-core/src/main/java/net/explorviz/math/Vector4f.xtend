@@ -72,7 +72,7 @@ class Vector4f implements Serializable {
 	}
 
 	override String toString() {
-		return '''(«x», «y», «z», «w»)'''.toString
+		return "(" + x + ", " + y + ", " + z + ", " + w + ")"
 	}
 
 	def Vector3f convertTo3f() {

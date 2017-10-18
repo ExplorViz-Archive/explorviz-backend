@@ -93,7 +93,7 @@ class Vector3f implements Serializable {
 	}
 
 	override String toString() {
-		return '''(«x», «y», «z»)'''.toString
+		return "(" + x + ", " + y + ", " + z + ")"
 	}
 
 	def Vector3f mult(float c) {
