@@ -8,7 +8,7 @@ before_script:
 
 before_install:
 
-script: mvn compile war:war
+script: gradle war
 
 after_success:
   - .travis/push.sh
