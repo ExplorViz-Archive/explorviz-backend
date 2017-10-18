@@ -1,16 +1,16 @@
 xtend-gen
 target/
 
-build                                                                           
-.gradle                                                                         
-                                                                                
-bin                                                                             
-.classpath                                                                      
-.project                                                                        
-.settings/*                                                                     
-                                                                                
+build
+.gradle
+
+bin
+.classpath
+.project
+.settings/*
+
 .DS_Store
 
 extensions/*
 
-!extensions/.gitkeep   
+!extensions/.gitkeep
