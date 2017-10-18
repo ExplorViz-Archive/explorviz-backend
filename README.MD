@@ -8,7 +8,7 @@
 
 This project is a wip replica of ExplorViz's visualization component. It substitutes [GWT](http://www.gwtproject.org/) and it's (asynchronous) RPC framework with [Jersey](https://jersey.java.net/) for creating a RESTful API. This is only the backend, you will need the [explorviz-ui-frontend](https://github.com/ExplorViz/explorviz-ui-frontend) as well.
 
-Use the predefined maven configurations in *explorviz-ui-backend/runConfigs* to compile and execute the server. This maven project includes or installs every necessary dependency.
+This gradle project includes or installs every necessary dependency.
 
 Quick start with dummy monitoring:
 
