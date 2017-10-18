@@ -1,0 +1,28 @@
+apply plugin: 'org.xtext.xtend'
+
+buildscript {
+	repositories {
+	    jcenter()
+	  }
+
+	  dependencies {
+	  	classpath "org.xtext:xtext-gradle-plugin:1.0.19"
+	  }
+}
+
+dependencies {
+	// Any .jar in libs
+	compile fileTree(dir: 'libs', include: '*.jar')
+	
+    // Xtend
+    compile 'org.eclipse.xtend:org.eclipse.xtend.lib:2.9.0'
+
+    testImplementation 'junit:junit:4.12'
+}
+
+
+xtend {
+  generator {
+    suppressWarningsAnnotation = true
+  }  
+}
