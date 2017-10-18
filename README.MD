@@ -19,10 +19,7 @@ This gradle project includes or installs every necessary dependency.
 
 1. Follow the above [Setup Development](#setup-development) procedure
 2. Clone [monitoringTestApplication](https://github.com/ExplorViz/monitoringTestApplication)
-3. $[explorviz-ui-backend-folder]/gradlew eclipse (to generate eclipse files)
-4. Start the [monitoringTestApplication](https://github.com/ExplorViz/monitoringTestApplication) via .bat or .sh file
-5. Open [explorviz-ui-frontend](https://github.com/ExplorViz/explorviz-ui-frontend)
+3. Start the [monitoringTestApplication](https://github.com/ExplorViz/monitoringTestApplication) via included .bat or .sh file
+4. Open [explorviz-ui-frontend](https://github.com/ExplorViz/explorviz-ui-frontend)
 
 **Important**: Changes that are related to dependency injections require a recompilation of the application. Use the gradle task `explorviz-ui-backend -> gretty -> appRestart` to recompile and start the server. Then, start the Test app again.
-
-
