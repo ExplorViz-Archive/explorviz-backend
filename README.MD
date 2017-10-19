@@ -10,10 +10,12 @@ This gradle project includes or installs every necessary dependency.
 1. Download the Eclipse IDE for Java and DSL Developers and Java SDK 8
 2. Clone this repository
 3. Navigate to the cloned folder and run `gradlew eclipse` (to generate eclipse files)
-4. Import project into eclipse: via Import -> Gradle -> Existing Gradle project -> path/to/explorviz-ui-backend
-5. In Eclipse: explorviz-ui-backend-core: Project -> Clean (to generate .java files from .xtend files (xtend-gen))
-6. Start **explorviz-ui-backend** via Eclipse Tab: Gradle Tasks -> `explorviz-ui-backend -> gretty -> appStart`
+4. Import project into eclipse: via *Import -> Gradle -> Existing Gradle project -> path/to/explorviz-ui-backend*
+5. In Eclipse: explorviz-ui-backend-core: *Project -> Clean* (to generate .java files from .xtend files (xtend-gen))
+6. Start **explorviz-ui-backend** via Eclipse Tab: *Gradle Tasks -> explorviz-ui-backend -> gretty -> appStart*
 7. Setup and start [explorviz-ui-frontend](https://github.com/ExplorViz/explorviz-ui-frontend)
+
+To force the download of newly added dependencies: *Right click explorviz-ui-frontend -> Grade -> Refresh Gradle Project*. 
 
 ## Quick start with dummy monitoring
 
@@ -22,4 +24,4 @@ This gradle project includes or installs every necessary dependency.
 3. Start the [monitoringTestApplication](https://github.com/ExplorViz/monitoringTestApplication) via included .bat or .sh file
 4. Open [explorviz-ui-frontend](https://github.com/ExplorViz/explorviz-ui-frontend)
 
-**Important**: Changes that are related to dependency injections require a recompilation of the application. Use the gradle task `explorviz-ui-backend -> gretty -> appRestart` to recompile and start the server. Then, start the Test app again.
+**Important**: Changes that are related to dependency injections require a recompilation of the application. Use the gradle task *explorviz-ui-backend -> gretty -> appRestart* to recompile and start the server. Then, start the Test app again.
