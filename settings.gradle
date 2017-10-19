@@ -1,4 +1,4 @@
-rootProject.name = 'explorviz-ui-backend'
+rootProject.name = 'explorviz-backend'
 
 def loadProperties = {
     def properties = new Properties()
@@ -16,6 +16,9 @@ def extensionPrefix = loadProperties().extensionPrefix
 // include core logic
 include 'explorviz-backend-core'
 project(':explorviz-backend-core').projectDir = file('explorviz-backend-core')
+
+//include 'explorviz-backend-extension-raccoon'
+//project(':explorviz-backend-extension-raccoon').projectDir = file('explorviz-backend-extension-raccoon')
 
 
 // include extensions
