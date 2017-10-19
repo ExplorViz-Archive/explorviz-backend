@@ -17,9 +17,6 @@ def extensionPrefix = loadProperties().extensionPrefix
 include 'explorviz-backend-core'
 project(':explorviz-backend-core').projectDir = file('explorviz-backend-core')
 
-//include 'explorviz-backend-extension-raccoon'
-//project(':explorviz-backend-extension-raccoon').projectDir = file('explorviz-backend-extension-raccoon')
-
 
 // include extensions
 file(loadProperties().extensionsFolder).eachDir() { dir -> 
