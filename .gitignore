@@ -12,6 +12,8 @@ explorviz-backend-core/.settings
 
 .DS_Store
 
-extensions/*
+extensions/
+
+.gitmodules
 
 !extensions/.gitkeep
