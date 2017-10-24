@@ -59,6 +59,9 @@ dependencies {
   testImplementation 'junit:junit:4.12'
 }
 
+// Needed for Jitpack in extensions
+// War plugin typically disables jar build
+war.dependsOn jar
 
 // Embedded Webserver
 gretty {
