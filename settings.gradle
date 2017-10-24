@@ -1,12 +1,1 @@
 rootProject.name = 'explorviz-backend'
-
-def loadProperties = {
-    def properties = new Properties()
-    file('src/main/webapp/WEB-INF/explorviz.properties').withInputStream {
-        properties.load(it)
-    }
-    return properties
-}
-
-def extensionsFolder = loadProperties().extensionsFolder
-def extensionPrefix = loadProperties().extensionPrefix

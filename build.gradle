@@ -5,6 +5,15 @@ apply plugin: 'java-library'
 apply plugin: 'eclipse'
 
 
+def loadProperties = {
+    def properties = new Properties()
+    file('src/main/webapp/WEB-INF/explorviz.properties').withInputStream {
+        properties.load(it)
+    }
+    return properties
+}
+
+
 buildscript {
   repositories {
       jcenter()
@@ -51,10 +60,9 @@ dependencies {
 }
 
 
-
-xtend {
-  generator {
-    suppressWarningsAnnotation = true
-  }  
+// Embedded Webserver
+gretty {
+	httpPort = loadProperties().httpPort.toInteger()
+	servletContainer = loadProperties().servletContainer
+	contextPath = loadProperties().contextPath
 }
-
