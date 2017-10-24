@@ -22,7 +22,7 @@ import java.util.ArrayList
 class ResourceConverterFactory implements Factory<ResourceConverter> {
 	ResourceConverter converter
 	
-	public static List<Class<?>> classes = new ArrayList<Class<?>>()
+	private static List<Class<?>> classes = new ArrayList<Class<?>>()
 
 	new() {
 		classes.addAll(TimestampStorage, Timestamp, Landscape, net.explorviz.model.System, NodeGroup, Node, Application,
@@ -37,5 +37,9 @@ class ResourceConverterFactory implements Factory<ResourceConverter> {
 
 	override ResourceConverter provide() {
 		return converter
+	}
+	
+	def static void registerClass(Class<?> classToRegister) {
+		classes.add(classToRegister)
 	}
 }

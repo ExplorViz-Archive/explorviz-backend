@@ -27,5 +27,7 @@ interface IExtensionAPI {
 	public List<Timestamp> getPreviousTimestamps(long timestamp, int intervalSize);
 
 	public List<Timestamp> getSubsequentTimestamps(long timestamp, int intervalSize);
+	
+	public void addClassToResourceConverter(Class<?> classToRegister);
 
 }

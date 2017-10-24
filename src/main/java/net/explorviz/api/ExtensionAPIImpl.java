@@ -120,4 +120,14 @@ public class ExtensionAPIImpl implements IExtensionAPI {
 		this.updateTimestampStorage();
 		return timestampStorage.filterTimestampsAfterTimestamp(afterTimestamp, intervalSize);
 	}
+
+	/**
+	 * Add the <classToRegister> Class to the JSON API ResourceConverter.
+	 * 
+	 * @param classToRegister
+	 */
+	@Override
+	public void addClassToResourceConverter(Class<?> classToRegister) {
+
+	}
 }
