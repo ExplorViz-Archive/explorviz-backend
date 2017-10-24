@@ -1,5 +1,5 @@
 # ExplorViz Backend
-<a href="https://travis-ci.org/ExplorViz/explorviz-ui-backend"><img src="https://travis-ci.org/ExplorViz/explorviz-ui-backend.svg?branch=master" alt="Build Status"></a>
+<a href="https://travis-ci.org/ExplorViz/explorviz-backend"><img src="https://travis-ci.org/ExplorViz/explorviz-backend.svg?branch=master" alt="Build Status"></a>
 
 This project is a wip replica of ExplorViz's visualization component. 
 It substitutes [GWT](http://www.gwtproject.org/) and it's (asynchronous) RPC framework with [Jersey](https://jersey.java.net/) for creating a RESTful API. 
@@ -11,12 +11,12 @@ This gradle project includes or installs every necessary dependency.
 1. Download the Eclipse IDE for Java and DSL Developers and Java SDK 8
 2. Clone this repository
 3. Navigate to the cloned folder and run `gradlew eclipse` (to generate eclipse files)
-4. Import project into eclipse: via *Import -> Gradle -> Existing Gradle project -> path/to/explorviz-ui-backend*
-5. In Eclipse: explorviz-ui-backend-core: *Project -> Clean* (to generate .java files from .xtend files (xtend-gen))
-6. Start **explorviz-ui-backend** via Eclipse Tab: *Gradle Tasks -> explorviz-ui-backend -> gretty -> appStart*
+4. Import project into eclipse: via *Import -> Gradle -> Existing Gradle project -> path/to/explorviz-backend*
+5. In Eclipse: explorviz-backend: *Project -> Clean* (to generate .java files from .xtend files (xtend-gen))
+6. Start **explorviz-backend** via Eclipse Tab: *Gradle Tasks -> explorviz-backend -> gretty -> appStart*
 7. Setup and start [explorviz-ui-frontend](https://github.com/ExplorViz/explorviz-ui-frontend)
 
-To force the download of newly added dependencies: *Right click explorviz-ui-frontend -> Grade -> Refresh Gradle Project*. 
+To force the download of newly added dependencies: *Right click explorviz-backend -> Grade -> Refresh Gradle Project*. 
 
 ## Quick start with dummy monitoring
 
@@ -25,4 +25,4 @@ To force the download of newly added dependencies: *Right click explorviz-ui-fro
 3. Start the [monitoringTestApplication](https://github.com/ExplorViz/monitoringTestApplication) via included .bat or .sh file
 4. Open [explorviz-ui-frontend](https://github.com/ExplorViz/explorviz-ui-frontend)
 
-**Important**: Changes that are related to dependency injections require a recompilation of the application. Use the gradle task *explorviz-ui-backend -> gretty -> appRestart* to recompile and start the server. Then, start the Test app again.
+**Important**: Changes that are related to dependency injections require a recompilation of the application. Use the gradle task *explorviz-backend -> gretty -> appRestart* to recompile and start the server. Then, start the Test app again.
