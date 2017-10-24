@@ -10,18 +10,3 @@ def loadProperties = {
 
 def extensionsFolder = loadProperties().extensionsFolder
 def extensionPrefix = loadProperties().extensionPrefix
-
-
-
-// include core logic
-include 'explorviz-backend-core'
-project(':explorviz-backend-core').projectDir = file('explorviz-backend-core')
-
-
-// include extensions
-file(loadProperties().extensionsFolder).eachDir() { dir -> 
-    if (dir.name.startsWith(extensionPrefix)) {
-		include dir.name
-	    project(':' + dir.name).projectDir = file(extensionsFolder + '/' + dir.name)
-    }
-}
