@@ -7,8 +7,13 @@ build
 bin
 .classpath
 .project
-.settings
 
 .DS_Store
 
 .gitmodules
+
+.settings/org.eclipse.buildship.core.prefs
+.settings/org.eclipse.wst.common.component
+.settings/org.eclipse.wst.common.project.facet.core.xml
+.settings/org.eclipse.xtend.core.Xtend.prefs
+.settings/org.eclipse.xtext.java.Java.prefs
