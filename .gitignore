@@ -8,12 +8,7 @@ bin
 .classpath
 .project
 .settings
-explorviz-backend-core/.settings
 
 .DS_Store
 
-extensions/
-
 .gitmodules
-
-!extensions/.gitkeep
