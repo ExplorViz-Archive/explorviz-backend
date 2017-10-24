@@ -19,7 +19,17 @@ public class LandscapeExchangeService {
 	private static Long activity = null;
 
 	private static String REPLAY_FOLDER = FileSystemHelper.getExplorVizDirectory() + File.separator + "replay";
-	private static String REPOSITORY_FOLDER = FileSystemHelper.getExplorVizDirectory() + File.separator + "landscapeRepository";
+	private static String REPOSITORY_FOLDER = FileSystemHelper.getExplorVizDirectory() + File.separator
+			+ "landscapeRepository";
+
+	private static LandscapeExchangeService INSTANCE = null;
+
+	public static synchronized LandscapeExchangeService getInstance() {
+		if (LandscapeExchangeService.INSTANCE == null) {
+			LandscapeExchangeService.INSTANCE = new LandscapeExchangeService();
+		}
+		return LandscapeExchangeService.INSTANCE;
+	}
 
 	public Landscape getLandscapeByTimestampAndActivity(final long timestamp, final long activity) {
 		LandscapeExchangeService.timestamp = timestamp;
@@ -50,18 +60,18 @@ public class LandscapeExchangeService {
 
 				// first validation check -> filename
 				long timestamp;
-				//long activity;
+				// long activity;
 
 				try {
 					timestamp = Long.parseLong(filename.split("-")[0]);
-					//activity = Long.parseLong(filename.split("-")[1].split(".expl")[0]);
+					// activity = Long.parseLong(filename.split("-")[1].split(".expl")[0]);
 				} catch (final NumberFormatException e) {
 					continue;
 				}
 
 				// second validation check -> deserialization
 				try {
-					//getLandscape(timestamp, activity);
+					// getLandscape(timestamp, activity);
 					getLandscape(timestamp);
 				} catch (final Exception e) {
 					continue;
@@ -74,15 +84,15 @@ public class LandscapeExchangeService {
 
 		return names;
 	}
-	
+
 	public TimestampStorage getTimestampObjectsInRepo() {
 		final File directory = new File(REPOSITORY_FOLDER);
 		final File[] fList = directory.listFiles();
 
 		TimestampStorage timestampStorage = new TimestampStorage("0");
-		
+
 		for (final File f : fList) {
-			
+
 			final String filename = f.getName();
 
 			if (filename.endsWith(".expl")) {
@@ -99,20 +109,20 @@ public class LandscapeExchangeService {
 				}
 
 				// second validation check -> deserialization
-//				try {
-//					//getLandscape(timestamp, activity);
-//					getLandscape(timestamp);
-//				} catch (final Exception e) {
-//					continue;
-//				}
+				// try {
+				// //getLandscape(timestamp, activity);
+				// getLandscape(timestamp);
+				// } catch (final Exception e) {
+				// continue;
+				// }
 
 				Timestamp newTimestamp = new Timestamp(String.valueOf(timestamp), activity);
-				timestampStorage.addTimestamp(newTimestamp);		
+				timestampStorage.addTimestamp(newTimestamp);
 			}
 		}
 		return timestampStorage;
 	}
-	
+
 	@Deprecated
 	public List<String> getNamesInRepo() {
 		final List<String> names = new ArrayList<String>();
@@ -129,18 +139,18 @@ public class LandscapeExchangeService {
 
 				// first validation check -> filename
 				long timestamp;
-				//long activity;
+				// long activity;
 
 				try {
 					timestamp = Long.parseLong(filename.split("-")[0]);
-					//activity = Long.parseLong(filename.split("-")[1].split(".expl")[0]);
+					// activity = Long.parseLong(filename.split("-")[1].split(".expl")[0]);
 				} catch (final NumberFormatException e) {
 					continue;
 				}
 
 				// second validation check -> deserialization
 				try {
-					//getLandscape(timestamp, activity);
+					// getLandscape(timestamp, activity);
 					getLandscape(timestamp);
 				} catch (final Exception e) {
 					continue;
@@ -165,7 +175,7 @@ public class LandscapeExchangeService {
 		model.reset();
 	}
 
-	public static void startRepository() {	
+	public static void startRepository() {
 		model = LandscapeRepositoryModel.getInstance();
 		new Thread(new Runnable() {
 

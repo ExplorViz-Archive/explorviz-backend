@@ -34,9 +34,7 @@ class TimestampResource {
 		@QueryParam("intervalSize") int intervalSize) {
 
 		var timestampStorage = this.service.timestampObjectsInRepo
-
 		var filteredTimestamps = timestampStorage.filterTimestampsAfterTimestamp(timestamp, intervalSize)
-
 		var JSONAPIDocument<List<Timestamp>> document = new JSONAPIDocument<List<Timestamp>>(filteredTimestamps)
 		this.converter.writeDocumentCollection(document)
 	}
@@ -48,9 +46,7 @@ class TimestampResource {
 		@QueryParam("intervalSize") int intervalSize) {
 
 		var timestampStorage = this.service.timestampObjectsInRepo
-
 		var filteredTimestamps = timestampStorage.filterTimestampsBeforeTimestamp(timestamp, intervalSize)
-
 		var JSONAPIDocument<List<Timestamp>> document = new JSONAPIDocument<List<Timestamp>>(filteredTimestamps)
 		this.converter.writeDocumentCollection(document)
 	}
@@ -61,9 +57,7 @@ class TimestampResource {
 	def byte[] getOldestTimestamps(@QueryParam("intervalSize") int intervalSize) {
 
 		var timestampStorage = this.service.timestampObjectsInRepo
-
 		var filteredTimestamps = timestampStorage.filterOldestTimestamps(intervalSize)
-
 		var JSONAPIDocument<List<Timestamp>> document = new JSONAPIDocument<List<Timestamp>>(filteredTimestamps)
 		this.converter.writeDocumentCollection(document)
 	}
@@ -74,10 +68,7 @@ class TimestampResource {
 	def byte[] getNewestTimestamps(@QueryParam("intervalSize") int intervalSize) {
 
 		var timestampStorage = this.service.timestampObjectsInRepo
-
 		var filteredTimestamps = timestampStorage.filterMostRecentTimestamps(intervalSize)
-
-
 		var JSONAPIDocument<List<Timestamp>> document = new JSONAPIDocument<List<Timestamp>>(filteredTimestamps)
 		this.converter.writeDocumentCollection(document)
 	}
