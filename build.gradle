@@ -1,5 +1,5 @@
 apply plugin: 'org.xtext.xtend'
-apply plugin: 'war'
+//apply plugin: 'war'
 apply plugin: 'org.akhikhl.gretty'
 apply plugin: 'java-library'
 apply plugin: 'eclipse'
@@ -62,7 +62,7 @@ dependencies {
 
 // Needed for Jitpack in extensions
 // War plugin typically disables jar build
-assemble.dependsOn jar
+/*assemble.dependsOn jar
 
 
 jar {
@@ -72,7 +72,6 @@ jar {
 
 
 artifacts {
-	archives file: file('build/libs/explorviz-backend.jar'), name: 'explorviz-backend', type: 'jar'
   	archives file: file('libs/explorviz-common-1.0.jar'), name: 'explorviz-common', type: 'jar'
   	archives file: file('libs/explorviz-worker-1.0.jar'), name: 'explorviz-worker', type: 'jar'
 }
@@ -87,13 +86,10 @@ install {
       addFilter('explorviz-worker') {artifact, file ->
         artifact.name == 'explorviz-worker'
       }
-      addFilter('explorviz-backend') {artifact, file ->
-        artifact.name == 'explorviz-backend'
-      }
     }
   }
 }
-
+*/
 
 
 // Embedded Webserver
