@@ -61,6 +61,7 @@ dependencies {
 
 // Needed for Jitpack in extensions
 // War plugin typically disables jar build
+jar.mustRunAfter(war)
 assemble.dependsOn jar
 
 // Embedded Webserver
