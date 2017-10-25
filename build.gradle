@@ -1,5 +1,5 @@
 apply plugin: 'org.xtext.xtend'
-//apply plugin: 'war'
+apply plugin: 'war'
 apply plugin: 'org.akhikhl.gretty'
 apply plugin: 'java-library'
 apply plugin: 'eclipse'
@@ -62,7 +62,7 @@ dependencies {
 
 // Needed for Jitpack in extensions
 // War plugin typically disables jar build
-//assemble.dependsOn jar
+assemble.dependsOn jar
 
 
 artifacts {
