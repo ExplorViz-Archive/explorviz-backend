@@ -65,7 +65,7 @@ dependencies {
 assemble.dependsOn jar
 
 
-/*
+
 jar {
   baseName = project.name 
   from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
@@ -91,7 +91,7 @@ install {
     }
   }
 }
-*/
+
 
 
 // Embedded Webserver
