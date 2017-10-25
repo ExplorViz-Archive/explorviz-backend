@@ -62,9 +62,10 @@ dependencies {
 
 // Needed for Jitpack in extensions
 // War plugin typically disables jar build
-jar.mustRunAfter(war)
 assemble.dependsOn jar
 
+
+/*
 jar {
   baseName = project.name 
   from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
@@ -84,9 +85,14 @@ install {
       addFilter('explorviz-worker') {artifact, file ->
         artifact.name == 'explorviz-worker'
       }
+      addFilter('explorviz-backend') {artifact, file ->
+        artifact.name == 'explorviz-backend'
+      }
     }
   }
 }
+*/
+
 
 // Embedded Webserver
 gretty {
