@@ -62,7 +62,7 @@ dependencies {
 
 // Needed for Jitpack in extensions
 // War plugin typically disables jar build
-/*assemble.dependsOn jar
+//assemble.dependsOn jar
 
 
 jar {
@@ -89,7 +89,7 @@ install {
     }
   }
 }
-*/
+
 
 
 // Embedded Webserver
