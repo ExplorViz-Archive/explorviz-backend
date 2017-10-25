@@ -65,15 +65,16 @@ dependencies {
 //assemble.dependsOn jar
 
 
-/*jar {
-  baseName = project.name 
-  from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
-}
-
-
 artifacts {
   	archives file: file('libs/explorviz-common-1.0.jar'), name: 'explorviz-common', type: 'jar'
   	archives file: file('libs/explorviz-worker-1.0.jar'), name: 'explorviz-worker', type: 'jar'
+  	archives jar
+}
+
+
+jar {
+  baseName = project.name 
+  from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
 }
 
 
@@ -86,9 +87,12 @@ install {
       addFilter('explorviz-worker') {artifact, file ->
         artifact.name == 'explorviz-worker'
       }
+      addFilter('explorviz-backend') {artifact, file ->
+        artifact.name == 'explorviz-backend'
+      }
     }
   }
-}*/
+}
 
 
 
