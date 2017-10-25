@@ -65,7 +65,7 @@ dependencies {
 //assemble.dependsOn jar
 
 
-jar {
+/*jar {
   baseName = project.name 
   from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
 }
@@ -88,7 +88,7 @@ install {
       }
     }
   }
-}
+}*/
 
 
 
