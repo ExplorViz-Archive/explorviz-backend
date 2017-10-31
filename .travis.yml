@@ -8,7 +8,7 @@ before_script:
 
 before_install:
 
-script: gradle war
+script: gradle build
 
 after_success:
   - .travis/push.sh
