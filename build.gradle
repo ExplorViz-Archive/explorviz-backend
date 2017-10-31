@@ -64,16 +64,17 @@ dependencies {
 // ##### BEGIN Jitpack section #####
 
 // War plugin typically disables jar build
-// and doesn't work great with Jitpack
-assemble.dependsOn = []
 assemble.dependsOn jar
 
-task buildWar(dependsOn: ['war'])
 
+// https://discuss.gradle.org/t/deploying-multiple-artifacts-war-jar-sources-to-artifactory/4239
 artifacts {
   	archives file: file('libs/explorviz-common-1.0.jar'), name: 'explorviz-common', type: 'jar'
   	archives file: file('libs/explorviz-worker-1.0.jar'), name: 'explorviz-worker', type: 'jar'
   	archives jar
+  	archives war {
+        classifier = 'deployment'
+    }
 }
 
 
