@@ -60,10 +60,15 @@ dependencies {
   testImplementation 'junit:junit:4.12'
 }
 
-// Needed for Jitpack in extensions
+
+// ##### BEGIN Jitpack section #####
+
 // War plugin typically disables jar build
+// and doesn't work great with Jitpack
+assemble.dependsOn = []
 assemble.dependsOn jar
 
+task buildWar(dependsOn: ['war'])
 
 artifacts {
   	archives file: file('libs/explorviz-common-1.0.jar'), name: 'explorviz-common', type: 'jar'
@@ -74,7 +79,6 @@ artifacts {
 
 jar {
   baseName = project.name 
-  from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
 }
 
 
@@ -94,7 +98,7 @@ install {
   }
 }
 
-
+// ##### END Jitpack section #####
 
 // Embedded Webserver
 gretty {
