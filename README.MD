@@ -7,8 +7,15 @@ This is only the backend, you will need the [explorviz-ui-frontend](https://gith
 
 This gradle project includes or installs every necessary dependency.
 
+### Eclipse Setup
+1. Download the latest **Eclipse IDE for Java and DSL Developers** and Java SDK 8
+2. *Start Eclipse -> Help -> Eclipse Marketplace*, insert and download
+- *eclipse-pmd 1.10*
+- *FindBugs Eclipse Plugin 3.0.2*
+- *Checkstyle Plug-in 8.0.0*
+
 ## Setup Development
-1. Download the Eclipse IDE for Java and DSL Developers and Java SDK 8
+1. Follow the [Eclipse Setup](https://github.com/ExplorViz/explorviz-backend#eclipse-setup)
 2. Clone this repository
 3. Import project into eclipse: via *Import -> Gradle -> Existing Gradle project -> path/to/explorviz-backend*
 4. In Eclipse: explorviz-backend: *Project -> Clean* (to generate .java files from .xtend files (xtend-gen))
