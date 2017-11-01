@@ -14,3 +14,5 @@ bin
 .settings/*
 !.settings/edu.umd.cs.findbugs.core.prefs
 !.settings/org.eclipse.jdt.ui.prefs
+
+.ruleset
