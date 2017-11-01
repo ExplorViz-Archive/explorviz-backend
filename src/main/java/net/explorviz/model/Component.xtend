@@ -16,7 +16,7 @@ class Component extends Draw3DNodeEntity {
 
 	@Relationship("children")
 	@Accessors var List<Component> children = new ArrayList<Component>
-	
+
 	@Relationship("clazzes")
 	@Accessors var List<Clazz> clazzes = new ArrayList<Clazz>
 
@@ -27,17 +27,13 @@ class Component extends Draw3DNodeEntity {
 	@Accessors Application belongingApplication
 
 	var boolean opened = false
-	
-	new(String id) {
-		this.id = id
-	}
 
 	def boolean isOpened() {
 		opened
 	}
 
 	def void setOpened(boolean openedParam) {
-		if (!openedParam) setAllChildrenUnopened()
+		if(!openedParam) setAllChildrenUnopened()
 
 		this.opened = openedParam
 	}
@@ -52,13 +48,12 @@ class Component extends Draw3DNodeEntity {
 		for (child : children)
 			child.openAllComponents()
 	}
-	
+
 	def void closeAllComponents() {
 		opened = false
 		for (child : children)
 			child.closeAllComponents()
 	}
-
 
 	def void clearAllPrimitiveObjects() {
 //		this.primitiveObjects.clear()

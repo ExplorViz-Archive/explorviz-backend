@@ -36,11 +36,6 @@ class Application extends DrawNodeEntity {
 	
 	@Relationship("databaseQueries")
 	@Accessors List<DatabaseQuery> databaseQueries = new ArrayList<DatabaseQuery>
-	
-	new(String id) {
-		this.id = id
-	}
-
 
 	def void clearAllPrimitiveObjects() {
 		for (component : components)

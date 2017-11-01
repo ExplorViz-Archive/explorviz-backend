@@ -20,11 +20,11 @@ class LandscapeDummyCreator {
 	def static createSimpleExample() {
 		applicationId = 0
 
-		val landscape = new Landscape(String.valueOf(counter++))
+		val landscape = new Landscape()
 		landscape.hash = java.lang.System.currentTimeMillis
 		landscape.activities = new Random().nextInt(300000)
 
-		val ocnEditor = new System(String.valueOf(counter++))
+		val ocnEditor = new System()
 		ocnEditor.name = "OCN Editor"
 		ocnEditor.parent = landscape
 		landscape.systems.add(ocnEditor)
@@ -36,18 +36,18 @@ class LandscapeDummyCreator {
 		ocnEditorNodeGroup.nodes.add(ocnEditorNode)
 		ocnEditor.nodeGroups.add(ocnEditorNodeGroup)
 
-		val ocnDatabase = new System(String.valueOf(counter++))
+		val ocnDatabase = new System()
 		ocnDatabase.name = "OCN Database"
 		ocnDatabase.parent = landscape
 		landscape.systems.add(ocnDatabase)
 
-		val org = new Component(String.valueOf(counter++))
+		val org = new Component()
 		org.name = "org"
 		org.fullQualifiedName = "org"
 		org.parentComponent = null
 		org.belongingApplication = ocnEditorApp
 
-		val demoClass = new Clazz(String.valueOf(counter++))
+		val demoClass = new Clazz()
 		demoClass.name = "demo"
 		demoClass.fullQualifiedName = "org.demo"
 		demoClass.instanceCount = 100
@@ -65,11 +65,11 @@ class LandscapeDummyCreator {
 	def static createDummyLandscape() {
 		applicationId = 0
 
-		val landscape = new Landscape(String.valueOf(counter++))
+		val landscape = new Landscape()
 		landscape.hash = java.lang.System.currentTimeMillis
 		landscape.activities = new Random().nextInt(300000)
 
-		val requestSystem= new System(String.valueOf(counter++))
+		val requestSystem= new System()
 		requestSystem.name = "Requests"
 		requestSystem.parent = landscape
 		landscape.systems.add(requestSystem)
@@ -81,7 +81,7 @@ class LandscapeDummyCreator {
 		requestsNodeGroup.nodes.add(requestsNode)
 		requestSystem.nodeGroups.add(requestsNodeGroup)
 		
-		val ocnEditor = new System(String.valueOf(counter++))
+		val ocnEditor = new System()
 		ocnEditor.name = "OCN Editor"
 		ocnEditor.parent = landscape
 		landscape.systems.add(ocnEditor)
@@ -100,7 +100,7 @@ class LandscapeDummyCreator {
 		ocnEditorNodeGroup2.nodes.add(ocnEditorNode2)
 		ocnEditor.nodeGroups.add(ocnEditorNodeGroup2)
 
-		val ocnDatabase = new System(String.valueOf(counter++))
+		val ocnDatabase = new System()
 		ocnDatabase.name = "OCN Database"
 		ocnDatabase.parent = landscape
 		landscape.systems.add(ocnDatabase)
@@ -119,7 +119,7 @@ class LandscapeDummyCreator {
 		ocnDatabaseNodeGroup2.nodes.add(ocnDatabaseNode2)
 		ocnDatabase.nodeGroups.add(ocnDatabaseNodeGroup2)
 
-		val kielprints = new System(String.valueOf(counter++))
+		val kielprints = new System()
 		kielprints.name = "OceanRep"
 		kielprints.parent = landscape
 		landscape.systems.add(kielprints)
@@ -140,7 +140,7 @@ class LandscapeDummyCreator {
 		kielprintsNodeGroup2.nodes.add(kielprintsNode2)
 		kielprints.nodeGroups.add(kielprintsNodeGroup2)
 
-		val portal = new System(String.valueOf(counter++))
+		val portal = new System()
 		portal.name = "OSIS-Kiel"
 		portal.parent = landscape
 		landscape.systems.add(portal)
@@ -159,7 +159,7 @@ class LandscapeDummyCreator {
 		portalNodeGroup2.nodes.add(portalNode2)
 		portal.nodeGroups.add(portalNodeGroup2)
 
-		val pangea = new System(String.valueOf(counter++))
+		val pangea = new System()
 		pangea.name = "WDC-Mare"
 		pangea.parent = landscape
 		landscape.systems.add(pangea)
@@ -180,7 +180,7 @@ class LandscapeDummyCreator {
 		pangeaNodeGroup2.nodes.add(pangeaNode2)
 		pangea.nodeGroups.add(pangeaNodeGroup2)
 
-		val pubflow = new System(String.valueOf(counter++))
+		val pubflow = new System()
 		pubflow.name = "PubFlow"
 		pubflow.parent = landscape
 		landscape.systems.add(pubflow)
@@ -299,21 +299,21 @@ class LandscapeDummyCreator {
 	}
 
 	def private static createNodeGroup(String name, Landscape parent, System system) {
-		val nodeGroup = new NodeGroup(String.valueOf(counter++))
+		val nodeGroup = new NodeGroup()
 		nodeGroup.name = name
 		nodeGroup.parent = system
 		nodeGroup
 	}
 
 	def private static createNode(String ipAddress, NodeGroup parent) {
-		val node = new Node(String.valueOf(counter++))
+		val node = new Node()
 		node.ipAddress = ipAddress
 		node.parent = parent
 		node
 	}
 
 	def private static createApplication(String name, Node parent) {
-		val application = new Application(String.valueOf(counter++))
+		val application = new Application()
 
 		//val newId = applicationId
 		//application.id = newId
@@ -339,7 +339,7 @@ class LandscapeDummyCreator {
 	}
 
 	def private static createCommunication(Application source, Application target, Landscape landscape, int requests) {
-		val communication = new Communication(String.valueOf(counter++))
+		val communication = new Communication()
 		communication.source = source
 		communication.target = target
 		communication.requests = requests
@@ -413,7 +413,7 @@ class LandscapeDummyCreator {
 	//		createCommuClazz(20, orderDao, orderBean, application)
 	//	}
 	def private static createClazz(String name, Component component, int instanceCount) {
-		val clazz = new Clazz(String.valueOf(counter++))
+		val clazz = new Clazz()
 		clazz.name = name
 		clazz.fullQualifiedName = component.fullQualifiedName + "." + name
 		clazz.instanceCount = instanceCount
@@ -423,7 +423,7 @@ class LandscapeDummyCreator {
 	}
 
 	def private static createComponent(String name, Component parent, Application app) {
-		val component = new Component(String.valueOf(counter++))
+		val component = new Component()
 		component.name = name
 		component.parentComponent = parent
 		component.belongingApplication = app
@@ -437,7 +437,7 @@ class LandscapeDummyCreator {
 	}
 
 	def private static createCommuClazz(int requests, Clazz source, Clazz target, Application application) {
-		val commu = new CommunicationClazz(String.valueOf(counter++))
+		val commu = new CommunicationClazz()
 		commu.addRuntimeInformation(0L, 1, 1, requests, 10, 10)
 		commu.methodName = "getMethod()"
 

@@ -14,10 +14,6 @@ class TimestampStorage extends BaseEntity {
 	@Relationship("timestamps")
 	@Accessors List<Timestamp> timestamps = new ArrayList<Timestamp>
 
-	new(String id) {
-		this.id = id
-	}
-
 	def void addTimestamp(Timestamp t) {
 		timestamps.add(t)
 	}

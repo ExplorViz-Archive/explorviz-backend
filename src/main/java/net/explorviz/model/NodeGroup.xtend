@@ -11,7 +11,7 @@ import com.github.jasminb.jsonapi.annotations.Type
 
 @Type("nodegroup")
 class NodeGroup extends DrawNodeEntity {
-	
+
 	@Relationship("parent")
 	@Accessors List<Node> nodes = new ArrayList<Node>
 
@@ -19,12 +19,8 @@ class NodeGroup extends DrawNodeEntity {
 	@Accessors var System parent
 
 	@Accessors boolean visible = true
-	
+
 	var boolean opened
-	
-	new(String id) {
-		this.id = id
-	}
 
 	def boolean isOpened() {
 		opened

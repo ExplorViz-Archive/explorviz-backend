@@ -22,10 +22,6 @@ class Node extends DrawNodeEntity {
 
 	@Relationship("parent")
 	@Accessors NodeGroup parent
-	
-	new(String id) {
-		this.id = id
-	}
 
 	public def String getDisplayName() {
 		if (this.parent.opened) {

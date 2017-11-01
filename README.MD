@@ -10,11 +10,10 @@ This gradle project includes or installs every necessary dependency.
 ## Setup Development
 1. Download the Eclipse IDE for Java and DSL Developers and Java SDK 8
 2. Clone this repository
-3. Navigate to the cloned folder and run `gradlew eclipse` (to generate eclipse files)
-4. Import project into eclipse: via *Import -> Gradle -> Existing Gradle project -> path/to/explorviz-backend*
-5. In Eclipse: explorviz-backend: *Project -> Clean* (to generate .java files from .xtend files (xtend-gen))
-6. Start **explorviz-backend** via Eclipse Tab: *Gradle Tasks -> explorviz-backend -> gretty -> appStart*
-7. Setup and start [explorviz-ui-frontend](https://github.com/ExplorViz/explorviz-ui-frontend)
+3. Import project into eclipse: via *Import -> Gradle -> Existing Gradle project -> path/to/explorviz-backend*
+4. In Eclipse: explorviz-backend: *Project -> Clean* (to generate .java files from .xtend files (xtend-gen))
+5. Start **explorviz-backend** via Eclipse Tab: *Gradle Tasks -> explorviz-backend -> gretty -> appStart*
+6. Setup and start [explorviz-ui-frontend](https://github.com/ExplorViz/explorviz-ui-frontend)
 
 To force the download of newly added dependencies: *Right click explorviz-backend -> Grade -> Refresh Gradle Project*. 
 

@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import explorviz.live_trace_processing.record.IRecord;
 import explorviz.live_trace_processing.record.event.AbstractAfterEventRecord;
@@ -37,7 +36,6 @@ import net.explorviz.server.repository.helper.Signature;
 import net.explorviz.server.repository.helper.SignatureParser;
 
 public class InsertionRepositoryPart {
-	public static AtomicInteger counter = new AtomicInteger(2);
 	private static final String DEFAULT_COMPONENT_NAME = "(default)";
 
 	private final Map<String, Node> nodeCache = new HashMap<String, Node>();
@@ -130,7 +128,7 @@ public class InsertionRepositoryPart {
 			}
 		}
 
-		final System system = new System(String.valueOf(counter.addAndGet(1)));
+		final System system = new System();
 		system.setName(systemname);
 		system.setParent(landscape);
 		landscape.getSystems().add(system);
@@ -160,7 +158,7 @@ public class InsertionRepositoryPart {
 		Node node = nodeCache.get(nodeName);
 
 		if (node == null) {
-			node = new Node(String.valueOf(counter.addAndGet(1)));
+			node = new Node();
 			node.setIpAddress(hostApplicationRecord.getIpaddress());
 			node.setName(hostApplicationRecord.getHostname());
 			nodeCache.put(nodeName, node);
@@ -181,7 +179,7 @@ public class InsertionRepositoryPart {
 			}
 		}
 
-		final NodeGroup nodeGroup = new NodeGroup(String.valueOf(counter.addAndGet(1)));
+		final NodeGroup nodeGroup = new NodeGroup();
 		nodeGroup.setName(node.getIpAddress());
 		system.getNodeGroups().add(nodeGroup);
 		nodeGroup.setParent(system);
@@ -215,7 +213,7 @@ public class InsertionRepositoryPart {
 		Application application = applicationCache.get(node.getName() + "_" + applicationName);
 
 		if (application == null) {
-			application = new Application(String.valueOf(counter.addAndGet(1)));
+			application = new Application();
 
 			application.setDatabase(isApplicationDatabase(applicationName));
 			// application.setId((node.getName() + "_" + applicationName).hashCode());
@@ -325,7 +323,7 @@ public class InsertionRepositoryPart {
 
 					if (abstractBeforeEventRecord instanceof BeforeJDBCOperationEventRecord) {
 						final BeforeJDBCOperationEventRecord jdbcOperationEventRecord = (BeforeJDBCOperationEventRecord) abstractBeforeEventRecord;
-						final DatabaseQuery databaseQuery = new DatabaseQuery(String.valueOf(counter.addAndGet(1)));
+						final DatabaseQuery databaseQuery = new DatabaseQuery();
 						databaseQuery.setSQLStatement(jdbcOperationEventRecord.getSqlStatement());
 						currentApplication.getDatabaseQueries().add(databaseQuery);
 					}
@@ -433,7 +431,7 @@ public class InsertionRepositoryPart {
 			}
 		}
 
-		final CommunicationClazz commu = new CommunicationClazz(String.valueOf(counter.addAndGet(1)));
+		final CommunicationClazz commu = new CommunicationClazz();
 
 		commu.setSource(caller);
 		commu.setTarget(callee);
@@ -493,7 +491,7 @@ public class InsertionRepositoryPart {
 					return seekrOrCreateClazzHelper(fullQName, splittedName, application, component, index + 1);
 				}
 			}
-			final Component component = new Component(String.valueOf(counter.addAndGet(1)));
+			final Component component = new Component();
 			String fullQNameComponent = "";
 			for (int i = 0; i <= index; i++) {
 				fullQNameComponent += splittedName[i] + ".";
@@ -515,7 +513,7 @@ public class InsertionRepositoryPart {
 				}
 
 				if (parent == null) {
-					final Component component = new Component(String.valueOf(counter.addAndGet(1)));
+					final Component component = new Component();
 					component.setFullQualifiedName(DEFAULT_COMPONENT_NAME);
 					component.setName(DEFAULT_COMPONENT_NAME);
 					component.setParentComponent(null);
@@ -531,7 +529,7 @@ public class InsertionRepositoryPart {
 				}
 			}
 
-			final Clazz clazz = new Clazz(String.valueOf(counter.addAndGet(1)));
+			final Clazz clazz = new Clazz();
 			clazz.setName(currentPart);
 			clazz.setFullQualifiedName(fullQName);
 			clazz.setParent(parent);

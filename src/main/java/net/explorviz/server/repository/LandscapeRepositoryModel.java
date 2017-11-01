@@ -4,8 +4,12 @@ import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+
 import org.nustaq.serialization.FSTConfiguration;
-import net.explorviz.server.main.Configuration;
+
+import explorviz.live_trace_processing.reader.IPeriodicTimeSignalReceiver;
+import explorviz.live_trace_processing.reader.TimeSignalReader;
+import explorviz.live_trace_processing.record.IRecord;
 import net.explorviz.model.Application;
 import net.explorviz.model.Clazz;
 import net.explorviz.model.Communication;
@@ -15,9 +19,7 @@ import net.explorviz.model.Landscape;
 import net.explorviz.model.Node;
 import net.explorviz.model.NodeGroup;
 import net.explorviz.model.System;
-import explorviz.live_trace_processing.reader.IPeriodicTimeSignalReceiver;
-import explorviz.live_trace_processing.reader.TimeSignalReader;
-import explorviz.live_trace_processing.record.IRecord;
+import net.explorviz.server.main.Configuration;
 
 public class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiver {
 	private static final boolean LOAD_LAST_LANDSCAPE_ON_LOAD = false;
@@ -37,12 +39,12 @@ public class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiver {
 			try {
 				readLandscape = RepositoryStorage.readFromFile(java.lang.System.currentTimeMillis());
 			} catch (final FileNotFoundException e) {
-				readLandscape = new Landscape("1");
+				readLandscape = new Landscape();
 			}
 
 			internalLandscape = readLandscape;
 		} else {
-			internalLandscape = new Landscape("1");
+			internalLandscape = new Landscape();
 		}
 
 		insertionRepositoryPart = new InsertionRepositoryPart();
@@ -50,7 +52,7 @@ public class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiver {
 
 		internalLandscape.updateLandscapeAccess(java.lang.System.nanoTime());
 
-		Landscape l = fstConf.deepCopy(internalLandscape);
+		final Landscape l = fstConf.deepCopy(internalLandscape);
 
 		lastPeriodLandscape = LandscapePreparer.prepareLandscape(l);
 
@@ -111,15 +113,15 @@ public class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiver {
 				// TODO: passed timestamp meaning?
 				// => using own created timestamp for creating landscape
 
-				long requestedTimestamp = java.lang.System.currentTimeMillis();
+				final long requestedTimestamp = java.lang.System.currentTimeMillis();
 
 				if (!Configuration.DUMMYMODE) {
 					RepositoryStorage.writeToFile(internalLandscape, requestedTimestamp);
-					Landscape l = fstConf.deepCopy(internalLandscape);
+					final Landscape l = fstConf.deepCopy(internalLandscape);
 					l.setTimestamp(requestedTimestamp);
 					lastPeriodLandscape = LandscapePreparer.prepareLandscape(l);
 				} else {
-					Landscape dummyLandscape = LandscapeDummyCreator.createDummyLandscape();
+					final Landscape dummyLandscape = LandscapeDummyCreator.createDummyLandscape();
 					dummyLandscape.setTimestamp(requestedTimestamp);
 					RepositoryStorage.writeToFile(dummyLandscape, requestedTimestamp);
 					lastPeriodLandscape = dummyLandscape;

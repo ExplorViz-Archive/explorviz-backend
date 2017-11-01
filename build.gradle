@@ -106,4 +106,8 @@ gretty {
 	httpPort = loadProperties().httpPort.toInteger()
 	servletContainer = loadProperties().servletContainer
 	contextPath = loadProperties().contextPath
+	recompileOnSourceChange = false
+  	reloadOnClassChange = false
+  	reloadOnConfigChange = false
+  	reloadOnLibChange = false
 }

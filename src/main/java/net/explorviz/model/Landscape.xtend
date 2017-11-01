@@ -15,29 +15,25 @@ class Landscape extends BaseEntity {
 	@Accessors long hash
 	@Accessors long timestamp
 	@Accessors long activities
-	
+
 	@Relationship("systems")
 	@Accessors List<System> systems = new ArrayList<System>
 
 	@Relationship("applicationCommunication")
 	@Accessors List<Communication> applicationCommunication = new ArrayList<Communication>
-	
+
 	@Accessors Map<Long, String> events = new TreeMap<Long, String>
-	
+
 	@Accessors Map<Long, String> errors = new TreeMap<Long, String>
-	
+
 	@Relationship("communicationsAccumulated")
 	@Accessors val transient List<CommunicationAccumulator> communicationsAccumulated = new ArrayList<CommunicationAccumulator>(
 		4)
-		
-	new(String id) {
-		this.id = id
-	}
 
 	def void updateLandscapeAccess(long timeInNano) {
 		setHash(timeInNano)
 	}
-	
+
 	def void updateTimestamp(long timestamp) {
 		setTimestamp(timestamp)
 	}

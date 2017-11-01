@@ -80,7 +80,7 @@ public class RepositoryStorage {
 			java.lang.System.err.println(e);
 		}
 
-		return new Landscape("1");
+		return new Landscape();
 	}
 
 	public static void saveTargetArchitecture(final Landscape landscape) {

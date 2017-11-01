@@ -88,7 +88,7 @@ public class LandscapeExchangeService {
 		final File directory = new File(REPOSITORY_FOLDER);
 		final File[] fList = directory.listFiles();
 
-		final TimestampStorage timestampStorage = new TimestampStorage("0");
+		final TimestampStorage timestampStorage = new TimestampStorage();
 
 		for (final File f : fList) {
 
@@ -115,7 +115,7 @@ public class LandscapeExchangeService {
 				// continue;
 				// }
 
-				final Timestamp newTimestamp = new Timestamp(String.valueOf(timestamp), activity);
+				final Timestamp newTimestamp = new Timestamp(activity);
 				timestampStorage.addTimestamp(newTimestamp);
 			}
 		}

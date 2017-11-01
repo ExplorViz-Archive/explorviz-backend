@@ -132,8 +132,7 @@ public class RemoteCallRepositoryPart {
 				return;
 			}
 		}
-		final Communication communication = new Communication(
-				String.valueOf(InsertionRepositoryPart.counter.addAndGet(1)));
+		final Communication communication = new Communication();
 		communication.setSource(callerApplication);
 		communication.setSourceClazz(sentRemoteClazz);
 

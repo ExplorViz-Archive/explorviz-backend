@@ -9,7 +9,7 @@ import com.github.jasminb.jsonapi.annotations.Type
 
 @Type("system")
 class System extends DrawNodeEntity {
-	
+
 	@Relationship("nodegroups")
 	@Accessors List<NodeGroup> nodeGroups = new ArrayList<NodeGroup>
 
@@ -17,11 +17,7 @@ class System extends DrawNodeEntity {
 	@Accessors Landscape parent
 
 	var boolean opened = true
-	
-	new(String id) {
-		this.id = id
-	}
-		
+
 	def boolean isOpened() {
 		opened
 	}

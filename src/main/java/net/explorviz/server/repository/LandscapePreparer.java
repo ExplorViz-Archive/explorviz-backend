@@ -12,7 +12,7 @@ public class LandscapePreparer {
 
 	public static Landscape prepareLandscape(final Landscape landscape) {
 		if (landscape == null) {
-			return new Landscape("");
+			return new Landscape();
 		}
 
 		for (final System system : landscape.getSystems()) {
@@ -20,7 +20,7 @@ public class LandscapePreparer {
 				for (final Node node : nodeGroup.getNodes()) {
 					for (final Application application : node.getApplications()) {
 
-						final Component foundationComponent = new Component("0");
+						final Component foundationComponent = new Component();
 						foundationComponent.setFoundation(true);
 						foundationComponent.setOpened(true);
 						foundationComponent.setName(application.getName());

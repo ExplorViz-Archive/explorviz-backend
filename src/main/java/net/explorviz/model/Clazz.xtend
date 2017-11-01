@@ -17,11 +17,6 @@ class Clazz extends Draw3DNodeEntity {
 	@Accessors Component parent
 	
 	@Accessors var boolean visible = false
-	
-	new(String id) {
-		this.id = id
-	}
-
 
 	def void clearAllPrimitiveObjects() {
 //		this.primitiveObjects.clear()

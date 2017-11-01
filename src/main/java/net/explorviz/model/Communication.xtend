@@ -14,18 +14,14 @@ class Communication extends DrawEdgeEntity {
 
 	@Relationship("source")
 	@Accessors Application source
-	
+
 	@Relationship("target")
 	@Accessors Application target
 
 	@Relationship("sourceClazz")
 	@Accessors Clazz sourceClazz
-	
+
 	@Relationship("targetClazz")
 	@Accessors Clazz targetClazz
-	
-	new(String id) {
-		this.id = id
-	}
 
 }

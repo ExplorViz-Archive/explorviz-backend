@@ -7,14 +7,13 @@ import com.github.jasminb.jsonapi.annotations.Relationship
 
 @Type("timestamp")
 class Timestamp extends BaseEntity {
-	
+
 	@Relationship("parent")
 	@Accessors TimestampStorage parent
-	
+
 	@Accessors long calls
-		
-	new(String id, long calls) {
-		this.id = id
+
+	new(long calls) {
 		this.calls = calls
 	}
 }
