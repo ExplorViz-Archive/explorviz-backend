@@ -6,15 +6,14 @@ import javax.annotation.Priority;
 import javax.inject.Inject;
 import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
-import javax.ws.rs.ext.Provider;
-
-import org.hibernate.Session;
-
 import javax.ws.rs.Priorities;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.ext.Provider;
+
+import org.hibernate.Session;
 
 import net.explorviz.server.repository.HibernateSessionFactory;
 import net.explorviz.server.security.Secured;
@@ -25,24 +24,24 @@ import net.explorviz.server.security.User;
 @Priority(Priorities.AUTHENTICATION)
 public class AuthenticationRequestFilter implements ContainerRequestFilter {
 
-	private HibernateSessionFactory sessionFactory;
+	private final HibernateSessionFactory sessionFactory;
 
 	@Inject
-	public AuthenticationRequestFilter(HibernateSessionFactory sessionFactory) {
+	public AuthenticationRequestFilter(final HibernateSessionFactory sessionFactory) {
 		this.sessionFactory = sessionFactory;
 	}
 
 	@Override
-	public void filter(ContainerRequestContext requestContext) throws IOException {
+	public void filter(final ContainerRequestContext requestContext) throws IOException {
 
-		String authorizationHeader = requestContext.getHeaderString(HttpHeaders.AUTHORIZATION);
+		final String authorizationHeader = requestContext.getHeaderString(HttpHeaders.AUTHORIZATION);
 
 		if (authorizationHeader == null || !authorizationHeader.startsWith("Basic")) {
 			requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED).build());
 			return;
 		}
 
-		String token = authorizationHeader.substring("Basic".length()).trim();
+		final String token = authorizationHeader.substring("Basic".length()).trim();
 
 		if (!validateToken(token)) {
 			requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED).build());
@@ -51,17 +50,17 @@ public class AuthenticationRequestFilter implements ContainerRequestFilter {
 		// user authenticated => everything ok
 	}
 
-	private boolean validateToken(String token) {
+	private boolean validateToken(final String token) {
 		User currentUser = null;
 
-		Session session = sessionFactory.beginTransaction();
+		final Session session = sessionFactory.beginTransaction();
 
-		TypedQuery<User> query = session.createQuery("FROM USERS where token = :token ", User.class);
+		final TypedQuery<User> query = session.createQuery("FROM USERS where token = :token ", User.class);
 		query.setParameter("token", token);
 
 		try {
 			currentUser = query.getSingleResult();
-		} catch (NoResultException e) {
+		} catch (final NoResultException e) {
 			return false;
 		}
 

@@ -12,15 +12,14 @@ public class LandscapePreparer {
 
 	public static Landscape prepareLandscape(final Landscape landscape) {
 		if (landscape == null) {
-			Landscape l = new Landscape("");
-			return l;
+			return new Landscape("");
 		}
 
 		for (final System system : landscape.getSystems()) {
 			for (final NodeGroup nodeGroup : system.getNodeGroups()) {
 				for (final Node node : nodeGroup.getNodes()) {
-					for (final Application application : node.getApplications()) {						 
-						
+					for (final Application application : node.getApplications()) {
+
 						final Component foundationComponent = new Component("0");
 						foundationComponent.setFoundation(true);
 						foundationComponent.setOpened(true);
@@ -35,8 +34,8 @@ public class LandscapePreparer {
 							setComponentAttributes(child, 0, true);
 						}
 
-						//application.getComponents().clear();
-						//application.getComponents().add(foundationComponent);
+						// application.getComponents().clear();
+						// application.getComponents().add(foundationComponent);
 					}
 				}
 
@@ -69,26 +68,12 @@ public class LandscapePreparer {
 			openNextLevel = false;
 		}
 
-		if ((index % 2) == 1) {
-			if (component.isSynthetic()) {
-				// component.setColor(ColorDefinitions.componentSyntheticColor);
-			} else {
-				// component.setColor(ColorDefinitions.componentFirstColor);
-			}
-		} else {
-			if (component.isSynthetic()) {
-				// component.setColor(ColorDefinitions.componentSyntheticSecondColor);
-			} else {
-				// component.setColor(ColorDefinitions.componentSecondColor);
-			}
-		}
-
 		for (final Component child : component.getChildren()) {
 			setComponentAttributes(child, index + 1, openNextLevel);
 		}
 	}
 
-	private static final void createApplicationInAndOutgoing(final Communication communication) {
+	private static void createApplicationInAndOutgoing(final Communication communication) {
 		final Application sourceApp = communication.getSource();
 		if (sourceApp != null) {
 			sourceApp.getOutgoingCommunications().add(communication);

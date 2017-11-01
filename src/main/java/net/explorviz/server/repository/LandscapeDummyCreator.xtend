@@ -14,9 +14,8 @@ import net.explorviz.model.helper.ELanguage
 import java.util.Random
 
 class LandscapeDummyCreator {
-	var static int applicationId = 0
-	
 	public var static int counter = 1;
+	var static int applicationId = 0
 
 	def static createSimpleExample() {
 		applicationId = 0

@@ -9,14 +9,13 @@ import javax.ws.rs.core.Context
 import javax.servlet.ServletContext
 
 class HibernateSessionFactory {
+	private static SessionFactory instance = null
 	
 	ServletContext servletContext;
 	
 	new(@Context ServletContext servletContext) {
 		this.servletContext = servletContext
-	}
-
-	private static SessionFactory INSTANCE = null
+	}	
 
 	def synchronized beginTransaction() {
 		val session = getInstance().openSession();
@@ -30,8 +29,8 @@ class HibernateSessionFactory {
 	}
 
 	def synchronized getInstance() {
-		if (INSTANCE !== null) {
-			return INSTANCE
+		if (net.explorviz.server.repository.HibernateSessionFactory.instance !== null) {
+			return net.explorviz.server.repository.HibernateSessionFactory.instance
 		} else {
 			// config in src/main/webapp/WEB-INF/hibernate.cfg.xml
 			val pathToHibernateConf = "/WEB-INF/hibernate.cfg.xml"		
@@ -39,8 +38,8 @@ class HibernateSessionFactory {
 			
 			val StandardServiceRegistry registry = new StandardServiceRegistryBuilder().configure(configFile).build();
 			try {
-				INSTANCE = new MetadataSources(registry).buildMetadata().buildSessionFactory();
-				return INSTANCE
+				net.explorviz.server.repository.HibernateSessionFactory.instance = new MetadataSources(registry).buildMetadata().buildSessionFactory();
+				return net.explorviz.server.repository.HibernateSessionFactory.instance
 			} catch (Exception e) {
 				StandardServiceRegistryBuilder.destroy(registry);
 				throw (e)

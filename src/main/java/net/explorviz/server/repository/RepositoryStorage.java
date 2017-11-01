@@ -1,41 +1,55 @@
 package net.explorviz.server.repository;
 
-import java.io.*;
-import java.util.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.Map;
 import java.util.Map.Entry;
+import java.util.TreeMap;
 import java.util.concurrent.TimeUnit;
 
 import org.nustaq.serialization.FSTConfiguration;
 import org.nustaq.serialization.FSTObjectInput;
 import org.nustaq.serialization.FSTObjectOutput;
 
-import net.explorviz.server.main.Configuration;
-import net.explorviz.model.*;
+import net.explorviz.model.Application;
+import net.explorviz.model.Clazz;
+import net.explorviz.model.Communication;
+import net.explorviz.model.CommunicationClazz;
+import net.explorviz.model.Component;
+import net.explorviz.model.DatabaseQuery;
+import net.explorviz.model.Landscape;
+import net.explorviz.model.Node;
+import net.explorviz.model.NodeGroup;
+import net.explorviz.model.RuntimeInformation;
 import net.explorviz.model.System;
 import net.explorviz.model.helper.CommunicationAccumulator;
 import net.explorviz.model.helper.CommunicationTileAccumulator;
-import net.explorviz.model.helper.Point;
 import net.explorviz.model.helper.ELanguage;
+import net.explorviz.model.helper.Point;
+import net.explorviz.server.main.Configuration;
 import net.explorviz.server.main.FileSystemHelper;
 
 public class RepositoryStorage {
-	private static String FOLDER;
-	private static String FOLDER_FOR_TARGET_MODEL;
-	private static String FILENAME_FOR_TARGET_MODEL = "targetModel" + Configuration.MODEL_EXTENSION;
+	private static String folder;
+	private static String folderForTargetModel;
+	private static String filenameForTargetModel = "targetModel" + Configuration.MODEL_EXTENSION;
 
-	private static final FSTConfiguration fstConf;
+	private static final FSTConfiguration FST_CONF;
 
 	private static final int HISTORY_INTERVAL_IN_MINUTES = 24 * 60; // one day
 
 	static {
-		fstConf = createFSTConfiguration();
+		FST_CONF = createFSTConfiguration();
 
-		FOLDER = FileSystemHelper.getExplorVizDirectory() + "/" + "landscapeRepository";
-		FOLDER_FOR_TARGET_MODEL = FileSystemHelper.getExplorVizDirectory();
+		folder = FileSystemHelper.getExplorVizDirectory() + "/" + "landscapeRepository";
+		folderForTargetModel = FileSystemHelper.getExplorVizDirectory();
 
-		java.lang.System.out.println("writing to " + FOLDER);
+		java.lang.System.out.println("writing to " + folder);
 
-		new File(FOLDER).mkdir();
+		new File(folder).mkdir();
 	}
 
 	public static FSTConfiguration createFSTConfiguration() {
@@ -61,38 +75,39 @@ public class RepositoryStorage {
 
 	public static Landscape readTargetArchitecture() {
 		try {
-			return readFromFileGeneric(FOLDER_FOR_TARGET_MODEL, FILENAME_FOR_TARGET_MODEL);
+			return readFromFileGeneric(folderForTargetModel, filenameForTargetModel);
 		} catch (final FileNotFoundException e) {
+			java.lang.System.err.println(e);
 		}
 
 		return new Landscape("1");
 	}
 
 	public static void saveTargetArchitecture(final Landscape landscape) {
-		writeToFileGeneric(landscape, FOLDER_FOR_TARGET_MODEL, FILENAME_FOR_TARGET_MODEL);
+		writeToFileGeneric(landscape, folderForTargetModel, filenameForTargetModel);
 	}
 
 	public static void writeToFile(final Landscape landscape, final long timestamp) {
-		writeToFileGeneric(landscape, FOLDER, timestamp + "-" + landscape.getActivities()
-				+ Configuration.MODEL_EXTENSION);
+		writeToFileGeneric(landscape, folder,
+				timestamp + "-" + landscape.getActivities() + Configuration.MODEL_EXTENSION);
 	}
 
 	private static void writeToFileGeneric(final Landscape landscape, final String destFolder,
 			final String destFilename) {
 		FSTObjectOutput output = null;
 		try {
-			output = fstConf.getObjectOutput(new FileOutputStream(destFolder + "/" + destFilename));
+			output = FST_CONF.getObjectOutput(new FileOutputStream(destFolder + "/" + destFilename));
 			output.writeObject(landscape, Landscape.class);
 			output.close();
 		} catch (final FileNotFoundException e) {
 			e.printStackTrace();
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			e.printStackTrace();
 		} finally {
 			if (output != null) {
 				try {
 					output.close();
-				} catch (IOException e) {
+				} catch (final IOException e) {
 					e.printStackTrace();
 				}
 			}
@@ -105,8 +120,7 @@ public class RepositoryStorage {
 
 		for (final Entry<Long, Long> availableModel : availableModels.entrySet()) {
 			if (availableModel.getKey() <= timestamp) {
-				readInModel = availableModel.getKey() + "-" + availableModel.getValue()
-						+ Configuration.MODEL_EXTENSION;
+				readInModel = availableModel.getKey() + "-" + availableModel.getValue() + Configuration.MODEL_EXTENSION;
 			}
 		}
 
@@ -114,28 +128,28 @@ public class RepositoryStorage {
 			throw new FileNotFoundException("Model not found for timestamp " + timestamp);
 		}
 
-		return readFromFileGeneric(FOLDER, readInModel);
+		return readFromFileGeneric(folder, readInModel);
 	}
 
-	public static Landscape readFromFileGeneric(final String sourceFolder,
-			final String sourceFilename) throws FileNotFoundException {
-		
+	public static Landscape readFromFileGeneric(final String sourceFolder, final String sourceFilename)
+			throws FileNotFoundException {
+
 		final FileInputStream stream = new FileInputStream(sourceFolder + "/" + sourceFilename);
-		
-		final FSTObjectInput input = fstConf.getObjectInput(stream);
+
+		final FSTObjectInput input = FST_CONF.getObjectInput(stream);
 		Landscape landscape = null;
 		try {
 			landscape = (Landscape) input.readObject(Landscape.class);
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			e.printStackTrace();
 		}
 		try {
 			stream.close();
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		return landscape;
 	}
 
@@ -146,14 +160,13 @@ public class RepositoryStorage {
 	private static Map<Long, Long> getAvailableModels(final int minutesBackwards) {
 		final Map<Long, Long> result = new TreeMap<Long, Long>();
 
-		final File[] files = new File(FOLDER).listFiles();
+		final File[] files = new File(folder).listFiles();
 		for (final File file : files) {
 			if (isExplorVizFile(file)) {
 				final String[] split = file.getName().split("-");
 				final long timestamp = Long.parseLong(split[0]);
 
-				if ((java.lang.System.currentTimeMillis() - TimeUnit.MINUTES
-						.toMillis(minutesBackwards)) < timestamp) {
+				if ((java.lang.System.currentTimeMillis() - TimeUnit.MINUTES.toMillis(minutesBackwards)) < timestamp) {
 					final long activities = Long.parseLong(split[1].split("\\.")[0]);
 					result.put(timestamp, activities);
 				}
@@ -164,20 +177,20 @@ public class RepositoryStorage {
 	}
 
 	public static void cleanUpTooOldFiles(final long currentTimestamp) {
-		final long enddate = currentTimestamp
-				- TimeUnit.MINUTES.toMillis(HISTORY_INTERVAL_IN_MINUTES);
-		final File[] files = new File(FOLDER).listFiles();
+		final long enddate = currentTimestamp - TimeUnit.MINUTES.toMillis(HISTORY_INTERVAL_IN_MINUTES);
+		final File[] files = new File(folder).listFiles();
 		for (final File file : files) {
-			if (isExplorVizFile(file)) {
-				if (Long.parseLong(file.getName().substring(0, file.getName().indexOf("-"))) <= enddate) {
-					file.delete();
-				}
+			if (isExplorVizFile(file)
+					&& Long.parseLong(file.getName().substring(0, file.getName().indexOf("-"))) <= enddate) {
+
+				file.delete();
+
 			}
 		}
 	}
 
 	public static void clearRepository() {
-		final File[] files = new File(FOLDER).listFiles();
+		final File[] files = new File(folder).listFiles();
 		for (final File file : files) {
 			if (isExplorVizFile(file)) {
 				file.delete();

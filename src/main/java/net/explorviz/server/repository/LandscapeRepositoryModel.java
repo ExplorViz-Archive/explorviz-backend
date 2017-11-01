@@ -21,45 +21,13 @@ import explorviz.live_trace_processing.record.IRecord;
 
 public class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiver {
 	private static final boolean LOAD_LAST_LANDSCAPE_ON_LOAD = false;
+	private static LandscapeRepositoryModel instance = null;
 
 	private Landscape lastPeriodLandscape;
 	private final Landscape internalLandscape;
 	private final FSTConfiguration fstConf;
 	private final InsertionRepositoryPart insertionRepositoryPart;
 	private final RemoteCallRepositoryPart remoteCallRepositoryPart;
-
-	private static LandscapeRepositoryModel INSTANCE = null;
-
-	public static synchronized LandscapeRepositoryModel getInstance() {
-		if (LandscapeRepositoryModel.INSTANCE == null) {
-			LandscapeRepositoryModel.INSTANCE = new LandscapeRepositoryModel();
-		}
-		return LandscapeRepositoryModel.INSTANCE;
-	}
-
-	public final Landscape getLastPeriodLandscape() {
-		synchronized (lastPeriodLandscape) {
-			return lastPeriodLandscape;
-		}
-	}
-
-	public final Landscape getLandscape(final long timestamp) throws FileNotFoundException {
-		return LandscapePreparer.prepareLandscape(RepositoryStorage.readFromFile(timestamp));
-	}
-
-	public final Map<Long, Long> getAvailableLandscapes() {
-		return RepositoryStorage.getAvailableModelsForTimeshift();
-	}
-
-	static {
-		Configuration.databaseNames.add("hsqldb");
-		Configuration.databaseNames.add("postgres");
-		Configuration.databaseNames.add("db2");
-		Configuration.databaseNames.add("mysql");
-		Configuration.databaseNames.add("neo4j");
-		Configuration.databaseNames.add("database");
-		Configuration.databaseNames.add("hypersql");
-	}
 
 	private LandscapeRepositoryModel() {
 		fstConf = initFSTConf();
@@ -89,6 +57,37 @@ public class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiver {
 		new TimeSignalReader(TimeUnit.SECONDS.toMillis(Configuration.outputIntervalSeconds), this).start();
 	}
 
+	public static synchronized LandscapeRepositoryModel getInstance() {
+		if (LandscapeRepositoryModel.instance == null) {
+			LandscapeRepositoryModel.instance = new LandscapeRepositoryModel();
+		}
+		return LandscapeRepositoryModel.instance;
+	}
+
+	public final Landscape getLastPeriodLandscape() {
+		synchronized (lastPeriodLandscape) {
+			return lastPeriodLandscape;
+		}
+	}
+
+	public final Landscape getLandscape(final long timestamp) throws FileNotFoundException {
+		return LandscapePreparer.prepareLandscape(RepositoryStorage.readFromFile(timestamp));
+	}
+
+	public final Map<Long, Long> getAvailableLandscapes() {
+		return RepositoryStorage.getAvailableModelsForTimeshift();
+	}
+
+	static {
+		Configuration.databaseNames.add("hsqldb");
+		Configuration.databaseNames.add("postgres");
+		Configuration.databaseNames.add("db2");
+		Configuration.databaseNames.add("mysql");
+		Configuration.databaseNames.add("neo4j");
+		Configuration.databaseNames.add("database");
+		Configuration.databaseNames.add("hypersql");
+	}
+
 	public FSTConfiguration initFSTConf() {
 		return RepositoryStorage.createFSTConfiguration();
 	}
@@ -111,19 +110,18 @@ public class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiver {
 
 				// TODO: passed timestamp meaning?
 				// => using own created timestamp for creating landscape
-				
+
 				long requestedTimestamp = java.lang.System.currentTimeMillis();
-				
-				if (!Configuration.DUMMY_MODE) {
+
+				if (!Configuration.DUMMYMODE) {
 					RepositoryStorage.writeToFile(internalLandscape, requestedTimestamp);
 					Landscape l = fstConf.deepCopy(internalLandscape);
 					l.setTimestamp(requestedTimestamp);
 					lastPeriodLandscape = LandscapePreparer.prepareLandscape(l);
-				}
-				else {
+				} else {
 					Landscape dummyLandscape = LandscapeDummyCreator.createDummyLandscape();
 					dummyLandscape.setTimestamp(requestedTimestamp);
-					RepositoryStorage.writeToFile(dummyLandscape, requestedTimestamp);	
+					RepositoryStorage.writeToFile(dummyLandscape, requestedTimestamp);
 					lastPeriodLandscape = dummyLandscape;
 				}
 

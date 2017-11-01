@@ -2,7 +2,6 @@ package net.explorviz.server.main;
 
 import java.util.ArrayList
 import java.util.Arrays
-import java.util.List
 
 class Configuration {
 	public static var selectedLanguage = "english"
@@ -94,9 +93,9 @@ class Configuration {
 	
 	public static var rsfExportEnabled = false
 	public static var outputIntervalSeconds = 10
-	public static val List<String> databaseNames = new ArrayList<String>()
+	public val static databaseNames = new ArrayList<String>()
 	
-	public static var TIMESHIFT_INTERVAL_IN_MINUTES = 10
-	public static final String MODEL_EXTENSION = ".expl"
-	public static var DUMMY_MODE = true
+	public val static int TIMESHIFT_INTERVAL_IN_MINUTES = 10
+	public val static MODEL_EXTENSION = ".expl"
+	public val static DUMMYMODE = true
 }

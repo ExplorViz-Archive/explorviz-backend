@@ -1,6 +1,7 @@
 package net.explorviz.server.repository;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,25 +11,23 @@ import net.explorviz.model.TimestampStorage;
 import net.explorviz.server.main.FileSystemHelper;
 
 public class LandscapeExchangeService {
-
+	private static LandscapeExchangeService instance;
 	private static LandscapeRepositoryModel model;
 
 	@SuppressWarnings("unused")
-	private static Long timestamp = null;
+	private static Long timestamp;
 	@SuppressWarnings("unused")
-	private static Long activity = null;
+	private static Long activity;
 
-	private static String REPLAY_FOLDER = FileSystemHelper.getExplorVizDirectory() + File.separator + "replay";
-	private static String REPOSITORY_FOLDER = FileSystemHelper.getExplorVizDirectory() + File.separator
+	private static final String REPLAY_FOLDER = FileSystemHelper.getExplorVizDirectory() + File.separator + "replay";
+	private static final String REPOSITORY_FOLDER = FileSystemHelper.getExplorVizDirectory() + File.separator
 			+ "landscapeRepository";
 
-	private static LandscapeExchangeService INSTANCE = null;
-
 	public static synchronized LandscapeExchangeService getInstance() {
-		if (LandscapeExchangeService.INSTANCE == null) {
-			LandscapeExchangeService.INSTANCE = new LandscapeExchangeService();
+		if (LandscapeExchangeService.instance == null) {
+			LandscapeExchangeService.instance = new LandscapeExchangeService();
 		}
-		return LandscapeExchangeService.INSTANCE;
+		return LandscapeExchangeService.instance;
 	}
 
 	public Landscape getLandscapeByTimestampAndActivity(final long timestamp, final long activity) {
@@ -89,7 +88,7 @@ public class LandscapeExchangeService {
 		final File directory = new File(REPOSITORY_FOLDER);
 		final File[] fList = directory.listFiles();
 
-		TimestampStorage timestampStorage = new TimestampStorage("0");
+		final TimestampStorage timestampStorage = new TimestampStorage("0");
 
 		for (final File f : fList) {
 
@@ -116,7 +115,7 @@ public class LandscapeExchangeService {
 				// continue;
 				// }
 
-				Timestamp newTimestamp = new Timestamp(String.valueOf(timestamp), activity);
+				final Timestamp newTimestamp = new Timestamp(String.valueOf(timestamp), activity);
 				timestampStorage.addTimestamp(newTimestamp);
 			}
 		}

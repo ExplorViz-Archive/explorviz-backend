@@ -16,18 +16,20 @@ import net.explorviz.server.security.User;
 public class SetupListener implements ServletContextListener {
 
 	@Override
-	public void contextInitialized(ServletContextEvent servletContextEvent) {
-		HibernateSessionFactory sessionFactory = new HibernateSessionFactory(servletContextEvent.getServletContext());
+	public void contextInitialized(final ServletContextEvent servletContextEvent) {
 
 		String hashedPassword = "";
 		try {
 			hashedPassword = PasswordStorage.createHash("admin");
-		} catch (CannotPerformOperationException e) {
+		} catch (final CannotPerformOperationException e) {
 			System.err.println("Couldn't create default admin : " + e);
 			return;
 		}
 
-		Session session = sessionFactory.beginTransaction();
+		final HibernateSessionFactory sessionFactory = new HibernateSessionFactory(
+				servletContextEvent.getServletContext());
+
+		final Session session = sessionFactory.beginTransaction();
 		session.save(new User("admin", hashedPassword));
 		sessionFactory.commitTransactionAndClose(session);
 
@@ -40,7 +42,8 @@ public class SetupListener implements ServletContextListener {
 	}
 
 	@Override
-	public void contextDestroyed(ServletContextEvent servletContextEvent) {
+	public void contextDestroyed(final ServletContextEvent servletContextEvent) {
+		// Nothing to dispose
 	}
 
 }

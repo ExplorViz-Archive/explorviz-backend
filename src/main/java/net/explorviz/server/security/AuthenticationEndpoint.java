@@ -24,52 +24,52 @@ import net.explorviz.server.security.PasswordStorage.InvalidHashException;
 /***
  * Provides the endpoint for authentication: http:\/\/*IP*:*Port*\/sessions.
  * Clients obtain their authentication token here.
- * 
+ *
  * @author akr
  *
  */
 @Path("/sessions")
 public class AuthenticationEndpoint {
-	
-	private HibernateSessionFactory sessionFactory;
-	
+
+	private final HibernateSessionFactory sessionFactory;
+
 	@Inject
-	public AuthenticationEndpoint(HibernateSessionFactory sessionFactory) {
+	public AuthenticationEndpoint(final HibernateSessionFactory sessionFactory) {
 		this.sessionFactory = sessionFactory;
 	}
 
 	/***
-	 * Creates and returns a randomized token for users. A client request must
-	 * send "username=admin&password=123456" in the body of a POST request. If
-	 * authentication of credentials succeeds, a randomized token will be
-	 * returned.
-	 * 
+	 * Creates and returns a randomized token for users. A client request must send
+	 * "username=admin&password=123456" in the body of a POST request. If
+	 * authentication of credentials succeeds, a randomized token will be returned.
+	 *
 	 * Tokens, their expiration dates and the related users are stored on the
-	 * backend. Every frontend request must send this token in its
-	 * "Authorization" header, since all other resources are token-based secured
-	 * and only accessible with a valid token.
-	 * 
+	 * backend. Every frontend request must send this token in its "Authorization"
+	 * header, since all other resources are token-based secured and only accessible
+	 * with a valid token.
+	 *
 	 * @author akr
 	 * @param username
 	 * @param password
-	 * @return If authentication succeeds, the return will be a HTTP-Response
-	 *         with status code 200 and body:{"token":randomizedToken,
-	 *         "username": username}. If authentication fails, this return will
-	 *         be status code 401.
+	 * @return If authentication succeeds, the return will be a HTTP-Response with
+	 *         status code 200 and body:{"token":randomizedToken, "username":
+	 *         username}. If authentication fails, this return will be status code
+	 *         401.
 	 */
 	@Path("/create")
 	@POST
 	@Produces("application/json")
 	@Consumes("application/x-www-form-urlencoded")
-	public Response authenticateUser(@FormParam("username") String username, @FormParam("password") String password) {
+	public Response authenticateUser(@FormParam("username") final String username,
+			@FormParam("password") final String password) {
 
 		if (authenticate(username, password)) {
 
-			String token = issueToken();
+			final String token = issueToken();
 			User currentUser = null;
 
 			// retrieve user
-			Session session = sessionFactory.beginTransaction();
+			final Session session = sessionFactory.beginTransaction();
 
 			currentUser = session.find(User.class, username);
 
@@ -80,8 +80,8 @@ public class AuthenticationEndpoint {
 
 			sessionFactory.commitTransactionAndClose(session);
 
-			JsonNodeFactory factory = JsonNodeFactory.instance;
-			ObjectNode jsonNode = factory.objectNode();
+			final JsonNodeFactory factory = JsonNodeFactory.instance;
+			final ObjectNode jsonNode = factory.objectNode();
 			jsonNode.put("username", username);
 			jsonNode.put("token", token);
 
@@ -96,20 +96,20 @@ public class AuthenticationEndpoint {
 
 	/***
 	 * Authenticates user and password against database.
-	 * 
+	 *
 	 * @author akr
 	 * @param username
 	 * @param password
 	 * @return True if the authentication succeeds, otherwise false.
 	 */
-	private boolean authenticate(String username, String password) {
+	private boolean authenticate(final String username, final String password) {
 
 		User currentUser = null;
-		
-		Session session = sessionFactory.beginTransaction();
+
+		final Session session = sessionFactory.beginTransaction();
 		currentUser = session.find(User.class, username);
 		sessionFactory.commitTransactionAndClose(session);
-		
+
 		try {
 			if (currentUser != null && PasswordStorage.verifyPassword(password, currentUser.getHashedPassword())) {
 				return true;
@@ -124,11 +124,11 @@ public class AuthenticationEndpoint {
 
 	/***
 	 * Creates token for future client requests.
-	 * 
+	 *
 	 * @return Randomized token string
 	 */
 	private String issueToken() {
-		Random random = new SecureRandom();
+		final Random random = new SecureRandom();
 		return new BigInteger(130, random).toString(32);
 	}
 

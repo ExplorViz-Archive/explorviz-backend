@@ -7,27 +7,25 @@ import net.explorviz.model.Timestamp;
 
 /**
  * Interface for providing necessary information for the extension API
- * 
+ *
  * @author Christian Zirkelbach (czi@informatik.uni-kiel.de)
  *
  */
 interface IExtensionAPI {
-	public String getAPIVersion();
+	String getAPIVersion();
 
 	// Landscape related
-	public Landscape getLatestLandscape();
+	Landscape getLatestLandscape();
 
-	public Landscape getLandscape(long timestamp);
+	Landscape getLandscape(long timestamp);
 
 	// Timestamp related
-	public List<Timestamp> getNewestTimestamps(int intervalSize);
+	List<Timestamp> getNewestTimestamps(int intervalSize);
 
-	public List<Timestamp> getOldestTimestamps(int intervalSize);
+	List<Timestamp> getOldestTimestamps(int intervalSize);
 
-	public List<Timestamp> getPreviousTimestamps(long timestamp, int intervalSize);
+	List<Timestamp> getPreviousTimestamps(long timestamp, int intervalSize);
 
-	public List<Timestamp> getSubsequentTimestamps(long timestamp, int intervalSize);
-	
-	public void addClassToResourceConverter(Class<?> classToRegister);
+	List<Timestamp> getSubsequentTimestamps(long timestamp, int intervalSize);
 
 }

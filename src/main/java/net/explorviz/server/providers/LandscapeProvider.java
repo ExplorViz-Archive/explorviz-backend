@@ -30,28 +30,28 @@ public class LandscapeProvider implements MessageBodyReader<Landscape>, MessageB
 	final ResourceConverter converter;
 
 	@Inject
-	public LandscapeProvider(ResourceConverter converter) {
+	public LandscapeProvider(final ResourceConverter converter) {
 		this.converter = converter;
 	}
 
 	@Override
-	public boolean isWriteable(Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
+	public boolean isWriteable(final Class<?> type, final Type genericType, final Annotation[] annotations,
+			final MediaType mediaType) {
 		// TODO Auto-generated method stub
 		return true;
 	}
 
 	@Override
-	public void writeTo(Landscape t, Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType,
-			MultivaluedMap<String, Object> httpHeaders, OutputStream entityStream)
-			throws IOException, WebApplicationException {
+	public void writeTo(final Landscape t, final Class<?> type, final Type genericType, final Annotation[] annotations,
+			final MediaType mediaType, final MultivaluedMap<String, Object> httpHeaders,
+			final OutputStream entityStream) throws IOException, WebApplicationException {
 
-		JSONAPIDocument<Landscape> document = new JSONAPIDocument<Landscape>(t);
+		final JSONAPIDocument<Landscape> document = new JSONAPIDocument<Landscape>(t);
 
 		try {
 			entityStream.write(this.converter.writeDocument(document));
-		} catch (DocumentSerializationException e) {
+		} catch (final DocumentSerializationException e) {
 			System.err.println("Error when serializing Landscape: " + e);
-			e.printStackTrace();
 		} finally {
 			entityStream.flush();
 			entityStream.close();
@@ -60,14 +60,15 @@ public class LandscapeProvider implements MessageBodyReader<Landscape>, MessageB
 	}
 
 	@Override
-	public boolean isReadable(Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
+	public boolean isReadable(final Class<?> type, final Type genericType, final Annotation[] annotations,
+			final MediaType mediaType) {
 		// TODO Auto-generated method stub
 		return true;
 	}
 
 	@Override
-	public Landscape readFrom(Class<Landscape> type, Type genericType, Annotation[] annotations, MediaType mediaType,
-			MultivaluedMap<String, String> httpHeaders, InputStream entityStream)
+	public Landscape readFrom(final Class<Landscape> type, final Type genericType, final Annotation[] annotations,
+			final MediaType mediaType, final MultivaluedMap<String, String> httpHeaders, final InputStream entityStream)
 			throws IOException, WebApplicationException {
 		return this.converter.readDocument(entityStream, type).get();
 	}
