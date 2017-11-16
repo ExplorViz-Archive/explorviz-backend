@@ -11,7 +11,7 @@ This gradle project includes or installs every necessary dependency.
 ### Eclipse Setup
 1. Download the latest **Eclipse IDE for Java and DSL Developers** and Java SDK 8
 2. *Start Eclipse -> Help -> Eclipse Marketplace*, insert and download
-- *FindBugs Eclipse Plugin 3.0.2*
+- *SpotBugs Eclipse plugin 3.1.0*
 - *Checkstyle Plug-in 8.0.0*
 3. In Eclipse: *Help -> Install New Software -> Insert https://dl.bintray.com/pmd/pmd-eclipse-plugin/updates/ in "Work with" -> Check "PMD for Eclipse 4" -> Finish and download* (**Attention:** Don't use the eclipse-pmd version from the marketplace)
 
