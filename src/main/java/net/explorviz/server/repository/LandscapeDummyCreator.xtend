@@ -242,7 +242,9 @@ class LandscapeDummyCreator {
 		val cacheNodeGroup = createNodeGroup("10.0.0.8", landscape, pubflow)
 		val cacheNode = createNode("10.0.0.8", cacheNodeGroup)
 		val cache = createApplication("Cache", cacheNode)
-		val hyperSQL = createDatabase("HyperSQL", cacheNode)
+		//val hyperSQL = createDatabase("HyperSQL", cacheNode)
+		val neo4jv2 = createDatabase("Neo4jV2", cacheNode);
+		createNeo4JDummyApplicationV2(neo4jv2);
 
 		cacheNodeGroup.nodes.add(cacheNode)
 		pubflow.nodeGroups.add(cacheNodeGroup)
@@ -283,12 +285,13 @@ class LandscapeDummyCreator {
 		createCommunication(workflow3, cache, landscape, 300)
 		createCommunication(workflow4, cache, landscape, 100)
 
-		createCommunication(cache, hyperSQL, landscape, 300)
+		//createCommunication(cache, hyperSQL, landscape, 300)
+		createCommunication(cache, neo4jv2, landscape, 300 * 2)
 
 		createCommunication(provenance1, neo4j, landscape, 100)
 		createCommunication(provenance2, neo4j, landscape, 200)
 		createCommunication(provenance3, neo4j, landscape, 300)
-		createCommunication(provenance4, neo4j, landscape, 100)		
+		createCommunication(provenance4, neo4j, landscape, 100)	
 		
 		val preparedLandscape = LandscapePreparer.prepareLandscape(landscape)
 		
@@ -530,4 +533,84 @@ class LandscapeDummyCreator {
 		createCommuClazz(150, lifecycleClazz, loggingClazz, application)
 		createCommuClazz(1200, guardClazz, implClazz, application)
 	}
+	
+	def private static createNeo4JDummyApplicationV2(Application application) {
+		val org = createComponent("org", null, application)
+		application.components.add(org)
+		val neo4j = createComponent("neo4j", org, application)
+
+		val graphdb = createComponent("graphdb", neo4j, application)
+		val graphDbClazz = createClazz("Label", graphdb, 20)
+		createClazz("Label2", graphdb, 20 * 2)
+		createClazz("Label3", graphdb, 20 * 2)
+		createClazz("Label4", graphdb, 20 * 2)
+		createClazz("Label5", graphdb, 20 * 2)
+
+		val helpers = createComponent("helpers", neo4j, application)
+		val helpersClazz = createClazz("x", helpers, 30 * 2)
+		createClazz("x2", helpers, 40 * 2)
+		createClazz("x3", helpers, 35 * 2)
+		createClazz("x4", helpers, 35 * 2)
+		createClazz("x5", helpers, 35 * 2)
+
+		val tooling = createComponent("tooling", neo4j, application)
+		val toolingClazz = createClazz("AccountSqlMapDao", tooling, 5 * 2)
+		createClazz("BaseSqlMapDao", tooling, 20 * 2)
+		createClazz("CategorySqlMapDao", tooling, 30 * 2)
+		createClazz("ItemSqlMapDao", tooling, 35 * 2)
+		createClazz("ProductSqlMapDao", tooling, 20 * 2)
+		createClazz("SequenceSqlMapDao", tooling, 15 * 2)
+
+		val unsafe = createComponent("unsafe", neo4j, application)
+		val unsafeClazz = createClazz("AbstractBean", unsafe, 20 * 2)
+		createClazz("CartBean", unsafe, 40 * 2)
+
+		val kernel = createComponent("kernel", neo4j, application)
+
+		val api = createComponent("api", kernel, application)
+		val apiClazz = createClazz("cleanupX", api, 25 * 2)
+		createClazz("cleanupX", api, 25 * 2)
+		val configuration = createComponent("configuration", kernel, application)
+		val configurationClazz = createClazz("cleanupX", configuration, 35 * 2)
+		createClazz("cleanupX", configuration, 5 * 2)
+		val myextension = createComponent("extension", kernel, application)
+		createClazz("cleanupX", myextension, 25 * 2)
+		createClazz("cleanupX", myextension, 5 * 2)
+		val guard = createComponent("guard", kernel, application)
+		val guardClazz = createClazz("cleanupX", guard, 35 * 2)
+		createClazz("cleanupX", guard, 25 * 2)
+
+		val impl = createComponent("impl", kernel, application)
+		val implClazz = createClazz("cleanupX", impl, 45 * 2)
+		val annotations = createComponent("annotations", impl, application)
+		createClazz("cleanupX", annotations, 35 * 2)
+		val apiImpl = createComponent("api", impl, application)
+		val apiImplClazz = createClazz("cleanupX", apiImpl, 25 * 2)
+		val cache = createComponent("cache", impl, application)
+		createClazz("cleanupX", cache, 45 * 2)
+		val persistence = createComponent("persistence", impl, application)
+		createClazz("AccountSqlMapDao", persistence, 45 * 2)
+
+		val info = createComponent("info", kernel, application)
+		createClazz("AccountSqlMapDao", info, 5 * 2)
+		createClazz("AccountSqlMapDao", info, 25 * 2)
+		val lifecycle = createComponent("lifecycle", kernel, application)
+		val lifecycleClazz = createClazz("AccountSqlMapDao", lifecycle, 25 * 2)
+		createClazz("AccountSqlMapDao", lifecycle, 15 * 2)
+
+		val logging = createComponent("logging", kernel, application)
+		val loggingClazz = createClazz("AccountSqlMapDao", logging, 25 * 2)
+		createClazz("AccountSqlMapDao2", logging, 5 * 2)
+
+		createCommuClazz(40 * 2, graphDbClazz, helpersClazz, application)
+		createCommuClazz(100 * 2, toolingClazz, implClazz, application)
+		createCommuClazz(60 * 2, implClazz, helpersClazz, application)
+		createCommuClazz(60 * 2, implClazz, apiImplClazz, application)
+		createCommuClazz(1000 * 2, implClazz, loggingClazz, application)
+		createCommuClazz(100 * 2, guardClazz, unsafeClazz, application)
+		createCommuClazz(100 * 2, apiClazz, configurationClazz, application)
+		createCommuClazz(150 * 2, lifecycleClazz, loggingClazz, application)
+		createCommuClazz(1200 * 2, guardClazz, implClazz, application)
+	}
+	
 }
