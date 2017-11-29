@@ -6,8 +6,10 @@ import java.util.List
 import net.explorviz.model.helper.Draw3DNodeEntity
 import com.github.jasminb.jsonapi.annotations.Type
 import com.github.jasminb.jsonapi.annotations.Relationship
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 
 @Type("component")
+@JsonIgnoreProperties("belongingApplication")
 class Component extends Draw3DNodeEntity {
 	@Accessors var String name
 	@Accessors var String fullQualifiedName
@@ -23,7 +25,8 @@ class Component extends Draw3DNodeEntity {
 	@Relationship("parentComponent")
 	@Accessors Component parentComponent
 
-	@Relationship("belongingApplication")
+	//@Relationship("belongingApplication")
+	// Don't parse since cycle results in stackoverflow when accessing latestLandscape
 	@Accessors Application belongingApplication
 
 	var boolean opened = false
