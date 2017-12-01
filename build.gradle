@@ -84,7 +84,6 @@ jar {
   baseName = project.name 
 }
 
-
 install {
   repositories {
     mavenInstaller {

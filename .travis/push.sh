@@ -8,7 +8,7 @@ setup_git() {
 commit_and_push() {	
   git clone https://$PersonalAccessToken@github.com/ExplorViz/explorviz-docker.git
   cd explorviz-docker
-  cp /home/travis/build/ExplorViz/explorviz-backend/target/explorviz-backend-1.0-SNAPSHOT.war explorviz-backend.war
+  cp /home/travis/build/ExplorViz/explorviz-backend/build/libs/explorviz-backend-deployment.war explorviz-backend.war
   git add explorviz-backend.war
   git commit --message "Travis build: $TRAVIS_BUILD_NUMBER"
   git push https://$PersonalAccessToken@github.com/Explorviz/explorviz-docker.git > /dev/null 2>&1
