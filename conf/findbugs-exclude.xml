@@ -4,4 +4,14 @@
 	<Match>
 		<Package name="build" />
 	</Match>
+	<Match>
+   		<Class name="net.explorviz.math.Vector3f" />
+   		<Method name="equals" />
+   		<Bug pattern="HE_EQUALS_USE_HASHCODE" />
+	</Match>
+	<Match>
+   		<Class name="net.explorviz.helper.Point" />
+   		<Method name="equals" />
+   		<Bug pattern="EQ_SELF_USE_OBJECT" />
+	</Match>
 </FindBugsFilter>

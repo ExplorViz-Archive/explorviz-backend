@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <pmd>
-    <workingSet>ExplorViz-Backend-Source</workingSet>
     <useProjectRuleSet>true</useProjectRuleSet>
     <ruleSetFile>conf/pmd.xml</ruleSetFile>
     <includeDerivedFiles>false</includeDerivedFiles>

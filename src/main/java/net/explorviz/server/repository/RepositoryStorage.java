@@ -161,39 +161,44 @@ public class RepositoryStorage {
 		final Map<Long, Long> result = new TreeMap<Long, Long>();
 
 		final File[] files = new File(folder).listFiles();
-		for (final File file : files) {
-			if (isExplorVizFile(file)) {
-				final String[] split = file.getName().split("-");
-				final long timestamp = Long.parseLong(split[0]);
+		if (files != null) {
+			for (final File file : files) {
+				if (isExplorVizFile(file)) {
+					final String[] split = file.getName().split("-");
+					final long timestamp = Long.parseLong(split[0]);
 
-				if ((java.lang.System.currentTimeMillis() - TimeUnit.MINUTES.toMillis(minutesBackwards)) < timestamp) {
-					final long activities = Long.parseLong(split[1].split("\\.")[0]);
-					result.put(timestamp, activities);
+					if ((java.lang.System.currentTimeMillis()
+							- TimeUnit.MINUTES.toMillis(minutesBackwards)) < timestamp) {
+						final long activities = Long.parseLong(split[1].split("\\.")[0]);
+						result.put(timestamp, activities);
+					}
 				}
 			}
 		}
-
 		return result;
 	}
 
 	public static void cleanUpTooOldFiles(final long currentTimestamp) {
 		final long enddate = currentTimestamp - TimeUnit.MINUTES.toMillis(HISTORY_INTERVAL_IN_MINUTES);
 		final File[] files = new File(folder).listFiles();
-		for (final File file : files) {
-			if (isExplorVizFile(file)
-					&& Long.parseLong(file.getName().substring(0, file.getName().indexOf("-"))) <= enddate) {
+		if (files != null) {
+			for (final File file : files) {
+				if (isExplorVizFile(file)
+						&& Long.parseLong(file.getName().substring(0, file.getName().indexOf("-"))) <= enddate) {
 
-				file.delete();
-
+					file.delete();
+				}
 			}
 		}
 	}
 
 	public static void clearRepository() {
 		final File[] files = new File(folder).listFiles();
-		for (final File file : files) {
-			if (isExplorVizFile(file)) {
-				file.delete();
+		if (files != null) {
+			for (final File file : files) {
+				if (isExplorVizFile(file)) {
+					file.delete();
+				}
 			}
 		}
 	}

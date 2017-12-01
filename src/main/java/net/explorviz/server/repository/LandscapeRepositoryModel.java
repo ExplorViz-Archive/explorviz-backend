@@ -21,11 +21,11 @@ import net.explorviz.model.NodeGroup;
 import net.explorviz.model.System;
 import net.explorviz.server.main.Configuration;
 
-public class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiver {
+public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiver {
 	private static final boolean LOAD_LAST_LANDSCAPE_ON_LOAD = false;
 	private static LandscapeRepositoryModel instance = null;
 
-	private Landscape lastPeriodLandscape;
+	private volatile Landscape lastPeriodLandscape;
 	private final Landscape internalLandscape;
 	private final FSTConfiguration fstConf;
 	private final InsertionRepositoryPart insertionRepositoryPart;
@@ -126,9 +126,7 @@ public class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiver {
 					RepositoryStorage.writeToFile(dummyLandscape, requestedTimestamp);
 					lastPeriodLandscape = dummyLandscape;
 				}
-
 				remoteCallRepositoryPart.checkForTimedoutRemoteCalls();
-
 				resetCommunication();
 			}
 		}

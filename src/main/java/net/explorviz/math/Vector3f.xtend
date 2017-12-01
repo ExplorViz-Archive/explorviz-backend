@@ -87,7 +87,7 @@ class Vector3f implements Serializable {
 		}
 		return false
 	}
-
+	
 	def private boolean checkFloatEquals(float first, float second) {
 		return Math::abs(first - second) < 0.0001f
 	}
