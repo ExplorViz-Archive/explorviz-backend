@@ -257,7 +257,7 @@ public class InsertionRepositoryPart {
 
 	private boolean isApplicationDatabase(final String applicationName) {
 		boolean isDatabase = false;
-		final List<String> databaseNames = Configuration.databaseNames;
+		final List<String> databaseNames = Configuration.DATABASE_NAMES;
 		for (final String databaseName : databaseNames) {
 			if (applicationName.toLowerCase().contains(databaseName)) {
 				isDatabase = true;

@@ -81,13 +81,13 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
 	}
 
 	static {
-		Configuration.databaseNames.add("hsqldb");
-		Configuration.databaseNames.add("postgres");
-		Configuration.databaseNames.add("db2");
-		Configuration.databaseNames.add("mysql");
-		Configuration.databaseNames.add("neo4j");
-		Configuration.databaseNames.add("database");
-		Configuration.databaseNames.add("hypersql");
+		Configuration.DATABASE_NAMES.add("hsqldb");
+		Configuration.DATABASE_NAMES.add("postgres");
+		Configuration.DATABASE_NAMES.add("db2");
+		Configuration.DATABASE_NAMES.add("mysql");
+		Configuration.DATABASE_NAMES.add("neo4j");
+		Configuration.DATABASE_NAMES.add("database");
+		Configuration.DATABASE_NAMES.add("hypersql");
 	}
 
 	public FSTConfiguration initFSTConf() {
