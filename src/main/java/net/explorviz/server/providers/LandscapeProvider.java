@@ -16,6 +16,9 @@ import javax.ws.rs.ext.MessageBodyReader;
 import javax.ws.rs.ext.MessageBodyWriter;
 import javax.ws.rs.ext.Provider;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.github.jasminb.jsonapi.JSONAPIDocument;
 import com.github.jasminb.jsonapi.ResourceConverter;
 import com.github.jasminb.jsonapi.exceptions.DocumentSerializationException;
@@ -26,6 +29,8 @@ import net.explorviz.model.Landscape;
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public class LandscapeProvider implements MessageBodyReader<Landscape>, MessageBodyWriter<Landscape> {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(LandscapeProvider.class);
 
 	final ResourceConverter converter;
 
@@ -51,7 +56,7 @@ public class LandscapeProvider implements MessageBodyReader<Landscape>, MessageB
 		try {
 			entityStream.write(this.converter.writeDocument(document));
 		} catch (final DocumentSerializationException e) {
-			System.err.println("Error when serializing Landscape: " + e);
+			LOGGER.error("Error when serializing Landscape: ", e);
 		} finally {
 			entityStream.flush();
 			entityStream.close();
