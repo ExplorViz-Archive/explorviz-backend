@@ -13,7 +13,6 @@ import com.github.jasminb.jsonapi.annotations.Relationship
 @Type("landscape")
 class Landscape extends BaseEntity {
 	@Accessors long hash
-	@Accessors long timestamp
 	@Accessors long activities
 
 	@Relationship("systems")

@@ -20,6 +20,8 @@ public class BaseEntity implements Serializable {
 	@Accessors
 	private Long id;
 
+	private long timestamp;
+
 	public BaseEntity() {
 		this.id = Long.valueOf(BaseEntity.ID_GENERATOR.incrementAndGet());
 	}
@@ -32,4 +34,13 @@ public class BaseEntity implements Serializable {
 	public void setId(final Long id) {
 		this.id = id;
 	}
+
+	public long getTimestamp() {
+		return timestamp;
+	}
+
+	public void setTimestamp(final long timestamp) {
+		this.timestamp = timestamp;
+	}
+
 }
