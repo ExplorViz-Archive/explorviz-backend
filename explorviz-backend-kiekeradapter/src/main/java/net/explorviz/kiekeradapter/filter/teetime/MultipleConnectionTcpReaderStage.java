@@ -42,7 +42,6 @@ import kieker.common.record.factory.IRecordFactory;
 import kieker.common.record.flow.ITraceRecord;
 import kieker.common.record.flow.trace.TraceMetadata;
 import kieker.common.record.misc.KiekerMetadataRecord;
-
 import teetime.framework.AbstractProducerStage;
 
 /**
@@ -87,7 +86,8 @@ public class MultipleConnectionTcpReaderStage extends AbstractProducerStage<IMon
 			serverSocket.configureBlocking(false);
 			final Selector readSelector = Selector.open();
 
-			while (this.isActive()) {
+//			while (this.isActive()) {
+			while (true) {
 				final SocketChannel socketChannel = serverSocket.accept();
 				if (socketChannel != null) {
 					MultipleConnectionTcpReaderStage.LOG
@@ -120,8 +120,6 @@ public class MultipleConnectionTcpReaderStage extends AbstractProducerStage<IMon
 			this.logger.info("External shutdown called");
 		} catch (final IOException e) {
 			this.logger.error("Cannot establish listening port", e);
-		} finally {
-			this.terminateStage();
 		}
 	}
 

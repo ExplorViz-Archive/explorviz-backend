@@ -6,7 +6,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import kieker.common.record.IMonitoringRecord;
-import kieker.common.record.flow.IEventRecord;
 import kieker.common.record.flow.IInterfaceRecord;
 import kieker.common.record.flow.IObjectRecord;
 import kieker.common.record.flow.trace.operation.AfterOperationEvent;
@@ -28,15 +27,14 @@ import teetime.framework.AbstractConsumerStage;
 public class KiekerToExplorVizTransformStage extends AbstractConsumerStage<IMonitoringRecord> {
 
 	final Logger logger = LoggerFactory.getLogger(KiekerToExplorVizTransformStage.class.getName());
-	private final Stack<IEventRecord> stack = new Stack<IEventRecord>();
+	private final Stack<IMonitoringRecord> stack = new Stack<IMonitoringRecord>();
 
 	@Override
 	protected void execute(IMonitoringRecord element) throws Exception {
-		inputKiekerRecords((IEventRecord) element);
-		logger.info(element.toString());
+		inputKiekerRecords(element);
 	}
 
-	public void inputKiekerRecords(final IEventRecord kiekerRecord) {
+	public void inputKiekerRecords(final IMonitoringRecord kiekerRecord) {
 
 		if (kiekerRecord instanceof BeforeConstructorEvent) {
 			stack.push(kiekerRecord);
@@ -58,7 +56,7 @@ public class KiekerToExplorVizTransformStage extends AbstractConsumerStage<IMoni
 
 			long methodDuration = 0;
 			if (!stack.isEmpty()) {
-				final IEventRecord beforeRecord = stack.pop();
+				final IMonitoringRecord beforeRecord = stack.pop();
 				if (beforeRecord instanceof BeforeConstructorEvent) {
 					final BeforeConstructorEvent beforeConstructorEvent = (BeforeConstructorEvent) beforeRecord;
 					methodDuration = kiekerAfter.getLoggingTimestamp() - beforeConstructorEvent.getLoggingTimestamp();
@@ -72,7 +70,7 @@ public class KiekerToExplorVizTransformStage extends AbstractConsumerStage<IMoni
 
 			long methodDuration = 0;
 			if (!stack.isEmpty()) {
-				final IEventRecord beforeRecord = stack.pop();
+				final IMonitoringRecord beforeRecord = stack.pop();
 				if (beforeRecord instanceof BeforeConstructorEvent) {
 					final BeforeConstructorEvent beforeConstructorEvent = (BeforeConstructorEvent) beforeRecord;
 					methodDuration = kiekerAfter.getLoggingTimestamp() - beforeConstructorEvent.getLoggingTimestamp();
@@ -101,7 +99,7 @@ public class KiekerToExplorVizTransformStage extends AbstractConsumerStage<IMoni
 
 			long methodDuration = 0;
 			if (!stack.isEmpty()) {
-				final IEventRecord beforeRecord = stack.pop();
+				final IMonitoringRecord beforeRecord = stack.pop();
 				if (beforeRecord instanceof BeforeOperationEvent) {
 					final BeforeOperationEvent beforeOperationEvent = (BeforeOperationEvent) beforeRecord;
 					methodDuration = kiekerAfter.getLoggingTimestamp() - beforeOperationEvent.getLoggingTimestamp();
@@ -115,7 +113,7 @@ public class KiekerToExplorVizTransformStage extends AbstractConsumerStage<IMoni
 
 			long methodDuration = 0;
 			if (!stack.isEmpty()) {
-				final IEventRecord beforeRecord = stack.pop();
+				final IMonitoringRecord beforeRecord = stack.pop();
 				if (beforeRecord instanceof BeforeOperationEvent) {
 					final BeforeOperationEvent beforeOperationEvent = (BeforeOperationEvent) beforeRecord;
 					methodDuration = kiekerAfter.getLoggingTimestamp() - beforeOperationEvent.getLoggingTimestamp();
@@ -127,7 +125,7 @@ public class KiekerToExplorVizTransformStage extends AbstractConsumerStage<IMoni
 		}
 	}
 
-	private String getInterface(final IEventRecord kiekerRecord) {
+	private String getInterface(final IMonitoringRecord kiekerRecord) {
 		if (kiekerRecord instanceof IInterfaceRecord) {
 			final IInterfaceRecord iInterfaceRecord = (IInterfaceRecord) kiekerRecord;
 			final String interfaceImpl = iInterfaceRecord.getInterface();
