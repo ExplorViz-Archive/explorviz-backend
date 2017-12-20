@@ -1,21 +1,16 @@
 apply plugin: 'java-library'
 apply plugin: 'eclipse'
 apply plugin: 'maven'
-apply plugin: 'application'
-
-mainClassName = "net.explorviz.kiekeradapter.main.Main"
 
 buildscript {
   	repositories {
       	jcenter()
-      	maven { url 'https://jitpack.io' } 
     } 
 }
 
 repositories {
   	jcenter()
   	maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
-	maven { url 'https://jitpack.io' }
 }
 
 dependencies {
@@ -24,6 +19,7 @@ dependencies {
 
 	// Teetime Pipe and Filter Framework
 	compile group: 'net.sourceforge.teetime', name: 'teetime', version: '3.0-SNAPSHOT'
+	compile group: 'net.sourceforge.teetime-stages', name: 'teetime-stages', version: '3.0-SNAPSHOT'
 	
 	// Kieker Monitoring Framework
 	compile group: 'net.kieker-monitoring', name: 'kieker', version: '1.14-SNAPSHOT'

@@ -9,7 +9,9 @@ import kieker.analysis.exception.AnalysisConfigurationException;
 import kieker.analysis.plugin.reader.tcp.TCPReader;
 import kieker.common.configuration.Configuration;
 import net.explorviz.kiekeradapter.configuration.SignatureConverter;
+import net.explorviz.kiekeradapter.configuration.teetime.StageConfiguration;
 import net.explorviz.kiekeradapter.filter.KiekerToExplorVizTransformFilter;
+import teetime.framework.Execution;
 
 /**
  * Imports Kieker Monitoring Records into ExplorViz
@@ -17,7 +19,7 @@ import net.explorviz.kiekeradapter.filter.KiekerToExplorVizTransformFilter;
  * @author Christian Zirkelbach (czi@informatik.uni-kiel.de)
  *
  */
-public class KiekerAdapter {
+public final class KiekerAdapter {
 
 	final Logger logger = LoggerFactory.getLogger(KiekerAdapter.class.getName());
 	private static KiekerAdapter instance = null;
@@ -31,24 +33,28 @@ public class KiekerAdapter {
 	}
 	
 	public void startReader() {
-		final IAnalysisController analysisInstance = new AnalysisController();
-
-		final Configuration tcpReaderConfig = new Configuration();
-		final TCPReader tcpReader = new TCPReader(tcpReaderConfig, analysisInstance);
-
-		final Configuration tcpWriterConfig = new Configuration();
-		final KiekerToExplorVizTransformFilter transformFilter = new KiekerToExplorVizTransformFilter(tcpWriterConfig,
-				analysisInstance);
-
-		logger.info("Starting the kieker adapter...");
-
-		try {
-			analysisInstance.connect(tcpReader, TCPReader.OUTPUT_PORT_NAME_RECORDS, transformFilter,
-					KiekerToExplorVizTransformFilter.INPUT_PORT_NAME_KIEKER);
-			analysisInstance.run();
-		} catch (IllegalStateException | AnalysisConfigurationException e) {
-			logger.error("Can't start the kieker adapter!", e.getMessage());
-		}
+//		final IAnalysisController analysisInstance = new AnalysisController();
+//
+//		final Configuration tcpReaderConfig = new Configuration();
+//		final TCPReader tcpReader = new TCPReader(tcpReaderConfig, analysisInstance);
+//
+//		final Configuration tcpWriterConfig = new Configuration();
+//		final KiekerToExplorVizTransformFilter transformFilter = new KiekerToExplorVizTransformFilter(tcpWriterConfig,
+//				analysisInstance);
+//
+//		logger.info("Starting the kiekeradapter component...");
+//
+//		try {
+//			analysisInstance.connect(tcpReader, TCPReader.OUTPUT_PORT_NAME_RECORDS, transformFilter,
+//					KiekerToExplorVizTransformFilter.INPUT_PORT_NAME_KIEKER);
+//			analysisInstance.run();
+//		} catch (IllegalStateException | AnalysisConfigurationException e) {
+//			logger.error("Can't start the kiekeradapter component!", e.getMessage());
+//		}
+		
+		StageConfiguration config = new StageConfiguration();
+		Execution<StageConfiguration> execution = new Execution<StageConfiguration>(config);
+		execution.executeNonBlocking();
 	}
 
 	public static SignatureConverter getSignatureConverter() {
