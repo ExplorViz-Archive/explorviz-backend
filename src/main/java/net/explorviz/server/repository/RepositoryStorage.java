@@ -39,7 +39,7 @@ public class RepositoryStorage {
 
 	private static final FSTConfiguration FST_CONF;
 
-	private static final int HISTORY_INTERVAL_IN_MINUTES = 24 * 60; // one day
+	private static final int HISTORY_INTERVAL_IN_MINUTES = Configuration.HISTORY_INTERVAL_IN_MINUTES;
 
 	static {
 		FST_CONF = createFSTConfiguration();

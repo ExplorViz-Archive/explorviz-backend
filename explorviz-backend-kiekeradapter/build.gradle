@@ -1,0 +1,36 @@
+apply plugin: 'java-library'
+apply plugin: 'eclipse'
+apply plugin: 'maven'
+
+buildscript {
+  	repositories {
+      	jcenter()
+    } 
+}
+
+repositories {
+  	jcenter()
+  	maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
+}
+
+dependencies {
+	// include libraries in lib, e.g. the ExplorViz monitoring component
+	compile fileTree(dir: 'libs', include: ['*.jar'])
+
+	// Teetime Pipe and Filter Framework
+	compile group: 'net.sourceforge.teetime', name: 'teetime', version: '3.0-SNAPSHOT'
+	compile group: 'net.sourceforge.teetime-stages', name: 'teetime-stages', version: '3.0-SNAPSHOT'
+	
+	// Kieker Monitoring Framework
+	compile group: 'net.kieker-monitoring', name: 'kieker', version: '1.14-SNAPSHOT'
+	
+	// SL4J
+	compile group: 'org.slf4j', name: 'slf4j-simple', version: '1.6.1'
+	
+    // Use JUnit test framework
+    testImplementation 'junit:junit:4.12'
+}
+
+configurations.all {
+    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+}
