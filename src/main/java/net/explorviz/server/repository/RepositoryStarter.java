@@ -17,6 +17,7 @@ public class RepositoryStarter {
 		final Queue<IRecord> sink = modelConnector.registerProducer();
 
 		final Configuration configuration = ConfigurationFactory.createSingletonConfiguration();
+
 		FilterConfiguration.configureAndStartFilters(configuration, sink);
 	}
 }
