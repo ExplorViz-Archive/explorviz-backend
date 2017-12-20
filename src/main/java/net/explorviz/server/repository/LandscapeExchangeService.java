@@ -8,9 +8,11 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.explorviz.kiekeradapter.main.KiekerAdapter;
 import net.explorviz.model.Landscape;
 import net.explorviz.model.Timestamp;
 import net.explorviz.model.TimestampStorage;
+import net.explorviz.server.main.Configuration;
 import net.explorviz.server.main.FileSystemHelper;
 
 /**
@@ -24,6 +26,7 @@ public class LandscapeExchangeService {
 
 	private static LandscapeExchangeService instance;
 	private static LandscapeRepositoryModel model;
+	private static KiekerAdapter adapter;
 
 	@SuppressWarnings("unused")
 	private static Long timestamp;
@@ -174,5 +177,17 @@ public class LandscapeExchangeService {
 				new RepositoryStarter().start(model);
 			}
 		}).start();
+
+		// Start Kieker monitoring adapter
+		if (Configuration.ENABLE_KIEKER_ADAPTER) {
+			adapter = KiekerAdapter.getInstance();
+			new Thread(new Runnable() {
+
+				@Override
+				public void run() {
+					adapter.startReader();
+				}
+			}).start();
+		}
 	}
 }

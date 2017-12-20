@@ -22,7 +22,8 @@ buildscript {
   	jcenter()
     maven {
     	url 'https://plugins.gradle.org/m2/'
-     }
+    	url 'https://jitpack.io'
+    }
   }
 
     dependencies {
@@ -34,11 +35,16 @@ buildscript {
 
 repositories {
   jcenter()
+  maven {url 'https://oss.sonatype.org/content/repositories/snapshots'}
+  maven {url 'https://jitpack.io'}
 }
 
 dependencies {
   // Any .jar in libs
   compile fileTree(dir: 'libs', include: '*.jar')
+  
+  // explorviz-kieker-adapter
+  compile project(':explorviz-backend-kiekeradapter')
   
   // Xtend
   compile 'org.eclipse.xtend:org.eclipse.xtend.lib:2.9.0'
@@ -61,7 +67,7 @@ dependencies {
   compile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version:'2.7.1'
   compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version:'2.7.1'
   compile group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version:'2.7.1'
-  
+   
   testImplementation 'junit:junit:4.12'
 }
 

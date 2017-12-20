@@ -18,4 +18,6 @@ public class Configuration {
 	public static final int HISTORY_INTERVAL_IN_MINUTES = 24 * 60; // one day
 	public static final String MODEL_EXTENSION = ".expl";
 	public static final boolean DUMMYMODE = false;
+
+	public static final boolean ENABLE_KIEKER_ADAPTER = true;
 }
