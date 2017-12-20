@@ -17,5 +17,5 @@ public class Configuration {
 	public static final int TIMESHIFT_INTERVAL_IN_MINUTES = 10;
 	public static final int HISTORY_INTERVAL_IN_MINUTES = 24 * 60; // one day
 	public static final String MODEL_EXTENSION = ".expl";
-	public static final boolean DUMMYMODE = true;
+	public static final boolean DUMMYMODE = false;
 }
