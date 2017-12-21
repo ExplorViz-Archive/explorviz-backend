@@ -1,6 +1,7 @@
 apply plugin: 'java-library'
 apply plugin: 'eclipse'
 apply plugin: 'maven'
+apply plugin: 'war'
 
 buildscript {
   	repositories {
@@ -35,10 +36,24 @@ configurations.all {
     resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
 }
 
+// ##### BEGIN Jitpack section #####
+
+// War plugin typically disables jar build
+assemble.dependsOn jar
+
 artifacts {
 	archives file: file('libs/explorviz-monitoring.jar'), name: 'explorviz-monitoring', type: 'jar'
   	archives jar
+  	archives war {
+		classifier = 'deployment'
+	}
 }
+
+jar {
+  baseName = project.name 
+}
+
+// ##### END Jitpack section #####
 
 install {
   repositories {
