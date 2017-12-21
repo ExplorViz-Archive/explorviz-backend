@@ -115,16 +115,16 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
 
 				final long requestedTimestamp = java.lang.System.currentTimeMillis();
 
-				if (!Configuration.DUMMYMODE) {
-					RepositoryStorage.writeToFile(internalLandscape, requestedTimestamp);
-					final Landscape l = fstConf.deepCopy(internalLandscape);
-					l.setTimestamp(requestedTimestamp);
-					lastPeriodLandscape = LandscapePreparer.prepareLandscape(l);
-				} else {
+				if (Configuration.dummyMode) {
 					final Landscape dummyLandscape = LandscapeDummyCreator.createDummyLandscape();
 					dummyLandscape.setTimestamp(requestedTimestamp);
 					RepositoryStorage.writeToFile(dummyLandscape, requestedTimestamp);
 					lastPeriodLandscape = dummyLandscape;
+				} else {
+					RepositoryStorage.writeToFile(internalLandscape, requestedTimestamp);
+					final Landscape l = fstConf.deepCopy(internalLandscape);
+					l.setTimestamp(requestedTimestamp);
+					lastPeriodLandscape = LandscapePreparer.prepareLandscape(l);
 				}
 				remoteCallRepositoryPart.checkForTimedoutRemoteCalls();
 				resetCommunication();
