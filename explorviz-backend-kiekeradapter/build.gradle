@@ -1,7 +1,6 @@
 apply plugin: 'java-library'
 apply plugin: 'eclipse'
 apply plugin: 'maven'
-apply plugin: 'war'
 
 buildscript {
   	repositories {
@@ -38,32 +37,24 @@ configurations.all {
 
 // ##### BEGIN Jitpack section #####
 
-// War plugin typically disables jar build
-assemble.dependsOn jar
-
 artifacts {
-	archives file: file('libs/explorviz-monitoring.jar'), name: 'explorviz-monitoring', type: 'jar'
   	archives jar
-  	archives war {
-		classifier = 'deployment'
-	}
 }
 
 jar {
-  baseName = project.name 
+	baseName = project.name
+	from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
 }
-
-// ##### END Jitpack section #####
 
 install {
   repositories {
     mavenInstaller {
-      addFilter('explorviz-monitoring') {artifact, file ->
-        artifact.name == 'explorviz-monitoring'
-      }
       addFilter('explorviz-backend-kiekeradapter') {artifact, file ->
         artifact.name == 'explorviz-backend-kiekeradapter'
       }
     }
   }
 }
+
+// ##### END Jitpack section #####
+
