@@ -46,6 +46,9 @@ install {
       addFilter('explorviz-monitoring') {artifact, file ->
         artifact.name == 'explorviz-monitoring'
       }
+      addFilter('explorviz-backend-kiekeradapter') {artifact, file ->
+        artifact.name == 'explorviz-backend-kiekeradapter'
+      }
     }
   }
 }
