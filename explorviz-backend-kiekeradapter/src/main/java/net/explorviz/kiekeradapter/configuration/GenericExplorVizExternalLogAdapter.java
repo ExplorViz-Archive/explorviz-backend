@@ -2,11 +2,17 @@ package net.explorviz.kiekeradapter.configuration;
 
 import java.nio.ByteBuffer;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import explorviz.live_trace_processing.main.MonitoringController;
 import explorviz.live_trace_processing.main.MonitoringStringRegistry;
 import explorviz.live_trace_processing.record.event.constructor.AfterConstructorEventRecord;
 import explorviz.live_trace_processing.record.event.constructor.AfterFailedConstructorEventRecord;
 import explorviz.live_trace_processing.record.event.constructor.BeforeConstructorEventRecord;
+import explorviz.live_trace_processing.record.event.jdbc.AfterFailedJDBCOperationEventRecord;
+import explorviz.live_trace_processing.record.event.jdbc.AfterJDBCOperationEventRecord;
+import explorviz.live_trace_processing.record.event.jdbc.BeforeJDBCOperationEventRecord;
 import explorviz.live_trace_processing.record.event.normal.AfterFailedOperationEventRecord;
 import explorviz.live_trace_processing.record.event.normal.AfterOperationEventRecord;
 import explorviz.live_trace_processing.record.event.normal.BeforeOperationEventRecord;
@@ -16,10 +22,13 @@ import explorviz.live_trace_processing.record.event.statics.BeforeStaticOperatio
 
 /**
  * Prepares the ByteBuffer and sends out the buffer to the backend
+ * 
  * @author Christian Zirkelbach (czi@informatik.uni-kiel.de)
  *
  */
 public class GenericExplorVizExternalLogAdapter {
+
+	static final Logger logger = LoggerFactory.getLogger(GenericExplorVizExternalLogAdapter.class.getName());
 
 	public static boolean replayInRealTime = false;
 	private static final ByteBuffer explorVizBuffer;
@@ -27,7 +36,10 @@ public class GenericExplorVizExternalLogAdapter {
 	private static long firstWallclockTimestamp;
 
 	static {
-		explorVizBuffer = ByteBuffer.allocateDirect(BeforeOperationEventRecord.COMPRESSED_BYTE_LENGTH_WITH_CLAZZ_ID);
+		// Defines the size of the ByteBuffer: Needs to match the largest record
+		// Check record size, if a new record is added!
+		explorVizBuffer = ByteBuffer
+				.allocateDirect(BeforeJDBCOperationEventRecord.COMPRESSED_BYTE_LENGTH_WITH_CLAZZ_ID);
 	}
 
 	public static void sendBeforeRecord(final long timestamp, final long traceId, final int orderIndex,
@@ -142,4 +154,51 @@ public class GenericExplorVizExternalLogAdapter {
 		sendAfterFailedGeneric(AfterFailedStaticOperationEventRecord.CLAZZ_ID, timestamp, methodDuration, traceId,
 				orderIndex, cause);
 	}
+
+	// DatabaseEvents
+	public static void sendBeforeDatabaseEvent(long loggingTimestamp, String classSignature, long traceId,
+			int orderIndex, int objectId, String interfaceImpl, String parameters, String technology) {
+
+		explorVizBuffer.put(BeforeJDBCOperationEventRecord.CLAZZ_ID);
+		explorVizBuffer.putLong(traceId);
+		explorVizBuffer.putInt(orderIndex);
+		explorVizBuffer.putInt(objectId);
+		explorVizBuffer.putInt(MonitoringStringRegistry.getIdForString(classSignature));
+		// TODO Extract class? // clazz
+		explorVizBuffer.putInt(MonitoringStringRegistry.getIdForString(classSignature));
+		if (interfaceImpl != null) {
+			explorVizBuffer.putInt(MonitoringStringRegistry.getIdForString(interfaceImpl));
+		}
+
+		explorVizBuffer.putInt(MonitoringStringRegistry.getIdForString(parameters));
+		// TODO Add technology
+
+		sendBufferIfHasElements(loggingTimestamp);
+	}
+
+	public static void sendAfterDatabaseEvent(long loggingTimestamp, long methodDuration, String classSignature,
+			long traceId, int orderIndex, String returnType, String returnValue) {
+
+		explorVizBuffer.put(AfterJDBCOperationEventRecord.CLAZZ_ID);
+		explorVizBuffer.putLong(methodDuration);
+		explorVizBuffer.putLong(traceId);
+		explorVizBuffer.putInt(orderIndex);
+		// TODO Add returnType
+		explorVizBuffer.putInt(MonitoringStringRegistry.getIdForString(returnValue));
+
+		sendBufferIfHasElements(loggingTimestamp);
+	}
+
+	public static void sendDatabaseFailedEvent(long loggingTimestamp, long methodDuration, String classSignature,
+			long traceId, int orderIndex, String cause) {
+
+		explorVizBuffer.put(AfterFailedJDBCOperationEventRecord.CLAZZ_ID);
+		explorVizBuffer.putLong(methodDuration);
+		explorVizBuffer.putLong(traceId);
+		explorVizBuffer.putInt(orderIndex);
+		explorVizBuffer.putInt(MonitoringStringRegistry.getIdForString(cause));
+
+		sendBufferIfHasElements(loggingTimestamp);
+	}
+
 }

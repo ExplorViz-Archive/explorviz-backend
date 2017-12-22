@@ -6,6 +6,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import kieker.common.record.IMonitoringRecord;
+import kieker.common.record.database.AfterDatabaseEvent;
+import kieker.common.record.database.BeforeDatabaseEvent;
+import kieker.common.record.database.DatabaseFailedEvent;
 import kieker.common.record.flow.IInterfaceRecord;
 import kieker.common.record.flow.IObjectRecord;
 import kieker.common.record.flow.trace.operation.AfterOperationEvent;
@@ -122,6 +125,58 @@ public class KiekerToExplorVizTransformStage extends AbstractConsumerStage<IMoni
 
 			GenericExplorVizExternalLogAdapter.sendAfterRecord(kiekerAfter.getLoggingTimestamp(), methodDuration,
 					kiekerAfter.getTraceId(), kiekerAfter.getOrderIndex());
+		}
+		// DatabaseEvent records
+		else if (kiekerRecord instanceof BeforeDatabaseEvent) {
+			stack.push(kiekerRecord);
+			final BeforeDatabaseEvent beforeDatabaseEvent = (BeforeDatabaseEvent) kiekerRecord;
+
+			// TODO deprecated?
+			int objectId = 0;
+			if (kiekerRecord instanceof IObjectRecord) {
+				final IObjectRecord iObjectRecord = (IObjectRecord) kiekerRecord;
+				objectId = iObjectRecord.getObjectId();
+			}
+
+			// TODO deprecated?
+			final String interfaceImpl = getInterface(kiekerRecord);
+
+			GenericExplorVizExternalLogAdapter.sendBeforeDatabaseEvent(beforeDatabaseEvent.getLoggingTimestamp(),
+					beforeDatabaseEvent.getClassSignature(), beforeDatabaseEvent.getTraceId(),
+					beforeDatabaseEvent.getOrderIndex(), objectId, interfaceImpl, beforeDatabaseEvent.getParameters(),
+					beforeDatabaseEvent.getTechnology());
+
+		} else if (kiekerRecord instanceof AfterDatabaseEvent) {
+			final AfterDatabaseEvent afterDatabaseEvent = (AfterDatabaseEvent) kiekerRecord;
+
+			long methodDuration = 0;
+			if (!stack.isEmpty()) {
+				final IMonitoringRecord beforeRecord = stack.pop();
+				if (beforeRecord instanceof BeforeDatabaseEvent) {
+					final BeforeDatabaseEvent beforeDatabaseEvent = (BeforeDatabaseEvent) beforeRecord;
+					methodDuration = afterDatabaseEvent.getLoggingTimestamp()
+							- beforeDatabaseEvent.getLoggingTimestamp();
+				}
+			}
+			GenericExplorVizExternalLogAdapter.sendAfterDatabaseEvent(afterDatabaseEvent.getLoggingTimestamp(),
+					methodDuration, afterDatabaseEvent.getClassSignature(), afterDatabaseEvent.getTraceId(),
+					afterDatabaseEvent.getOrderIndex(), afterDatabaseEvent.getReturnType(),
+					afterDatabaseEvent.getReturnValue());
+		} else if (kiekerRecord instanceof DatabaseFailedEvent) {
+			final DatabaseFailedEvent databaseFailedEvent = (DatabaseFailedEvent) kiekerRecord;
+
+			long methodDuration = 0;
+			if (!stack.isEmpty()) {
+				final IMonitoringRecord beforeRecord = stack.pop();
+				if (beforeRecord instanceof BeforeDatabaseEvent) {
+					final BeforeDatabaseEvent beforeOperationEvent = (BeforeDatabaseEvent) beforeRecord;
+					methodDuration = databaseFailedEvent.getLoggingTimestamp()
+							- beforeOperationEvent.getLoggingTimestamp();
+				}
+			}
+			GenericExplorVizExternalLogAdapter.sendDatabaseFailedEvent(databaseFailedEvent.getLoggingTimestamp(),
+					methodDuration, databaseFailedEvent.getClassSignature(), databaseFailedEvent.getTraceId(),
+					databaseFailedEvent.getOrderIndex(), databaseFailedEvent.getCause());
 		}
 	}
 
