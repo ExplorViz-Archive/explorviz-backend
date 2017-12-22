@@ -38,6 +38,7 @@ configurations.all {
 // ##### BEGIN Jitpack section #####
 
 artifacts {
+	archives file: file('libs/explorviz-monitoring.jar'), name: 'explorviz-monitoring', type: 'jar'
   	archives jar
 }
 
@@ -51,6 +52,9 @@ install {
     mavenInstaller {
       addFilter('explorviz-backend-kiekeradapter') {artifact, file ->
         artifact.name == 'explorviz-backend-kiekeradapter'
+      }
+      addFilter('explorviz-monitoring') {artifact, file ->
+        artifact.name == 'explorviz-monitoring'
       }
     }
   }
