@@ -23,19 +23,17 @@ import com.github.jasminb.jsonapi.JSONAPIDocument;
 import com.github.jasminb.jsonapi.ResourceConverter;
 import com.github.jasminb.jsonapi.exceptions.DocumentSerializationException;
 
-import net.explorviz.model.Landscape;
-
 @Provider
-@Produces(MediaType.APPLICATION_JSON)
-@Consumes(MediaType.APPLICATION_JSON)
-public class LandscapeProvider implements MessageBodyReader<Landscape>, MessageBodyWriter<Landscape> {
+@Produces("application/vnd.api+json")
+@Consumes("application/vnd.api+json")
+public class JSONApiProvider<T> implements MessageBodyReader<T>, MessageBodyWriter<T> {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(LandscapeProvider.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(JSONApiProvider.class);
 
-	final ResourceConverter converter;
+	private final ResourceConverter converter;
 
 	@Inject
-	public LandscapeProvider(final ResourceConverter converter) {
+	public JSONApiProvider(final ResourceConverter converter) {
 		this.converter = converter;
 	}
 
@@ -47,16 +45,24 @@ public class LandscapeProvider implements MessageBodyReader<Landscape>, MessageB
 	}
 
 	@Override
-	public void writeTo(final Landscape t, final Class<?> type, final Type genericType, final Annotation[] annotations,
+	public long getSize(final T t, final Class<?> type, final Type genericType, final Annotation[] annotations,
+			final MediaType mediaType) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public void writeTo(final T t, final Class<?> type, final Type genericType, final Annotation[] annotations,
 			final MediaType mediaType, final MultivaluedMap<String, Object> httpHeaders,
 			final OutputStream entityStream) throws IOException, WebApplicationException {
-
-		final JSONAPIDocument<Landscape> document = new JSONAPIDocument<Landscape>(t);
+		final JSONAPIDocument<T> document = new JSONAPIDocument<>(t);
 
 		try {
 			entityStream.write(this.converter.writeDocument(document));
 		} catch (final DocumentSerializationException e) {
-			LOGGER.error("Error when serializing Landscape: ", e);
+			if (LOGGER.isErrorEnabled()) {
+				LOGGER.error("Error when serializing object of type" + t.getClass() + ": ", e);
+			}
 		} finally {
 			entityStream.flush();
 			entityStream.close();
@@ -72,7 +78,7 @@ public class LandscapeProvider implements MessageBodyReader<Landscape>, MessageB
 	}
 
 	@Override
-	public Landscape readFrom(final Class<Landscape> type, final Type genericType, final Annotation[] annotations,
+	public T readFrom(final Class<T> type, final Type genericType, final Annotation[] annotations,
 			final MediaType mediaType, final MultivaluedMap<String, String> httpHeaders, final InputStream entityStream)
 			throws IOException, WebApplicationException {
 		return this.converter.readDocument(entityStream, type).get();

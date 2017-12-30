@@ -5,6 +5,8 @@ import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
 
 import org.hibernate.Session;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.explorviz.server.repository.HibernateSessionFactory;
 import net.explorviz.server.repository.LandscapeExchangeService;
@@ -15,6 +17,8 @@ import net.explorviz.server.security.User;
 @WebListener
 public class SetupListener implements ServletContextListener {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(SetupListener.class);
+
 	@Override
 	public void contextInitialized(final ServletContextEvent servletContextEvent) {
 
@@ -22,7 +26,7 @@ public class SetupListener implements ServletContextListener {
 		try {
 			hashedPassword = PasswordStorage.createHash("admin");
 		} catch (final CannotPerformOperationException e) {
-			System.err.println("Couldn't create default admin : " + e);
+			LOGGER.error("Couldn't create default admin : ", e);
 			return;
 		}
 
@@ -35,9 +39,10 @@ public class SetupListener implements ServletContextListener {
 
 		// Start ExplorViz Listener
 		LandscapeExchangeService.startRepository();
-		System.out.println("* * * * * * * * * * * * * * * * * * *\n");
-		System.out.println("Server started. Traces should be processed. (Start Test App now)\n");
-		System.out.println("* * * * * * * * * * * * * * * * * * *");
+		LOGGER.info("\n");
+		LOGGER.info("* * * * * * * * * * * * * * * * * * *\n");
+		LOGGER.info("Server started. Traces should be processed. (Start Test App now)\n");
+		LOGGER.info("* * * * * * * * * * * * * * * * * * *\n");
 
 	}
 

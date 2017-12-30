@@ -10,7 +10,7 @@ import javax.ws.rs.ext.Provider;
 
 /**
  * ResponseFilter for CORS support.
- * 
+ *
  * @author alexanderkrause
  *
  */
@@ -24,7 +24,7 @@ public class CORSResponseFilter implements ContainerResponseFilter {
 		final MultivaluedMap<String, Object> headers = responseContext.getHeaders();
 
 		headers.add("Access-Control-Allow-Origin", "*");
-		headers.add("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT");
+		headers.add("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT, PATCH");
 		headers.add("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
 	}
 

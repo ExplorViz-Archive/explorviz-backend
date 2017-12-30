@@ -1,7 +1,6 @@
 package net.explorviz.resources
 
 import javax.inject.Inject
-import javax.ws.rs.core.MediaType
 import javax.ws.rs.Produces
 import javax.ws.rs.GET
 import javax.ws.rs.Path
@@ -27,7 +26,7 @@ class TimestampResource {
 		this.service = service
 	}
 
-	@Produces(MediaType.APPLICATION_JSON)
+	@Produces("application/vnd.api+json")
 	@GET
 	@Path("/after-timestamp/{timestamp}")
 	def byte[] getSubsequentTimestamps(@PathParam("timestamp") long timestamp,
@@ -39,7 +38,7 @@ class TimestampResource {
 		this.converter.writeDocumentCollection(document)
 	}
 
-	@Produces(MediaType.APPLICATION_JSON)
+	@Produces("application/vnd.api+json")
 	@GET
 	@Path("/before-timestamp/{timestamp}")
 	def byte[] getPreviousTimestamps(@PathParam("timestamp") long timestamp,
@@ -51,7 +50,7 @@ class TimestampResource {
 		this.converter.writeDocumentCollection(document)
 	}
 
-	@Produces(MediaType.APPLICATION_JSON)
+	@Produces("application/vnd.api+json")
 	@GET
 	@Path("/from-oldest")
 	def byte[] getOldestTimestamps(@QueryParam("intervalSize") int intervalSize) {
@@ -62,7 +61,7 @@ class TimestampResource {
 		this.converter.writeDocumentCollection(document)
 	}
 
-	@Produces(MediaType.APPLICATION_JSON)
+	@Produces("application/vnd.api+json")
 	@GET
 	@Path("/from-recent")
 	def byte[] getNewestTimestamps(@QueryParam("intervalSize") int intervalSize) {

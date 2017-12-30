@@ -1,7 +1,6 @@
 package net.explorviz.resources
 
 import javax.inject.Inject
-import javax.ws.rs.core.MediaType
 import javax.ws.rs.Produces
 import javax.ws.rs.GET
 import javax.ws.rs.Path
@@ -22,14 +21,14 @@ class LandscapeResource {
 		this.service = service
 	}
 
-	@Produces(MediaType.APPLICATION_JSON)
+	@Produces("application/vnd.api+json")
 	@GET
 	@Path("/by-timestamp/{timestamp}")
 	def Landscape getLandscape(@PathParam("timestamp") long timestamp) throws FileNotFoundException {
 		service.getLandscape(timestamp)
 	}
 
-	@Produces(MediaType.APPLICATION_JSON)
+	@Produces("application/vnd.api+json")
 	@GET
 	@Path("/latest-landscape")
 	def Landscape getLatestLandscape() {

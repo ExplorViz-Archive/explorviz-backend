@@ -16,6 +16,7 @@ import net.explorviz.model.helper.CommunicationTileAccumulator
 import net.explorviz.model.TimestampStorage
 import net.explorviz.model.Timestamp
 import net.explorviz.model.DatabaseQuery
+import net.explorviz.server.security.User
 
 class ResourceConverterFactory implements Factory<ResourceConverter> {
 	val ResourceConverter converter
@@ -23,7 +24,7 @@ class ResourceConverterFactory implements Factory<ResourceConverter> {
 	new() {
 		this.converter = new ResourceConverter(TimestampStorage, Timestamp, Landscape, net.explorviz.model.System,
 			NodeGroup, Node, Application, Component, Clazz, CommunicationClazz, Communication, CommunicationAccumulator,
-			CommunicationTileAccumulator, DatabaseQuery)
+			CommunicationTileAccumulator, DatabaseQuery, User)
 		this.converter.enableSerializationOption(SerializationFeature.INCLUDE_RELATIONSHIP_ATTRIBUTES)
 	}
 
