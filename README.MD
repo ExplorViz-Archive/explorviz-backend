@@ -29,7 +29,7 @@ To force the download of newly added dependencies: *Right click explorviz-backen
 
 1. Follow the above [Setup Development](#setup-development) procedure
 2. Clone [TestApplication](https://github.com/czirkelbach/kiekerSampleApplication)
-3. Start the [TestApplication](https://github.com/czirkelbach/kiekerSampleApplication) via included .sh file
+3. Start the [TestApplication](https://github.com/czirkelbach/kiekerSampleApplication) as described [https://github.com/czirkelbach/kiekerSampleApplication/blob/master/README.md] here.
 4. Open [explorviz-ui-frontend](https://github.com/ExplorViz/explorviz-ui-frontend)
 
 **Important**: Changes that are related to dependency injections require a recompilation of the application. Use the gradle task *explorviz-backend -> gretty -> appRestart* to recompile and start the server. Then, start the Test app again.
