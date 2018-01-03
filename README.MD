@@ -11,8 +11,8 @@ This gradle project includes or installs every necessary dependency.
 ### Eclipse Setup
 1. Download the latest **Eclipse IDE for Java and DSL Developers** and Java SDK 8
 2. *Start Eclipse -> Help -> Eclipse Marketplace*, insert and download
-- *SpotBugs Eclipse plugin 3.1.0*
-- *Checkstyle Plug-in 8.0.0*
+- *SpotBugs Eclipse plugin 3.1.1*
+- *Checkstyle Plug-in 8.5.1*
 3. In Eclipse: *Help -> Install New Software -> Insert https://dl.bintray.com/pmd/pmd-eclipse-plugin/updates/ in "Work with" -> Check "PMD for Eclipse 4" -> Finish and download* (**Attention:** Don't use the eclipse-pmd version from the marketplace)
 
 ## Setup Development
@@ -29,7 +29,7 @@ To force the download of newly added dependencies: *Right click explorviz-backen
 
 1. Follow the above [Setup Development](#setup-development) procedure
 2. Clone [TestApplication](https://github.com/czirkelbach/kiekerSampleApplication)
-3. Start the [TestApplication](https://github.com/czirkelbach/kiekerSampleApplication) via included .sh file
+3. Start the [TestApplication](https://github.com/czirkelbach/kiekerSampleApplication) as described [here](https://github.com/czirkelbach/kiekerSampleApplication/blob/master/README.md).
 4. Open [explorviz-ui-frontend](https://github.com/ExplorViz/explorviz-ui-frontend)
 
 **Important**: Changes that are related to dependency injections require a recompilation of the application. Use the gradle task *explorviz-backend -> gretty -> appRestart* to recompile and start the server. Then, start the Test app again.
