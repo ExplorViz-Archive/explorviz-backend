@@ -18,7 +18,9 @@ public class Configuration {
 	public static final int TIMESHIFT_INTERVAL_IN_MINUTES = 10;
 	public static final int HISTORY_INTERVAL_IN_MINUTES = 24 * 60; // one day
 	public static final String MODEL_EXTENSION = ".expl";
-	public static boolean dummyMode;
 
 	public static final boolean ENABLE_KIEKER_ADAPTER = true;
+
+	// dummyMode = true: Use dummy monitoring data instead of real monitoring data
+	public static boolean dummyMode = false;
 }
