@@ -22,5 +22,5 @@ public class Configuration {
 	public static final boolean ENABLE_KIEKER_ADAPTER = true;
 
 	// dummyMode = true: Use dummy monitoring data instead of real monitoring data
-	public static boolean dummyMode;
+	public static final boolean dummyMode = false;
 }
