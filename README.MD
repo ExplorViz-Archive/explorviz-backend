@@ -4,7 +4,7 @@
 
 This project is a wip replica of ExplorViz's visualization component. 
 It substitutes [GWT](http://www.gwtproject.org/) and it's (asynchronous) RPC framework with [Jersey](https://jersey.java.net/) for creating a RESTful API. 
-This is only the backend, you will need the [explorviz-ui-frontend](https://github.com/ExplorViz/explorviz-ui-frontend) as well.
+This is only the backend, you will need the [explorviz-frontend](https://github.com/ExplorViz/explorviz-frontend) as well.
 
 This gradle project includes or installs every necessary dependency.
 
@@ -21,7 +21,7 @@ This gradle project includes or installs every necessary dependency.
 3. Import project into eclipse: via *Import -> Gradle -> Existing Gradle project -> path/to/explorviz-backend*
 4. In Eclipse: explorviz-backend: *Project -> Clean* (to generate .java files from .xtend files (xtend-gen))
 5. Start **explorviz-backend** via Eclipse Tab: *Gradle Tasks -> explorviz-backend -> gretty -> appStart*
-6. Setup and start [explorviz-ui-frontend](https://github.com/ExplorViz/explorviz-ui-frontend)
+6. Setup and start [explorviz-frontend](https://github.com/ExplorViz/explorviz-frontend)
 
 To force the download of newly added dependencies: *Right click explorviz-backend -> Grade -> Refresh Gradle Project*. 
 
@@ -30,6 +30,6 @@ To force the download of newly added dependencies: *Right click explorviz-backen
 1. Follow the above [Setup Development](#setup-development) procedure
 2. Clone [TestApplication](https://github.com/czirkelbach/kiekerSampleApplication)
 3. Start the [TestApplication](https://github.com/czirkelbach/kiekerSampleApplication) as described [here](https://github.com/czirkelbach/kiekerSampleApplication/blob/master/README.md).
-4. Open [explorviz-ui-frontend](https://github.com/ExplorViz/explorviz-ui-frontend)
+4. Open [explorviz-frontend](https://github.com/ExplorViz/explorviz-frontend)
 
 **Important**: Changes that are related to dependency injections require a recompilation of the application. Use the gradle task *explorviz-backend -> gretty -> appRestart* to recompile and start the server. Then, start the Test app again.
