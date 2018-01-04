@@ -26,14 +26,14 @@ import com.github.jasminb.jsonapi.exceptions.DocumentSerializationException;
 @Provider
 @Produces("application/vnd.api+json")
 @Consumes("application/vnd.api+json")
-public class JSONApiProvider<T> implements MessageBodyReader<T>, MessageBodyWriter<T> {
+public class JSONAPIProvider<T> implements MessageBodyReader<T>, MessageBodyWriter<T> {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(JSONApiProvider.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(JSONAPIProvider.class);
 
 	private final ResourceConverter converter;
 
 	@Inject
-	public JSONApiProvider(final ResourceConverter converter) {
+	public JSONAPIProvider(final ResourceConverter converter) {
 		this.converter = converter;
 	}
 

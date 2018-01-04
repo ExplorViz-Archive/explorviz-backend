@@ -6,7 +6,7 @@ import net.explorviz.server.exceptions.mapper.QueryParamExceptionMapper
 import org.glassfish.jersey.jackson.JacksonFeature
 import org.glassfish.jersey.server.ResourceConfig
 import javax.ws.rs.ApplicationPath
-import net.explorviz.server.providers.JSONApiProvider
+import net.explorviz.server.providers.JSONAPIProvider
 
 @ApplicationPath("")
 class ExplorViz extends ResourceConfig {
@@ -26,7 +26,7 @@ class ExplorViz extends ResourceConfig {
 		register(GeneralExceptionMapper)
 		
 		// easy (de-)serializing models for HTTP Requests
-		register(JSONApiProvider)
+		register(JSONAPIProvider)
 		
 		// register extensions (For development: read plugin structure at github docs)
 		packages("net.explorviz.extension")
