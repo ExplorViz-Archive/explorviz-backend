@@ -324,7 +324,7 @@ public class InsertionRepositoryPart {
 					if (abstractBeforeEventRecord instanceof BeforeJDBCOperationEventRecord) {
 						final BeforeJDBCOperationEventRecord jdbcOperationEventRecord = (BeforeJDBCOperationEventRecord) abstractBeforeEventRecord;
 						final DatabaseQuery databaseQuery = new DatabaseQuery();
-						databaseQuery.setSQLStatement(jdbcOperationEventRecord.getSqlStatement());
+						databaseQuery.setSqlStatement(jdbcOperationEventRecord.getSqlStatement());
 						currentApplication.getDatabaseQueries().add(databaseQuery);
 					}
 				}

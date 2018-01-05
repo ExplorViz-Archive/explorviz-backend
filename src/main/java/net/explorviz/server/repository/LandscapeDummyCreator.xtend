@@ -556,14 +556,14 @@ class LandscapeDummyCreator {
 		val maxIterations = 25;
 		for (var i = 0; i < maxIterations; i++) {
 			var dbQueryTmp = new DatabaseQuery
-			dbQueryTmp.SQLStatement = "CREATE TABLE IF NOT EXISTS `order` (oid integer PRIMARY KEY, name text NOT NULL, email text NOT NULL, odate text NOT NULL, itemid integer NOT NULL);"
+			dbQueryTmp.sqlStatement = "CREATE TABLE IF NOT EXISTS `order` (oid integer PRIMARY KEY, name text NOT NULL, email text NOT NULL, odate text NOT NULL, itemid integer NOT NULL);"
 			dbQueryTmp.returnValue = "null"
 			dbQueryTmp.timeInNanos = DummyLandscapeHelper.getRandomNum(10, 1000)
 			dbQueryTmp.timestamp = DummyLandscapeHelper.currentTimestamp;
 			dbQueryList.add(dbQueryTmp)
 
 			dbQueryTmp = new DatabaseQuery
-			dbQueryTmp.SQLStatement = "INSERT INTO `order` (oid, name, email, odate, itemid) " + "VALUES('" +
+			dbQueryTmp.sqlStatement = "INSERT INTO `order` (oid, name, email, odate, itemid) " + "VALUES('" +
 				DummyLandscapeHelper.getNextSequenceId +
 				"'Tom B. Erichsen', 'erichsen@uni-kiel.de', '2017-11-16', '1');"
 			dbQueryTmp.returnValue = "null"
@@ -572,7 +572,7 @@ class LandscapeDummyCreator {
 				dbQueryList.add(dbQueryTmp)
 
 				dbQueryTmp = new DatabaseQuery
-				dbQueryTmp.SQLStatement = "INSERT INTO `order` (oid, name, email, odate, itemid) " + "VALUES('" +
+				dbQueryTmp.sqlStatement = "INSERT INTO `order` (oid, name, email, odate, itemid) " + "VALUES('" +
 					DummyLandscapeHelper.getNextSequenceId +
 					"'Tom B. Erichsen', 'erichsen@uni-kiel.de', '2017-11-16', '1');"
 			dbQueryTmp.returnValue = "null"
@@ -581,7 +581,7 @@ class LandscapeDummyCreator {
 					dbQueryList.add(dbQueryTmp)
 
 					dbQueryTmp = new DatabaseQuery
-					dbQueryTmp.SQLStatement = "INSERT INTO `order` (oid, name, email, odate, itemid) " + "VALUES('" +
+					dbQueryTmp.sqlStatement = "INSERT INTO `order` (oid, name, email, odate, itemid) " + "VALUES('" +
 						DummyLandscapeHelper.getNextSequenceId +
 						"', 'Carol K. Durham', 'durham@uni-kiel.de', '2017-10-08', '1');"
 			dbQueryTmp.returnValue = "null"
@@ -590,14 +590,14 @@ class LandscapeDummyCreator {
 						dbQueryList.add(dbQueryTmp)
 
 						dbQueryTmp = new DatabaseQuery
-						dbQueryTmp.SQLStatement = "SELECT * FROM `order` WHERE name = Carol K. Durham";
+						dbQueryTmp.sqlStatement = "SELECT * FROM `order` WHERE name = Carol K. Durham";
 						dbQueryTmp.returnValue = String.valueOf(DummyLandscapeHelper.getRandomNum(5, 100))
 						dbQueryTmp.timeInNanos = DummyLandscapeHelper.getRandomNum(10, 1000)
 						dbQueryTmp.timestamp = DummyLandscapeHelper.currentTimestamp;
 						dbQueryList.add(dbQueryTmp)
 
 						dbQueryTmp = new DatabaseQuery
-						dbQueryTmp.SQLStatement = "SELECT * FROM `order` WHERE name = Tom B. Erichsen";
+						dbQueryTmp.sqlStatement = "SELECT * FROM `order` WHERE name = Tom B. Erichsen";
 						dbQueryTmp.returnValue = String.valueOf(DummyLandscapeHelper.getRandomNum(5, 100))
 						dbQueryTmp.timeInNanos = DummyLandscapeHelper.getRandomNum(10, 1000)
 						dbQueryTmp.timestamp = DummyLandscapeHelper.currentTimestamp;
