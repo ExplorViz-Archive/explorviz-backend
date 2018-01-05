@@ -93,6 +93,7 @@
 	</rule>
 
 	<rule ref="rulesets/java/optimizations.xml">
+		<exclude name="RedundantFieldInitializer" />
 		<exclude name="LocalVariableCouldBeFinal" />
 		<exclude name="SimplifyStartsWith" />
 		<exclude name="AvoidInstantiatingObjectsInLoops" />
