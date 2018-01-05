@@ -1,18 +1,26 @@
 package net.explorviz.server.repository
 
-import net.explorviz.server.repository.LandscapePreparer
+import java.util.LinkedList
+import java.util.Random
 import net.explorviz.model.Application
 import net.explorviz.model.Clazz
 import net.explorviz.model.Communication
 import net.explorviz.model.CommunicationClazz
 import net.explorviz.model.Component
+import net.explorviz.model.DatabaseQuery
 import net.explorviz.model.Landscape
 import net.explorviz.model.Node
 import net.explorviz.model.NodeGroup
 import net.explorviz.model.System
 import net.explorviz.model.helper.ELanguage
-import java.util.Random
+import util.DummyLandscapeHelper
 
+/**
+ * Creates a dummy landscape for developing or demo purposes
+ * 
+ * @author Christian Zirkelbach (czi@informatik.uni-kiel.de)
+ * 
+ */
 class LandscapeDummyCreator {
 	public var static int counter = 1;
 	var static int applicationId = 0
@@ -58,7 +66,7 @@ class LandscapeDummyCreator {
 		ocnEditorApp.components.add(org)
 
 		LandscapePreparer.prepareLandscape(landscape)
-		
+
 		counter = 1;
 	}
 
@@ -69,18 +77,18 @@ class LandscapeDummyCreator {
 		landscape.hash = java.lang.System.currentTimeMillis
 		landscape.activities = new Random().nextInt(300000)
 
-		val requestSystem= new System()
+		val requestSystem = new System()
 		requestSystem.name = "Requests"
 		requestSystem.parent = landscape
 		landscape.systems.add(requestSystem)
-		
+
 		val requestsNodeGroup = createNodeGroup("10.0.99.1", landscape, requestSystem)
 		val requestsNode = createNode("10.0.99.1", requestsNodeGroup)
 		val requestsApp = createApplication("Requests", requestsNode)
-		
+
 		requestsNodeGroup.nodes.add(requestsNode)
 		requestSystem.nodeGroups.add(requestsNodeGroup)
-		
+
 		val ocnEditor = new System()
 		ocnEditor.name = "OCN Editor"
 		ocnEditor.parent = landscape
@@ -233,7 +241,7 @@ class LandscapeDummyCreator {
 		val neo4jNode = createNode("10.0.0.9", neo4jNodeGroup)
 		val neo4j = createDatabase("Neo4j", neo4jNode)
 
-		//createJPetStoreDummyApplication(neo4j)
+		// createJPetStoreDummyApplication(neo4j)
 		createNeo4JDummyApplication(neo4j)
 
 		neo4jNodeGroup.nodes.add(neo4jNode)
@@ -242,15 +250,15 @@ class LandscapeDummyCreator {
 		val cacheNodeGroup = createNodeGroup("10.0.0.8", landscape, pubflow)
 		val cacheNode = createNode("10.0.0.8", cacheNodeGroup)
 		val cache = createApplication("Cache", cacheNode)
-		//val hyperSQL = createDatabase("HyperSQL", cacheNode)
-		val neo4jv2 = createDatabase("Neo4jV2", cacheNode);
-		createNeo4JDummyApplicationV2(neo4jv2);
+		// val hyperSQL = createDatabase("HyperSQL", cacheNode)
+		val mapleLeafApplication = createDatabase("MapleLeaf DB Connector", cacheNode);
+		createMapleLeafApplication(mapleLeafApplication);
 
 		cacheNodeGroup.nodes.add(cacheNode)
 		pubflow.nodeGroups.add(cacheNodeGroup)
 
 		createCommunication(requestsApp, ocnEditorApp, landscape, 100)
-		
+
 		createCommunication(pangeaApp, pangeaApp2, landscape, 100)
 		createCommunication(pangeaApp2, pangeaApp3, landscape, 100)
 		createCommunication(ocnEditorApp, ocnDatabaseApp, landscape, 100)
@@ -285,20 +293,20 @@ class LandscapeDummyCreator {
 		createCommunication(workflow3, cache, landscape, 300)
 		createCommunication(workflow4, cache, landscape, 100)
 
-		//createCommunication(cache, hyperSQL, landscape, 300)
-		createCommunication(cache, neo4jv2, landscape, 300 * 2)
+		// createCommunication(cache, hyperSQL, landscape, 300)
+		createCommunication(cache, mapleLeafApplication, landscape, 300 * 2)
 
 		createCommunication(provenance1, neo4j, landscape, 100)
 		createCommunication(provenance2, neo4j, landscape, 200)
 		createCommunication(provenance3, neo4j, landscape, 300)
-		createCommunication(provenance4, neo4j, landscape, 100)	
-		
+		createCommunication(provenance4, neo4j, landscape, 100)
+
 		val preparedLandscape = LandscapePreparer.prepareLandscape(landscape)
-		
+
 		counter = 1;
-		
+
 		preparedLandscape
-		
+
 	}
 
 	def private static createNodeGroup(String name, Landscape parent, System system) {
@@ -318,14 +326,14 @@ class LandscapeDummyCreator {
 	def private static createApplication(String name, Node parent) {
 		val application = new Application()
 
-		//val newId = applicationId
-		//application.id = newId
+		// val newId = applicationId
+		// application.id = newId
 		applicationId = applicationId + 1
 		application.parent = parent
 
 		application.lastUsage = java.lang.System.currentTimeMillis
 		application.programmingLanguage = ELanguage::JAVA
-		
+
 		if (name == "Eprints") {
 			application.programmingLanguage = ELanguage::PERL
 		}
@@ -352,69 +360,69 @@ class LandscapeDummyCreator {
 	/*
 	 * JPetStore Dummy Application
 	 */
-	//	def private static createJPetStoreDummyApplication(Application application) {
-	//		val com = createComponent("com", null)
-	//		application.components.add(com)
-	//		val ibatis = createComponent("ibatis", com)
-	//		val jpetstore = createComponent("jpetstore", ibatis)
+	// def private static createJPetStoreDummyApplication(Application application) {
+	// val com = createComponent("com", null)
+	// application.components.add(com)
+	// val ibatis = createComponent("ibatis", com)
+	// val jpetstore = createComponent("jpetstore", ibatis)
 	//
-	//		val domain = createComponent("domain", jpetstore)
-	//		val account = createClazz("Account", domain, 20)
-	//		createClazz("Cart", domain, 20)
-	//		createClazz("CartItem", domain, 30)
-	//		val category = createClazz("Category", domain, 30)
-	//		createClazz("Item", domain, 20)
-	//		createClazz("LineItem", domain, 40)
-	//		val order = createClazz("Order", domain, 20)
-	//		createClazz("Product", domain, 50)
-	//		createClazz("Sequence", domain, 10)
+	// val domain = createComponent("domain", jpetstore)
+	// val account = createClazz("Account", domain, 20)
+	// createClazz("Cart", domain, 20)
+	// createClazz("CartItem", domain, 30)
+	// val category = createClazz("Category", domain, 30)
+	// createClazz("Item", domain, 20)
+	// createClazz("LineItem", domain, 40)
+	// val order = createClazz("Order", domain, 20)
+	// createClazz("Product", domain, 50)
+	// createClazz("Sequence", domain, 10)
 	//
-	//		val service = createComponent("service", jpetstore)
-	//		val accountService = createClazz("AccountService", service, 30)
-	//		val categoryService = createClazz("CatalogService", service, 40)
-	//		val orderService = createClazz("OrderService", service, 35)
+	// val service = createComponent("service", jpetstore)
+	// val accountService = createClazz("AccountService", service, 30)
+	// val categoryService = createClazz("CatalogService", service, 40)
+	// val orderService = createClazz("OrderService", service, 35)
 	//
-	//		val persistence = createComponent("persistence", jpetstore)
-	//		createClazz("DaoConfig", persistence, 30)
-	//		
-	//		val iface = createComponent("iface", persistence)
-	//		val accountDao = createClazz("AccountDao", iface, 30)
-	//		createClazz("CategoryDao", iface, 10)
-	//		val catalogDao = createClazz("ItemDao", iface, 40)
-	//		val orderDao = createClazz("OrderDao", iface, 45)
-	//		createClazz("ProductDao", iface, 25)
-	//		createClazz("SequenceDao", iface, 20)
-	//		
-	//		val sqlmapdao = createComponent("sqlmapdao", persistence)
-	//		createClazz("AccountSqlMapDao", sqlmapdao, 5)
-	//		createClazz("BaseSqlMapDao", sqlmapdao, 20)
-	//		createClazz("CategorySqlMapDao", sqlmapdao, 30)
-	//		createClazz("ItemSqlMapDao", sqlmapdao, 35)
-	//		val orderSqlDao = createClazz("OrderSqlMapDao", sqlmapdao, 25)
-	//		createClazz("ProductSqlMapDao", sqlmapdao, 20)
-	//		createClazz("SequenceSqlMapDao", sqlmapdao, 15)
+	// val persistence = createComponent("persistence", jpetstore)
+	// createClazz("DaoConfig", persistence, 30)
 	//
-	//		val presentation = createComponent("presentation", jpetstore)
-	//		createClazz("AbstractBean", presentation, 20)
-	//		val accountBean = createClazz("AccountBean", presentation, 30)
-	//		createClazz("CartBean", presentation, 40)
-	//		val catlogBean = createClazz("CatalogBean", presentation, 21)
-	//		val orderBean = createClazz("OrderBean", presentation, 25)
+	// val iface = createComponent("iface", persistence)
+	// val accountDao = createClazz("AccountDao", iface, 30)
+	// createClazz("CategoryDao", iface, 10)
+	// val catalogDao = createClazz("ItemDao", iface, 40)
+	// val orderDao = createClazz("OrderDao", iface, 45)
+	// createClazz("ProductDao", iface, 25)
+	// createClazz("SequenceDao", iface, 20)
 	//
-	//		createCommuClazz(5, account, accountService, application)
-	//		createCommuClazz(20, category, categoryService, application)
-	//		createCommuClazz(60, order, orderService, application)
-	//		
-	//		createCommuClazz(30, accountService, accountDao, application)
-	//		createCommuClazz(35, categoryService, catalogDao, application)
-	//		
-	//		createCommuClazz(5, orderService, orderDao, application)
-	//		createCommuClazz(15, orderSqlDao, orderBean, application)
-	//		
-	//		createCommuClazz(40, accountDao, accountBean, application)
-	//		createCommuClazz(50, catalogDao, catlogBean, application)
-	//		createCommuClazz(20, orderDao, orderBean, application)
-	//	}
+	// val sqlmapdao = createComponent("sqlmapdao", persistence)
+	// createClazz("AccountSqlMapDao", sqlmapdao, 5)
+	// createClazz("BaseSqlMapDao", sqlmapdao, 20)
+	// createClazz("CategorySqlMapDao", sqlmapdao, 30)
+	// createClazz("ItemSqlMapDao", sqlmapdao, 35)
+	// val orderSqlDao = createClazz("OrderSqlMapDao", sqlmapdao, 25)
+	// createClazz("ProductSqlMapDao", sqlmapdao, 20)
+	// createClazz("SequenceSqlMapDao", sqlmapdao, 15)
+	//
+	// val presentation = createComponent("presentation", jpetstore)
+	// createClazz("AbstractBean", presentation, 20)
+	// val accountBean = createClazz("AccountBean", presentation, 30)
+	// createClazz("CartBean", presentation, 40)
+	// val catlogBean = createClazz("CatalogBean", presentation, 21)
+	// val orderBean = createClazz("OrderBean", presentation, 25)
+	//
+	// createCommuClazz(5, account, accountService, application)
+	// createCommuClazz(20, category, categoryService, application)
+	// createCommuClazz(60, order, orderService, application)
+	//
+	// createCommuClazz(30, accountService, accountDao, application)
+	// createCommuClazz(35, categoryService, catalogDao, application)
+	//
+	// createCommuClazz(5, orderService, orderDao, application)
+	// createCommuClazz(15, orderSqlDao, orderBean, application)
+	//
+	// createCommuClazz(40, accountDao, accountBean, application)
+	// createCommuClazz(50, catalogDao, catlogBean, application)
+	// createCommuClazz(20, orderDao, orderBean, application)
+	// }
 	def private static createClazz(String name, Component component, int instanceCount) {
 		val clazz = new Clazz()
 		clazz.name = name
@@ -446,10 +454,9 @@ class LandscapeDummyCreator {
 
 		commu.source = source
 		commu.target = target
-		
-		//source.communicationClazz = commu
-		//target.communicationClazz = commu
 
+		// source.communicationClazz = commu
+		// target.communicationClazz = commu
 		application.communications.add(commu)
 
 		commu
@@ -533,84 +540,71 @@ class LandscapeDummyCreator {
 		createCommuClazz(150, lifecycleClazz, loggingClazz, application)
 		createCommuClazz(1200, guardClazz, implClazz, application)
 	}
-	
-	def private static createNeo4JDummyApplicationV2(Application application) {
+
+	/**
+	 * A dummy application containing sample database queries based on https://github.com/czirkelbach/kiekerSampleApplication/
+	 */
+	def private static createMapleLeafApplication(Application application) {
 		val org = createComponent("org", null, application)
 		application.components.add(org)
-		val neo4j = createComponent("neo4j", org, application)
+		val mapleLeaf = createComponent("mapleleaf", org, application)
+		val database = createComponent("database", mapleLeaf, application)
+		val mapleDBClazz = createClazz("Label", database, 20)
 
-		val graphdb = createComponent("graphdb", neo4j, application)
-		val graphDbClazz = createClazz("Label", graphdb, 20)
-		createClazz("Label2", graphdb, 20 * 2)
-		createClazz("Label3", graphdb, 20 * 2)
-		createClazz("Label4", graphdb, 20 * 2)
-		createClazz("Label5", graphdb, 20 * 2)
+		val dbQueryList = new LinkedList<DatabaseQuery>
 
-		val helpers = createComponent("helpers", neo4j, application)
-		val helpersClazz = createClazz("x", helpers, 30 * 2)
-		createClazz("x2", helpers, 40 * 2)
-		createClazz("x3", helpers, 35 * 2)
-		createClazz("x4", helpers, 35 * 2)
-		createClazz("x5", helpers, 35 * 2)
+		val maxIterations = 25;
+		for (var i = 0; i < maxIterations; i++) {
+			var dbQueryTmp = new DatabaseQuery
+			dbQueryTmp.SQLStatement = "CREATE TABLE IF NOT EXISTS `order` (oid integer PRIMARY KEY, name text NOT NULL, email text NOT NULL, odate text NOT NULL, itemid integer NOT NULL);"
+			dbQueryTmp.returnValue = "null"
+			dbQueryTmp.timeInNanos = DummyLandscapeHelper.getRandomNum(10, 1000)
+			dbQueryTmp.timestamp = DummyLandscapeHelper.currentTimestamp;
+			dbQueryList.add(dbQueryTmp)
 
-		val tooling = createComponent("tooling", neo4j, application)
-		val toolingClazz = createClazz("AccountSqlMapDao", tooling, 5 * 2)
-		createClazz("BaseSqlMapDao", tooling, 20 * 2)
-		createClazz("CategorySqlMapDao", tooling, 30 * 2)
-		createClazz("ItemSqlMapDao", tooling, 35 * 2)
-		createClazz("ProductSqlMapDao", tooling, 20 * 2)
-		createClazz("SequenceSqlMapDao", tooling, 15 * 2)
+			dbQueryTmp = new DatabaseQuery
+			dbQueryTmp.SQLStatement = "INSERT INTO `order` (oid, name, email, odate, itemid) " + "VALUES('" +
+				DummyLandscapeHelper.getNextSequenceId +
+				"'Tom B. Erichsen', 'erichsen@uni-kiel.de', '2017-11-16', '1');"
+			dbQueryTmp.returnValue = "null"
+				dbQueryTmp.timeInNanos = DummyLandscapeHelper.getRandomNum(10, 1000)
+				dbQueryTmp.timestamp = DummyLandscapeHelper.currentTimestamp;
+				dbQueryList.add(dbQueryTmp)
 
-		val unsafe = createComponent("unsafe", neo4j, application)
-		val unsafeClazz = createClazz("AbstractBean", unsafe, 20 * 2)
-		createClazz("CartBean", unsafe, 40 * 2)
+				dbQueryTmp = new DatabaseQuery
+				dbQueryTmp.SQLStatement = "INSERT INTO `order` (oid, name, email, odate, itemid) " + "VALUES('" +
+					DummyLandscapeHelper.getNextSequenceId +
+					"'Tom B. Erichsen', 'erichsen@uni-kiel.de', '2017-11-16', '1');"
+			dbQueryTmp.returnValue = "null"
+					dbQueryTmp.timeInNanos = DummyLandscapeHelper.getRandomNum(10, 1000)
+					dbQueryTmp.timestamp = DummyLandscapeHelper.currentTimestamp;
+					dbQueryList.add(dbQueryTmp)
 
-		val kernel = createComponent("kernel", neo4j, application)
+					dbQueryTmp = new DatabaseQuery
+					dbQueryTmp.SQLStatement = "INSERT INTO `order` (oid, name, email, odate, itemid) " + "VALUES('" +
+						DummyLandscapeHelper.getNextSequenceId +
+						"', 'Carol K. Durham', 'durham@uni-kiel.de', '2017-10-08', '1');"
+			dbQueryTmp.returnValue = "null"
+						dbQueryTmp.timeInNanos = DummyLandscapeHelper.getRandomNum(10, 1000)
+						dbQueryTmp.timestamp = DummyLandscapeHelper.currentTimestamp;
+						dbQueryList.add(dbQueryTmp)
 
-		val api = createComponent("api", kernel, application)
-		val apiClazz = createClazz("cleanupX", api, 25 * 2)
-		createClazz("cleanupX", api, 25 * 2)
-		val configuration = createComponent("configuration", kernel, application)
-		val configurationClazz = createClazz("cleanupX", configuration, 35 * 2)
-		createClazz("cleanupX", configuration, 5 * 2)
-		val myextension = createComponent("extension", kernel, application)
-		createClazz("cleanupX", myextension, 25 * 2)
-		createClazz("cleanupX", myextension, 5 * 2)
-		val guard = createComponent("guard", kernel, application)
-		val guardClazz = createClazz("cleanupX", guard, 35 * 2)
-		createClazz("cleanupX", guard, 25 * 2)
+						dbQueryTmp = new DatabaseQuery
+						dbQueryTmp.SQLStatement = "SELECT * FROM `order` WHERE name = Carol K. Durham";
+						dbQueryTmp.returnValue = String.valueOf(DummyLandscapeHelper.getRandomNum(5, 100))
+						dbQueryTmp.timeInNanos = DummyLandscapeHelper.getRandomNum(10, 1000)
+						dbQueryTmp.timestamp = DummyLandscapeHelper.currentTimestamp;
+						dbQueryList.add(dbQueryTmp)
 
-		val impl = createComponent("impl", kernel, application)
-		val implClazz = createClazz("cleanupX", impl, 45 * 2)
-		val annotations = createComponent("annotations", impl, application)
-		createClazz("cleanupX", annotations, 35 * 2)
-		val apiImpl = createComponent("api", impl, application)
-		val apiImplClazz = createClazz("cleanupX", apiImpl, 25 * 2)
-		val cache = createComponent("cache", impl, application)
-		createClazz("cleanupX", cache, 45 * 2)
-		val persistence = createComponent("persistence", impl, application)
-		createClazz("AccountSqlMapDao", persistence, 45 * 2)
+						dbQueryTmp = new DatabaseQuery
+						dbQueryTmp.SQLStatement = "SELECT * FROM `order` WHERE name = Tom B. Erichsen";
+						dbQueryTmp.returnValue = String.valueOf(DummyLandscapeHelper.getRandomNum(5, 100))
+						dbQueryTmp.timeInNanos = DummyLandscapeHelper.getRandomNum(10, 1000)
+						dbQueryTmp.timestamp = DummyLandscapeHelper.currentTimestamp;
+						dbQueryList.add(dbQueryTmp)
+					}
+					application.databaseQueries = dbQueryList
+				}
 
-		val info = createComponent("info", kernel, application)
-		createClazz("AccountSqlMapDao", info, 5 * 2)
-		createClazz("AccountSqlMapDao", info, 25 * 2)
-		val lifecycle = createComponent("lifecycle", kernel, application)
-		val lifecycleClazz = createClazz("AccountSqlMapDao", lifecycle, 25 * 2)
-		createClazz("AccountSqlMapDao", lifecycle, 15 * 2)
-
-		val logging = createComponent("logging", kernel, application)
-		val loggingClazz = createClazz("AccountSqlMapDao", logging, 25 * 2)
-		createClazz("AccountSqlMapDao2", logging, 5 * 2)
-
-		createCommuClazz(40 * 2, graphDbClazz, helpersClazz, application)
-		createCommuClazz(100 * 2, toolingClazz, implClazz, application)
-		createCommuClazz(60 * 2, implClazz, helpersClazz, application)
-		createCommuClazz(60 * 2, implClazz, apiImplClazz, application)
-		createCommuClazz(1000 * 2, implClazz, loggingClazz, application)
-		createCommuClazz(100 * 2, guardClazz, unsafeClazz, application)
-		createCommuClazz(100 * 2, apiClazz, configurationClazz, application)
-		createCommuClazz(150 * 2, lifecycleClazz, loggingClazz, application)
-		createCommuClazz(1200 * 2, guardClazz, implClazz, application)
-	}
-	
-}
+			}
+			
