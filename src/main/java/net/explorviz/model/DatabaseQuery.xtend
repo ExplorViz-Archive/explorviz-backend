@@ -6,9 +6,8 @@ import com.github.jasminb.jsonapi.annotations.Type
 
 @Type("databasequery")
 class DatabaseQuery extends BaseEntity {
-	@Accessors String SQLStatement
+	@Accessors String sqlStatement
 	@Accessors String returnValue
-
 	@Accessors long timeInNanos
 
 }
