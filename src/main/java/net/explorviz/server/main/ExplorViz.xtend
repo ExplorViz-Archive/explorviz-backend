@@ -6,7 +6,6 @@ import net.explorviz.server.exceptions.mapper.QueryParamExceptionMapper
 import org.glassfish.jersey.jackson.JacksonFeature
 import org.glassfish.jersey.server.ResourceConfig
 import javax.ws.rs.ApplicationPath
-import net.explorviz.server.providers.JSONAPIProvider
 
 @ApplicationPath("")
 class ExplorViz extends ResourceConfig {
