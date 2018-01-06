@@ -26,7 +26,7 @@ class ExplorViz extends ResourceConfig {
 		register(GeneralExceptionMapper)
 		
 		// easy (de-)serializing models for HTTP Requests
-		register(JSONAPIProvider)
+		packages("net.explorviz.server.providers")
 		
 		// register extensions (For development: read plugin structure at github docs)
 		packages("net.explorviz.extension")
