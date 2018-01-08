@@ -76,13 +76,17 @@ dependencies {
 // War plugin typically disables jar build
 assemble.dependsOn jar
 
+// https://github.com/jitpack/jitpack.io/issues/2189
+task sourcesJar(type: Jar) {
+    from sourceSets.main.java.srcDirs
+    classifier = 'sources'
+}
+
 // https://discuss.gradle.org/t/deploying-multiple-artifacts-war-jar-sources-to-artifactory/4239
 artifacts {
   	archives file: file('libs/explorviz-common-1.0.jar'), name: 'explorviz-common', type: 'jar'
   	archives file: file('libs/explorviz-worker-1.0.jar'), name: 'explorviz-worker', type: 'jar'
-  	archives jar {
-  		classifier = 'sources'
-  	}
+  	archives sourcesJar
   	archives war {
         classifier = 'deployment'
     }
