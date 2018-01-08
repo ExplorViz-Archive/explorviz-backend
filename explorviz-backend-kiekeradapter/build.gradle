@@ -44,7 +44,7 @@ task sourcesJar(type: Jar) {
 
 artifacts {
 	archives file: file('libs/explorviz-monitoring.jar'), name: 'explorviz-monitoring', type: 'jar'
-  	archives archives sourcesJar
+  	archives sourcesJar
 }
 
 jar {
