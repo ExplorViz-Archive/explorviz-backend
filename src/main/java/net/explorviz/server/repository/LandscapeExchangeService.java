@@ -113,15 +113,7 @@ public class LandscapeExchangeService {
 						continue;
 					}
 
-					// second validation check -> deserialization
-					try {
-						// getLandscape(timestamp, activity);
-						this.getLandscape(timestamp);
-					} catch (final FileNotFoundException e) {
-						LOGGER.warn(e.getMessage());
-						continue;
-					}
-					final Timestamp newTimestamp = new Timestamp(activity);
+					final Timestamp newTimestamp = new Timestamp(timestamp, activity);
 					timestampStorage.addTimestamp(newTimestamp);
 				}
 			}
