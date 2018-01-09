@@ -3,6 +3,7 @@ package net.explorviz.server.repository;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -11,7 +12,6 @@ import org.slf4j.LoggerFactory;
 import net.explorviz.kiekeradapter.main.KiekerAdapter;
 import net.explorviz.model.Landscape;
 import net.explorviz.model.Timestamp;
-import net.explorviz.model.TimestampStorage;
 import net.explorviz.server.main.Configuration;
 import net.explorviz.server.main.FileSystemHelper;
 
@@ -92,10 +92,10 @@ public class LandscapeExchangeService {
 		return names;
 	}
 
-	public TimestampStorage getTimestampObjectsInRepo() {
+	public List<Timestamp> getTimestampObjectsInRepo() {
 		final File directory = new File(REPOSITORY_FOLDER);
 		final File[] fList = directory.listFiles();
-		final TimestampStorage timestampStorage = new TimestampStorage();
+		final List<Timestamp> timestamps = new LinkedList<Timestamp>();
 
 		if (fList != null) {
 			for (final File f : fList) {
@@ -114,46 +114,11 @@ public class LandscapeExchangeService {
 					}
 
 					final Timestamp newTimestamp = new Timestamp(timestamp, activity);
-					timestampStorage.addTimestamp(newTimestamp);
+					timestamps.add(newTimestamp);
 				}
 			}
 		}
-		return timestampStorage;
-	}
-
-	@Deprecated
-	public List<String> getNamesInRepo() {
-		final List<String> names = new ArrayList<String>();
-		final File directory = new File(REPOSITORY_FOLDER);
-		final File[] fList = directory.listFiles();
-
-		if (fList != null) {
-			for (final File f : fList) {
-				final String filename = f.getName();
-
-				if (filename.endsWith(".expl")) {
-					// first validation check -> filename
-					long timestamp;
-
-					try {
-						timestamp = Long.parseLong(filename.split("-")[0]);
-					} catch (final NumberFormatException e) {
-						LOGGER.warn(e.getMessage());
-						continue;
-					}
-
-					// second validation check -> deserialization
-					try {
-						this.getLandscape(timestamp);
-					} catch (final FileNotFoundException e) {
-						LOGGER.warn(e.getMessage());
-						continue;
-					}
-					names.add(filename);
-				}
-			}
-		}
-		return names;
+		return timestamps;
 	}
 
 	public Landscape getLandscape(final long timestamp) throws FileNotFoundException {
