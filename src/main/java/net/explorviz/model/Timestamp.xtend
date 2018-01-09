@@ -13,7 +13,8 @@ class Timestamp extends BaseEntity {
 
 	@Accessors long calls
 
-	new(long calls) {
+	new(long timestamp, long calls) {
+		this.timestamp = timestamp
 		this.calls = calls
 	}
 }

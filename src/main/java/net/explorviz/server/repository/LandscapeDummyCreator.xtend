@@ -13,7 +13,7 @@ import net.explorviz.model.Node
 import net.explorviz.model.NodeGroup
 import net.explorviz.model.System
 import net.explorviz.model.helper.ELanguage
-import util.DummyLandscapeHelper
+import net.explorviz.server.util.DummyLandscapeHelper
 
 /**
  * Creates a dummy landscape for developing or demo purposes

@@ -1,4 +1,4 @@
-package util;
+package net.explorviz.server.util;
 
 import java.sql.Timestamp;
 import java.util.concurrent.ThreadLocalRandom;
