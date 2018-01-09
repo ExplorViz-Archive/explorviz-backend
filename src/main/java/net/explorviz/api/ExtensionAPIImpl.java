@@ -3,9 +3,11 @@ package net.explorviz.api;
 import java.io.FileNotFoundException;
 import java.util.List;
 
+import org.glassfish.jersey.server.ParamException.QueryParamException;
+
 import net.explorviz.model.Landscape;
 import net.explorviz.model.Timestamp;
-import net.explorviz.model.TimestampStorage;
+import net.explorviz.model.helper.TimestampHelper;
 import net.explorviz.server.repository.LandscapeExchangeService;
 
 /**
@@ -21,7 +23,6 @@ public final class ExtensionAPIImpl implements IExtensionAPI {
 
 	String versionNumber = "0.1a";
 	LandscapeExchangeService service;
-	TimestampStorage timestampStorage;
 
 	private ExtensionAPIImpl() {
 		this.service = LandscapeExchangeService.getInstance();
@@ -32,13 +33,6 @@ public final class ExtensionAPIImpl implements IExtensionAPI {
 			ExtensionAPIImpl.instance = new ExtensionAPIImpl();
 		}
 		return ExtensionAPIImpl.instance;
-	}
-
-	/**
-	 * Updates the held timestamp storage for queries
-	 */
-	public synchronized void updateTimestampStorage() {
-		this.timestampStorage = this.service.getTimestampObjectsInRepo();
 	}
 
 	/**
@@ -67,8 +61,7 @@ public final class ExtensionAPIImpl implements IExtensionAPI {
 		try {
 			return service.getLandscape(timestamp);
 		} catch (final FileNotFoundException e) {
-			System.err.println(e);
-			return null;
+			throw new QueryParamException(e, "Error in ExtensionAPI.getLandscape", "10");
 		}
 	}
 
@@ -79,8 +72,8 @@ public final class ExtensionAPIImpl implements IExtensionAPI {
 	 */
 	@Override
 	public List<Timestamp> getNewestTimestamps(final int intervalSize) {
-		this.updateTimestampStorage();
-		return timestampStorage.filterMostRecentTimestamps(intervalSize);
+		final List<Timestamp> allTimestamps = this.service.getTimestampObjectsInRepo();
+		return TimestampHelper.filterMostRecentTimestamps(allTimestamps, intervalSize);
 	}
 
 	/**
@@ -91,8 +84,8 @@ public final class ExtensionAPIImpl implements IExtensionAPI {
 
 	@Override
 	public List<Timestamp> getOldestTimestamps(final int intervalSize) {
-		this.updateTimestampStorage();
-		return timestampStorage.filterOldestTimestamps(intervalSize);
+		final List<Timestamp> allTimestamps = this.service.getTimestampObjectsInRepo();
+		return TimestampHelper.filterOldestTimestamps(allTimestamps, intervalSize);
 	}
 
 	/**
@@ -104,8 +97,8 @@ public final class ExtensionAPIImpl implements IExtensionAPI {
 	 */
 	@Override
 	public List<Timestamp> getPreviousTimestamps(final long fromTimestamp, final int intervalSize) {
-		this.updateTimestampStorage();
-		return timestampStorage.filterTimestampsBeforeTimestamp(fromTimestamp, intervalSize);
+		final List<Timestamp> allTimestamps = this.service.getTimestampObjectsInRepo();
+		return TimestampHelper.filterTimestampsBeforeTimestamp(allTimestamps, fromTimestamp, intervalSize);
 	}
 
 	/**
@@ -117,7 +110,7 @@ public final class ExtensionAPIImpl implements IExtensionAPI {
 	 */
 	@Override
 	public List<Timestamp> getSubsequentTimestamps(final long afterTimestamp, final int intervalSize) {
-		this.updateTimestampStorage();
-		return timestampStorage.filterTimestampsAfterTimestamp(afterTimestamp, intervalSize);
+		final List<Timestamp> allTimestamps = this.service.getTimestampObjectsInRepo();
+		return TimestampHelper.filterTimestampsAfterTimestamp(allTimestamps, afterTimestamp, intervalSize);
 	}
 }
