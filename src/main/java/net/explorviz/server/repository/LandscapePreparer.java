@@ -34,8 +34,6 @@ public class LandscapePreparer {
 							setComponentAttributes(child, 0, true);
 						}
 
-						// application.getComponents().clear();
-						// application.getComponents().add(foundationComponent);
 					}
 				}
 

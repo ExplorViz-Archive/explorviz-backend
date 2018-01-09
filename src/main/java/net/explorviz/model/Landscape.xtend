@@ -12,7 +12,6 @@ import com.github.jasminb.jsonapi.annotations.Relationship
 
 @Type("landscape")
 class Landscape extends BaseEntity {
-	@Accessors long hash
 	@Accessors long activities
 
 	@Relationship("systems")
@@ -29,19 +28,7 @@ class Landscape extends BaseEntity {
 	@Accessors val transient List<CommunicationAccumulator> communicationsAccumulated = new ArrayList<CommunicationAccumulator>(
 		4)
 
-	def void updateLandscapeAccess(long timeInNano) {
-		setHash(timeInNano)
-	}
-
 	def void updateTimestamp(long timestamp) {
 		setTimestamp(timestamp)
-	}
-
-	def void destroy() {
-//		for (system : systems)
-//			system.destroy()
-//
-//		for (applicationCommu : applicationCommunication)
-//			applicationCommu.destroy()
 	}
 }

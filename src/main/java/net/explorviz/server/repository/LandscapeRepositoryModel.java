@@ -50,8 +50,6 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
 		insertionRepositoryPart = new InsertionRepositoryPart();
 		remoteCallRepositoryPart = new RemoteCallRepositoryPart();
 
-		internalLandscape.updateLandscapeAccess(java.lang.System.nanoTime());
-
 		final Landscape l = fstConf.deepCopy(internalLandscape);
 
 		lastPeriodLandscape = LandscapePreparer.prepareLandscape(l);
@@ -101,29 +99,28 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
 			internalLandscape.getEvents().clear();
 			internalLandscape.getErrors().clear();
 			internalLandscape.setActivities(0L);
-			internalLandscape.updateLandscapeAccess(java.lang.System.nanoTime());
 		}
 	}
 
 	@Override
 	public void periodicTimeSignal(final long timestamp) {
+		// called every tenth second
+		// passed timestamp is nanosecond
 		synchronized (internalLandscape) {
 			synchronized (lastPeriodLandscape) {
 
-				// TODO: passed timestamp meaning?
-				// => using own created timestamp for creating landscape
-
-				final long requestedTimestamp = java.lang.System.currentTimeMillis();
+				final long milliseconds = java.lang.System.currentTimeMillis();
 
 				if (Configuration.dummyMode) {
 					final Landscape dummyLandscape = LandscapeDummyCreator.createDummyLandscape();
-					dummyLandscape.setTimestamp(requestedTimestamp);
-					RepositoryStorage.writeToFile(dummyLandscape, requestedTimestamp);
+					dummyLandscape.setTimestamp(milliseconds);
+					RepositoryStorage.writeToFile(dummyLandscape, milliseconds);
 					lastPeriodLandscape = dummyLandscape;
 				} else {
-					RepositoryStorage.writeToFile(internalLandscape, requestedTimestamp);
+					internalLandscape.updateTimestamp(milliseconds);
+					RepositoryStorage.writeToFile(internalLandscape, milliseconds);
+
 					final Landscape l = fstConf.deepCopy(internalLandscape);
-					l.setTimestamp(requestedTimestamp);
 					lastPeriodLandscape = LandscapePreparer.prepareLandscape(l);
 				}
 				remoteCallRepositoryPart.checkForTimedoutRemoteCalls();
@@ -158,8 +155,6 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
 			commu.setRequests(0);
 			commu.setAverageResponseTimeInNanoSec(0);
 		}
-
-		internalLandscape.updateLandscapeAccess(java.lang.System.nanoTime());
 	}
 
 	private void resetClazzInstances(final List<Component> components) {
@@ -174,6 +169,7 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
 	}
 
 	public void insertIntoModel(final IRecord inputIRecord) {
+		// called every second
 		insertionRepositoryPart.insertIntoModel(inputIRecord, internalLandscape, remoteCallRepositoryPart);
 	}
 }

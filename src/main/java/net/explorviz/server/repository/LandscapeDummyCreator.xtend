@@ -29,7 +29,6 @@ class LandscapeDummyCreator {
 		applicationId = 0
 
 		val landscape = new Landscape()
-		landscape.hash = java.lang.System.currentTimeMillis
 		landscape.activities = new Random().nextInt(300000)
 
 		val ocnEditor = new System()
@@ -74,7 +73,6 @@ class LandscapeDummyCreator {
 		applicationId = 0
 
 		val landscape = new Landscape()
-		landscape.hash = java.lang.System.currentTimeMillis
 		landscape.activities = new Random().nextInt(300000)
 
 		val requestSystem = new System()
@@ -549,7 +547,7 @@ class LandscapeDummyCreator {
 		application.components.add(org)
 		val mapleLeaf = createComponent("mapleleaf", org, application)
 		val database = createComponent("database", mapleLeaf, application)
-		val mapleDBClazz = createClazz("Label", database, 20)
+		createClazz("Label", database, 20)
 
 		val dbQueryList = new LinkedList<DatabaseQuery>
 

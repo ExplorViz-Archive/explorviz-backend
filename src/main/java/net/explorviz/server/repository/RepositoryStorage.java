@@ -150,6 +150,8 @@ public class RepositoryStorage {
 			e.printStackTrace();
 		}
 
+		java.lang.System.out.println("Timestamp: " + landscape.getTimestamp());
+
 		return landscape;
 	}
 

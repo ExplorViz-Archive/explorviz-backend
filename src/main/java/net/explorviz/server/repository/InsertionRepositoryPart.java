@@ -102,7 +102,7 @@ public class InsertionRepositoryPart {
 					createCommunicationInApplication(trace, hostApplicationRecord.getHostname(), application, landscape,
 							remoteCallRepositoryPart, i);
 
-					landscape.updateLandscapeAccess(java.lang.System.nanoTime());
+					// landscape.updateLandscapeAccess(java.lang.System.nanoTime());
 				}
 			}
 		} else if (inputIRecord instanceof SystemMonitoringRecord) {
