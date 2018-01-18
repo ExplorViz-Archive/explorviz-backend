@@ -24,6 +24,8 @@ import net.explorviz.server.util.DummyLandscapeHelper
 class LandscapeDummyCreator {
 	public var static int counter = 1;
 	var static int applicationId = 0
+	
+	var static Landscape dummyLandscape = null
 
 	def static createSimpleExample() {
 		applicationId = 0
@@ -70,6 +72,12 @@ class LandscapeDummyCreator {
 	}
 
 	def static createDummyLandscape() {
+		
+		if(dummyLandscape !== null) {
+			dummyLandscape.activities = new Random().nextInt(300000)
+			return dummyLandscape
+		}
+		
 		applicationId = 0
 
 		val landscape = new Landscape()
@@ -302,6 +310,8 @@ class LandscapeDummyCreator {
 		val preparedLandscape = LandscapePreparer.prepareLandscape(landscape)
 
 		counter = 1;
+		
+		dummyLandscape = preparedLandscape
 
 		preparedLandscape
 
