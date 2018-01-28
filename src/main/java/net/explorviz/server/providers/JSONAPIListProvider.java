@@ -73,7 +73,10 @@ public class JSONAPIListProvider implements MessageBodyReader<List<?>>, MessageB
 	public List<?> readFrom(final Class<List<?>> type, final Type genericType, final Annotation[] annotations,
 			final MediaType mediaType, final MultivaluedMap<String, String> httpHeaders, final InputStream entityStream)
 			throws IOException, WebApplicationException {
-		return this.converter.readDocumentCollection(entityStream, type).get();
+
+		final Class<?> javaType = GenericTypeFinder.giveClassForString(genericType.getTypeName());
+
+		return this.converter.readDocumentCollection(entityStream, javaType).get();
 	}
 
 	@Override
