@@ -6,7 +6,6 @@ import javax.ws.rs.GET
 import javax.ws.rs.Path
 import net.explorviz.server.security.Secured
 import net.explorviz.server.repository.LandscapeExchangeService
-import com.github.jasminb.jsonapi.ResourceConverter
 import javax.ws.rs.QueryParam
 import javax.ws.rs.PathParam
 import java.util.List
@@ -18,11 +17,9 @@ import net.explorviz.model.helper.TimestampHelper
 class TimestampResource {
 
 	var LandscapeExchangeService service
-	var ResourceConverter converter
 
 	@Inject
-	new(ResourceConverter converter, LandscapeExchangeService service) {
-		this.converter = converter
+	new(LandscapeExchangeService service) {
 		this.service = service
 	}
 
