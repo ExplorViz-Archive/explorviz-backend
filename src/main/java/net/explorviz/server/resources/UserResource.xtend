@@ -1,8 +1,7 @@
-package net.explorviz.resources
+package net.explorviz.server.resources
 
 import javax.ws.rs.Path
 import net.explorviz.server.security.User
-import net.explorviz.server.repository.HibernateSessionFactory
 import javax.inject.Inject
 import org.hibernate.Session
 import net.explorviz.server.security.PasswordStorage
@@ -20,6 +19,7 @@ import javax.ws.rs.GET
 import javax.ws.rs.Produces
 import javax.ws.rs.PATCH
 import javax.ws.rs.QueryParam
+import net.explorviz.repository.HibernateSessionFactory
 
 @Path("users")
 class UserResource {

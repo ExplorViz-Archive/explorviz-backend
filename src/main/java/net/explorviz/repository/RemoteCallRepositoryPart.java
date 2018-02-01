@@ -1,4 +1,4 @@
-package net.explorviz.server.repository;
+package net.explorviz.repository;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -15,7 +15,7 @@ import net.explorviz.model.Clazz;
 import net.explorviz.model.Communication;
 import net.explorviz.model.Landscape;
 import net.explorviz.model.Node;
-import net.explorviz.server.repository.helper.RemoteRecordBuffer;
+import net.explorviz.repository.helper.RemoteRecordBuffer;
 
 public class RemoteCallRepositoryPart {
 	private final Map<BeforeSentRemoteCallRecord, RemoteRecordBuffer> sentRemoteCallRecordCache = new HashMap<BeforeSentRemoteCallRecord, RemoteRecordBuffer>();

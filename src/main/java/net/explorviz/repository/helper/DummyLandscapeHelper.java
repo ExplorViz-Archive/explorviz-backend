@@ -1,4 +1,4 @@
-package net.explorviz.server.util;
+package net.explorviz.repository.helper;
 
 import java.sql.Timestamp;
 import java.util.concurrent.ThreadLocalRandom;

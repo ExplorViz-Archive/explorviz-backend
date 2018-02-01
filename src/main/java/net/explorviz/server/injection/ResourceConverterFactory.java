@@ -1,4 +1,4 @@
-package net.explorviz.injection;
+package net.explorviz.server.injection;
 
 import org.glassfish.hk2.api.Factory;
 

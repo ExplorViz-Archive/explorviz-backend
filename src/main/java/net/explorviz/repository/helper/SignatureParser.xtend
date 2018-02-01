@@ -1,4 +1,4 @@
-package net.explorviz.server.repository.helper
+package net.explorviz.repository.helper;
 
 class SignatureParser {
 	def public static Signature parse(String operationSignatureStr, boolean javaConstructor) {

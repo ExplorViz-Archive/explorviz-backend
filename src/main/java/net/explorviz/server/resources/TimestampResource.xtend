@@ -1,16 +1,16 @@
-package net.explorviz.resources
+package net.explorviz.server.resources
 
 import javax.inject.Inject
 import javax.ws.rs.Produces
 import javax.ws.rs.GET
 import javax.ws.rs.Path
 import net.explorviz.server.security.Secured
-import net.explorviz.server.repository.LandscapeExchangeService
 import javax.ws.rs.QueryParam
 import javax.ws.rs.PathParam
 import java.util.List
 import net.explorviz.model.Timestamp
 import net.explorviz.model.helper.TimestampHelper
+import net.explorviz.repository.LandscapeExchangeService
 
 @Secured
 @Path("timestamp")

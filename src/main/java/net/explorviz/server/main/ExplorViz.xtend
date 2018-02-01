@@ -47,7 +47,7 @@ class ExplorViz extends ResourceConfig {
 		packages("net.explorviz.server.filters")
 		
 		// resources
-		packages("net.explorviz.resources")
+		packages("net.explorviz.server.resources")
 		
 		// exception handling (mind the order !)
 		register(QueryParamExceptionMapper)

@@ -1,4 +1,4 @@
-package net.explorviz.server.repository;
+package net.explorviz.repository;
 
 import java.util.HashMap;
 import java.util.List;
@@ -31,9 +31,9 @@ import net.explorviz.model.Node;
 import net.explorviz.model.NodeGroup;
 import net.explorviz.model.System;
 import net.explorviz.model.helper.ELanguage;
+import net.explorviz.repository.helper.Signature;
+import net.explorviz.repository.helper.SignatureParser;
 import net.explorviz.server.main.Configuration;
-import net.explorviz.server.repository.helper.Signature;
-import net.explorviz.server.repository.helper.SignatureParser;
 
 public class InsertionRepositoryPart {
 	private static final String DEFAULT_COMPONENT_NAME = "(default)";

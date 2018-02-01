@@ -1,4 +1,4 @@
-package net.explorviz.server.repository.helper
+package net.explorviz.repository.helper;
 
 import java.util.List
 import java.util.ArrayList

@@ -2,12 +2,12 @@ package net.explorviz.server.main
 
 import org.glassfish.hk2.utilities.binding.AbstractBinder
 import com.github.jasminb.jsonapi.ResourceConverter
-import net.explorviz.injection.LandscapeRepositoryFactory
-import net.explorviz.injection.ResourceConverterFactory
-import net.explorviz.server.repository.LandscapeRepositoryModel
 import javax.inject.Singleton
-import net.explorviz.server.repository.LandscapeExchangeService
-import net.explorviz.server.repository.HibernateSessionFactory
+import net.explorviz.repository.LandscapeExchangeService
+import net.explorviz.repository.HibernateSessionFactory
+import net.explorviz.repository.LandscapeRepositoryModel
+import net.explorviz.server.injection.LandscapeRepositoryFactory
+import net.explorviz.server.injection.ResourceConverterFactory
 
 class DependencyInjectionBinder extends AbstractBinder {
 	override void configure() {

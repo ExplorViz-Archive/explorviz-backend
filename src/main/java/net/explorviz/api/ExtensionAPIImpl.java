@@ -8,7 +8,7 @@ import org.glassfish.jersey.server.ParamException.QueryParamException;
 import net.explorviz.model.Landscape;
 import net.explorviz.model.Timestamp;
 import net.explorviz.model.helper.TimestampHelper;
-import net.explorviz.server.repository.LandscapeExchangeService;
+import net.explorviz.repository.LandscapeExchangeService;
 
 /**
  * Interface implementation of the extension API - Offers version information

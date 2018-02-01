@@ -1,4 +1,4 @@
-package net.explorviz.server.repository;
+package net.explorviz.repository;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -149,8 +149,6 @@ public class RepositoryStorage {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
-		java.lang.System.out.println("Timestamp: " + landscape.getTimestamp());
 
 		return landscape;
 	}

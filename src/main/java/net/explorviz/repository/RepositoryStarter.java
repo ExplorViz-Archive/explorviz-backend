@@ -1,4 +1,4 @@
-package net.explorviz.server.repository;
+package net.explorviz.repository;
 
 import java.util.Queue;
 

@@ -1,4 +1,4 @@
-package net.explorviz.server.repository;
+package net.explorviz.repository;
 
 import net.explorviz.model.Application;
 import net.explorviz.model.Communication;

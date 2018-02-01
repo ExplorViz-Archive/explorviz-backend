@@ -1,4 +1,4 @@
-package net.explorviz.server.repository
+package net.explorviz.repository;
 
 import java.util.LinkedList
 import java.util.Random
@@ -13,7 +13,7 @@ import net.explorviz.model.Node
 import net.explorviz.model.NodeGroup
 import net.explorviz.model.System
 import net.explorviz.model.helper.ELanguage
-import net.explorviz.server.util.DummyLandscapeHelper
+import net.explorviz.repository.helper.DummyLandscapeHelper
 
 /**
  * Creates a dummy landscape for developing or demo purposes

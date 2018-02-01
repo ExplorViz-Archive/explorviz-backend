@@ -1,4 +1,4 @@
-package net.explorviz.server.repository
+package net.explorviz.repository;
 
 import org.hibernate.SessionFactory
 import org.hibernate.boot.registry.StandardServiceRegistry
@@ -29,8 +29,8 @@ class HibernateSessionFactory {
 	}
 
 	def synchronized getInstance() {
-		if (net.explorviz.server.repository.HibernateSessionFactory.instance !== null) {
-			return net.explorviz.server.repository.HibernateSessionFactory.instance
+		if (instance !== null) {
+			return HibernateSessionFactory.instance
 		} else {
 			// config in src/main/webapp/WEB-INF/hibernate.cfg.xml
 			val pathToHibernateConf = "/WEB-INF/hibernate.cfg.xml"		
@@ -38,8 +38,8 @@ class HibernateSessionFactory {
 			
 			val StandardServiceRegistry registry = new StandardServiceRegistryBuilder().configure(configFile).build();
 			try {
-				net.explorviz.server.repository.HibernateSessionFactory.instance = new MetadataSources(registry).buildMetadata().buildSessionFactory();
-				return net.explorviz.server.repository.HibernateSessionFactory.instance
+				instance = new MetadataSources(registry).buildMetadata().buildSessionFactory();
+				return instance
 			} catch (Exception e) {
 				StandardServiceRegistryBuilder.destroy(registry);
 				throw (e)

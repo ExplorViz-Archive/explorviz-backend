@@ -8,8 +8,8 @@ import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.explorviz.server.repository.HibernateSessionFactory;
-import net.explorviz.server.repository.LandscapeExchangeService;
+import net.explorviz.repository.HibernateSessionFactory;
+import net.explorviz.repository.LandscapeExchangeService;
 import net.explorviz.server.security.PasswordStorage;
 import net.explorviz.server.security.PasswordStorage.CannotPerformOperationException;
 import net.explorviz.server.security.User;

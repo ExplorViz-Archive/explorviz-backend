@@ -1,4 +1,4 @@
-package net.explorviz.server.repository;
+package net.explorviz.repository;
 
 import explorviz.live_trace_processing.filter.*;
 import explorviz.live_trace_processing.record.IRecord;
