@@ -81,9 +81,11 @@ class LandscapeDummyCreator {
 		applicationId = 0
 
 		val landscape = new Landscape()
+		landscape.initializeID()
 		landscape.activities = new Random().nextInt(300000)
 
 		val requestSystem = new System()
+		requestSystem.initializeID()
 		requestSystem.name = "Requests"
 		requestSystem.parent = landscape
 		landscape.systems.add(requestSystem)
@@ -96,6 +98,7 @@ class LandscapeDummyCreator {
 		requestSystem.nodeGroups.add(requestsNodeGroup)
 
 		val ocnEditor = new System()
+		ocnEditor.initializeID()
 		ocnEditor.name = "OCN Editor"
 		ocnEditor.parent = landscape
 		landscape.systems.add(ocnEditor)
@@ -115,6 +118,7 @@ class LandscapeDummyCreator {
 		ocnEditor.nodeGroups.add(ocnEditorNodeGroup2)
 
 		val ocnDatabase = new System()
+		ocnDatabase.initializeID()		
 		ocnDatabase.name = "OCN Database"
 		ocnDatabase.parent = landscape
 		landscape.systems.add(ocnDatabase)
@@ -134,6 +138,8 @@ class LandscapeDummyCreator {
 		ocnDatabase.nodeGroups.add(ocnDatabaseNodeGroup2)
 
 		val kielprints = new System()
+		kielprints.initializeID()
+		
 		kielprints.name = "OceanRep"
 		kielprints.parent = landscape
 		landscape.systems.add(kielprints)
@@ -155,6 +161,7 @@ class LandscapeDummyCreator {
 		kielprints.nodeGroups.add(kielprintsNodeGroup2)
 
 		val portal = new System()
+		portal.initializeID() 
 		portal.name = "OSIS-Kiel"
 		portal.parent = landscape
 		landscape.systems.add(portal)
@@ -174,6 +181,7 @@ class LandscapeDummyCreator {
 		portal.nodeGroups.add(portalNodeGroup2)
 
 		val pangea = new System()
+		pangea.initializeID()
 		pangea.name = "WDC-Mare"
 		pangea.parent = landscape
 		landscape.systems.add(pangea)
@@ -195,6 +203,7 @@ class LandscapeDummyCreator {
 		pangea.nodeGroups.add(pangeaNodeGroup2)
 
 		val pubflow = new System()
+		pubflow.initializeID()
 		pubflow.name = "PubFlow"
 		pubflow.parent = landscape
 		landscape.systems.add(pubflow)
@@ -319,6 +328,7 @@ class LandscapeDummyCreator {
 
 	def private static createNodeGroup(String name, Landscape parent, System system) {
 		val nodeGroup = new NodeGroup()
+		nodeGroup.initializeID()
 		nodeGroup.name = name
 		nodeGroup.parent = system
 		nodeGroup
@@ -326,6 +336,7 @@ class LandscapeDummyCreator {
 
 	def private static createNode(String ipAddress, NodeGroup parent) {
 		val node = new Node()
+		node.initializeID()
 		node.ipAddress = ipAddress
 		node.parent = parent
 		node
@@ -333,6 +344,7 @@ class LandscapeDummyCreator {
 
 	def private static createApplication(String name, Node parent) {
 		val application = new Application()
+		application.initializeID()
 
 		// val newId = applicationId
 		// application.id = newId
@@ -359,6 +371,7 @@ class LandscapeDummyCreator {
 
 	def private static createCommunication(Application source, Application target, Landscape landscape, int requests) {
 		val communication = new Communication()
+		communication.initializeID()
 		communication.source = source
 		communication.target = target
 		communication.requests = requests
@@ -433,6 +446,7 @@ class LandscapeDummyCreator {
 	// }
 	def private static createClazz(String name, Component component, int instanceCount) {
 		val clazz = new Clazz()
+		clazz.initializeID()
 		clazz.name = name
 		clazz.fullQualifiedName = component.fullQualifiedName + "." + name
 		clazz.instanceCount = instanceCount
@@ -443,6 +457,7 @@ class LandscapeDummyCreator {
 
 	def private static createComponent(String name, Component parent, Application app) {
 		val component = new Component()
+		component.initializeID()
 		component.name = name
 		component.parentComponent = parent
 		component.belongingApplication = app
@@ -457,6 +472,7 @@ class LandscapeDummyCreator {
 
 	def private static createCommuClazz(int requests, Clazz source, Clazz target, Application application) {
 		val commu = new CommunicationClazz()
+		commu.initializeID()
 		commu.addRuntimeInformation(0L, 1, 1, requests, 10, 10)
 		commu.methodName = "getMethod()"
 
@@ -564,6 +580,7 @@ class LandscapeDummyCreator {
 		val maxIterations = 25;
 		for (var i = 0; i < maxIterations; i++) {
 			var dbQueryTmp = new DatabaseQuery
+			dbQueryTmp.initializeID()
 			dbQueryTmp.sqlStatement = "CREATE TABLE IF NOT EXISTS `order` (oid integer PRIMARY KEY, name text NOT NULL, email text NOT NULL, odate text NOT NULL, itemid integer NOT NULL);"
 			dbQueryTmp.returnValue = "null"
 			dbQueryTmp.timeInNanos = DummyLandscapeHelper.getRandomNum(10, 1000)
@@ -571,6 +588,7 @@ class LandscapeDummyCreator {
 			dbQueryList.add(dbQueryTmp)
 
 			dbQueryTmp = new DatabaseQuery
+			dbQueryTmp.initializeID()
 			dbQueryTmp.sqlStatement = "INSERT INTO `order` (oid, name, email, odate, itemid) " + "VALUES('" +
 				DummyLandscapeHelper.getNextSequenceId +
 				"'Tom B. Erichsen', 'erichsen@uni-kiel.de', '2017-11-16', '1');"
@@ -580,6 +598,7 @@ class LandscapeDummyCreator {
 				dbQueryList.add(dbQueryTmp)
 
 				dbQueryTmp = new DatabaseQuery
+				dbQueryTmp.initializeID()
 				dbQueryTmp.sqlStatement = "INSERT INTO `order` (oid, name, email, odate, itemid) " + "VALUES('" +
 					DummyLandscapeHelper.getNextSequenceId +
 					"'Tom B. Erichsen', 'erichsen@uni-kiel.de', '2017-11-16', '1');"
@@ -589,6 +608,7 @@ class LandscapeDummyCreator {
 					dbQueryList.add(dbQueryTmp)
 
 					dbQueryTmp = new DatabaseQuery
+					dbQueryTmp.initializeID()
 					dbQueryTmp.sqlStatement = "INSERT INTO `order` (oid, name, email, odate, itemid) " + "VALUES('" +
 						DummyLandscapeHelper.getNextSequenceId +
 						"', 'Carol K. Durham', 'durham@uni-kiel.de', '2017-10-08', '1');"
@@ -598,6 +618,7 @@ class LandscapeDummyCreator {
 						dbQueryList.add(dbQueryTmp)
 
 						dbQueryTmp = new DatabaseQuery
+						dbQueryTmp.initializeID()
 						dbQueryTmp.sqlStatement = "SELECT * FROM `order` WHERE name = Carol K. Durham";
 						dbQueryTmp.returnValue = String.valueOf(DummyLandscapeHelper.getRandomNum(5, 100))
 						dbQueryTmp.timeInNanos = DummyLandscapeHelper.getRandomNum(10, 1000)
@@ -605,6 +626,7 @@ class LandscapeDummyCreator {
 						dbQueryList.add(dbQueryTmp)
 
 						dbQueryTmp = new DatabaseQuery
+						dbQueryTmp.initializeID()
 						dbQueryTmp.sqlStatement = "SELECT * FROM `order` WHERE name = Tom B. Erichsen";
 						dbQueryTmp.returnValue = String.valueOf(DummyLandscapeHelper.getRandomNum(5, 100))
 						dbQueryTmp.timeInNanos = DummyLandscapeHelper.getRandomNum(10, 1000)
