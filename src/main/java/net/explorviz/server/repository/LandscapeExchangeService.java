@@ -3,8 +3,10 @@ package net.explorviz.server.repository;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,6 +29,8 @@ public class LandscapeExchangeService {
 	private static LandscapeExchangeService instance;
 	private static LandscapeRepositoryModel model;
 	private static KiekerAdapter adapter;
+
+	private static Map<String, Timestamp> timestampCache = new HashMap<String, Timestamp>();
 
 	@SuppressWarnings("unused")
 	private static Long timestamp;
@@ -103,19 +107,32 @@ public class LandscapeExchangeService {
 
 				if (filename.endsWith(".expl")) {
 					// first validation check -> filename
-					long timestamp;
-					long activity;
 
-					try {
-						timestamp = Long.parseLong(filename.split("-")[0]);
-						activity = Long.parseLong(filename.split("-")[1].split(".expl")[0]);
-					} catch (final NumberFormatException e) {
-						continue;
+					final String timestampAsString = filename.split("-")[0];
+					final String activityAsString = filename.split("-")[1].split(".expl")[0];
+
+					Timestamp possibleTimestamp = timestampCache.get(timestampAsString + activityAsString);
+
+					if (possibleTimestamp == null) {
+
+						// new timestamp -> add to cache
+						// and initialize ID of entity
+						long timestamp;
+						long activity;
+
+						try {
+							timestamp = Long.parseLong(timestampAsString);
+							activity = Long.parseLong(activityAsString);
+						} catch (final NumberFormatException e) {
+							continue;
+						}
+
+						possibleTimestamp = new Timestamp(timestamp, activity);
+						possibleTimestamp.initializeID();
+						timestampCache.put(timestampAsString + activityAsString, possibleTimestamp);
 					}
 
-					final Timestamp newTimestamp = new Timestamp(timestamp, activity);
-					newTimestamp.initializeID();
-					timestamps.add(newTimestamp);
+					timestamps.add(possibleTimestamp);
 				}
 			}
 		}

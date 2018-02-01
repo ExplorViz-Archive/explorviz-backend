@@ -45,6 +45,7 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
 			internalLandscape = readLandscape;
 		} else {
 			internalLandscape = new Landscape();
+			internalLandscape.initializeID();
 		}
 
 		insertionRepositoryPart = new InsertionRepositoryPart();
