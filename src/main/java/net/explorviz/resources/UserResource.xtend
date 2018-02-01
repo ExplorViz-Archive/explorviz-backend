@@ -47,6 +47,7 @@ class UserResource {
 		sessionFactory.commitTransactionAndClose(session)
 		
 		if(currentUser !== null) {
+			currentUser.initializeID()
 			currentUser.token = null
 			currentUser.password = null
 			currentUser.isAuthenticated = false
@@ -61,7 +62,7 @@ class UserResource {
 	}
 
 	@PATCH
-	@Path("/authenticate")
+	@Path("authenticate")
 	def Response authenticateUser(User userToAuthenticate) {
 
 		val possibleUser = authenticate(userToAuthenticate)

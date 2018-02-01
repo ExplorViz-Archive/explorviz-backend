@@ -124,11 +124,16 @@ public class InsertionRepositoryPart {
 	private System seekOrCreateSystem(final Landscape landscape, final String systemname) {
 		for (final System system : landscape.getSystems()) {
 			if (system.getName().equalsIgnoreCase(systemname)) {
+				// familiar system, return old instance
+				// of internalLandscape
 				return system;
 			}
 		}
 
+		// New system, add to internalLandscape
 		final System system = new System();
+		system.initializeID();
+
 		system.setName(systemname);
 		system.setParent(landscape);
 		landscape.getSystems().add(system);
@@ -158,7 +163,11 @@ public class InsertionRepositoryPart {
 		Node node = nodeCache.get(nodeName);
 
 		if (node == null) {
+			// new node, add to nodeCache for the moment
+			// eventual, put in NodeGroup
 			node = new Node();
+			node.initializeID();
+
 			node.setIpAddress(hostApplicationRecord.getIpaddress());
 			node.setName(hostApplicationRecord.getHostname());
 			nodeCache.put(nodeName, node);
@@ -174,12 +183,16 @@ public class InsertionRepositoryPart {
 		for (final NodeGroup existingNodeGroup : system.getNodeGroups()) {
 			if (!existingNodeGroup.getNodes().isEmpty()) {
 				if (nodeMatchesNodeType(node, existingNodeGroup.getNodes().get(0))) {
+					// familiar NodeGroup
 					return existingNodeGroup;
 				}
 			}
 		}
 
+		// new NodeGroup, add to system, therefore, internalLandscape
 		final NodeGroup nodeGroup = new NodeGroup();
+		nodeGroup.initializeID();
+
 		nodeGroup.setName(node.getIpAddress());
 		system.getNodeGroups().add(nodeGroup);
 		nodeGroup.setParent(system);
@@ -213,7 +226,10 @@ public class InsertionRepositoryPart {
 		Application application = applicationCache.get(node.getName() + "_" + applicationName);
 
 		if (application == null) {
+			// new application, put in applicationCache for the moment
+			// eventually, parent Node must not be in the old NodeGroup
 			application = new Application();
+			application.initializeID();
 
 			application.setDatabase(isApplicationDatabase(applicationName));
 			// application.setId((node.getName() + "_" + applicationName).hashCode());
@@ -324,6 +340,8 @@ public class InsertionRepositoryPart {
 					if (abstractBeforeEventRecord instanceof BeforeJDBCOperationEventRecord) {
 						final BeforeJDBCOperationEventRecord jdbcOperationEventRecord = (BeforeJDBCOperationEventRecord) abstractBeforeEventRecord;
 						final DatabaseQuery databaseQuery = new DatabaseQuery();
+						databaseQuery.initializeID();
+
 						databaseQuery.setSqlStatement(jdbcOperationEventRecord.getSqlStatement());
 						currentApplication.getDatabaseQueries().add(databaseQuery);
 					}
@@ -432,6 +450,7 @@ public class InsertionRepositoryPart {
 		}
 
 		final CommunicationClazz commu = new CommunicationClazz();
+		commu.initializeID();
 
 		commu.setSource(caller);
 		commu.setTarget(callee);
@@ -458,6 +477,7 @@ public class InsertionRepositoryPart {
 		Clazz clazz = appCached.get(fullQName);
 
 		if (clazz == null) {
+			// new clazz
 			clazz = seekrOrCreateClazzHelper(fullQName, splittedName, application, null, 0);
 			appCached.put(fullQName, clazz);
 		}
@@ -492,6 +512,8 @@ public class InsertionRepositoryPart {
 				}
 			}
 			final Component component = new Component();
+			component.initializeID();
+
 			String fullQNameComponent = "";
 			for (int i = 0; i <= index; i++) {
 				fullQNameComponent += splittedName[i] + ".";
@@ -514,6 +536,8 @@ public class InsertionRepositoryPart {
 
 				if (parent == null) {
 					final Component component = new Component();
+					component.initializeID();
+
 					component.setFullQualifiedName(DEFAULT_COMPONENT_NAME);
 					component.setName(DEFAULT_COMPONENT_NAME);
 					component.setParentComponent(null);
@@ -525,11 +549,15 @@ public class InsertionRepositoryPart {
 
 			for (final Clazz clazz : parent.getClazzes()) {
 				if (clazz.getName().equalsIgnoreCase(currentPart)) {
+					// familiar clazz
 					return clazz;
 				}
 			}
 
+			// new clazz
 			final Clazz clazz = new Clazz();
+			clazz.initializeID();
+
 			clazz.setName(currentPart);
 			clazz.setFullQualifiedName(fullQName);
 			clazz.setParent(parent);

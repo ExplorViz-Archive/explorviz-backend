@@ -12,7 +12,9 @@ public class LandscapePreparer {
 
 	public static Landscape prepareLandscape(final Landscape landscape) {
 		if (landscape == null) {
-			return new Landscape();
+			final Landscape emptyLandscape = new Landscape();
+			emptyLandscape.initializeID();
+			return emptyLandscape;
 		}
 
 		for (final System system : landscape.getSystems()) {

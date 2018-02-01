@@ -114,6 +114,7 @@ public class LandscapeExchangeService {
 					}
 
 					final Timestamp newTimestamp = new Timestamp(timestamp, activity);
+					newTimestamp.initializeID();
 					timestamps.add(newTimestamp);
 				}
 			}

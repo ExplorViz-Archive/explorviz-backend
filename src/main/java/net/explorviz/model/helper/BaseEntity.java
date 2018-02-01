@@ -29,13 +29,13 @@ public class BaseEntity implements Serializable {
 
 	private long timestamp;
 
-	public BaseEntity() {
-		this.id = Long.valueOf(BaseEntity.ID_GENERATOR.incrementAndGet());
-	}
-
 	@Pure
 	public Long getId() {
 		return this.id;
+	}
+
+	public void initializeID() {
+		this.id = Long.valueOf(BaseEntity.ID_GENERATOR.incrementAndGet());
 	}
 
 	public void setId(final Long id) {
