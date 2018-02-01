@@ -1,6 +1,7 @@
 package net.explorviz.api;
 
 import java.util.List;
+import java.util.Map;
 
 import net.explorviz.model.Landscape;
 import net.explorviz.model.Timestamp;
@@ -12,6 +13,7 @@ import net.explorviz.model.Timestamp;
  *
  */
 interface IExtensionAPI {
+	// Generic
 	String getAPIVersion();
 
 	// Landscape related
@@ -27,5 +29,10 @@ interface IExtensionAPI {
 	List<Timestamp> getPreviousTimestamps(long timestamp, int intervalSize);
 
 	List<Timestamp> getSubsequentTimestamps(long timestamp, int intervalSize);
+
+	// Extension related
+	void registerAllCoreModels();
+
+	void registerSpecificCoreModels(Map<String, Class<?>> typeMap);
 
 }

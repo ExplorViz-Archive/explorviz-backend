@@ -30,6 +30,7 @@ public class SetupListener implements ServletContextListener {
 			return;
 		}
 
+		// set-up sessions
 		final HibernateSessionFactory sessionFactory = new HibernateSessionFactory(
 				servletContextEvent.getServletContext());
 
