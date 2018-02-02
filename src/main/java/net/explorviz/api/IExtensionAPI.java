@@ -35,4 +35,6 @@ interface IExtensionAPI {
 
 	void registerSpecificCoreModels(Map<String, Class<?>> typeMap);
 
+	void registerSpecificModel(String typeName, Class<?> type);
+
 }

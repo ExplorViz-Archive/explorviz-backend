@@ -131,6 +131,17 @@ public final class ExtensionAPIImpl implements IExtensionAPI {
 	}
 
 	/**
+	 * Registers specific model types for the JSONAPI provider (necessary by
+	 * extensions, if they want to use specific or custom backend models) - e.g.,
+	 * ("Timestamp", Timestamp.class)
+	 */
+	@Override
+	public void registerSpecificModel(final String typeName, final Class<?> type) {
+		GenericTypeFinder.typeMap.putIfAbsent(typeName, type);
+
+	}
+
+	/**
 	 * Registers all core model types for the JSONAPI provider (necessary by
 	 * extensions, if they want to use all backend models)
 	 */
