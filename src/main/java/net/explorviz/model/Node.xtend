@@ -11,9 +11,9 @@ import com.github.jasminb.jsonapi.annotations.Relationship
 class Node extends DrawNodeEntity {
 	@Accessors String ipAddress
 
-	@Accessors double cpuUtilization
-	@Accessors long freeRAM
-	@Accessors long usedRAM
+	@Accessors double cpuUtilization = 0
+	@Accessors long freeRAM = 0
+	@Accessors long usedRAM = 0
 
 	@Relationship("applications")
 	@Accessors List<Application> applications = new ArrayList<Application>

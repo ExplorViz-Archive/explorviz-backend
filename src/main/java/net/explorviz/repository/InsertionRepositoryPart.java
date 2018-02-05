@@ -5,6 +5,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import explorviz.live_trace_processing.record.IRecord;
 import explorviz.live_trace_processing.record.event.AbstractAfterEventRecord;
 import explorviz.live_trace_processing.record.event.AbstractAfterFailedEventRecord;
@@ -36,6 +39,8 @@ import net.explorviz.repository.helper.SignatureParser;
 import net.explorviz.server.main.Configuration;
 
 public class InsertionRepositoryPart {
+
+	static final Logger logger = LoggerFactory.getLogger(InsertionRepositoryPart.class.getName());
 	private static final String DEFAULT_COMPONENT_NAME = "(default)";
 
 	private final Map<String, Node> nodeCache = new HashMap<String, Node>();
@@ -115,6 +120,13 @@ public class InsertionRepositoryPart {
 					node.setCpuUtilization(systemMonitoringRecord.getCpuUtilization());
 					node.setFreeRAM(systemMonitoringRecord.getAbsoluteRAM() - systemMonitoringRecord.getUsedRAM());
 					node.setUsedRAM(systemMonitoringRecord.getUsedRAM());
+
+					logger.info("SystemMonitoringRecord updated to:");
+					logger.info("CPU: [" + node.getCpuUtilization() + " | " + systemMonitoringRecord.getCpuUtilization()
+							+ "]");
+					logger.info("FreeRAM: [" + (node.getFreeRAM() + node.getUsedRAM()) + " | "
+							+ systemMonitoringRecord.getAbsoluteRAM() + "]");
+					logger.info("UsedRAM: [" + node.getUsedRAM() + " | " + systemMonitoringRecord.getUsedRAM() + "]");
 				}
 			}
 		}

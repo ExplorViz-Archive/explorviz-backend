@@ -19,6 +19,8 @@ import explorviz.live_trace_processing.record.event.normal.BeforeOperationEventR
 import explorviz.live_trace_processing.record.event.statics.AfterFailedStaticOperationEventRecord;
 import explorviz.live_trace_processing.record.event.statics.AfterStaticOperationEventRecord;
 import explorviz.live_trace_processing.record.event.statics.BeforeStaticOperationEventRecord;
+import explorviz.live_trace_processing.record.misc.SystemMonitoringRecord;
+import explorviz.live_trace_processing.record.trace.HostApplicationMetaDataRecord;
 
 /**
  * Prepares the ByteBuffer and sends out the buffer to the backend
@@ -119,6 +121,73 @@ public class GenericExplorVizExternalLogAdapter {
 		explorVizBuffer.putInt(MonitoringStringRegistry.getIdForString(cause));
 
 		sendBufferIfHasElements(timestamp);
+	}
+
+	/**
+	 * Mapping towards Kieker (ApplicationTraceMetaDataRecord) and ExplorViz
+	 * (HostApplicationMetaDataRecord)
+	 * 
+	 * @param timestamp
+	 * @param hostname
+	 * @param applicationName
+	 * @param programmingLanguage
+	 * @param string2
+	 * @param string
+	 */
+	public static void sendApplicationTraceMetaDataRecord(final long timestamp, final String systemName,
+			final String ipAddress, final String hostname, final String applicationName,
+			final String programmingLanguage) {
+
+		// logger.info("ApplicationTraceMetadata - hostname: " + hostname + " |
+		// applicationName: " + applicationName);
+
+		explorVizBuffer.put(HostApplicationMetaDataRecord.CLAZZ_ID);
+		explorVizBuffer.putInt(MonitoringStringRegistry.getIdForString(systemName));
+		explorVizBuffer.putInt(MonitoringStringRegistry.getIdForString(ipAddress));
+		explorVizBuffer.putInt(MonitoringStringRegistry.getIdForString(hostname));
+		explorVizBuffer.putInt(MonitoringStringRegistry.getIdForString(applicationName));
+		explorVizBuffer.putInt(MonitoringStringRegistry.getIdForString(programmingLanguage));
+
+		sendBufferIfHasElements(timestamp);
+
+	}
+
+	/**
+	 * Mapping towards Kieker (CPUUtilizationRecord and MemSwapUsageRecord) and
+	 * ExplorViz (MemSwapUsageRecord)
+	 * 
+	 * @param timestamp
+	 * @param hostname
+	 * @param cpuUtilization
+	 *            between 0 and 1
+	 * @param usedRAM
+	 *            in byte
+	 * @param absoluteRAM
+	 *            in byte
+	 */
+	public static void sendSystemMonitoringRecord(final long timestamp, final String hostname,
+			final double cpuUtilization, final long usedRAM, final long absoluteRAM) {
+
+		// HostApplicationMetaDataRecord systemMonitoringRecord = new
+		// HostApplicationMetaDataRecord(null, null, hostname,
+		// null, null);
+
+		// a value of "0" marks that the information is not available, either memory or cpu usage
+		
+		final Long usedRAMInGB = (((usedRAM / 1024) / 1024) / 1024);
+		final Long totalRAMinGB = (((absoluteRAM / 1024) / 1024) / 1024);
+
+		logger.info("SystemMonitoringRecord - hostname: " + hostname + "  | cpuUtilization: " + cpuUtilization
+				+ " usedRAM (in GB): " + usedRAMInGB + "  | totalRAM (in GB): " + totalRAMinGB);
+
+		explorVizBuffer.put(SystemMonitoringRecord.CLAZZ_ID);
+		explorVizBuffer.putDouble(cpuUtilization);
+		explorVizBuffer.putLong(usedRAMInGB);
+		explorVizBuffer.putLong(totalRAMinGB);
+		// TODO mapping towards HostApplicationMetaData is missing atm
+
+		sendBufferIfHasElements(timestamp);
+
 	}
 
 	public static void sendBeforeConstructorRecord(final long timestamp, final long traceId, final int orderIndex,

@@ -11,12 +11,15 @@ import kieker.common.record.database.BeforeDatabaseEvent;
 import kieker.common.record.database.DatabaseFailedEvent;
 import kieker.common.record.flow.IInterfaceRecord;
 import kieker.common.record.flow.IObjectRecord;
+import kieker.common.record.flow.trace.ApplicationTraceMetadata;
 import kieker.common.record.flow.trace.operation.AfterOperationEvent;
 import kieker.common.record.flow.trace.operation.AfterOperationFailedEvent;
 import kieker.common.record.flow.trace.operation.BeforeOperationEvent;
 import kieker.common.record.flow.trace.operation.constructor.AfterConstructorEvent;
 import kieker.common.record.flow.trace.operation.constructor.AfterConstructorFailedEvent;
 import kieker.common.record.flow.trace.operation.constructor.BeforeConstructorEvent;
+import kieker.common.record.system.CPUUtilizationRecord;
+import kieker.common.record.system.MemSwapUsageRecord;
 import net.explorviz.kiekeradapter.configuration.GenericExplorVizExternalLogAdapter;
 import net.explorviz.kiekeradapter.main.KiekerAdapter;
 import teetime.framework.AbstractConsumerStage;
@@ -39,7 +42,35 @@ public class KiekerToExplorVizTransformStage extends AbstractConsumerStage<IMoni
 
 	public void inputKiekerRecords(final IMonitoringRecord kiekerRecord) {
 
-		if (kiekerRecord instanceof BeforeConstructorEvent) {
+		// TODO Is a generic KiekerMetaDataRecord necessary?
+
+		// ApplicationTraceMetadata (determine the belonging hostname and
+		// applicationName)
+		if (kiekerRecord instanceof ApplicationTraceMetadata) {
+			final ApplicationTraceMetadata kiekerMetaDataRecord = (ApplicationTraceMetadata) kiekerRecord;
+
+			// TODO workaround until those information is gathered via Kieker or provided
+			// otherwise
+			final String systemName = "System";
+			final String ipAddress = kiekerMetaDataRecord.getHostname();
+			final String programmingLanguage = "";
+
+			GenericExplorVizExternalLogAdapter.sendApplicationTraceMetaDataRecord(
+					kiekerMetaDataRecord.getLoggingTimestamp(), systemName, ipAddress,
+					kiekerMetaDataRecord.getHostname(), kiekerMetaDataRecord.getApplicationName(), programmingLanguage);
+		} else if (kiekerRecord instanceof CPUUtilizationRecord) {
+			final CPUUtilizationRecord kiekerCPUUtilRecord = (CPUUtilizationRecord) kiekerRecord;
+			final String hostname = kiekerCPUUtilRecord.getHostname();
+
+			GenericExplorVizExternalLogAdapter.sendSystemMonitoringRecord(kiekerCPUUtilRecord.getLoggingTimestamp(),
+					hostname, kiekerCPUUtilRecord.getTotalUtilization(), 0, 0);
+		} else if (kiekerRecord instanceof MemSwapUsageRecord) {
+			final MemSwapUsageRecord kiekerMemUsageRecord = (MemSwapUsageRecord) kiekerRecord;
+			final String hostname = kiekerMemUsageRecord.getHostname();
+
+			GenericExplorVizExternalLogAdapter.sendSystemMonitoringRecord(kiekerMemUsageRecord.getLoggingTimestamp(),
+					hostname, 0, kiekerMemUsageRecord.getMemUsed(), kiekerMemUsageRecord.getMemTotal());
+		} else if (kiekerRecord instanceof BeforeConstructorEvent) {
 			stack.push(kiekerRecord);
 			final BeforeConstructorEvent kiekerBefore = (BeforeConstructorEvent) kiekerRecord;
 
