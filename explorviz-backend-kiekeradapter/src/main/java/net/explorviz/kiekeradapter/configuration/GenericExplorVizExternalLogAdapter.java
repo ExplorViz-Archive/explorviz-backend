@@ -138,9 +138,6 @@ public class GenericExplorVizExternalLogAdapter {
 			final String ipAddress, final String hostname, final String applicationName,
 			final String programmingLanguage) {
 
-		// logger.info("ApplicationTraceMetadata - hostname: " + hostname + " |
-		// applicationName: " + applicationName);
-
 		explorVizBuffer.put(HostApplicationMetaDataRecord.CLAZZ_ID);
 		explorVizBuffer.putInt(MonitoringStringRegistry.getIdForString(systemName));
 		explorVizBuffer.putInt(MonitoringStringRegistry.getIdForString(ipAddress));
@@ -168,23 +165,12 @@ public class GenericExplorVizExternalLogAdapter {
 	public static void sendSystemMonitoringRecord(final long timestamp, final String hostname,
 			final double cpuUtilization, final long usedRAM, final long absoluteRAM) {
 
-		// HostApplicationMetaDataRecord systemMonitoringRecord = new
-		// HostApplicationMetaDataRecord(null, null, hostname,
-		// null, null);
-
-		// a value of "0" marks that the information is not available, either memory or cpu usage
-		
-		final Long usedRAMInGB = (((usedRAM / 1024) / 1024) / 1024);
-		final Long totalRAMinGB = (((absoluteRAM / 1024) / 1024) / 1024);
-
-		logger.info("SystemMonitoringRecord - hostname: " + hostname + "  | cpuUtilization: " + cpuUtilization
-				+ " usedRAM (in GB): " + usedRAMInGB + "  | totalRAM (in GB): " + totalRAMinGB);
-
+		// a value of "0" marks that the information is not available, either memory or
+		// cpu usage
 		explorVizBuffer.put(SystemMonitoringRecord.CLAZZ_ID);
 		explorVizBuffer.putDouble(cpuUtilization);
-		explorVizBuffer.putLong(usedRAMInGB);
-		explorVizBuffer.putLong(totalRAMinGB);
-		// TODO mapping towards HostApplicationMetaData is missing atm
+		explorVizBuffer.putLong(usedRAM);
+		explorVizBuffer.putLong(absoluteRAM);
 
 		sendBufferIfHasElements(timestamp);
 

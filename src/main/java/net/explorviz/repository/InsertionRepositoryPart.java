@@ -117,16 +117,10 @@ public class InsertionRepositoryPart {
 				if (node.getName().equalsIgnoreCase(systemMonitoringRecord.getHostApplicationMetadata().getHostname())
 						&& node.getIpAddress()
 								.equalsIgnoreCase(systemMonitoringRecord.getHostApplicationMetadata().getIpaddress())) {
+
 					node.setCpuUtilization(systemMonitoringRecord.getCpuUtilization());
 					node.setFreeRAM(systemMonitoringRecord.getAbsoluteRAM() - systemMonitoringRecord.getUsedRAM());
 					node.setUsedRAM(systemMonitoringRecord.getUsedRAM());
-
-					logger.info("SystemMonitoringRecord updated to:");
-					logger.info("CPU: [" + node.getCpuUtilization() + " | " + systemMonitoringRecord.getCpuUtilization()
-							+ "]");
-					logger.info("FreeRAM: [" + (node.getFreeRAM() + node.getUsedRAM()) + " | "
-							+ systemMonitoringRecord.getAbsoluteRAM() + "]");
-					logger.info("UsedRAM: [" + node.getUsedRAM() + " | " + systemMonitoringRecord.getUsedRAM() + "]");
 				}
 			}
 		}
