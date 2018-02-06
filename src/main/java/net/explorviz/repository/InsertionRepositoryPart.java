@@ -446,7 +446,7 @@ public class InsertionRepositoryPart {
 		landscape.setActivities(landscape.getActivities() + requests);
 
 		for (final CommunicationClazz commu : application.getCommunications()) {
-			if (((commu.getSource() == caller) && (commu.getTarget() == callee)
+			if (((commu.getSourceClazz() == caller) && (commu.getTargetClazz() == callee)
 					&& (commu.getMethodName().equalsIgnoreCase(methodName)))) {
 
 				commu.addRuntimeInformation(traceId, requests, orderIndex, requests, (float) average,
@@ -458,11 +458,12 @@ public class InsertionRepositoryPart {
 		final CommunicationClazz commu = new CommunicationClazz();
 		commu.initializeID();
 
-		commu.setSource(caller);
-		commu.setTarget(callee);
-
-		// commu.getSource().setCommunicationClazz(commu);
-		// commu.getTarget().setCommunicationClazz(commu);
+		// TODO
+		commu.setSourceClazz(caller);
+		commu.setTargetClazz(callee);
+		commu.getSourceClazz().getOutgoingCommunications().add(commu);
+		commu.getTargetClazz().getIncomingCommunications().add(commu);
+		//
 
 		commu.addRuntimeInformation(traceId, requests, orderIndex, requests, (float) average,
 				(float) overallTraceDuration);

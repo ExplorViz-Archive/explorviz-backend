@@ -7,6 +7,8 @@ import java.util.Set
 import net.explorviz.model.helper.Draw3DNodeEntity
 import com.github.jasminb.jsonapi.annotations.Type
 import com.github.jasminb.jsonapi.annotations.Relationship
+import java.util.ArrayList
+import java.util.List
 
 @Type("clazz")
 class Clazz extends Draw3DNodeEntity {
@@ -15,8 +17,15 @@ class Clazz extends Draw3DNodeEntity {
 
 	@Relationship("parent")
 	@Accessors Component parent
+
+	@Relationship("outgoingCommunications")
+	@Accessors List<CommunicationClazz> outgoingCommunications = new ArrayList<CommunicationClazz>
 	
+	@Relationship("incomingCommunications")
+	@Accessors List<CommunicationClazz> incomingCommunications = new ArrayList<CommunicationClazz>
+		
 	@Accessors var boolean visible = false
+
 
 	def void clearAllPrimitiveObjects() {
 //		this.primitiveObjects.clear()

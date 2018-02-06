@@ -470,17 +470,19 @@ class LandscapeDummyCreator {
 		component
 	}
 
-	def private static createCommuClazz(int requests, Clazz source, Clazz target, Application application) {
+	def private static createCommuClazz(int requests, Clazz sourceClazz, Clazz targetClazz, Application application) {
 		val commu = new CommunicationClazz()
 		commu.initializeID()
 		commu.addRuntimeInformation(0L, 1, 1, requests, 10, 10)
 		commu.methodName = "getMethod()"
 
-		commu.source = source
-		commu.target = target
+		// TODO
+		commu.setSourceClazz(sourceClazz);
+		commu.setTargetClazz(targetClazz);
+		commu.getSourceClazz().getOutgoingCommunications().add(commu);
+		commu.getTargetClazz().getIncomingCommunications().add(commu);
+		//
 
-		// source.communicationClazz = commu
-		// target.communicationClazz = commu
 		application.communications.add(commu)
 
 		commu

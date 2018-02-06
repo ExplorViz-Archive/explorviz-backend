@@ -15,11 +15,11 @@ class CommunicationClazz extends BaseEntity {
 	@Accessors String methodName
 	@Accessors Map<Long, RuntimeInformation> traceIdToRuntimeMap = new HashMap<Long, RuntimeInformation>
 
-	@Relationship("source")
-	@Accessors Clazz source
+	@Relationship("sourceClazz")
+	@Accessors Clazz sourceClazz
 
-	@Relationship("target")
-	@Accessors Clazz target
+	@Relationship("targetClazz")
+	@Accessors Clazz targetClazz
 
 	@Accessors boolean hidden = false
 
