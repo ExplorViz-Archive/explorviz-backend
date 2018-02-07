@@ -4,8 +4,6 @@ import java.util.LinkedList
 import java.util.Random
 import net.explorviz.model.Application
 import net.explorviz.model.Clazz
-import net.explorviz.model.Communication
-import net.explorviz.model.CommunicationClazz
 import net.explorviz.model.Component
 import net.explorviz.model.DatabaseQuery
 import net.explorviz.model.Landscape
@@ -14,6 +12,8 @@ import net.explorviz.model.NodeGroup
 import net.explorviz.model.System
 import net.explorviz.model.helper.ELanguage
 import net.explorviz.repository.helper.DummyLandscapeHelper
+import net.explorviz.model.communication.ApplicationCommunication
+import net.explorviz.model.communication.ClazzCommunication
 
 /**
  * Creates a dummy landscape for developing or demo purposes
@@ -24,7 +24,7 @@ import net.explorviz.repository.helper.DummyLandscapeHelper
 class LandscapeDummyCreator {
 	public var static int counter = 1;
 	var static int applicationId = 0
-	
+
 	var static Landscape dummyLandscape = null
 
 	def static createSimpleExample() {
@@ -72,12 +72,12 @@ class LandscapeDummyCreator {
 	}
 
 	def static createDummyLandscape() {
-		
-		if(dummyLandscape !== null) {
+
+		if (dummyLandscape !== null) {
 			dummyLandscape.activities = new Random().nextInt(300000)
 			return dummyLandscape
 		}
-		
+
 		applicationId = 0
 
 		val landscape = new Landscape()
@@ -118,7 +118,7 @@ class LandscapeDummyCreator {
 		ocnEditor.nodeGroups.add(ocnEditorNodeGroup2)
 
 		val ocnDatabase = new System()
-		ocnDatabase.initializeID()		
+		ocnDatabase.initializeID()
 		ocnDatabase.name = "OCN Database"
 		ocnDatabase.parent = landscape
 		landscape.systems.add(ocnDatabase)
@@ -139,7 +139,7 @@ class LandscapeDummyCreator {
 
 		val kielprints = new System()
 		kielprints.initializeID()
-		
+
 		kielprints.name = "OceanRep"
 		kielprints.parent = landscape
 		landscape.systems.add(kielprints)
@@ -161,7 +161,7 @@ class LandscapeDummyCreator {
 		kielprints.nodeGroups.add(kielprintsNodeGroup2)
 
 		val portal = new System()
-		portal.initializeID() 
+		portal.initializeID()
 		portal.name = "OSIS-Kiel"
 		portal.parent = landscape
 		landscape.systems.add(portal)
@@ -319,7 +319,7 @@ class LandscapeDummyCreator {
 		val preparedLandscape = LandscapePreparer.prepareLandscape(landscape)
 
 		counter = 1;
-		
+
 		dummyLandscape = preparedLandscape
 
 		preparedLandscape
@@ -370,80 +370,15 @@ class LandscapeDummyCreator {
 	}
 
 	def private static createCommunication(Application source, Application target, Landscape landscape, int requests) {
-		val communication = new Communication()
+		val communication = new ApplicationCommunication()
 		communication.initializeID()
-		communication.source = source
-		communication.target = target
+		communication.sourceApplication = source
+		communication.targetApplication = target
 		communication.requests = requests
-		landscape.applicationCommunication.add(communication)
+
+		source.outgoingApplicationCommunications.add(communication);
 	}
 
-	/*
-	 * JPetStore Dummy Application
-	 */
-	// def private static createJPetStoreDummyApplication(Application application) {
-	// val com = createComponent("com", null)
-	// application.components.add(com)
-	// val ibatis = createComponent("ibatis", com)
-	// val jpetstore = createComponent("jpetstore", ibatis)
-	//
-	// val domain = createComponent("domain", jpetstore)
-	// val account = createClazz("Account", domain, 20)
-	// createClazz("Cart", domain, 20)
-	// createClazz("CartItem", domain, 30)
-	// val category = createClazz("Category", domain, 30)
-	// createClazz("Item", domain, 20)
-	// createClazz("LineItem", domain, 40)
-	// val order = createClazz("Order", domain, 20)
-	// createClazz("Product", domain, 50)
-	// createClazz("Sequence", domain, 10)
-	//
-	// val service = createComponent("service", jpetstore)
-	// val accountService = createClazz("AccountService", service, 30)
-	// val categoryService = createClazz("CatalogService", service, 40)
-	// val orderService = createClazz("OrderService", service, 35)
-	//
-	// val persistence = createComponent("persistence", jpetstore)
-	// createClazz("DaoConfig", persistence, 30)
-	//
-	// val iface = createComponent("iface", persistence)
-	// val accountDao = createClazz("AccountDao", iface, 30)
-	// createClazz("CategoryDao", iface, 10)
-	// val catalogDao = createClazz("ItemDao", iface, 40)
-	// val orderDao = createClazz("OrderDao", iface, 45)
-	// createClazz("ProductDao", iface, 25)
-	// createClazz("SequenceDao", iface, 20)
-	//
-	// val sqlmapdao = createComponent("sqlmapdao", persistence)
-	// createClazz("AccountSqlMapDao", sqlmapdao, 5)
-	// createClazz("BaseSqlMapDao", sqlmapdao, 20)
-	// createClazz("CategorySqlMapDao", sqlmapdao, 30)
-	// createClazz("ItemSqlMapDao", sqlmapdao, 35)
-	// val orderSqlDao = createClazz("OrderSqlMapDao", sqlmapdao, 25)
-	// createClazz("ProductSqlMapDao", sqlmapdao, 20)
-	// createClazz("SequenceSqlMapDao", sqlmapdao, 15)
-	//
-	// val presentation = createComponent("presentation", jpetstore)
-	// createClazz("AbstractBean", presentation, 20)
-	// val accountBean = createClazz("AccountBean", presentation, 30)
-	// createClazz("CartBean", presentation, 40)
-	// val catlogBean = createClazz("CatalogBean", presentation, 21)
-	// val orderBean = createClazz("OrderBean", presentation, 25)
-	//
-	// createCommuClazz(5, account, accountService, application)
-	// createCommuClazz(20, category, categoryService, application)
-	// createCommuClazz(60, order, orderService, application)
-	//
-	// createCommuClazz(30, accountService, accountDao, application)
-	// createCommuClazz(35, categoryService, catalogDao, application)
-	//
-	// createCommuClazz(5, orderService, orderDao, application)
-	// createCommuClazz(15, orderSqlDao, orderBean, application)
-	//
-	// createCommuClazz(40, accountDao, accountBean, application)
-	// createCommuClazz(50, catalogDao, catlogBean, application)
-	// createCommuClazz(20, orderDao, orderBean, application)
-	// }
 	def private static createClazz(String name, Component component, int instanceCount) {
 		val clazz = new Clazz()
 		clazz.initializeID()
@@ -471,19 +406,14 @@ class LandscapeDummyCreator {
 	}
 
 	def private static createCommuClazz(int requests, Clazz sourceClazz, Clazz targetClazz, Application application) {
-		val commu = new CommunicationClazz()
+		val commu = new ClazzCommunication()
 		commu.initializeID()
 		commu.addRuntimeInformation(0L, 1, 1, requests, 10, 10)
 		commu.methodName = "getMethod()"
 
-		// TODO
 		commu.setSourceClazz(sourceClazz);
 		commu.setTargetClazz(targetClazz);
 		commu.getSourceClazz().getOutgoingCommunications().add(commu);
-		commu.getTargetClazz().getIncomingCommunications().add(commu);
-		//
-
-		application.communications.add(commu)
 
 		commu
 	}

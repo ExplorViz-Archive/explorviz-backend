@@ -15,6 +15,7 @@ import com.github.jasminb.jsonapi.annotations.Id;
 @SuppressWarnings("serial")
 @JsonIdentityInfo(generator = ObjectIdGenerators.StringIdGenerator.class, property = "id")
 public class BaseEntity implements Serializable {
+
 	private static final AtomicLong ID_GENERATOR = new AtomicLong();
 
 	@Id(LongIdHandler.class)

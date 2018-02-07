@@ -26,13 +26,13 @@ import gnu.trove.iterator.TIntIterator;
 import gnu.trove.set.hash.TIntHashSet;
 import net.explorviz.model.Application;
 import net.explorviz.model.Clazz;
-import net.explorviz.model.CommunicationClazz;
 import net.explorviz.model.Component;
 import net.explorviz.model.DatabaseQuery;
 import net.explorviz.model.Landscape;
 import net.explorviz.model.Node;
 import net.explorviz.model.NodeGroup;
 import net.explorviz.model.System;
+import net.explorviz.model.communication.ClazzCommunication;
 import net.explorviz.model.helper.ELanguage;
 import net.explorviz.repository.helper.Signature;
 import net.explorviz.repository.helper.SignatureParser;
@@ -52,10 +52,6 @@ public class InsertionRepositoryPart {
 
 		if (inputIRecord instanceof Trace) {
 			final Trace trace = (Trace) inputIRecord;
-
-			// if (Configuration.rsfExportEnabled) {
-			// RigiStandardFormatExporter.insertTrace(trace);
-			// }
 
 			final List<HostApplicationMetaDataRecord> hostApplicationMetadataList = trace.getTraceEvents().get(0)
 					.getHostApplicationMetadataList();
@@ -289,6 +285,16 @@ public class InsertionRepositoryPart {
 		return isDatabase;
 	}
 
+	/**
+	 * Communication between clazzen within a single application
+	 *
+	 * @param trace
+	 * @param currentHostname
+	 * @param currentApplication
+	 * @param landscape
+	 * @param remoteCallRepositoryPart
+	 * @param runtimeIndex
+	 */
 	private void createCommunicationInApplication(final Trace trace, final String currentHostname,
 			final Application currentApplication, final Landscape landscape,
 			final RemoteCallRepositoryPart remoteCallRepositoryPart, final int runtimeIndex) {
@@ -445,7 +451,7 @@ public class InsertionRepositoryPart {
 			final int orderIndex, final String methodName, final Landscape landscape) {
 		landscape.setActivities(landscape.getActivities() + requests);
 
-		for (final CommunicationClazz commu : application.getCommunications()) {
+		for (final ClazzCommunication commu : application.getOutgoingClazzCommunication()) {
 			if (((commu.getSourceClazz() == caller) && (commu.getTargetClazz() == callee)
 					&& (commu.getMethodName().equalsIgnoreCase(methodName)))) {
 
@@ -455,21 +461,16 @@ public class InsertionRepositoryPart {
 			}
 		}
 
-		final CommunicationClazz commu = new CommunicationClazz();
+		final ClazzCommunication commu = new ClazzCommunication();
 		commu.initializeID();
 
-		// TODO
 		commu.setSourceClazz(caller);
 		commu.setTargetClazz(callee);
 		commu.getSourceClazz().getOutgoingCommunications().add(commu);
-		commu.getTargetClazz().getIncomingCommunications().add(commu);
-		//
 
 		commu.addRuntimeInformation(traceId, requests, orderIndex, requests, (float) average,
 				(float) overallTraceDuration);
 		commu.setMethodName(methodName);
-
-		application.getCommunications().add(commu);
 	}
 
 	private Clazz seekOrCreateClazz(final String fullQName, final Application application,
@@ -577,4 +578,5 @@ public class InsertionRepositoryPart {
 		final Signature signature = SignatureParser.parse(operationSignatureStr, constructor);
 		return signature.getOperationName();
 	}
+
 }

@@ -3,8 +3,8 @@ package net.explorviz.model.helper;
 import java.util.ArrayList
 import java.util.List
 import org.eclipse.xtend.lib.annotations.Accessors
-import net.explorviz.model.CommunicationClazz
 import com.github.jasminb.jsonapi.annotations.Type
+import net.explorviz.model.communication.ClazzCommunication
 
 @Type("communicationappaccumulator")
 class CommunicationAppAccumulator extends Draw3DEdgeEntity {
@@ -16,6 +16,6 @@ class CommunicationAppAccumulator extends Draw3DEdgeEntity {
 	@Accessors int requests
 	@Accessors float averageResponseTime	
 	
-	@Accessors val transient List<CommunicationClazz> aggregatedCommunications = new ArrayList<CommunicationClazz> 
+	@Accessors val transient List<ClazzCommunication> aggregatedCommunications = new ArrayList<ClazzCommunication> 
 	
 }

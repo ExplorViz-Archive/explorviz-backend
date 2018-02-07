@@ -1,12 +1,12 @@
 package net.explorviz.repository;
 
 import net.explorviz.model.Application;
-import net.explorviz.model.Communication;
 import net.explorviz.model.Component;
 import net.explorviz.model.Landscape;
 import net.explorviz.model.Node;
 import net.explorviz.model.NodeGroup;
 import net.explorviz.model.System;
+import net.explorviz.model.communication.ApplicationCommunication;
 
 public class LandscapePreparer {
 
@@ -28,7 +28,6 @@ public class LandscapePreparer {
 						foundationComponent.setName(application.getName());
 						foundationComponent.setFullQualifiedName(application.getName());
 						foundationComponent.setBelongingApplication(application);
-						// foundationComponent.setColor(ColorDefinitions.componentFoundationColor);
 
 						foundationComponent.getChildren().addAll(application.getComponents());
 
@@ -48,10 +47,10 @@ public class LandscapePreparer {
 			}
 		}
 
-		for (final Communication commu : landscape.getApplicationCommunication()) {
-			createApplicationInAndOutgoing(commu);
+		// outgoing communication between applications
+		for (final ApplicationCommunication commu : landscape.getOutgoingApplicationCommunication()) {
+			createOutgoingApplicationCommunication(commu);
 		}
-
 		return landscape;
 	}
 
@@ -73,15 +72,11 @@ public class LandscapePreparer {
 		}
 	}
 
-	private static void createApplicationInAndOutgoing(final Communication communication) {
-		final Application sourceApp = communication.getSource();
+	private static void createOutgoingApplicationCommunication(final ApplicationCommunication communication) {
+		final Application sourceApp = communication.getSourceApplication();
 		if (sourceApp != null) {
-			sourceApp.getOutgoingCommunications().add(communication);
-		}
-
-		final Application targetApp = communication.getTarget();
-		if (targetApp != null) {
-			targetApp.getIncomingCommunications().add(communication);
+			sourceApp.getOutgoingApplicationCommunications().add(communication);
 		}
 	}
+
 }

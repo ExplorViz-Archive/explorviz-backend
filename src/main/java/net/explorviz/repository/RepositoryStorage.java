@@ -16,8 +16,6 @@ import org.nustaq.serialization.FSTObjectOutput;
 
 import net.explorviz.model.Application;
 import net.explorviz.model.Clazz;
-import net.explorviz.model.Communication;
-import net.explorviz.model.CommunicationClazz;
 import net.explorviz.model.Component;
 import net.explorviz.model.DatabaseQuery;
 import net.explorviz.model.Landscape;
@@ -25,6 +23,8 @@ import net.explorviz.model.Node;
 import net.explorviz.model.NodeGroup;
 import net.explorviz.model.RuntimeInformation;
 import net.explorviz.model.System;
+import net.explorviz.model.communication.ApplicationCommunication;
+import net.explorviz.model.communication.ClazzCommunication;
 import net.explorviz.model.helper.CommunicationAccumulator;
 import net.explorviz.model.helper.CommunicationTileAccumulator;
 import net.explorviz.model.helper.ELanguage;
@@ -58,7 +58,7 @@ public class RepositoryStorage {
 		result.registerClass(System.class);
 		result.registerClass(NodeGroup.class);
 		result.registerClass(Node.class);
-		result.registerClass(Communication.class);
+		result.registerClass(ApplicationCommunication.class);
 		result.registerClass(CommunicationTileAccumulator.class);
 		result.registerClass(CommunicationAccumulator.class);
 		result.registerClass(Application.class);
@@ -67,7 +67,7 @@ public class RepositoryStorage {
 		result.registerClass(Clazz.class);
 		result.registerClass(RuntimeInformation.class);
 		result.registerClass(DatabaseQuery.class);
-		result.registerClass(CommunicationClazz.class);
+		result.registerClass(ClazzCommunication.class);
 		result.registerClass(Point.class);
 
 		return result;

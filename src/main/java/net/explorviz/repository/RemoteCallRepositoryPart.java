@@ -12,9 +12,9 @@ import explorviz.live_trace_processing.record.event.remote.BeforeSentRemoteCallR
 import explorviz.live_trace_processing.record.trace.HostApplicationMetaDataRecord;
 import net.explorviz.model.Application;
 import net.explorviz.model.Clazz;
-import net.explorviz.model.Communication;
 import net.explorviz.model.Landscape;
 import net.explorviz.model.Node;
+import net.explorviz.model.communication.ApplicationCommunication;
 import net.explorviz.repository.helper.RemoteRecordBuffer;
 
 public class RemoteCallRepositoryPart {
@@ -107,6 +107,7 @@ public class RemoteCallRepositoryPart {
 		return null;
 	}
 
+	// Communication between applications (landscape-perspective)
 	private void seekOrCreateCommunication(final BeforeSentRemoteCallRecord sentRemoteCallRecord,
 			final BeforeReceivedRemoteCallRecord receivedRemoteCallRecord, final Clazz sentRemoteClazz,
 			final Clazz receivedRemoteClazz, final Landscape landscape, final InsertionRepositoryPart inserter,
@@ -115,15 +116,16 @@ public class RemoteCallRepositoryPart {
 		final Application callerApplication = getHostApplication(sentRemoteCallRecord, inserter, landscape);
 		final Application currentApplication = getHostApplication(receivedRemoteCallRecord, inserter, landscape);
 
-		for (final Communication commu : landscape.getApplicationCommunication()) {
-			if (commu.getSource() == callerApplication && commu.getTarget() == currentApplication
-					|| commu.getSource() == currentApplication && commu.getTarget() == callerApplication) {
+		for (final ApplicationCommunication commu : landscape.getOutgoingApplicationCommunication()) {
+			if (commu.getSourceApplication() == callerApplication && commu.getTargetApplication() == currentApplication
+					|| commu.getSourceApplication() == currentApplication
+							&& commu.getTargetApplication() == callerApplication) {
 				commu.setRequests(commu.getRequests()
 						+ sentRemoteCallRecord.getRuntimeStatisticInformationList().get(runtimeIndex).getCount());
 
-				final float oldAverage = commu.getAverageResponseTimeInNanoSec();
+				final float oldAverage = commu.getAverageResponseTime();
 
-				commu.setAverageResponseTimeInNanoSec((float) (oldAverage
+				commu.setAverageResponseTime((float) (oldAverage
 						+ sentRemoteCallRecord.getRuntimeStatisticInformationList().get(runtimeIndex).getAverage())
 						/ 2f);
 
@@ -132,19 +134,19 @@ public class RemoteCallRepositoryPart {
 				return;
 			}
 		}
-		final Communication communication = new Communication();
-		communication.setSource(callerApplication);
+		final ApplicationCommunication communication = new ApplicationCommunication();
+		communication.setSourceApplication(callerApplication);
 		communication.setSourceClazz(sentRemoteClazz);
 
-		communication.setTarget(currentApplication);
+		communication.setTargetApplication(currentApplication);
 		communication.setTargetClazz(receivedRemoteClazz);
 
 		communication
 				.setRequests(sentRemoteCallRecord.getRuntimeStatisticInformationList().get(runtimeIndex).getCount());
-		communication.setAverageResponseTimeInNanoSec(
+		communication.setAverageResponseTime(
 				(float) sentRemoteCallRecord.getRuntimeStatisticInformationList().get(runtimeIndex).getAverage());
 		communication.setTechnology(sentRemoteCallRecord.getTechnology());
-		landscape.getApplicationCommunication().add(communication);
+		landscape.getOutgoingApplicationCommunication().add(communication);
 
 		landscape.setActivities(landscape.getActivities()
 				+ sentRemoteCallRecord.getRuntimeStatisticInformationList().get(runtimeIndex).getCount());

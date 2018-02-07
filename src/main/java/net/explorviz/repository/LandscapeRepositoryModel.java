@@ -12,13 +12,13 @@ import explorviz.live_trace_processing.reader.TimeSignalReader;
 import explorviz.live_trace_processing.record.IRecord;
 import net.explorviz.model.Application;
 import net.explorviz.model.Clazz;
-import net.explorviz.model.Communication;
-import net.explorviz.model.CommunicationClazz;
 import net.explorviz.model.Component;
 import net.explorviz.model.Landscape;
 import net.explorviz.model.Node;
 import net.explorviz.model.NodeGroup;
 import net.explorviz.model.System;
+import net.explorviz.model.communication.ApplicationCommunication;
+import net.explorviz.model.communication.ClazzCommunication;
 import net.explorviz.server.main.Configuration;
 
 public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiver {
@@ -95,7 +95,7 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
 
 	public void reset() {
 		synchronized (internalLandscape) {
-			internalLandscape.getApplicationCommunication().clear();
+			internalLandscape.clearCommunication();
 			internalLandscape.getSystems().clear();
 			internalLandscape.getEvents().clear();
 			internalLandscape.getErrors().clear();
@@ -142,7 +142,7 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
 					for (final Application app : node.getApplications()) {
 						app.getDatabaseQueries().clear();
 
-						for (final CommunicationClazz commu : app.getCommunications()) {
+						for (final ClazzCommunication commu : app.getOutgoingClazzCommunication()) {
 							commu.reset();
 						}
 
@@ -152,10 +152,11 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
 			}
 		}
 
-		for (final Communication commu : internalLandscape.getApplicationCommunication()) {
+		for (final ApplicationCommunication commu : internalLandscape.getOutgoingApplicationCommunication()) {
 			commu.setRequests(0);
-			commu.setAverageResponseTimeInNanoSec(0);
+			commu.setAverageResponseTime(0);
 		}
+
 	}
 
 	private void resetClazzInstances(final List<Component> components) {
