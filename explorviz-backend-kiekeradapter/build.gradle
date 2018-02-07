@@ -18,7 +18,7 @@ dependencies {
 	compile fileTree(dir: 'libs', include: ['*.jar'])
 
 	// Teetime Pipe and Filter Framework
-	compile group: 'net.sourceforge.teetime', name: 'teetime', version: '3.0-SNAPSHOT'
+	compile group: 'net.sourceforge.teetime', name: 'teetime', version: '3.0-SNAPSHOT'	
 	compile group: 'net.sourceforge.teetime-stages', name: 'teetime-stages', version: '3.0-SNAPSHOT'
 	
 	// Kieker Monitoring Framework
@@ -39,7 +39,6 @@ configurations.all {
 
 artifacts {
 	archives file: file('libs/explorviz-monitoring.jar'), name: 'explorviz-monitoring', type: 'jar'
-	archives file: file('libs/kieker-1.14-SNAPSHOT.jar'), name: 'kieker-1.14-SNAPSHOT', type: 'jar'
   	archives jar
 }
 
