@@ -10,13 +10,14 @@ import javax.ws.rs.Produces;
 import net.explorviz.api.ExtensionAPI;
 import net.explorviz.api.ExtensionAPIImpl;
 import net.explorviz.model.Landscape;
+import net.explorviz.server.security.Secured;
 
 /**
  * REST resource providing landscape data for the frontend
  *
  * @author Christian Zirkelbach (czi@informatik.uni-kiel.de)
  */
-// @Secured
+@Secured
 @Path("landscape")
 public class LandscapeResource {
 

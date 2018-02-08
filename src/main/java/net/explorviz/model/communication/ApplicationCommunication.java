@@ -8,7 +8,7 @@ import net.explorviz.model.Clazz;
 import net.explorviz.model.helper.DrawEdgeEntity;
 
 @SuppressWarnings("serial")
-@Type("communication")
+@Type("applicationcommunication")
 public class ApplicationCommunication extends DrawEdgeEntity {
 
 	private int requests;

@@ -11,7 +11,7 @@ import net.explorviz.model.RuntimeInformation;
 import net.explorviz.model.helper.BaseEntity;
 
 @SuppressWarnings("serial")
-@Type("communicationclazz")
+@Type("clazzcommunication")
 public class ClazzCommunication extends BaseEntity {
 
 	private int requestsCacheCount = 0;
