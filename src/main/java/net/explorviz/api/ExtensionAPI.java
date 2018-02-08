@@ -6,9 +6,9 @@ package net.explorviz.api;
  * @author Christian Zirkelbach (czi@informatik.uni-kiel.de)
  *
  */
-public final class API {
+public final class ExtensionAPI {
 
-	private API() {
+	private ExtensionAPI() {
 		// no need to instantiate
 	}
 

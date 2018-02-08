@@ -21,6 +21,9 @@ import javax.ws.rs.PATCH
 import javax.ws.rs.QueryParam
 import net.explorviz.repository.HibernateSessionFactory
 
+/**
+ * REST resource providing user data for the frontend
+ */
 @Path("users")
 class UserResource {
 
@@ -45,14 +48,14 @@ class UserResource {
 		currentUser = session.find(User, username)
 
 		sessionFactory.commitTransactionAndClose(session)
-		
-		if(currentUser !== null) {
+
+		if (currentUser !== null) {
 			currentUser.initializeID()
 			currentUser.token = null
 			currentUser.password = null
 			currentUser.isAuthenticated = false
 			currentUser.hashedPassword = null
-			
+
 			val JSONAPIDocument<User> document = new JSONAPIDocument<User>(currentUser);
 
 			return Response.ok(this.converter.writeDocument(document)).type("application/vnd.api+json").build();
@@ -113,7 +116,7 @@ class UserResource {
 		val Random random = new SecureRandom();
 		return new BigInteger(130, random).toString(32);
 	}
-	
+
 	def private Response getAuthenticationErrorResponse() {
 		val Error error = new Error();
 		error.status = Response.Status.UNAUTHORIZED.toString
