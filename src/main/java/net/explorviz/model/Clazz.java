@@ -22,7 +22,7 @@ public class Clazz extends Draw3DNodeEntity {
 	private Component parent;
 
 	@Relationship("outgoingCommunications")
-	private List<ClazzCommunication> outgoingCommunications = new ArrayList<ClazzCommunication>();
+	private List<ClazzCommunication> outgoingClazzCommunications = new ArrayList<ClazzCommunication>();
 
 	private final boolean visible = false;
 
@@ -43,7 +43,7 @@ public class Clazz extends Draw3DNodeEntity {
 	}
 
 	public void setOutgoingCommunications(final List<ClazzCommunication> outgoingCommunications) {
-		this.outgoingCommunications = outgoingCommunications;
+		this.outgoingClazzCommunications = outgoingCommunications;
 	}
 
 	public void setInstanceCount(final int instanceCount) {
@@ -55,7 +55,7 @@ public class Clazz extends Draw3DNodeEntity {
 	}
 
 	public List<ClazzCommunication> getOutgoingCommunications() {
-		return outgoingCommunications;
+		return outgoingClazzCommunications;
 	}
 
 	public boolean isVisible() {
