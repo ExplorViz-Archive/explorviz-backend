@@ -15,10 +15,10 @@ public class ApplicationCommunication extends DrawEdgeEntity {
 	private String technology;
 	private float averageResponseTime;
 
-	@Relationship("source")
+	@Relationship("sourceApplication")
 	private Application sourceApplication;
 
-	@Relationship("target")
+	@Relationship("targetApplication")
 	private Application targetApplication;
 
 	@Relationship("sourceClazz")
