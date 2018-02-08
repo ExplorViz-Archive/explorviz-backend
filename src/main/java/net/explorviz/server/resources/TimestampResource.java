@@ -11,16 +11,15 @@ import javax.ws.rs.QueryParam;
 import net.explorviz.api.ExtensionAPI;
 import net.explorviz.api.ExtensionAPIImpl;
 import net.explorviz.model.Timestamp;
-import net.explorviz.server.security.Secured;
 
 /**
  * REST resource providing timestamp data for the frontend
  *
  * @author Christian Zirkelbach (czi@informatik.uni-kiel.de)
  */
-@Secured
+// @Secured
 @Path("timestamp")
-class TimestampResource {
+public class TimestampResource {
 
 	private final ExtensionAPIImpl api = ExtensionAPI.get();
 

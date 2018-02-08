@@ -25,8 +25,6 @@ import net.explorviz.model.RuntimeInformation;
 import net.explorviz.model.System;
 import net.explorviz.model.communication.ApplicationCommunication;
 import net.explorviz.model.communication.ClazzCommunication;
-import net.explorviz.model.helper.CommunicationAccumulator;
-import net.explorviz.model.helper.CommunicationTileAccumulator;
 import net.explorviz.model.helper.ELanguage;
 import net.explorviz.model.helper.Point;
 import net.explorviz.server.main.Configuration;
@@ -59,8 +57,6 @@ public class RepositoryStorage {
 		result.registerClass(NodeGroup.class);
 		result.registerClass(Node.class);
 		result.registerClass(ApplicationCommunication.class);
-		result.registerClass(CommunicationTileAccumulator.class);
-		result.registerClass(CommunicationAccumulator.class);
 		result.registerClass(Application.class);
 		result.registerClass(ELanguage.class);
 		result.registerClass(Component.class);

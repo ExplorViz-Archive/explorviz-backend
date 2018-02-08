@@ -150,4 +150,5 @@ public final class ExtensionAPIImpl implements IExtensionAPI {
 		CoreModelHandler.registerAllCoreModels();
 
 	}
+
 }
