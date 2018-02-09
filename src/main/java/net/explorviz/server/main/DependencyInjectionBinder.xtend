@@ -8,6 +8,7 @@ import net.explorviz.repository.HibernateSessionFactory
 import net.explorviz.repository.LandscapeRepositoryModel
 import net.explorviz.server.injection.LandscapeRepositoryFactory
 import net.explorviz.server.injection.ResourceConverterFactory
+import net.explorviz.model.helper.ErrorObjectHelper
 
 class DependencyInjectionBinder extends AbstractBinder {
 	override void configure() {
@@ -16,5 +17,6 @@ class DependencyInjectionBinder extends AbstractBinder {
 		
 		this.bind(LandscapeExchangeService).to(LandscapeExchangeService).in(Singleton)
 		this.bind(HibernateSessionFactory).to(HibernateSessionFactory).in(Singleton)
+		this.bind(ErrorObjectHelper).to(ErrorObjectHelper).in(Singleton)
 	}
 }
