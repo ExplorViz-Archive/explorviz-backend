@@ -2,18 +2,18 @@ package net.explorviz.repository;
 
 import java.util.LinkedList
 import java.util.Random
-import net.explorviz.model.Application
-import net.explorviz.model.Clazz
-import net.explorviz.model.Component
-import net.explorviz.model.DatabaseQuery
-import net.explorviz.model.Landscape
-import net.explorviz.model.Node
-import net.explorviz.model.NodeGroup
-import net.explorviz.model.System
-import net.explorviz.model.helper.ELanguage
+import net.explorviz.model.application.Application
+import net.explorviz.model.application.Clazz
+import net.explorviz.model.application.Component
+import net.explorviz.model.application.DatabaseQuery
+import net.explorviz.model.landscape.Landscape
+import net.explorviz.model.landscape.Node
+import net.explorviz.model.landscape.NodeGroup
+import net.explorviz.model.landscape.System
 import net.explorviz.repository.helper.DummyLandscapeHelper
-import net.explorviz.model.communication.ApplicationCommunication
-import net.explorviz.model.communication.ClazzCommunication
+import net.explorviz.model.application.ApplicationCommunication
+import net.explorviz.model.application.ClazzCommunication
+import net.explorviz.model.helper.EProgrammingLanguage
 
 /**
  * Creates a dummy landscape for developing or demo purposes
@@ -31,7 +31,7 @@ class LandscapeDummyCreator {
 		applicationId = 0
 
 		val landscape = new Landscape()
-		landscape.activities = new Random().nextInt(300000)
+		landscape.setOverallCalls(new Random().nextInt(300000));
 
 		val ocnEditor = new System()
 		ocnEditor.name = "OCN Editor"
@@ -74,7 +74,7 @@ class LandscapeDummyCreator {
 	def static createDummyLandscape() {
 
 		if (dummyLandscape !== null) {
-			dummyLandscape.activities = new Random().nextInt(300000)
+			dummyLandscape.setOverallCalls(new Random().nextInt(300000));
 			return dummyLandscape
 		}
 
@@ -82,7 +82,7 @@ class LandscapeDummyCreator {
 
 		val landscape = new Landscape()
 		landscape.initializeID()
-		landscape.activities = new Random().nextInt(300000)
+		landscape.setOverallCalls(new Random().nextInt(300000));
 
 		val requestSystem = new System()
 		requestSystem.initializeID()
@@ -110,7 +110,6 @@ class LandscapeDummyCreator {
 		val ocnEditorNodeGroup2 = createNodeGroup("10.0.1.2", landscape, ocnEditor)
 		val ocnEditorNode2 = createNode("10.0.1.2", ocnEditorNodeGroup2)
 		val ocnEditorApp2 = createApplication("Database", ocnEditorNode2)
-		ocnEditorApp2.database = true
 
 		ocnEditorNodeGroup.nodes.add(ocnEditorNode)
 		ocnEditor.nodeGroups.add(ocnEditorNodeGroup)
@@ -130,7 +129,6 @@ class LandscapeDummyCreator {
 		val ocnDatabaseNodeGroup2 = createNodeGroup("10.0.2.2", landscape, ocnDatabase)
 		val ocnDatabaseNode2 = createNode("10.0.2.2", ocnDatabaseNodeGroup2)
 		val ocnDatabaseApp2 = createApplication("Database", ocnDatabaseNode2)
-		ocnDatabaseApp2.database = true
 
 		ocnDatabaseNodeGroup.nodes.add(ocnDatabaseNode)
 		ocnDatabase.nodeGroups.add(ocnDatabaseNodeGroup)
@@ -153,7 +151,6 @@ class LandscapeDummyCreator {
 		val kielprintsNodeGroup2 = createNodeGroup("10.0.3.2", landscape, kielprints)
 		val kielprintsNode2 = createNode("10.0.3.2", kielprintsNodeGroup2)
 		val kielprintsApp3 = createApplication("Database", kielprintsNode2)
-		kielprintsApp3.database = true
 
 		kielprintsNodeGroup.nodes.add(kielprintsNode)
 		kielprints.nodeGroups.add(kielprintsNodeGroup)
@@ -173,7 +170,6 @@ class LandscapeDummyCreator {
 		val portalNodeGroup2 = createNodeGroup("10.0.4.2", landscape, portal)
 		val portalNode2 = createNode("10.0.4.2", portalNodeGroup2)
 		val portalApp2 = createApplication("Artifacts", portalNode2)
-		portalApp2.database = true
 
 		portalNodeGroup.nodes.add(portalNode)
 		portal.nodeGroups.add(portalNodeGroup)
@@ -195,7 +191,6 @@ class LandscapeDummyCreator {
 		val pangeaApp2 = createApplication("Jira", pangeaNode2)
 
 		val pangeaApp3 = createApplication("PostgreSQL", pangeaNode2)
-		pangeaApp3.database = true
 
 		pangeaNodeGroup.nodes.add(pangeaNode)
 		pangea.nodeGroups.add(pangeaNodeGroup)
@@ -222,7 +217,7 @@ class LandscapeDummyCreator {
 
 		val postgreSQLNodeGroup = createNodeGroup("10.0.0.3", landscape, pubflow)
 		val postgreSQLNode = createNode("10.0.0.3", postgreSQLNodeGroup)
-		val postgreSQL = createDatabase("PostgreSQL", postgreSQLNode)
+		val postgreSQL = createApplication("PostgreSQL", postgreSQLNode)
 
 		postgreSQLNodeGroup.nodes.add(postgreSQLNode)
 		pubflow.nodeGroups.add(postgreSQLNodeGroup)
@@ -254,7 +249,7 @@ class LandscapeDummyCreator {
 
 		val neo4jNodeGroup = createNodeGroup("10.0.0.9", landscape, pubflow)
 		val neo4jNode = createNode("10.0.0.9", neo4jNodeGroup)
-		val neo4j = createDatabase("Neo4j", neo4jNode)
+		val neo4j = createApplication("Neo4j", neo4jNode)
 
 		// createJPetStoreDummyApplication(neo4j)
 		createNeo4JDummyApplication(neo4j)
@@ -266,7 +261,7 @@ class LandscapeDummyCreator {
 		val cacheNode = createNode("10.0.0.8", cacheNodeGroup)
 		val cache = createApplication("Cache", cacheNode)
 		// val hyperSQL = createDatabase("HyperSQL", cacheNode)
-		val mapleLeafApplication = createDatabase("MapleLeaf DB Connector", cacheNode);
+		val mapleLeafApplication = createApplication("MapleLeaf DB Connector", cacheNode);
 		createMapleLeafApplication(mapleLeafApplication);
 
 		cacheNodeGroup.nodes.add(cacheNode)
@@ -352,20 +347,14 @@ class LandscapeDummyCreator {
 		application.parent = parent
 
 		application.lastUsage = java.lang.System.currentTimeMillis
-		application.programmingLanguage = ELanguage::JAVA
+		application.programmingLanguage = EProgrammingLanguage::JAVA
 
 		if (name == "Eprints") {
-			application.programmingLanguage = ELanguage::PERL
+			application.programmingLanguage = EProgrammingLanguage::PERL
 		}
 
 		application.name = name
 		parent.applications.add(application)
-		application
-	}
-
-	def private static createDatabase(String name, Node node) {
-		val application = createApplication(name, node)
-		application.database = true
 		application
 	}
 
@@ -409,7 +398,7 @@ class LandscapeDummyCreator {
 		val commu = new ClazzCommunication()
 		commu.initializeID()
 		commu.addRuntimeInformation(0L, 1, 1, requests, 10, 10)
-		commu.methodName = "getMethod()"
+		commu.operationName = "getMethod()"
 
 		commu.setSourceClazz(sourceClazz);
 		commu.setTargetClazz(targetClazz);

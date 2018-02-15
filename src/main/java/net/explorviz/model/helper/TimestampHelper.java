@@ -5,10 +5,10 @@ import java.util.List;
 
 import org.glassfish.jersey.server.ParamException.QueryParamException;
 
-import net.explorviz.model.Timestamp;
+import net.explorviz.model.store.Timestamp;
 
 /**
- * Helper class providing methods for filtering timestamps
+ * Helper class providing methods for filtering {@link Timestamp}
  *
  * @author Christian Zirkelbach (czi@informatik.uni-kiel.de)
  *
@@ -132,7 +132,7 @@ public class TimestampHelper {
 
 	/**
 	 * Retrieves the newest timestamps in a passed interval
-	 * 
+	 *
 	 * @param allTimestamps
 	 * @param intervalSize
 	 * @return

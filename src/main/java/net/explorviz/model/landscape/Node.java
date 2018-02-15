@@ -1,4 +1,4 @@
-package net.explorviz.model;
+package net.explorviz.model.landscape;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,12 +6,20 @@ import java.util.List;
 import com.github.jasminb.jsonapi.annotations.Relationship;
 import com.github.jasminb.jsonapi.annotations.Type;
 
-import net.explorviz.model.helper.DrawNodeEntity;
+import net.explorviz.model.application.Application;
+import net.explorviz.model.helper.BaseEntity;
 
+/**
+ * Model representing a node (host within a software landscape)
+ *
+ * @author Christian Zirkelbach (czi@informatik.uni-kiel.de)
+ *
+ */
 @SuppressWarnings("serial")
 @Type("node")
-public class Node extends DrawNodeEntity {
+public class Node extends BaseEntity {
 
+	private String name;
 	private String ipAddress;
 	private double cpuUtilization;
 	private long freeRAM;
@@ -20,10 +28,18 @@ public class Node extends DrawNodeEntity {
 	@Relationship("applications")
 	private final List<Application> applications = new ArrayList<Application>();
 
-	private boolean visible = true;
+	private final boolean visible = true;
 
 	@Relationship("parent")
 	private NodeGroup parent;
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(final String name) {
+		this.name = name;
+	}
 
 	public String getIpAddress() {
 		return ipAddress;
@@ -68,13 +84,4 @@ public class Node extends DrawNodeEntity {
 	public List<Application> getApplications() {
 		return applications;
 	}
-
-	public void setVisible(final boolean visible) {
-		this.visible = visible;
-	}
-
-	public boolean isVisible() {
-		return visible;
-	}
-
 }

@@ -1,10 +1,17 @@
-package net.explorviz.model;
+package net.explorviz.model.application;
 
 import java.util.HashSet;
 import java.util.Set;
 
 import net.explorviz.model.helper.BaseEntity;
 
+/**
+ * Model representing detailed runtime information for
+ * {@link ClazzCommunication} between two {@link Clazz}
+ *
+ * @author Christian Zirkelbach (czi@informatik.uni-kiel.de)
+ *
+ */
 @SuppressWarnings("serial")
 public class RuntimeInformation extends BaseEntity {
 

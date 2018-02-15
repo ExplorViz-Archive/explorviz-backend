@@ -10,7 +10,7 @@ import javax.ws.rs.QueryParam;
 
 import net.explorviz.api.ExtensionAPI;
 import net.explorviz.api.ExtensionAPIImpl;
-import net.explorviz.model.Timestamp;
+import net.explorviz.model.store.Timestamp;
 import net.explorviz.server.security.Secured;
 
 /**

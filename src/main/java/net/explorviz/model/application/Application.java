@@ -1,4 +1,4 @@
-package net.explorviz.model;
+package net.explorviz.model.application;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,17 +6,22 @@ import java.util.List;
 import com.github.jasminb.jsonapi.annotations.Relationship;
 import com.github.jasminb.jsonapi.annotations.Type;
 
-import net.explorviz.model.communication.ApplicationCommunication;
-import net.explorviz.model.communication.ClazzCommunication;
-import net.explorviz.model.helper.DrawNodeEntity;
-import net.explorviz.model.helper.ELanguage;
+import net.explorviz.model.helper.BaseEntity;
+import net.explorviz.model.helper.EProgrammingLanguage;
+import net.explorviz.model.landscape.Node;
 
+/**
+ * Model representing a single application with a software landscape
+ *
+ * @author Christian Zirkelbach (czi@informatik.uni-kiel.de)
+ *
+ */
 @SuppressWarnings("serial")
 @Type("application")
-public class Application extends DrawNodeEntity {
+public class Application extends BaseEntity {
 
-	private boolean database;
-	private ELanguage programmingLanguage;
+	private String name;
+	private EProgrammingLanguage programmingLanguage;
 	private long lastUsage;
 
 	@Relationship("parent")
@@ -31,19 +36,19 @@ public class Application extends DrawNodeEntity {
 	@Relationship("databaseQueries")
 	private List<DatabaseQuery> databaseQueries = new ArrayList<DatabaseQuery>();
 
-	public boolean isDatabase() {
-		return database;
+	public String getName() {
+		return name;
 	}
 
-	public void setDatabase(final boolean database) {
-		this.database = database;
+	public void setName(final String name) {
+		this.name = name;
 	}
 
-	public ELanguage getProgrammingLanguage() {
+	public EProgrammingLanguage getProgrammingLanguage() {
 		return programmingLanguage;
 	}
 
-	public void setProgrammingLanguage(final ELanguage programmingLanguage) {
+	public void setProgrammingLanguage(final EProgrammingLanguage programmingLanguage) {
 		this.programmingLanguage = programmingLanguage;
 	}
 
@@ -81,18 +86,6 @@ public class Application extends DrawNodeEntity {
 
 	public List<DatabaseQuery> getDatabaseQueries() {
 		return databaseQueries;
-	}
-
-	public void openAllComponents() {
-		for (final Component component : this.getComponents()) {
-			component.openAllComponents();
-		}
-	}
-
-	public void closeAllComponents() {
-		for (final Component component : this.getComponents()) {
-			component.closeAllComponents();
-		}
 	}
 
 	/**

@@ -1,15 +1,19 @@
-package net.explorviz.model.communication;
+package net.explorviz.model.application;
 
 import com.github.jasminb.jsonapi.annotations.Relationship;
 import com.github.jasminb.jsonapi.annotations.Type;
 
-import net.explorviz.model.Application;
-import net.explorviz.model.Clazz;
-import net.explorviz.model.helper.DrawEdgeEntity;
+import net.explorviz.model.helper.BaseEntity;
 
+/**
+ * Model representing communication between two {@link Applications}
+ *
+ * @author Christian Zirkelbach (czi@informatik.uni-kiel.de)
+ *
+ */
 @SuppressWarnings("serial")
 @Type("applicationcommunication")
-public class ApplicationCommunication extends DrawEdgeEntity {
+public class ApplicationCommunication extends BaseEntity {
 
 	private int requests;
 	private String technology;

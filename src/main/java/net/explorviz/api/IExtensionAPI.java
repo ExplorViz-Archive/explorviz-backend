@@ -3,8 +3,8 @@ package net.explorviz.api;
 import java.util.List;
 import java.util.Map;
 
-import net.explorviz.model.Landscape;
-import net.explorviz.model.Timestamp;
+import net.explorviz.model.landscape.Landscape;
+import net.explorviz.model.store.Timestamp;
 
 /**
  * Interface for providing necessary information for the extension API

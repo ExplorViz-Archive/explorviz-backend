@@ -1,4 +1,4 @@
-package net.explorviz.model;
+package net.explorviz.model.application;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,17 +7,21 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.github.jasminb.jsonapi.annotations.Relationship;
 import com.github.jasminb.jsonapi.annotations.Type;
 
-import net.explorviz.model.helper.Draw3DNodeEntity;
+import net.explorviz.model.helper.BaseEntity;
 
+/**
+ * Model representing a component (e.g., a package within a java application)
+ *
+ * @author Christian Zirkelbach (czi@informatik.uni-kiel.de)
+ *
+ */
 @SuppressWarnings("serial")
 @Type("component")
 @JsonIgnoreProperties("belongingApplication")
-public class Component extends Draw3DNodeEntity {
+public class Component extends BaseEntity {
 
 	private String name;
 	private String fullQualifiedName;
-	private final boolean synthetic = false;
-	private boolean foundation;
 
 	@Relationship("children")
 	private final List<Component> children = new ArrayList<Component>();
@@ -33,24 +37,18 @@ public class Component extends Draw3DNodeEntity {
 	// latestLandscape
 	private Application belongingApplication;
 
-	private boolean opened = false;
-
-	@Override
 	public String getName() {
 		return name;
 	}
 
-	@Override
 	public void setName(final String name) {
 		this.name = name;
 	}
 
-	@Override
 	public String getFullQualifiedName() {
 		return fullQualifiedName;
 	}
 
-	@Override
 	public void setFullQualifiedName(final String fullQualifiedName) {
 		this.fullQualifiedName = fullQualifiedName;
 	}
@@ -71,18 +69,6 @@ public class Component extends Draw3DNodeEntity {
 		this.belongingApplication = belongingApplication;
 	}
 
-	public boolean isSynthetic() {
-		return synthetic;
-	}
-
-	public void setFoundation(final boolean foundation) {
-		this.foundation = foundation;
-	}
-
-	public boolean isFoundation() {
-		return foundation;
-	}
-
 	public List<Component> getChildren() {
 		return children;
 	}
@@ -90,36 +76,4 @@ public class Component extends Draw3DNodeEntity {
 	public List<Clazz> getClazzes() {
 		return clazzes;
 	}
-
-	public boolean isOpened() {
-		return opened;
-	}
-
-	public void setOpened(final boolean openedParam) {
-		if (!openedParam) {
-			setAllChildrenUnopened();
-		}
-		this.opened = openedParam;
-	}
-
-	private void setAllChildrenUnopened() {
-		for (final Component child : children) {
-			child.setOpened(false);
-		}
-	}
-
-	public void openAllComponents() {
-		opened = true;
-		for (final Component child : children) {
-			child.openAllComponents();
-		}
-	}
-
-	public void closeAllComponents() {
-		opened = false;
-		for (final Component child : children) {
-			child.closeAllComponents();
-		}
-	}
-
 }

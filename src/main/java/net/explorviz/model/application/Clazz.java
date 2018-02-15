@@ -1,4 +1,4 @@
-package net.explorviz.model;
+package net.explorviz.model.application;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -8,13 +8,21 @@ import java.util.Set;
 import com.github.jasminb.jsonapi.annotations.Relationship;
 import com.github.jasminb.jsonapi.annotations.Type;
 
-import net.explorviz.model.communication.ClazzCommunication;
-import net.explorviz.model.helper.Draw3DNodeEntity;
+import net.explorviz.model.helper.BaseEntity;
 
+/**
+ * Model representing a single class (instance during runtime within a single
+ * application)
+ *
+ * @author Christian Zirkelbach (czi@informatik.uni-kiel.de)
+ *
+ */
 @SuppressWarnings("serial")
 @Type("clazz")
-public class Clazz extends Draw3DNodeEntity {
+public class Clazz extends BaseEntity {
 
+	private String name;
+	private String fullQualifiedName;
 	private int instanceCount;
 	private transient Set<Integer> objectIds = new HashSet<Integer>();
 
@@ -24,7 +32,21 @@ public class Clazz extends Draw3DNodeEntity {
 	@Relationship("outgoingCommunications")
 	private List<ClazzCommunication> outgoingClazzCommunications = new ArrayList<ClazzCommunication>();
 
-	private final boolean visible = false;
+	public String getName() {
+		return name;
+	}
+
+	public void setName(final String name) {
+		this.name = name;
+	}
+
+	public String getFullQualifiedName() {
+		return fullQualifiedName;
+	}
+
+	public void setFullQualifiedName(final String name) {
+		this.fullQualifiedName = name;
+	}
 
 	public Set<Integer> getObjectIds() {
 		return objectIds;
@@ -56,10 +78,6 @@ public class Clazz extends Draw3DNodeEntity {
 
 	public List<ClazzCommunication> getOutgoingCommunications() {
 		return outgoingClazzCommunications;
-	}
-
-	public boolean isVisible() {
-		return visible;
 	}
 
 	/**

@@ -1,16 +1,31 @@
-package net.explorviz.model;
+package net.explorviz.model.application;
 
 import com.github.jasminb.jsonapi.annotations.Type;
 
 import net.explorviz.model.helper.BaseEntity;
 
+/**
+ * Model representing executed database queries
+ * 
+ * @author Christian Zirkelbach (czi@informatik.uni-kiel.de)
+ *
+ */
 @SuppressWarnings("serial")
 @Type("databasequery")
 public class DatabaseQuery extends BaseEntity {
 
+	private long timestamp;
 	private String sqlStatement;
 	private String returnValue;
 	private long timeInNanos;
+
+	public long getTimestamp() {
+		return timestamp;
+	}
+
+	public void setTimestamp(final long timestamp) {
+		this.timestamp = timestamp;
+	}
 
 	public String getSqlStatement() {
 		return sqlStatement;

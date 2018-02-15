@@ -24,19 +24,18 @@ import explorviz.live_trace_processing.record.trace.HostApplicationMetaDataRecor
 import explorviz.live_trace_processing.record.trace.Trace;
 import gnu.trove.iterator.TIntIterator;
 import gnu.trove.set.hash.TIntHashSet;
-import net.explorviz.model.Application;
-import net.explorviz.model.Clazz;
-import net.explorviz.model.Component;
-import net.explorviz.model.DatabaseQuery;
-import net.explorviz.model.Landscape;
-import net.explorviz.model.Node;
-import net.explorviz.model.NodeGroup;
-import net.explorviz.model.System;
-import net.explorviz.model.communication.ClazzCommunication;
-import net.explorviz.model.helper.ELanguage;
+import net.explorviz.model.application.Application;
+import net.explorviz.model.application.Clazz;
+import net.explorviz.model.application.ClazzCommunication;
+import net.explorviz.model.application.Component;
+import net.explorviz.model.application.DatabaseQuery;
+import net.explorviz.model.helper.EProgrammingLanguage;
+import net.explorviz.model.landscape.Landscape;
+import net.explorviz.model.landscape.Node;
+import net.explorviz.model.landscape.NodeGroup;
+import net.explorviz.model.landscape.System;
 import net.explorviz.repository.helper.Signature;
 import net.explorviz.repository.helper.SignatureParser;
-import net.explorviz.server.main.Configuration;
 
 public class InsertionRepositoryPart {
 
@@ -154,10 +153,10 @@ public class InsertionRepositoryPart {
 
 	private void addToErrors(final Landscape landscape, final String cause) {
 		long currentMillis = java.lang.System.currentTimeMillis();
-		while (landscape.getErrors().containsKey(currentMillis)) {
+		while (landscape.getExceptions().containsKey(currentMillis)) {
 			currentMillis++;
 		}
-		landscape.getErrors().put(currentMillis, cause);
+		landscape.getExceptions().put(currentMillis, cause);
 	}
 
 	Node seekOrCreateNode(final HostApplicationMetaDataRecord hostApplicationRecord, final Landscape landscape) {
@@ -232,8 +231,6 @@ public class InsertionRepositoryPart {
 			// eventually, parent Node must not be in the old NodeGroup
 			application = new Application();
 			application.initializeID();
-
-			application.setDatabase(isApplicationDatabase(applicationName));
 			// application.setId((node.getName() + "_" + applicationName).hashCode());
 			application.setLastUsage(java.lang.System.currentTimeMillis());
 			application.setName(applicationName);
@@ -241,25 +238,25 @@ public class InsertionRepositoryPart {
 			final String language = hostMetaDataRecord.getProgrammingLanguage();
 
 			if (language.equalsIgnoreCase("JAVA")) {
-				application.setProgrammingLanguage(ELanguage.JAVA);
+				application.setProgrammingLanguage(EProgrammingLanguage.JAVA);
 			} else if (language.equalsIgnoreCase("C")) {
-				application.setProgrammingLanguage(ELanguage.C);
+				application.setProgrammingLanguage(EProgrammingLanguage.C);
 			} else if (language.equalsIgnoreCase("CPP")) {
-				application.setProgrammingLanguage(ELanguage.CPP);
+				application.setProgrammingLanguage(EProgrammingLanguage.CPP);
 			} else if (language.equalsIgnoreCase("CSHARP")) {
-				application.setProgrammingLanguage(ELanguage.CSHARP);
+				application.setProgrammingLanguage(EProgrammingLanguage.CSHARP);
 			} else if (language.equalsIgnoreCase("PERL")) {
-				application.setProgrammingLanguage(ELanguage.PERL);
+				application.setProgrammingLanguage(EProgrammingLanguage.PERL);
 			} else if (language.equalsIgnoreCase("JAVASCRIPT")) {
-				application.setProgrammingLanguage(ELanguage.JAVASCRIPT);
+				application.setProgrammingLanguage(EProgrammingLanguage.JAVASCRIPT);
 			} else if (language.equalsIgnoreCase("PYTHON")) {
-				application.setProgrammingLanguage(ELanguage.PYTHON);
+				application.setProgrammingLanguage(EProgrammingLanguage.PYTHON);
 			} else if (language.equalsIgnoreCase("RUBY")) {
-				application.setProgrammingLanguage(ELanguage.RUBY);
+				application.setProgrammingLanguage(EProgrammingLanguage.RUBY);
 			} else if (language.equalsIgnoreCase("PHP")) {
-				application.setProgrammingLanguage(ELanguage.PHP);
+				application.setProgrammingLanguage(EProgrammingLanguage.PHP);
 			} else {
-				application.setProgrammingLanguage(ELanguage.UNKNOWN);
+				application.setProgrammingLanguage(EProgrammingLanguage.UNKNOWN);
 			}
 
 			application.setParent(node);
@@ -273,20 +270,8 @@ public class InsertionRepositoryPart {
 		return application;
 	}
 
-	private boolean isApplicationDatabase(final String applicationName) {
-		boolean isDatabase = false;
-		final List<String> databaseNames = Configuration.DATABASE_NAMES;
-		for (final String databaseName : databaseNames) {
-			if (applicationName.toLowerCase().contains(databaseName)) {
-				isDatabase = true;
-				break;
-			}
-		}
-		return isDatabase;
-	}
-
 	/**
-	 * Communication between clazzen within a single application
+	 * Communication between clazzes within a single application
 	 *
 	 * @param trace
 	 * @param currentHostname
@@ -449,11 +434,11 @@ public class InsertionRepositoryPart {
 	private void createOrUpdateCall(final Clazz caller, final Clazz callee, final Application application,
 			final int requests, final double average, final double overallTraceDuration, final long traceId,
 			final int orderIndex, final String methodName, final Landscape landscape) {
-		landscape.setActivities(landscape.getActivities() + requests);
+		landscape.setOverallCalls(landscape.getOverallCalls() + requests);
 
 		for (final ClazzCommunication commu : application.getOutgoingClazzCommunication()) {
 			if (((commu.getSourceClazz() == caller) && (commu.getTargetClazz() == callee)
-					&& (commu.getMethodName().equalsIgnoreCase(methodName)))) {
+					&& (commu.getOperationName().equalsIgnoreCase(methodName)))) {
 
 				commu.addRuntimeInformation(traceId, requests, orderIndex, requests, (float) average,
 						(float) overallTraceDuration);
@@ -470,7 +455,7 @@ public class InsertionRepositoryPart {
 
 		commu.addRuntimeInformation(traceId, requests, orderIndex, requests, (float) average,
 				(float) overallTraceDuration);
-		commu.setMethodName(methodName);
+		commu.setOperationName(methodName);
 	}
 
 	private Clazz seekOrCreateClazz(final String fullQName, final Application application,

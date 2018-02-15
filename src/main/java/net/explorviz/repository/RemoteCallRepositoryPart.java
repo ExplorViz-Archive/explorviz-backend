@@ -10,11 +10,11 @@ import explorviz.live_trace_processing.record.event.AbstractEventRecord;
 import explorviz.live_trace_processing.record.event.remote.BeforeReceivedRemoteCallRecord;
 import explorviz.live_trace_processing.record.event.remote.BeforeSentRemoteCallRecord;
 import explorviz.live_trace_processing.record.trace.HostApplicationMetaDataRecord;
-import net.explorviz.model.Application;
-import net.explorviz.model.Clazz;
-import net.explorviz.model.Landscape;
-import net.explorviz.model.Node;
-import net.explorviz.model.communication.ApplicationCommunication;
+import net.explorviz.model.application.Application;
+import net.explorviz.model.application.ApplicationCommunication;
+import net.explorviz.model.application.Clazz;
+import net.explorviz.model.landscape.Landscape;
+import net.explorviz.model.landscape.Node;
 import net.explorviz.repository.helper.RemoteRecordBuffer;
 
 public class RemoteCallRepositoryPart {
@@ -129,7 +129,7 @@ public class RemoteCallRepositoryPart {
 						+ sentRemoteCallRecord.getRuntimeStatisticInformationList().get(runtimeIndex).getAverage())
 						/ 2f);
 
-				landscape.setActivities(landscape.getActivities()
+				landscape.setOverallCalls(landscape.getOverallCalls()
 						+ sentRemoteCallRecord.getRuntimeStatisticInformationList().get(runtimeIndex).getCount());
 				return;
 			}
@@ -148,7 +148,7 @@ public class RemoteCallRepositoryPart {
 		communication.setTechnology(sentRemoteCallRecord.getTechnology());
 		landscape.getOutgoingApplicationCommunication().add(communication);
 
-		landscape.setActivities(landscape.getActivities()
+		landscape.setOverallCalls(landscape.getOverallCalls()
 				+ sentRemoteCallRecord.getRuntimeStatisticInformationList().get(runtimeIndex).getCount());
 	}
 

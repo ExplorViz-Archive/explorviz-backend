@@ -1,15 +1,15 @@
 package net.explorviz.server.providers;
 
-import net.explorviz.model.Application;
-import net.explorviz.model.Clazz;
-import net.explorviz.model.Component;
-import net.explorviz.model.DatabaseQuery;
-import net.explorviz.model.Landscape;
-import net.explorviz.model.Node;
-import net.explorviz.model.NodeGroup;
-import net.explorviz.model.Timestamp;
-import net.explorviz.model.communication.ApplicationCommunication;
-import net.explorviz.model.communication.ClazzCommunication;
+import net.explorviz.model.application.Application;
+import net.explorviz.model.application.ApplicationCommunication;
+import net.explorviz.model.application.Clazz;
+import net.explorviz.model.application.ClazzCommunication;
+import net.explorviz.model.application.Component;
+import net.explorviz.model.application.DatabaseQuery;
+import net.explorviz.model.landscape.Landscape;
+import net.explorviz.model.landscape.Node;
+import net.explorviz.model.landscape.NodeGroup;
+import net.explorviz.model.store.Timestamp;
 import net.explorviz.server.security.User;
 
 /**

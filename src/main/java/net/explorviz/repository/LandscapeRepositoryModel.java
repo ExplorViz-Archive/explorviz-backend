@@ -10,15 +10,15 @@ import org.nustaq.serialization.FSTConfiguration;
 import explorviz.live_trace_processing.reader.IPeriodicTimeSignalReceiver;
 import explorviz.live_trace_processing.reader.TimeSignalReader;
 import explorviz.live_trace_processing.record.IRecord;
-import net.explorviz.model.Application;
-import net.explorviz.model.Clazz;
-import net.explorviz.model.Component;
-import net.explorviz.model.Landscape;
-import net.explorviz.model.Node;
-import net.explorviz.model.NodeGroup;
-import net.explorviz.model.System;
-import net.explorviz.model.communication.ApplicationCommunication;
-import net.explorviz.model.communication.ClazzCommunication;
+import net.explorviz.model.application.Application;
+import net.explorviz.model.application.ApplicationCommunication;
+import net.explorviz.model.application.Clazz;
+import net.explorviz.model.application.ClazzCommunication;
+import net.explorviz.model.application.Component;
+import net.explorviz.model.landscape.Landscape;
+import net.explorviz.model.landscape.Node;
+import net.explorviz.model.landscape.NodeGroup;
+import net.explorviz.model.landscape.System;
 import net.explorviz.server.main.Configuration;
 
 public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiver {
@@ -98,8 +98,8 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
 			internalLandscape.clearCommunication();
 			internalLandscape.getSystems().clear();
 			internalLandscape.getEvents().clear();
-			internalLandscape.getErrors().clear();
-			internalLandscape.setActivities(0L);
+			internalLandscape.getExceptions().clear();
+			internalLandscape.setOverallCalls(0L);
 		}
 	}
 
@@ -133,8 +133,8 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
 	}
 
 	private void resetCommunication() {
-		internalLandscape.getErrors().clear();
-		internalLandscape.setActivities(0L);
+		internalLandscape.getExceptions().clear();
+		internalLandscape.setOverallCalls(0L);
 
 		for (final System system : internalLandscape.getSystems()) {
 			for (final NodeGroup nodeGroup : system.getNodeGroups()) {

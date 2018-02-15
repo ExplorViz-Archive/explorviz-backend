@@ -1,4 +1,4 @@
-package net.explorviz.model;
+package net.explorviz.model.landscape;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,27 +8,43 @@ import java.util.TreeMap;
 import com.github.jasminb.jsonapi.annotations.Relationship;
 import com.github.jasminb.jsonapi.annotations.Type;
 
-import net.explorviz.model.communication.ApplicationCommunication;
+import net.explorviz.model.application.Application;
+import net.explorviz.model.application.ApplicationCommunication;
 import net.explorviz.model.helper.BaseEntity;
 
+/**
+ * Model representing a software landscape
+ * 
+ * @author Christian Zirkelbach (czi@informatik.uni-kiel.de)
+ *
+ */
 @SuppressWarnings("serial")
 @Type("landscape")
 public class Landscape extends BaseEntity {
 
-	private long activities;
+	private long timestamp;
+	private long overallCalls;
 
 	@Relationship("systems")
 	private final List<System> systems = new ArrayList<System>();
 
 	private final Map<Long, String> events = new TreeMap<Long, String>();
-	private final Map<Long, String> errors = new TreeMap<Long, String>();
+	private final Map<Long, String> exceptions = new TreeMap<Long, String>();
 
-	public long getActivities() {
-		return activities;
+	public long getTimestamp() {
+		return timestamp;
 	}
 
-	public void setActivities(final long activities) {
-		this.activities = activities;
+	public void setTimestamp(final long timestamp) {
+		this.timestamp = timestamp;
+	}
+
+	public long getOverallCalls() {
+		return overallCalls;
+	}
+
+	public void setOverallCalls(final long activities) {
+		this.overallCalls = activities;
 	}
 
 	public List<System> getSystems() {
@@ -39,8 +55,8 @@ public class Landscape extends BaseEntity {
 		return events;
 	}
 
-	public Map<Long, String> getErrors() {
-		return errors;
+	public Map<Long, String> getExceptions() {
+		return exceptions;
 	}
 
 	public void updateTimestamp(final long timestamp) {

@@ -6,9 +6,9 @@ import java.util.Map;
 
 import org.glassfish.jersey.server.ParamException.QueryParamException;
 
-import net.explorviz.model.Landscape;
-import net.explorviz.model.Timestamp;
 import net.explorviz.model.helper.TimestampHelper;
+import net.explorviz.model.landscape.Landscape;
+import net.explorviz.model.store.Timestamp;
 import net.explorviz.repository.LandscapeExchangeService;
 import net.explorviz.server.providers.CoreModelHandler;
 import net.explorviz.server.providers.GenericTypeFinder;

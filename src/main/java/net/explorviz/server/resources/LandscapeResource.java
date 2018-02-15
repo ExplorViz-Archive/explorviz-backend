@@ -9,7 +9,7 @@ import javax.ws.rs.Produces;
 
 import net.explorviz.api.ExtensionAPI;
 import net.explorviz.api.ExtensionAPIImpl;
-import net.explorviz.model.Landscape;
+import net.explorviz.model.landscape.Landscape;
 import net.explorviz.server.security.Secured;
 
 /**

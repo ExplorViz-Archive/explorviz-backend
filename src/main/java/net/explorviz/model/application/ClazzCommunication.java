@@ -1,4 +1,4 @@
-package net.explorviz.model.communication;
+package net.explorviz.model.application;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -6,25 +6,28 @@ import java.util.Map;
 import com.github.jasminb.jsonapi.annotations.Relationship;
 import com.github.jasminb.jsonapi.annotations.Type;
 
-import net.explorviz.model.Clazz;
-import net.explorviz.model.RuntimeInformation;
 import net.explorviz.model.helper.BaseEntity;
 
+/**
+ * Model representing communication between classes (within a single
+ * application)
+ *
+ * @author Christian Zirkelbach (czi@informatik.uni-kiel.de)
+ *
+ */
 @SuppressWarnings("serial")
 @Type("clazzcommunication")
 public class ClazzCommunication extends BaseEntity {
 
 	private int requestsCacheCount = 0;
-	private String methodName;
-	private final Map<Long, RuntimeInformation> traceIdToRuntimeMap = new HashMap<Long, RuntimeInformation>();
+	private String operationName;
+	private final Map<Long, RuntimeInformation> runtimeInformations = new HashMap<Long, RuntimeInformation>();
 
 	@Relationship("sourceClazz")
 	private Clazz sourceClazz;
 
 	@Relationship("targetClazz")
 	private Clazz targetClazz;
-
-	private final boolean hidden = false;
 
 	public int getRequestsCacheCount() {
 		return requestsCacheCount;
@@ -34,12 +37,12 @@ public class ClazzCommunication extends BaseEntity {
 		this.requestsCacheCount = requestsCacheCount;
 	}
 
-	public String getMethodName() {
-		return methodName;
+	public String getOperationName() {
+		return operationName;
 	}
 
-	public void setMethodName(final String methodName) {
-		this.methodName = methodName;
+	public void setOperationName(final String methodName) {
+		this.operationName = methodName;
 	}
 
 	public Clazz getSourceClazz() {
@@ -58,17 +61,13 @@ public class ClazzCommunication extends BaseEntity {
 		this.targetClazz = targetClazz;
 	}
 
-	public Map<Long, RuntimeInformation> getTraceIdToRuntimeMap() {
-		return traceIdToRuntimeMap;
-	}
-
-	public boolean isHidden() {
-		return hidden;
+	public Map<Long, RuntimeInformation> getRuntimeInformations() {
+		return runtimeInformations;
 	}
 
 	public void addRuntimeInformation(final Long traceId, final int calledTimes, final int orderIndex,
 			final int requests, final float averageResponseTime, final float overallTraceDuration) {
-		RuntimeInformation runtime = traceIdToRuntimeMap.get(traceId);
+		RuntimeInformation runtime = runtimeInformations.get(traceId);
 
 		if (runtime == null) {
 			runtime = new RuntimeInformation();
@@ -78,7 +77,7 @@ public class ClazzCommunication extends BaseEntity {
 			runtime.setOverallTraceDuration(overallTraceDuration);
 			runtime.setAverageResponseTime(averageResponseTime);
 
-			traceIdToRuntimeMap.put(traceId, runtime);
+			runtimeInformations.put(traceId, runtime);
 			requestsCacheCount += requests;
 			return;
 		}
@@ -95,7 +94,7 @@ public class ClazzCommunication extends BaseEntity {
 
 	public void reset() {
 		requestsCacheCount = 0;
-		traceIdToRuntimeMap.clear();
+		runtimeInformations.clear();
 	}
 
 }
