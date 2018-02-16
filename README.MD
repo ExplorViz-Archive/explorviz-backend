@@ -9,7 +9,7 @@ This is only the backend, you will need the [explorviz-frontend](https://github.
 This gradle project includes or installs every necessary dependency.
 
 ### Eclipse Setup
-1. Download the latest **Eclipse IDE for Java Developers** and Java SDK 8
+1. Download the latest **[Eclipse IDE for Java Developers](http://www.eclipse.org/downloads/eclipse-packages/)** and **[Java SDK 8](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html)**
 2. *Start Eclipse -> Help -> Eclipse Marketplace*, insert and download
 - *SpotBugs Eclipse plugin 3.1.1*
 - *Checkstyle Plug-in 8.7.0*
