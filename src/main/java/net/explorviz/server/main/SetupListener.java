@@ -8,11 +8,11 @@ import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.explorviz.repository.HibernateSessionFactory;
+import net.explorviz.model.security.User;
 import net.explorviz.repository.LandscapeExchangeService;
+import net.explorviz.server.security.HibernateSessionFactory;
 import net.explorviz.server.security.PasswordStorage;
 import net.explorviz.server.security.PasswordStorage.CannotPerformOperationException;
-import net.explorviz.server.security.User;
 
 @WebListener
 public class SetupListener implements ServletContextListener {

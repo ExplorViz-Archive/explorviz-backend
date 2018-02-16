@@ -26,8 +26,8 @@ import net.explorviz.model.landscape.Landscape;
 import net.explorviz.model.landscape.Node;
 import net.explorviz.model.landscape.NodeGroup;
 import net.explorviz.model.landscape.System;
+import net.explorviz.server.helper.FileSystemHelper;
 import net.explorviz.server.main.Configuration;
-import net.explorviz.server.main.FileSystemHelper;
 
 public class RepositoryStorage {
 	private static String folder;

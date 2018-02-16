@@ -15,9 +15,9 @@ import javax.ws.rs.ext.Provider;
 
 import org.hibernate.Session;
 
-import net.explorviz.repository.HibernateSessionFactory;
+import net.explorviz.model.security.User;
+import net.explorviz.server.security.HibernateSessionFactory;
 import net.explorviz.server.security.Secured;
-import net.explorviz.server.security.User;
 
 @Secured
 @Provider

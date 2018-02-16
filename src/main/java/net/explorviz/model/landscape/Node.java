@@ -28,8 +28,6 @@ public class Node extends BaseEntity {
 	@Relationship("applications")
 	private final List<Application> applications = new ArrayList<Application>();
 
-	private final boolean visible = true;
-
 	@Relationship("parent")
 	private NodeGroup parent;
 

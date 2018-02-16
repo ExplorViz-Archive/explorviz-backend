@@ -5,8 +5,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 
-import org.eclipse.xtext.xbase.lib.Pure;
-
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.github.jasminb.jsonapi.LongIdHandler;
@@ -14,7 +12,7 @@ import com.github.jasminb.jsonapi.annotations.Id;
 
 /**
  * Base Model for all other data model entities
- * 
+ *
  * @author Christian Zirkelbach (czi@informatik.uni-kiel.de)
  *
  */
@@ -34,7 +32,6 @@ public class BaseEntity implements Serializable {
 	 */
 	private final Map<String, Object> extensionAttributes = new HashMap<String, Object>();
 
-	@Pure
 	public Long getId() {
 		return this.id;
 	}

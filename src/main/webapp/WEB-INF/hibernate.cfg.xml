@@ -33,7 +33,7 @@
 		<!-- Drop and re-create the database schema on startup -->
 		<property name="hbm2ddl.auto">create</property>
 
-		<mapping class="net.explorviz.server.security.User"></mapping>
+		<mapping class="net.explorviz.model.security.User"></mapping>
 
 	</session-factory>
 

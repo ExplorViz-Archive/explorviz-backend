@@ -6,7 +6,7 @@ import net.explorviz.model.helper.BaseEntity;
 
 /**
  * Model representing executed database queries
- * 
+ *
  * @author Christian Zirkelbach (czi@informatik.uni-kiel.de)
  *
  */
@@ -17,7 +17,7 @@ public class DatabaseQuery extends BaseEntity {
 	private long timestamp;
 	private String sqlStatement;
 	private String returnValue;
-	private long timeInNanos;
+	private long responseTime;
 
 	public long getTimestamp() {
 		return timestamp;
@@ -43,12 +43,12 @@ public class DatabaseQuery extends BaseEntity {
 		this.returnValue = returnValue;
 	}
 
-	public long getTimeInNanos() {
-		return timeInNanos;
+	public long getResponseTime() {
+		return responseTime;
 	}
 
-	public void setTimeInNanos(final long timeInNanos) {
-		this.timeInNanos = timeInNanos;
+	public void setResponseTime(final long responseTime) {
+		this.responseTime = responseTime;
 	}
 
 }

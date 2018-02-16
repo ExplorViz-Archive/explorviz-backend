@@ -9,8 +9,8 @@ import net.explorviz.model.application.DatabaseQuery;
 import net.explorviz.model.landscape.Landscape;
 import net.explorviz.model.landscape.Node;
 import net.explorviz.model.landscape.NodeGroup;
+import net.explorviz.model.security.User;
 import net.explorviz.model.store.Timestamp;
-import net.explorviz.server.security.User;
 
 /**
  * Handles the registration of (core) model types for the JSONAPI provideer

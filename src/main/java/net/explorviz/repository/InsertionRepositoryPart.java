@@ -366,7 +366,7 @@ public class InsertionRepositoryPart {
 
 					final DatabaseQuery databaseQuery = databaseQueries.get(databaseQueries.size() - 1);
 					databaseQuery.setReturnValue(jdbcOperationEventRecord.getFormattedReturnValue());
-					databaseQuery.setTimeInNanos(jdbcOperationEventRecord.getMethodDuration());
+					databaseQuery.setResponseTime(jdbcOperationEventRecord.getMethodDuration());
 				}
 
 				if (!callerClazzesHistory.isEmpty()) {
