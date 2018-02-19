@@ -4,10 +4,15 @@ import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.Map;
 
-import org.glassfish.jersey.server.ParamException.QueryParamException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import net.explorviz.model.application.Application;
 import net.explorviz.model.helper.TimestampHelper;
 import net.explorviz.model.landscape.Landscape;
+import net.explorviz.model.landscape.Node;
+import net.explorviz.model.landscape.NodeGroup;
+import net.explorviz.model.landscape.System;
 import net.explorviz.model.store.Timestamp;
 import net.explorviz.repository.LandscapeExchangeService;
 import net.explorviz.server.providers.CoreModelHandler;
@@ -22,6 +27,7 @@ import net.explorviz.server.providers.GenericTypeFinder;
  */
 public final class ExtensionAPIImpl implements IExtensionAPI {
 
+	static final Logger LOGGER = LoggerFactory.getLogger(ExtensionAPIImpl.class.getName());
 	private static ExtensionAPIImpl instance;
 
 	String versionNumber = "1.2.0a";
@@ -51,7 +57,24 @@ public final class ExtensionAPIImpl implements IExtensionAPI {
 	 */
 	@Override
 	public Landscape getLatestLandscape() {
-		return service.getCurrentLandscape();
+		// workaround until frontend is able to generate this list for rendering
+		final Landscape currentLandscape = service.getCurrentLandscape();
+		// updates in memory outgoingApplicationCommunication (landscape)
+		currentLandscape
+				.setOutgoingApplicationCommunications(currentLandscape.computeOutgoingApplicationCommunications());
+
+		// updates in memory outgoingClazzCommunication (each application in the
+		// landscape)
+		for (final System system : currentLandscape.getSystems()) {
+			for (final NodeGroup nodegroup : system.getNodeGroups()) {
+				for (final Node node : nodegroup.getNodes()) {
+					for (final Application application : node.getApplications()) {
+						application.setOutgoingClazzCommunications(application.computeOutgoingClazzCommunications());
+					}
+				}
+			}
+		}
+		return currentLandscape;
 	}
 
 	/**
@@ -61,10 +84,32 @@ public final class ExtensionAPIImpl implements IExtensionAPI {
 	 */
 	@Override
 	public Landscape getLandscape(final long timestamp) {
+		// workaround until frontend is able to generate this list for rendering
+		Landscape specificLandscape = new Landscape();
 		try {
-			return service.getLandscape(timestamp);
+			specificLandscape = service.getLandscape(timestamp);
+
+			// updates in memory outgoingApplicationCommunication (landscape)
+			specificLandscape
+					.setOutgoingApplicationCommunications(specificLandscape.computeOutgoingApplicationCommunications());
+
+			// updates in memory outgoingClazzCommunication (each application in the
+			// landscape)
+			for (final System system : specificLandscape.getSystems()) {
+				for (final NodeGroup nodegroup : system.getNodeGroups()) {
+					for (final Node node : nodegroup.getNodes()) {
+						for (final Application application : node.getApplications()) {
+							application
+									.setOutgoingClazzCommunications(application.computeOutgoingClazzCommunications());
+						}
+					}
+				}
+			}
+			return specificLandscape;
+
 		} catch (final FileNotFoundException e) {
-			throw new QueryParamException(e, "Error in ExtensionAPI.getLandscape", "10");
+			LOGGER.debug("Specific landscape not found!", e.getMessage());
+			return specificLandscape;
 		}
 	}
 

@@ -116,7 +116,7 @@ public class RemoteCallRepositoryPart {
 		final Application callerApplication = getHostApplication(sentRemoteCallRecord, inserter, landscape);
 		final Application currentApplication = getHostApplication(receivedRemoteCallRecord, inserter, landscape);
 
-		for (final ApplicationCommunication commu : landscape.getOutgoingApplicationCommunications()) {
+		for (final ApplicationCommunication commu : landscape.computeOutgoingApplicationCommunications()) {
 			if (commu.getSourceApplication() == callerApplication && commu.getTargetApplication() == currentApplication
 					|| commu.getSourceApplication() == currentApplication
 							&& commu.getTargetApplication() == callerApplication) {
@@ -146,7 +146,7 @@ public class RemoteCallRepositoryPart {
 		communication.setAverageResponseTime(
 				(float) sentRemoteCallRecord.getRuntimeStatisticInformationList().get(runtimeIndex).getAverage());
 		communication.setTechnology(sentRemoteCallRecord.getTechnology());
-		landscape.getOutgoingApplicationCommunications().add(communication);
+		landscape.computeOutgoingApplicationCommunications().add(communication);
 
 		landscape.setOverallCalls(landscape.getOverallCalls()
 				+ sentRemoteCallRecord.getRuntimeStatisticInformationList().get(runtimeIndex).getCount());

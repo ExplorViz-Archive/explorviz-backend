@@ -36,6 +36,10 @@ public class Application extends BaseEntity {
 	@Relationship("databaseQueries")
 	private List<DatabaseQuery> databaseQueries = new ArrayList<DatabaseQuery>();
 
+	@Relationship("outgoingClazzCommunications")
+	// workaround until frontend is able to generate this list for rendering
+	private List<ClazzCommunication> outgoingClazzCommunications = new ArrayList<ClazzCommunication>();
+
 	public String getName() {
 		return name;
 	}
@@ -88,10 +92,18 @@ public class Application extends BaseEntity {
 		return databaseQueries;
 	}
 
+	public List<ClazzCommunication> getOutgoingClazzCommunications() {
+		return outgoingClazzCommunications;
+	}
+
+	public void setOutgoingClazzCommunications(final List<ClazzCommunication> outgoingClazzCommunications) {
+		this.outgoingClazzCommunications = outgoingClazzCommunications;
+	}
+
 	/**
 	 * Get all outgoing clazz communications for the specific application
 	 */
-	public List<ClazzCommunication> getOutgoingClazzCommunications() {
+	public List<ClazzCommunication> computeOutgoingClazzCommunications() {
 
 		final List<ClazzCommunication> outgoingClazzCommunicationList = new ArrayList<ClazzCommunication>();
 

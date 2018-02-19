@@ -14,7 +14,7 @@ import net.explorviz.model.helper.BaseEntity;
 
 /**
  * Model representing a software landscape
- * 
+ *
  * @author Christian Zirkelbach (czi@informatik.uni-kiel.de)
  *
  */
@@ -30,6 +30,10 @@ public class Landscape extends BaseEntity {
 
 	private final Map<Long, String> events = new TreeMap<Long, String>();
 	private final Map<Long, String> exceptions = new TreeMap<Long, String>();
+
+	@Relationship("outgoingApplicationCommunications")
+	// workaround until frontend is able to generate this list for rendering
+	private List<ApplicationCommunication> outgoingApplicationCommunications = new ArrayList<ApplicationCommunication>();
 
 	public long getTimestamp() {
 		return timestamp;
@@ -63,10 +67,19 @@ public class Landscape extends BaseEntity {
 		setTimestamp(timestamp);
 	}
 
+	public List<ApplicationCommunication> getOutgoingApplicationCommunications() {
+		return outgoingApplicationCommunications;
+	}
+
+	public void setOutgoingApplicationCommunications(
+			final List<ApplicationCommunication> outgoingApplicationCommunication) {
+		this.outgoingApplicationCommunications = outgoingApplicationCommunication;
+	}
+
 	/**
 	 * Returns all outgoing communication between applications within the landscape
 	 */
-	public List<ApplicationCommunication> getOutgoingApplicationCommunications() {
+	public List<ApplicationCommunication> computeOutgoingApplicationCommunications() {
 
 		final List<ApplicationCommunication> outgoingCommunicationList = new ArrayList<ApplicationCommunication>();
 
