@@ -4,6 +4,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.github.jasminb.jsonapi.annotations.Type;
 
 import net.explorviz.model.helper.BaseEntity;
@@ -18,6 +19,7 @@ import net.explorviz.model.helper.BaseEntity;
 @Entity(name = "USERS")
 @Table(name = "USERS")
 @Type("user")
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class User extends BaseEntity {
 
 	@Id
@@ -25,7 +27,7 @@ public class User extends BaseEntity {
 	private String password;
 	private String hashedPassword;
 	private String token;
-	private boolean isAuthenticated;
+	private boolean authenticated;
 
 	public User(final Long id) {
 		this.setId(id);
@@ -72,11 +74,11 @@ public class User extends BaseEntity {
 	}
 
 	public boolean isAuthenticated() {
-		return isAuthenticated;
+		return authenticated;
 	}
 
-	public void setAuthenticated(final boolean isAuthenticated) {
-		this.isAuthenticated = isAuthenticated;
+	public void setAuthenticated(final boolean authenticated) {
+		this.authenticated = authenticated;
 	}
 
 }
