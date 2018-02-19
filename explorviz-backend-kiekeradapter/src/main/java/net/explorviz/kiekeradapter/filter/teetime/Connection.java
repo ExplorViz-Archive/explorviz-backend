@@ -19,7 +19,7 @@ package net.explorviz.kiekeradapter.filter.teetime;
 import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
 
-import kieker.common.record.io.DefaultValueDeserializer;
+import kieker.common.record.io.BinaryValueDeserializer;
 import kieker.common.record.io.IValueDeserializer;
 import kieker.common.util.registry.IRegistry;
 
@@ -58,7 +58,7 @@ public class Connection {
 		this.channel = channel;
 		this.stringRegistryWrapper = new GetValueAdapter<>(this.registry);
 		this.buffer = ByteBuffer.allocateDirect(bufferSize);
-		this.deserializer = DefaultValueDeserializer.create(this.buffer, this.stringRegistryWrapper);
+		this.deserializer = BinaryValueDeserializer.create(this.buffer, this.stringRegistryWrapper);
 	}
 
 	public ReaderRegistry<String> getRegistry() {
