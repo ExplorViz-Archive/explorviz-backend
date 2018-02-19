@@ -91,7 +91,7 @@ public class Application extends BaseEntity {
 	/**
 	 * Get all outgoing clazz communications for the specific application
 	 */
-	public List<ClazzCommunication> getOutgoingClazzCommunication() {
+	public List<ClazzCommunication> getOutgoingClazzCommunications() {
 
 		final List<ClazzCommunication> outgoingClazzCommunicationList = new ArrayList<ClazzCommunication>();
 

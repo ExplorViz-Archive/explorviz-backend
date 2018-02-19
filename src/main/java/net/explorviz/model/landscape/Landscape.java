@@ -66,7 +66,7 @@ public class Landscape extends BaseEntity {
 	/**
 	 * Returns all outgoing communication between applications within the landscape
 	 */
-	public List<ApplicationCommunication> getOutgoingApplicationCommunication() {
+	public List<ApplicationCommunication> getOutgoingApplicationCommunications() {
 
 		final List<ApplicationCommunication> outgoingCommunicationList = new ArrayList<ApplicationCommunication>();
 
