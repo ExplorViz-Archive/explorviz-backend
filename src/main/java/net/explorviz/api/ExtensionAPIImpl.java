@@ -8,6 +8,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.explorviz.model.application.Application;
+import net.explorviz.model.helper.ApplicationHelper;
+import net.explorviz.model.helper.LandscapeHelper;
 import net.explorviz.model.helper.TimestampHelper;
 import net.explorviz.model.landscape.Landscape;
 import net.explorviz.model.landscape.Node;
@@ -60,8 +62,7 @@ public final class ExtensionAPIImpl implements IExtensionAPI {
 		// workaround until frontend is able to generate this list for rendering
 		final Landscape currentLandscape = service.getCurrentLandscape();
 		// updates in memory outgoingApplicationCommunication (landscape)
-		currentLandscape
-				.setOutgoingApplicationCommunications(currentLandscape.computeOutgoingApplicationCommunications());
+		LandscapeHelper.computeOutgoingApplicationCommunications(currentLandscape);
 
 		// updates in memory (aggregated) outgoingClazzCommunications (each application
 		// in the
@@ -70,7 +71,7 @@ public final class ExtensionAPIImpl implements IExtensionAPI {
 			for (final NodeGroup nodegroup : system.getNodeGroups()) {
 				for (final Node node : nodegroup.getNodes()) {
 					for (final Application application : node.getApplications()) {
-						application.calculateAggregatedOutgoingClazzCommunications();
+						ApplicationHelper.calculateAggregatedOutgoingClazzCommunications(application);
 					}
 				}
 			}
@@ -92,8 +93,7 @@ public final class ExtensionAPIImpl implements IExtensionAPI {
 			specificLandscape = service.getLandscape(timestamp);
 
 			// updates in memory outgoingApplicationCommunication (landscape)
-			specificLandscape
-					.setOutgoingApplicationCommunications(specificLandscape.computeOutgoingApplicationCommunications());
+			LandscapeHelper.computeOutgoingApplicationCommunications(specificLandscape);
 
 			// updates in memory (aggregated) outgoingClazzCommunication (each application
 			// in the
@@ -102,7 +102,7 @@ public final class ExtensionAPIImpl implements IExtensionAPI {
 				for (final NodeGroup nodegroup : system.getNodeGroups()) {
 					for (final Node node : nodegroup.getNodes()) {
 						for (final Application application : node.getApplications()) {
-							application.calculateAggregatedOutgoingClazzCommunications();
+							ApplicationHelper.calculateAggregatedOutgoingClazzCommunications(application);
 						}
 					}
 				}

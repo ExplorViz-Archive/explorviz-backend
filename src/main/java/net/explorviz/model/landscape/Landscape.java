@@ -77,29 +77,6 @@ public class Landscape extends BaseEntity {
 	}
 
 	/**
-	 * Returns all outgoing communication between applications within the landscape
-	 */
-	public List<ApplicationCommunication> computeOutgoingApplicationCommunications() {
-
-		final List<ApplicationCommunication> outgoingCommunicationList = new ArrayList<ApplicationCommunication>();
-
-		for (final System system : this.getSystems()) {
-			for (final NodeGroup nodegroup : system.getNodeGroups()) {
-				for (final Node node : nodegroup.getNodes()) {
-					for (final Application application : node.getApplications()) {
-						for (final ApplicationCommunication outgoingCommunication : application
-								.getOutgoingApplicationCommunications()) {
-							outgoingCommunicationList.add(outgoingCommunication);
-						}
-					}
-				}
-			}
-		}
-
-		return outgoingCommunicationList;
-	}
-
-	/**
 	 * Clears all existing communication within the landscape
 	 */
 	public void clearCommunication() {

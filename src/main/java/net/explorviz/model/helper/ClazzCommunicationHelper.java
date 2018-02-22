@@ -16,7 +16,7 @@ import net.explorviz.model.application.Component;
 public final class ClazzCommunicationHelper {
 
 	/**
-	 * Retrieves recursivly all clazzCommunications for a component
+	 * Retrieves recursively all clazzCommunications for a component
 	 *
 	 * @param component
 	 * @return
