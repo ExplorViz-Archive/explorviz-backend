@@ -31,8 +31,8 @@ public class ClazzCommunication extends BaseEntity {
 	@Relationship("targetClazz")
 	private Clazz targetClazz;
 
-	@Relationship("aggregatedClazzCommunications")
-	private final List<ClazzCommunication> aggregatedClazzCommunications = new ArrayList<ClazzCommunication>();
+	@Relationship("aggregatedOutgoingClazzCommunications")
+	private final List<ClazzCommunication> aggregatedOutgoingClazzCommunications = new ArrayList<ClazzCommunication>();
 
 	public int getRequestsCacheCount() {
 		return requestsCacheCount;
@@ -67,7 +67,7 @@ public class ClazzCommunication extends BaseEntity {
 	}
 
 	public List<ClazzCommunication> getAggregatedClazzCommunications() {
-		return aggregatedClazzCommunications;
+		return aggregatedOutgoingClazzCommunications;
 	}
 
 	public Map<Long, RuntimeInformation> getRuntimeInformations() {
@@ -75,9 +75,10 @@ public class ClazzCommunication extends BaseEntity {
 	}
 
 	/**
-	 * Aggregate clazzCommunications with the same sourceClazz and targetClazz
+	 * Aggregate outgoing clazzCommunications with the same sourceClazz and
+	 * targetClazz
 	 */
-	public void calculateAggregatedClazzCommunications() {
+	public void calculateAggregatedOutgoingClazzCommunications() {
 
 		final List<ClazzCommunication> outgoingClazzCommunications = sourceClazz.getOutgoingClazzCommunications();
 

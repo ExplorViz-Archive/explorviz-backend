@@ -83,7 +83,7 @@ public final class ExtensionAPIImpl implements IExtensionAPI {
 					for (final Application application : node.getApplications()) {
 						for (final ClazzCommunication clazzcommunication : application
 								.getOutgoingClazzCommunications()) {
-							clazzcommunication.calculateAggregatedClazzCommunications();
+							clazzcommunication.calculateAggregatedOutgoingClazzCommunications();
 						}
 					}
 				}
@@ -129,7 +129,7 @@ public final class ExtensionAPIImpl implements IExtensionAPI {
 						for (final Application application : node.getApplications()) {
 							for (final ClazzCommunication clazzcommunication : application
 									.getOutgoingClazzCommunications()) {
-								clazzcommunication.calculateAggregatedClazzCommunications();
+								clazzcommunication.calculateAggregatedOutgoingClazzCommunications();
 							}
 						}
 					}
