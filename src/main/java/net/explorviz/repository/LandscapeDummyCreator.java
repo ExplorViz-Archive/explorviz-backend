@@ -304,8 +304,8 @@ class LandscapeDummyCreator {
 
 		// set random usage
 		node.setCpuUtilization(((double) DummyLandscapeHelper.getRandomNum(10, 100)) / 100);
-		node.setFreeRAM(DummyLandscapeHelper.getRandomNum(1, 4) * 1024 * formatFactor);
-		node.setUsedRAM(DummyLandscapeHelper.getRandomNum(1, 4) * 1024 * formatFactor);
+		node.setFreeRAM(((long) DummyLandscapeHelper.getRandomNum(1, 4)) * formatFactor);
+		node.setUsedRAM(((long) DummyLandscapeHelper.getRandomNum(1, 4)) * formatFactor);
 
 		return node;
 	}
