@@ -436,7 +436,10 @@ public class InsertionRepositoryPart {
 			final int orderIndex, final String methodName, final Landscape landscape) {
 		landscape.setOverallCalls(landscape.getOverallCalls() + requests);
 
-		for (final ClazzCommunication commu : application.computeOutgoingClazzCommunications()) {
+		// updated the outgoing clazz communications
+		application.calculateAggregatedOutgoingClazzCommunications();
+
+		for (final ClazzCommunication commu : application.getOutgoingClazzCommunications()) {
 			if (((commu.getSourceClazz() == caller) && (commu.getTargetClazz() == callee)
 					&& (commu.getOperationName().equalsIgnoreCase(methodName)))) {
 

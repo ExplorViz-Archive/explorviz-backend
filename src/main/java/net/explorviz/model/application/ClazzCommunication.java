@@ -1,8 +1,6 @@
 package net.explorviz.model.application;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import com.github.jasminb.jsonapi.annotations.Relationship;
@@ -30,9 +28,6 @@ public class ClazzCommunication extends BaseEntity {
 
 	@Relationship("targetClazz")
 	private Clazz targetClazz;
-
-	@Relationship("aggregatedOutgoingClazzCommunications")
-	private final List<ClazzCommunication> aggregatedOutgoingClazzCommunications = new ArrayList<ClazzCommunication>();
 
 	public int getRequestsCacheCount() {
 		return requestsCacheCount;
@@ -66,32 +61,8 @@ public class ClazzCommunication extends BaseEntity {
 		this.targetClazz = targetClazz;
 	}
 
-	public List<ClazzCommunication> getAggregatedClazzCommunications() {
-		return aggregatedOutgoingClazzCommunications;
-	}
-
 	public Map<Long, RuntimeInformation> getRuntimeInformations() {
 		return runtimeInformations;
-	}
-
-	/**
-	 * Aggregate outgoing clazzCommunications with the same sourceClazz and
-	 * targetClazz
-	 */
-	public void calculateAggregatedOutgoingClazzCommunications() {
-
-		final List<ClazzCommunication> outgoingClazzCommunications = sourceClazz.getOutgoingClazzCommunications();
-
-		for (final ClazzCommunication clazzCommunication : outgoingClazzCommunications) {
-			if (clazzCommunication.getId() != this.getId()
-					&& (clazzCommunication.getSourceClazz() == this.getSourceClazz())
-					&& (clazzCommunication.getTargetClazz() == this.getTargetClazz())) {
-
-				this.setRequestsCacheCount(this.getRequestsCacheCount() + clazzCommunication.getRequestsCacheCount());
-				this.getAggregatedClazzCommunications().add(clazzCommunication);
-			}
-
-		}
 	}
 
 	public void addRuntimeInformation(final Long traceId, final int calledTimes, final int orderIndex,

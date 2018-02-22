@@ -8,7 +8,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.explorviz.model.application.Application;
-import net.explorviz.model.application.ClazzCommunication;
 import net.explorviz.model.helper.TimestampHelper;
 import net.explorviz.model.landscape.Landscape;
 import net.explorviz.model.landscape.Node;
@@ -64,27 +63,14 @@ public final class ExtensionAPIImpl implements IExtensionAPI {
 		currentLandscape
 				.setOutgoingApplicationCommunications(currentLandscape.computeOutgoingApplicationCommunications());
 
-		// updates in memory outgoingClazzCommunication (each application in the
+		// updates in memory (aggregated) outgoingClazzCommunications (each application
+		// in the
 		// landscape)
 		for (final System system : currentLandscape.getSystems()) {
 			for (final NodeGroup nodegroup : system.getNodeGroups()) {
 				for (final Node node : nodegroup.getNodes()) {
 					for (final Application application : node.getApplications()) {
-						application.setOutgoingClazzCommunications(application.computeOutgoingClazzCommunications());
-					}
-				}
-			}
-		}
-
-		// updates in memory aggregatedClazzCommunications for every clazz
-		for (final System system : currentLandscape.getSystems()) {
-			for (final NodeGroup nodegroup : system.getNodeGroups()) {
-				for (final Node node : nodegroup.getNodes()) {
-					for (final Application application : node.getApplications()) {
-						for (final ClazzCommunication clazzcommunication : application
-								.getOutgoingClazzCommunications()) {
-							clazzcommunication.calculateAggregatedOutgoingClazzCommunications();
-						}
+						application.calculateAggregatedOutgoingClazzCommunications();
 					}
 				}
 			}
@@ -109,28 +95,14 @@ public final class ExtensionAPIImpl implements IExtensionAPI {
 			specificLandscape
 					.setOutgoingApplicationCommunications(specificLandscape.computeOutgoingApplicationCommunications());
 
-			// updates in memory outgoingClazzCommunication (each application in the
+			// updates in memory (aggregated) outgoingClazzCommunication (each application
+			// in the
 			// landscape)
 			for (final System system : specificLandscape.getSystems()) {
 				for (final NodeGroup nodegroup : system.getNodeGroups()) {
 					for (final Node node : nodegroup.getNodes()) {
 						for (final Application application : node.getApplications()) {
-							application
-									.setOutgoingClazzCommunications(application.computeOutgoingClazzCommunications());
-						}
-					}
-				}
-			}
-
-			// updates in memory aggregatedClazzCommunications for every clazz
-			for (final System system : specificLandscape.getSystems()) {
-				for (final NodeGroup nodegroup : system.getNodeGroups()) {
-					for (final Node node : nodegroup.getNodes()) {
-						for (final Application application : node.getApplications()) {
-							for (final ClazzCommunication clazzcommunication : application
-									.getOutgoingClazzCommunications()) {
-								clazzcommunication.calculateAggregatedOutgoingClazzCommunications();
-							}
+							application.calculateAggregatedOutgoingClazzCommunications();
 						}
 					}
 				}

@@ -41,6 +41,9 @@ public class Application extends BaseEntity {
 	// workaround until frontend is able to generate this list for rendering
 	private List<ClazzCommunication> outgoingClazzCommunications = new ArrayList<ClazzCommunication>();
 
+	@Relationship("aggregatedOutgoingClazzCommunications")
+	private List<ClazzCommunication> aggregatedOutgoingClazzCommunications = new ArrayList<ClazzCommunication>();
+
 	public String getName() {
 		return name;
 	}
@@ -101,10 +104,19 @@ public class Application extends BaseEntity {
 		this.outgoingClazzCommunications = outgoingClazzCommunications;
 	}
 
+	public List<ClazzCommunication> getAggregatedClazzCommunications() {
+		return aggregatedOutgoingClazzCommunications;
+	}
+
+	public void setAggregatedOutgoingClazzCommunications(
+			final List<ClazzCommunication> aggregatedOutgoingClazzCommunications) {
+		this.aggregatedOutgoingClazzCommunications = aggregatedOutgoingClazzCommunications;
+	}
+
 	/**
 	 * Get all outgoing clazz communications for the specific application
 	 */
-	public List<ClazzCommunication> computeOutgoingClazzCommunications() {
+	private List<ClazzCommunication> computeOutgoingClazzCommunications() {
 
 		final List<ClazzCommunication> outgoingClazzCommunicationFinalList = new ArrayList<ClazzCommunication>();
 
@@ -116,6 +128,49 @@ public class Application extends BaseEntity {
 		}
 
 		return outgoingClazzCommunicationFinalList;
+	}
+
+	/**
+	 * Aggregates outgoing clazzCommunications with the same sourceClazz and
+	 * targetClazz and updates the attributes
+	 */
+	public void calculateAggregatedOutgoingClazzCommunications() {
+
+		// compute all outgoing clazz communications
+		this.setOutgoingClazzCommunications(this.computeOutgoingClazzCommunications());
+		final List<ClazzCommunication> singleOutgoingClazzCommunications = this.computeOutgoingClazzCommunications();
+
+		// aggregate similar clazz communications
+		final List<ClazzCommunication> aggregatedOutgoingClazzCommunications = new ArrayList<ClazzCommunication>();
+
+		for (final ClazzCommunication singleClazzCommunication : singleOutgoingClazzCommunications) {
+			// if not exists, create an aggregated clazzcommunication
+			if (aggregatedOutgoingClazzCommunications.isEmpty()) {
+				final ClazzCommunication newAggregatedClazzCommunication = new ClazzCommunication();
+				newAggregatedClazzCommunication.setOperationName(singleClazzCommunication.getOperationName());
+				newAggregatedClazzCommunication.setRequestsCacheCount(singleClazzCommunication.getRequestsCacheCount());
+				newAggregatedClazzCommunication.setSourceClazz(singleClazzCommunication.getSourceClazz());
+				newAggregatedClazzCommunication.setTargetClazz(singleClazzCommunication.getTargetClazz());
+
+				aggregatedOutgoingClazzCommunications.add(newAggregatedClazzCommunication);
+			}
+
+			for (final ClazzCommunication aggregatedClazzCommunication : aggregatedOutgoingClazzCommunications) {
+
+				if (aggregatedClazzCommunication.getId() != singleClazzCommunication.getId()
+						&& (singleClazzCommunication.getSourceClazz() == aggregatedClazzCommunication.getSourceClazz())
+						&& (singleClazzCommunication.getTargetClazz() == aggregatedClazzCommunication
+								.getTargetClazz())) {
+
+					aggregatedClazzCommunication
+							.setRequestsCacheCount(aggregatedClazzCommunication.getRequestsCacheCount()
+									+ singleClazzCommunication.getRequestsCacheCount());
+					aggregatedOutgoingClazzCommunications.add(singleClazzCommunication);
+				}
+			}
+		}
+
+		this.setAggregatedOutgoingClazzCommunications(aggregatedOutgoingClazzCommunications);
 	}
 
 	/**

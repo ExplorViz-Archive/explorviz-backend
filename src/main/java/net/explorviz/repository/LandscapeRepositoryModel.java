@@ -142,7 +142,16 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
 					for (final Application app : node.getApplications()) {
 						app.getDatabaseQueries().clear();
 
-						for (final ClazzCommunication commu : app.computeOutgoingClazzCommunications()) {
+						for (final ApplicationCommunication commu : app.getOutgoingApplicationCommunications()) {
+							commu.setRequests(0);
+							commu.setAverageResponseTime(0);
+						}
+
+						for (final ClazzCommunication commu : app.getOutgoingClazzCommunications()) {
+							commu.reset();
+						}
+
+						for (final ClazzCommunication commu : app.getAggregatedClazzCommunications()) {
 							commu.reset();
 						}
 
@@ -152,7 +161,7 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
 			}
 		}
 
-		for (final ApplicationCommunication commu : internalLandscape.computeOutgoingApplicationCommunications()) {
+		for (final ApplicationCommunication commu : internalLandscape.getOutgoingApplicationCommunications()) {
 			commu.setRequests(0);
 			commu.setAverageResponseTime(0);
 		}
