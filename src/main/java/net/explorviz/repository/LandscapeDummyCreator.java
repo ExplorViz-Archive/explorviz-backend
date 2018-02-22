@@ -61,16 +61,10 @@ class LandscapeDummyCreator {
 
 		final NodeGroup ocnEditorNodeGroup = createNodeGroup("10.0.1.1", landscape, ocnEditor);
 		final Node ocnEditorNode = createNode("10.0.1.1", ocnEditorNodeGroup);
-		ocnEditorNode.setCpuUtilization(31.0);
-		ocnEditorNode.setFreeRAM(2 * formatFactor);
-		ocnEditorNode.setUsedRAM(2 * formatFactor);
 		final Application ocnEditorApp = createApplication("Frontend", ocnEditorNode);
 
 		final NodeGroup ocnEditorNodeGroup2 = createNodeGroup("10.0.1.2", landscape, ocnEditor);
 		final Node ocnEditorNode2 = createNode("10.0.1.2", ocnEditorNodeGroup2);
-		ocnEditorNode.setCpuUtilization(35.0);
-		ocnEditorNode.setFreeRAM(2 * formatFactor);
-		ocnEditorNode.setUsedRAM(2 * formatFactor);
 		final Application ocnEditorApp2 = createApplication("Database", ocnEditorNode2);
 
 		ocnEditorNodeGroup.getNodes().add(ocnEditorNode);
@@ -86,16 +80,10 @@ class LandscapeDummyCreator {
 
 		final NodeGroup ocnDatabaseNodeGroup = createNodeGroup("10.0.2.1", landscape, ocnDatabase);
 		final Node ocnDatabaseNode = createNode("10.0.2.1", ocnDatabaseNodeGroup);
-		ocnDatabaseNode.setCpuUtilization(21.0);
-		ocnDatabaseNode.setFreeRAM(3 * formatFactor);
-		ocnDatabaseNode.setUsedRAM(1 * formatFactor);
 		final Application ocnDatabaseApp = createApplication("Interface", ocnDatabaseNode);
 
 		final NodeGroup ocnDatabaseNodeGroup2 = createNodeGroup("10.0.2.2", landscape, ocnDatabase);
 		final Node ocnDatabaseNode2 = createNode("10.0.2.2", ocnDatabaseNodeGroup2);
-		ocnDatabaseNode2.setCpuUtilization(38.0);
-		ocnDatabaseNode2.setFreeRAM(3 * formatFactor);
-		ocnDatabaseNode2.setUsedRAM(1 * formatFactor);
 		final Application ocnDatabaseApp2 = createApplication("Database", ocnDatabaseNode2);
 
 		ocnDatabaseNodeGroup.getNodes().add(ocnDatabaseNode);
@@ -112,17 +100,11 @@ class LandscapeDummyCreator {
 
 		final NodeGroup kielprintsNodeGroup = createNodeGroup("10.0.3.1", landscape, kielprints);
 		final Node kielprintsNode = createNode("10.0.3.1", kielprintsNodeGroup);
-		kielprintsNode.setCpuUtilization(57.0);
-		kielprintsNode.setFreeRAM(1 * formatFactor);
-		kielprintsNode.setUsedRAM(1 * formatFactor);
 		final Application kielprintsApp = createApplication("Webinterface", kielprintsNode);
 		final Application kielprintsApp2 = createApplication("Eprints", kielprintsNode);
 
 		final NodeGroup kielprintsNodeGroup2 = createNodeGroup("10.0.3.2", landscape, kielprints);
 		final Node kielprintsNode2 = createNode("10.0.3.2", kielprintsNodeGroup2);
-		kielprintsNode2.setCpuUtilization(31.0);
-		kielprintsNode2.setFreeRAM(1 * formatFactor);
-		kielprintsNode2.setUsedRAM(1 * formatFactor);
 		final Application kielprintsApp3 = createApplication("Database", kielprintsNode2);
 
 		kielprintsNodeGroup.getNodes().add(kielprintsNode);
@@ -138,16 +120,10 @@ class LandscapeDummyCreator {
 
 		final NodeGroup portalNodeGroup = createNodeGroup("10.0.4.1", landscape, portal);
 		final Node portalNode = createNode("10.0.4.1", portalNodeGroup);
-		portalNode.setCpuUtilization(18.0);
-		portalNode.setFreeRAM(3 * formatFactor);
-		portalNode.setUsedRAM(1 * formatFactor);
 		final Application portalApp = createApplication("Wiki", portalNode);
 
 		final NodeGroup portalNodeGroup2 = createNodeGroup("10.0.4.2", landscape, portal);
 		final Node portalNode2 = createNode("10.0.4.2", portalNodeGroup2);
-		portalNode2.setCpuUtilization(26.0);
-		portalNode2.setFreeRAM(3 * formatFactor);
-		portalNode2.setUsedRAM(1 * formatFactor);
 		final Application portalApp2 = createApplication("Artifacts", portalNode2);
 
 		portalNodeGroup.getNodes().add(portalNode);
@@ -163,16 +139,10 @@ class LandscapeDummyCreator {
 
 		final NodeGroup pangeaNodeGroup = createNodeGroup("10.0.5.1", landscape, pangea);
 		final Node pangeaNode = createNode("10.0.5.1", pangeaNodeGroup);
-		pangeaNode.setCpuUtilization(30.0);
-		pangeaNode.setFreeRAM(1 * formatFactor);
-		pangeaNode.setUsedRAM(1 * formatFactor);
 		final Application pangeaApp = createApplication("4D", pangeaNode);
 
 		final NodeGroup pangeaNodeGroup2 = createNodeGroup("10.0.5.2", landscape, pangea);
 		final Node pangeaNode2 = createNode("10.0.5.2", pangeaNodeGroup2);
-		pangeaNode2.setCpuUtilization(41.0);
-		pangeaNode2.setFreeRAM(1 * formatFactor);
-		pangeaNode2.setUsedRAM(1 * formatFactor);
 		final Application pangeaApp2 = createApplication("Jira", pangeaNode2);
 		final Application pangeaApp3 = createApplication("PostgreSQL", pangeaNode2);
 
@@ -190,15 +160,9 @@ class LandscapeDummyCreator {
 		final NodeGroup jiraNodeGroup = createNodeGroup("10.0.0.1 - 10.0.0.2", landscape, pubflow);
 
 		final Node jira1Node = createNode("10.0.0.1", jiraNodeGroup);
-		jira1Node.setCpuUtilization(48.0);
-		jira1Node.setFreeRAM(1 * formatFactor);
-		jira1Node.setUsedRAM(1 * formatFactor);
 		final Application jira1 = createApplication("Jira", jira1Node);
 
 		final Node jira2Node = createNode("10.0.0.2", jiraNodeGroup);
-		jira2Node.setCpuUtilization(57.0);
-		jira2Node.setFreeRAM(1 * formatFactor);
-		jira2Node.setUsedRAM(1 * formatFactor);
 		final Application jira2 = createApplication("Jira", jira2Node);
 
 		jiraNodeGroup.getNodes().add(jira1Node);
@@ -207,9 +171,6 @@ class LandscapeDummyCreator {
 
 		final NodeGroup postgreSQLNodeGroup = createNodeGroup("10.0.0.3", landscape, pubflow);
 		final Node postgreSQLNode = createNode("10.0.0.3", postgreSQLNodeGroup);
-		postgreSQLNode.setCpuUtilization(68.0);
-		postgreSQLNode.setFreeRAM(1 * formatFactor);
-		postgreSQLNode.setUsedRAM(3 * formatFactor);
 
 		final Application postgreSQL = createApplication("PostgreSQL", postgreSQLNode);
 
@@ -219,30 +180,18 @@ class LandscapeDummyCreator {
 		final NodeGroup workflowNodeGroup = createNodeGroup("10.0.0.4 - 10.0.0.7", landscape, pubflow);
 
 		final Node workflow1Node = createNode("10.0.0.4", workflowNodeGroup);
-		workflow1Node.setCpuUtilization(68.0);
-		workflow1Node.setFreeRAM(1 * formatFactor);
-		workflow1Node.setUsedRAM(3 * formatFactor);
 		final Application workflow1 = createApplication("Workflow", workflow1Node);
 		final Application provenance1 = createApplication("Provenance", workflow1Node);
 
 		final Node workflow2Node = createNode("10.0.0.5", workflowNodeGroup);
-		workflow2Node.setCpuUtilization(64.0);
-		workflow2Node.setFreeRAM(1 * formatFactor);
-		workflow2Node.setUsedRAM(3 * formatFactor);
 		final Application workflow2 = createApplication("Workflow", workflow2Node);
 		final Application provenance2 = createApplication("Provenance", workflow2Node);
 
 		final Node workflow3Node = createNode("10.0.0.6", workflowNodeGroup);
-		workflow3Node.setCpuUtilization(72.0);
-		workflow3Node.setFreeRAM(1 * formatFactor);
-		workflow3Node.setUsedRAM(3 * formatFactor);
 		final Application workflow3 = createApplication("Workflow", workflow3Node);
 		final Application provenance3 = createApplication("Provenance", workflow3Node);
 
 		final Node workflow4Node = createNode("10.0.0.7", workflowNodeGroup);
-		workflow4Node.setCpuUtilization(58.0);
-		workflow4Node.setFreeRAM(1 * formatFactor);
-		workflow4Node.setUsedRAM(3 * formatFactor);
 		final Application workflow4 = createApplication("Workflow", workflow4Node);
 		final Application provenance4 = createApplication("Provenance", workflow4Node);
 
@@ -255,9 +204,6 @@ class LandscapeDummyCreator {
 
 		final NodeGroup neo4jNodeGroup = createNodeGroup("10.0.0.9", landscape, pubflow);
 		final Node neo4jNode = createNode("10.0.0.9", neo4jNodeGroup);
-		neo4jNode.setCpuUtilization(47.0);
-		neo4jNode.setFreeRAM(3 * formatFactor);
-		neo4jNode.setUsedRAM(3 * formatFactor);
 		final Application neo4j = createApplication("Neo4j", neo4jNode);
 
 		createNeo4JDummyApplication(neo4j);
@@ -267,9 +213,6 @@ class LandscapeDummyCreator {
 
 		final NodeGroup cacheNodeGroup = createNodeGroup("10.0.0.8", landscape, pubflow);
 		final Node cacheNode = createNode("10.0.0.8", cacheNodeGroup);
-		cacheNode.setCpuUtilization(11.0);
-		cacheNode.setFreeRAM(3 * formatFactor);
-		cacheNode.setUsedRAM(1 * formatFactor);
 
 		final Application cache = createApplication("Cache", cacheNode);
 
@@ -358,6 +301,12 @@ class LandscapeDummyCreator {
 		node.initializeID();
 		node.setIpAddress(ipAddress);
 		node.setParent(parent);
+
+		// set random usage
+		node.setCpuUtilization(DummyLandscapeHelper.getRandomNum(10, 100));
+		node.setFreeRAM(DummyLandscapeHelper.getRandomNum(1, 4) * formatFactor);
+		node.setUsedRAM(DummyLandscapeHelper.getRandomNum(1, 4) * formatFactor);
+
 		return node;
 	}
 
