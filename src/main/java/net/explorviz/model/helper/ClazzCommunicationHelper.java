@@ -36,6 +36,7 @@ public final class ClazzCommunicationHelper {
 				outgoingClazzCommunicationPartialList.add(clazzCommunication);
 			}
 		}
+
 		return outgoingClazzCommunicationPartialList;
 	}
 }

@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.explorviz.model.application.Application;
+import net.explorviz.model.application.ClazzCommunication;
 import net.explorviz.model.helper.TimestampHelper;
 import net.explorviz.model.landscape.Landscape;
 import net.explorviz.model.landscape.Node;
@@ -74,6 +75,21 @@ public final class ExtensionAPIImpl implements IExtensionAPI {
 				}
 			}
 		}
+
+		// updates in memory aggregatedClazzCommunications for every clazz
+		for (final System system : currentLandscape.getSystems()) {
+			for (final NodeGroup nodegroup : system.getNodeGroups()) {
+				for (final Node node : nodegroup.getNodes()) {
+					for (final Application application : node.getApplications()) {
+						for (final ClazzCommunication clazzcommunication : application
+								.getOutgoingClazzCommunications()) {
+							clazzcommunication.calculateAggregatedClazzCommunications();
+						}
+					}
+				}
+			}
+		}
+
 		return currentLandscape;
 	}
 
@@ -105,6 +121,21 @@ public final class ExtensionAPIImpl implements IExtensionAPI {
 					}
 				}
 			}
+
+			// updates in memory aggregatedClazzCommunications for every clazz
+			for (final System system : specificLandscape.getSystems()) {
+				for (final NodeGroup nodegroup : system.getNodeGroups()) {
+					for (final Node node : nodegroup.getNodes()) {
+						for (final Application application : node.getApplications()) {
+							for (final ClazzCommunication clazzcommunication : application
+									.getOutgoingClazzCommunications()) {
+								clazzcommunication.calculateAggregatedClazzCommunications();
+							}
+						}
+					}
+				}
+			}
+
 			return specificLandscape;
 
 		} catch (final FileNotFoundException e) {
