@@ -26,7 +26,7 @@ class LandscapeDummyCreator {
 	public static int counter = 1;
 	static int applicationId = 0;
 	static Landscape dummyLandscape = null;
-	public static int formatFactor = (1024 * 1024 * 1024 * 1024);
+	public static int formatFactor = (1024 * 1024 * 1024);
 
 	public static Landscape createDummyLandscape() {
 
@@ -304,8 +304,8 @@ class LandscapeDummyCreator {
 
 		// set random usage
 		node.setCpuUtilization(((double) DummyLandscapeHelper.getRandomNum(10, 100)) / 100);
-		node.setFreeRAM(DummyLandscapeHelper.getRandomNum(1, 4) * formatFactor);
-		node.setUsedRAM(DummyLandscapeHelper.getRandomNum(1, 4) * formatFactor);
+		node.setFreeRAM(DummyLandscapeHelper.getRandomNum(1, 4) * 1024 * formatFactor);
+		node.setUsedRAM(DummyLandscapeHelper.getRandomNum(1, 4) * 1024 * formatFactor);
 
 		return node;
 	}
