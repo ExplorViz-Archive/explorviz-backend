@@ -29,7 +29,7 @@ public class Clazz extends BaseEntity {
 	@Relationship("parent")
 	private Component parent;
 
-	@Relationship("outgoingCommunications")
+	@Relationship("outgoingClazzCommunications")
 	private List<ClazzCommunication> outgoingClazzCommunications = new ArrayList<ClazzCommunication>();
 
 	public String getName() {
@@ -64,8 +64,12 @@ public class Clazz extends BaseEntity {
 		this.parent = parent;
 	}
 
-	public void setOutgoingCommunications(final List<ClazzCommunication> outgoingCommunications) {
-		this.outgoingClazzCommunications = outgoingCommunications;
+	public List<ClazzCommunication> getOutgoingClazzCommunications() {
+		return outgoingClazzCommunications;
+	}
+
+	public void setOutgoingClazzCommunications(final List<ClazzCommunication> outgoingClazzCommunications) {
+		this.outgoingClazzCommunications = outgoingClazzCommunications;
 	}
 
 	public void setInstanceCount(final int instanceCount) {
@@ -76,19 +80,15 @@ public class Clazz extends BaseEntity {
 		return instanceCount;
 	}
 
-	public List<ClazzCommunication> getOutgoingCommunications() {
-		return outgoingClazzCommunications;
-	}
-
 	/**
 	 * Clears all existings communication within the clazz
 	 */
 	public void clearCommunication() {
-		for (final ClazzCommunication clazzCommu : this.getOutgoingCommunications()) {
+		for (final ClazzCommunication clazzCommu : this.getOutgoingClazzCommunications()) {
 			clazzCommu.setSourceClazz(null);
 			clazzCommu.setTargetClazz(null);
 		}
-		this.setOutgoingCommunications(new ArrayList<ClazzCommunication>());
+		this.setOutgoingClazzCommunications(new ArrayList<ClazzCommunication>());
 	}
 
 }

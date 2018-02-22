@@ -7,6 +7,7 @@ import com.github.jasminb.jsonapi.annotations.Relationship;
 import com.github.jasminb.jsonapi.annotations.Type;
 
 import net.explorviz.model.helper.BaseEntity;
+import net.explorviz.model.helper.ClazzCommunicationHelper;
 import net.explorviz.model.helper.EProgrammingLanguage;
 import net.explorviz.model.landscape.Node;
 
@@ -105,17 +106,16 @@ public class Application extends BaseEntity {
 	 */
 	public List<ClazzCommunication> computeOutgoingClazzCommunications() {
 
-		final List<ClazzCommunication> outgoingClazzCommunicationList = new ArrayList<ClazzCommunication>();
+		final List<ClazzCommunication> outgoingClazzCommunicationFinalList = new ArrayList<ClazzCommunication>();
 
 		for (final Component component : this.getComponents()) {
-			for (final Clazz clazz : component.getClazzes()) {
-				for (final ClazzCommunication clazzCommunication : clazz.getOutgoingCommunications()) {
-					outgoingClazzCommunicationList.add(clazzCommunication);
-				}
-			}
+
+			// add all found items (for a single component) to the final list
+			outgoingClazzCommunicationFinalList
+					.addAll(ClazzCommunicationHelper.getChildrenComponentClazzCommunications(component));
 		}
 
-		return outgoingClazzCommunicationList;
+		return outgoingClazzCommunicationFinalList;
 	}
 
 	/**

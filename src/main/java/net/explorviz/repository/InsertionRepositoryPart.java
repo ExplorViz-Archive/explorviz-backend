@@ -451,7 +451,7 @@ public class InsertionRepositoryPart {
 
 		commu.setSourceClazz(caller);
 		commu.setTargetClazz(callee);
-		commu.getSourceClazz().getOutgoingCommunications().add(commu);
+		commu.getSourceClazz().getOutgoingClazzCommunications().add(commu);
 
 		commu.addRuntimeInformation(traceId, requests, orderIndex, requests, (float) average,
 				(float) overallTraceDuration);
