@@ -494,15 +494,15 @@ class LandscapeDummyCreator {
 		createClazz("AccountSqlMapDao2", logging, 5);
 
 		createCommuClazz(40, graphDbClazz, helpersClazz, application);
-		createCommuClazz(100, toolingClazz, implClazz, application);
+		createCommuClazz(800, toolingClazz, implClazz, application);
 		createCommuClazz(60, implClazz, helpersClazz, application);
-		createCommuClazz(60, implClazz, apiImplClazz, application);
+		createCommuClazz(600, implClazz, apiImplClazz, application);
 		createCommuClazz(1000, implClazz, loggingClazz, application);
 		createCommuClazz(100, guardClazz, unsafeClazz, application);
-		createCommuClazz(100, apiClazz, configurationClazz, application);
+		createCommuClazz(1000, apiClazz, configurationClazz, application);
 		createCommuClazz(150, lifecycleClazz, loggingClazz, application);
-		createCommuClazz(1200, guardClazz, implClazz, application);
-		createCommuClazz(500, implClazz, loggingClazz, application);
+		createCommuClazz(12000, guardClazz, implClazz, application);
+		createCommuClazz(3500, implClazz, loggingClazz, application);
 
 		return application;
 	}
