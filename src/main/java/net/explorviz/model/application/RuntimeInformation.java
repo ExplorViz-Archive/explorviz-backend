@@ -18,11 +18,20 @@ import net.explorviz.model.helper.BaseEntity;
 @Type("runtimeinformation")
 public class RuntimeInformation extends BaseEntity {
 
+	private long traceId = 0L;
 	private int calledTimes;
 	private float overallTraceDuration;
 	private int requests;
 	private float averageResponseTime;
 	private final Set<Integer> orderIndexes = new HashSet<Integer>();
+
+	public long getTraceId() {
+		return traceId;
+	}
+
+	public void setTraceId(final long traceId) {
+		this.traceId = traceId;
+	}
 
 	public int getCalledTimes() {
 		return calledTimes;
@@ -49,6 +58,10 @@ public class RuntimeInformation extends BaseEntity {
 	}
 
 	public float getAverageResponseTimeInNanoSec() {
+		return averageResponseTime;
+	}
+
+	public float getAverageResponseTime() {
 		return averageResponseTime;
 	}
 

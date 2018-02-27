@@ -1,7 +1,7 @@
 package net.explorviz.model.application;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.github.jasminb.jsonapi.annotations.Relationship;
 import com.github.jasminb.jsonapi.annotations.Type;
@@ -23,7 +23,7 @@ public class ClazzCommunication extends BaseEntity {
 	private String operationName;
 
 	@Relationship("runtimeInformations")
-	private final Map<Long, RuntimeInformation> runtimeInformations = new HashMap<Long, RuntimeInformation>();
+	private final List<RuntimeInformation> runtimeInformations = new ArrayList<RuntimeInformation>();
 
 	@Relationship("sourceClazz")
 	private Clazz sourceClazz;
@@ -63,23 +63,32 @@ public class ClazzCommunication extends BaseEntity {
 		this.targetClazz = targetClazz;
 	}
 
-	public Map<Long, RuntimeInformation> getRuntimeInformations() {
+	public List<RuntimeInformation> getRuntimeInformations() {
 		return runtimeInformations;
 	}
 
 	public void addRuntimeInformation(final Long traceId, final int calledTimes, final int orderIndex,
 			final int requests, final float averageResponseTime, final float overallTraceDuration) {
-		RuntimeInformation runtime = runtimeInformations.get(traceId);
+
+		RuntimeInformation runtime = null;
+
+		for (final RuntimeInformation runtimeInformation : runtimeInformations) {
+			if (runtimeInformation.getTraceId() == traceId) {
+				runtime = runtimeInformation;
+			}
+		}
 
 		if (runtime == null) {
 			runtime = new RuntimeInformation();
+			runtime.initializeID();
+			runtime.setTraceId(traceId);
 			runtime.setCalledTimes(calledTimes);
 			runtime.getOrderIndexes().add(orderIndex);
 			runtime.setRequests(requests);
 			runtime.setOverallTraceDuration(overallTraceDuration);
 			runtime.setAverageResponseTime(averageResponseTime);
 
-			runtimeInformations.put(traceId, runtime);
+			runtimeInformations.add(runtime);
 			requestsCacheCount += requests;
 			return;
 		}
