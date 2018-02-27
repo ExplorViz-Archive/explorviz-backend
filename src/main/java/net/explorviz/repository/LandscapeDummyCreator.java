@@ -202,68 +202,67 @@ class LandscapeDummyCreator {
 
 		pubflow.getNodeGroups().add(workflowNodeGroup);
 
-		final NodeGroup neo4jNodeGroup = createNodeGroup("10.0.0.9", landscape, pubflow);
-		final Node neo4jNode = createNode("10.0.0.9", neo4jNodeGroup);
-		final Application neo4j = createApplication("Neo4j", neo4jNode);
+		final NodeGroup webshopNodeGroup = createNodeGroup("10.0.0.9", landscape, pubflow);
+		final Node webshopNode = createNode("10.0.0.9", webshopNodeGroup);
+		final Application webshop = createApplication("Webshop", webshopNode);
+		createWebshopApplication(webshop);
 
-		createNeo4JDummyApplication(neo4j);
-
-		neo4jNodeGroup.getNodes().add(neo4jNode);
-		pubflow.getNodeGroups().add(neo4jNodeGroup);
+		webshopNodeGroup.getNodes().add(webshopNode);
+		pubflow.getNodeGroups().add(webshopNodeGroup);
 
 		final NodeGroup cacheNodeGroup = createNodeGroup("10.0.0.8", landscape, pubflow);
 		final Node cacheNode = createNode("10.0.0.8", cacheNodeGroup);
 
 		final Application cache = createApplication("Cache", cacheNode);
 
-		final Application mapleLeafApplication = createApplication("MapleLeaf DB Connector", cacheNode);
-		createMapleLeafApplication(mapleLeafApplication);
+		final Application databaseConnector = createApplication("Database Connector", cacheNode);
+		createDatabaseConnector(databaseConnector);
 
 		cacheNodeGroup.getNodes().add(cacheNode);
 		pubflow.getNodeGroups().add(cacheNodeGroup);
 
-		createCommunication(requestsApp, ocnEditorApp, landscape, 100);
+		createApplicationCommunication(requestsApp, ocnEditorApp, landscape, 100);
 
-		createCommunication(pangeaApp, pangeaApp2, landscape, 100);
-		createCommunication(pangeaApp2, pangeaApp3, landscape, 100);
-		createCommunication(ocnEditorApp, ocnDatabaseApp, landscape, 100);
-		createCommunication(ocnDatabaseApp, ocnDatabaseApp2, landscape, 100);
-		createCommunication(ocnEditorApp, ocnEditorApp2, landscape, 100);
-		createCommunication(ocnDatabaseApp, workflow1, landscape, 100);
-		createCommunication(workflow1, pangeaApp, landscape, 100);
+		createApplicationCommunication(pangeaApp, pangeaApp2, landscape, 100);
+		createApplicationCommunication(pangeaApp2, pangeaApp3, landscape, 100);
+		createApplicationCommunication(ocnEditorApp, ocnDatabaseApp, landscape, 100);
+		createApplicationCommunication(ocnDatabaseApp, ocnDatabaseApp2, landscape, 100);
+		createApplicationCommunication(ocnEditorApp, ocnEditorApp2, landscape, 100);
+		createApplicationCommunication(ocnDatabaseApp, workflow1, landscape, 100);
+		createApplicationCommunication(workflow1, pangeaApp, landscape, 100);
 
-		createCommunication(workflow1, kielprintsApp, landscape, 100);
-		createCommunication(kielprintsApp, kielprintsApp2, landscape, 100);
-		createCommunication(kielprintsApp2, kielprintsApp3, landscape, 100);
+		createApplicationCommunication(workflow1, kielprintsApp, landscape, 100);
+		createApplicationCommunication(kielprintsApp, kielprintsApp2, landscape, 100);
+		createApplicationCommunication(kielprintsApp2, kielprintsApp3, landscape, 100);
 
-		createCommunication(workflow1, portalApp, landscape, 100);
-		createCommunication(portalApp, portalApp2, landscape, 100);
+		createApplicationCommunication(workflow1, portalApp, landscape, 100);
+		createApplicationCommunication(portalApp, portalApp2, landscape, 100);
 
-		createCommunication(jira1, postgreSQL, landscape, 100);
-		createCommunication(jira2, postgreSQL, landscape, 200);
+		createApplicationCommunication(jira1, postgreSQL, landscape, 100);
+		createApplicationCommunication(jira2, postgreSQL, landscape, 200);
 
-		createCommunication(jira1, workflow1, landscape, 100);
-		createCommunication(jira1, workflow2, landscape, 500);
-		createCommunication(jira1, workflow3, landscape, 100);
+		createApplicationCommunication(jira1, workflow1, landscape, 100);
+		createApplicationCommunication(jira1, workflow2, landscape, 500);
+		createApplicationCommunication(jira1, workflow3, landscape, 100);
 
-		createCommunication(jira2, workflow4, landscape, 200);
+		createApplicationCommunication(jira2, workflow4, landscape, 200);
 
-		createCommunication(workflow1, provenance1, landscape, 400);
-		createCommunication(workflow2, provenance2, landscape, 300);
-		createCommunication(workflow3, provenance3, landscape, 500);
-		createCommunication(workflow4, provenance4, landscape, 200);
+		createApplicationCommunication(workflow1, provenance1, landscape, 400);
+		createApplicationCommunication(workflow2, provenance2, landscape, 300);
+		createApplicationCommunication(workflow3, provenance3, landscape, 500);
+		createApplicationCommunication(workflow4, provenance4, landscape, 200);
 
-		createCommunication(workflow1, cache, landscape, 100);
-		createCommunication(workflow2, cache, landscape, 100);
-		createCommunication(workflow3, cache, landscape, 300);
-		createCommunication(workflow4, cache, landscape, 100);
+		createApplicationCommunication(workflow1, cache, landscape, 100);
+		createApplicationCommunication(workflow2, cache, landscape, 100);
+		createApplicationCommunication(workflow3, cache, landscape, 300);
+		createApplicationCommunication(workflow4, cache, landscape, 100);
 
-		createCommunication(cache, mapleLeafApplication, landscape, 300 * 2);
+		createApplicationCommunication(cache, databaseConnector, landscape, 300 * 2);
 
-		createCommunication(provenance1, neo4j, landscape, 100);
-		createCommunication(provenance2, neo4j, landscape, 200);
-		createCommunication(provenance3, neo4j, landscape, 300);
-		createCommunication(provenance4, neo4j, landscape, 100);
+		createApplicationCommunication(provenance1, webshop, landscape, 100);
+		createApplicationCommunication(provenance2, webshop, landscape, 200);
+		createApplicationCommunication(provenance3, webshop, landscape, 300);
+		createApplicationCommunication(provenance4, webshop, landscape, 100);
 
 		final Landscape preparedLandscape = LandscapePreparer.prepareLandscape(landscape);
 		counter = 1;
@@ -346,8 +345,8 @@ class LandscapeDummyCreator {
 	 * @param requests
 	 * @return
 	 */
-	private static ApplicationCommunication createCommunication(final Application source, final Application target,
-			final Landscape landscape, final int requests) {
+	private static ApplicationCommunication createApplicationCommunication(final Application source,
+			final Application target, final Landscape landscape, final int requests) {
 		final ApplicationCommunication communication = new ApplicationCommunication();
 		communication.initializeID();
 		communication.setSourceApplication(source);
@@ -413,7 +412,7 @@ class LandscapeDummyCreator {
 		final ClazzCommunication communication = new ClazzCommunication();
 		communication.initializeID();
 		communication.addRuntimeInformation(0L, 1, 1, requests, 10, 10);
-		communication.setOperationName("getMethod()" + DummyLandscapeHelper.getRandomNum(1, 50));
+		communication.setOperationName("getMethod" + DummyLandscapeHelper.getRandomNum(1, 50) + "()");
 		communication.setSourceClazz(sourceClazz);
 		communication.setTargetClazz(targetClazz);
 		communication.getSourceClazz().getOutgoingClazzCommunications().add(communication);
@@ -422,34 +421,34 @@ class LandscapeDummyCreator {
 	}
 
 	/**
-	 * Creates a dummy application "Neo4J"
+	 * Creates a dummy application "Webshop"
 	 *
 	 * @param application
 	 */
-	private static Application createNeo4JDummyApplication(final Application application) {
+	private static Application createWebshopApplication(final Application application) {
 		final Component org = createComponent("org", null, application);
 		application.getComponents().add(org);
-		final Component neo4j = createComponent("neo4j", org, application);
+		final Component neo4j = createComponent("webshop", org, application);
 
-		final Component graphdb = createComponent("graphdb", neo4j, application);
-		final Clazz graphDbClazz = createClazz("Label", graphdb, 20);
-		createClazz("Label2", graphdb, 20);
-		createClazz("Label3", graphdb, 20);
-		createClazz("Label4", graphdb, 20);
-		createClazz("Label5", graphdb, 20);
+		final Component graphdb = createComponent("labeling", neo4j, application);
+		final Clazz graphDbClazz = createClazz("BaseLabeler", graphdb, 20);
+		createClazz("ProcuctLabeler", graphdb, 30);
+		createClazz("CategoryLabeler", graphdb, 10);
+		createClazz("ItemLabeler", graphdb, 55);
+		createClazz("DescriptionLabeler", graphdb, 5);
 
 		final Component helpers = createComponent("helpers", neo4j, application);
-		final Clazz helpersClazz = createClazz("x", helpers, 30);
-		createClazz("x2", helpers, 40);
-		createClazz("x3", helpers, 35);
-		createClazz("x4", helpers, 35);
-		createClazz("x5", helpers, 35);
+		final Clazz helpersClazz = createClazz("BaseHelper", helpers, 30);
+		createClazz("ProductHelper", helpers, 40);
+		createClazz("CategoryHelper", helpers, 35);
+		createClazz("ItemHelper", helpers, 35);
+		createClazz("SequenceHelper", helpers, 35);
 
 		final Component tooling = createComponent("tooling", neo4j, application);
 		final Clazz toolingClazz = createClazz("AccountSqlMapDao", tooling, 5);
 		createClazz("BaseSqlMapDao", tooling, 20);
 		createClazz("CategorySqlMapDao", tooling, 30);
-		createClazz("ItemSqlMapDao", tooling, 35);
+		createClazz("ItemSqlMapDao", tooling, 45);
 		createClazz("ProductSqlMapDao", tooling, 20);
 		createClazz("SequenceSqlMapDao", tooling, 15);
 
@@ -460,26 +459,26 @@ class LandscapeDummyCreator {
 		final Component kernel = createComponent("kernel", neo4j, application);
 
 		final Component api = createComponent("api", kernel, application);
-		final Clazz apiClazz = createClazz("cleanupX", api, 25);
-		createClazz("cleanupX", api, 25);
+		final Clazz apiClazz = createClazz("APIHandler", api, 25);
+		createClazz("APIHandler", api, 25);
 		final Component configuration = createComponent("configuration", kernel, application);
-		final Clazz configurationClazz = createClazz("cleanupX", configuration, 35);
-		createClazz("cleanupX", configuration, 5);
+		final Clazz configurationClazz = createClazz("ConfigurationHandler", configuration, 35);
+		createClazz("ConfigurationHandler", configuration, 5);
 		final Component myextension = createComponent("extension", kernel, application);
-		createClazz("cleanupX", myextension, 25);
-		createClazz("cleanupX", myextension, 5);
+		createClazz("SingleExtensionHandler", myextension, 25);
+		createClazz("MultipleExtensionHandler", myextension, 5);
 		final Component guard = createComponent("guard", kernel, application);
-		final Clazz guardClazz = createClazz("cleanupX", guard, 35);
-		createClazz("cleanupX", guard, 25);
+		final Clazz guardClazz = createClazz("GuardHandler", guard, 35);
+		createClazz("GuardHandler", guard, 25);
 
 		final Component impl = createComponent("impl", kernel, application);
-		final Clazz implClazz = createClazz("cleanupX", impl, 45);
+		final Clazz implClazz = createClazz("ImplementationHandler", impl, 45);
 		final Component annotations = createComponent("annotations", impl, application);
-		createClazz("cleanupX", annotations, 35);
+		createClazz("AnnotationHandler", annotations, 35);
 		final Component apiImpl = createComponent("api", impl, application);
-		final Clazz apiImplClazz = createClazz("cleanupX", apiImpl, 25);
+		final Clazz apiImplClazz = createClazz("APIImpl", apiImpl, 25);
 		final Component cache = createComponent("cache", impl, application);
-		createClazz("cleanupX", cache, 45);
+		createClazz("CacheImpl", cache, 45);
 		final Component persistence = createComponent("persistence", impl, application);
 		createClazz("AccountSqlMapDao", persistence, 45);
 
@@ -503,6 +502,7 @@ class LandscapeDummyCreator {
 		createCommuClazz(100, apiClazz, configurationClazz, application);
 		createCommuClazz(150, lifecycleClazz, loggingClazz, application);
 		createCommuClazz(1200, guardClazz, implClazz, application);
+		createCommuClazz(500, implClazz, loggingClazz, application);
 
 		return application;
 	}
@@ -513,12 +513,12 @@ class LandscapeDummyCreator {
 	 *
 	 * @param application
 	 */
-	private static Application createMapleLeafApplication(final Application application) {
+	private static Application createDatabaseConnector(final Application application) {
 		final Component org = createComponent("org", null, application);
 		application.getComponents().add(org);
-		final Component mapleLeaf = createComponent("mapleleaf", org, application);
-		final Component database = createComponent("database", mapleLeaf, application);
-		createClazz("Label", database, 20);
+		final Component mapleLeaf = createComponent("database", org, application);
+		final Component database = createComponent("connector", mapleLeaf, application);
+		createClazz("Connection", database, 80);
 
 		final LinkedList<DatabaseQuery> dbQueryList = new LinkedList<DatabaseQuery>();
 

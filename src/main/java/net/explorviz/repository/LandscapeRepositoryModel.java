@@ -151,10 +151,6 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
 							commu.reset();
 						}
 
-						for (final ClazzCommunication commu : app.getAggregatedClazzCommunications()) {
-							commu.reset();
-						}
-
 						resetClazzInstances(app.getComponents());
 					}
 				}

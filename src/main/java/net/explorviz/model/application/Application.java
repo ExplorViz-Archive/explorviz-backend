@@ -30,18 +30,14 @@ public class Application extends BaseEntity {
 	@Relationship("components")
 	private final List<Component> components = new ArrayList<Component>();
 
-	@Relationship("outgoingApplicationCommunications")
-	private List<ApplicationCommunication> outgoingApplicationCommunications = new ArrayList<ApplicationCommunication>();
-
 	@Relationship("databaseQueries")
 	private List<DatabaseQuery> databaseQueries = new ArrayList<DatabaseQuery>();
 
-	@Relationship("outgoingClazzCommunications")
-	// workaround until frontend is able to generate this list for rendering
-	private List<ClazzCommunication> outgoingClazzCommunications = new ArrayList<ClazzCommunication>();
+	@Relationship("outgoingApplicationCommunications")
+	private List<ApplicationCommunication> outgoingApplicationCommunications = new ArrayList<ApplicationCommunication>();
 
-	@Relationship("aggregatedOutgoingClazzCommunications")
-	private List<ClazzCommunication> aggregatedOutgoingClazzCommunications = new ArrayList<ClazzCommunication>();
+	@Relationship("outgoingClazzCommunications")
+	private List<ClazzCommunication> outgoingClazzCommunications = new ArrayList<ClazzCommunication>();
 
 	public String getName() {
 		return name;
@@ -79,14 +75,6 @@ public class Application extends BaseEntity {
 		return components;
 	}
 
-	public void setOutgoingApplicationCommunication(final List<ApplicationCommunication> outgoingCommunications) {
-		this.outgoingApplicationCommunications = outgoingCommunications;
-	}
-
-	public List<ApplicationCommunication> getOutgoingApplicationCommunications() {
-		return outgoingApplicationCommunications;
-	}
-
 	public void setDatabaseQueries(final List<DatabaseQuery> databaseQueries) {
 		this.databaseQueries = databaseQueries;
 	}
@@ -95,21 +83,20 @@ public class Application extends BaseEntity {
 		return databaseQueries;
 	}
 
+	public List<ApplicationCommunication> getOutgoingApplicationCommunications() {
+		return outgoingApplicationCommunications;
+	}
+
+	public void setOutgoingApplicationCommunications(final List<ApplicationCommunication> outgoingCommunications) {
+		this.outgoingApplicationCommunications = outgoingCommunications;
+	}
+
 	public List<ClazzCommunication> getOutgoingClazzCommunications() {
 		return outgoingClazzCommunications;
 	}
 
 	public void setOutgoingClazzCommunications(final List<ClazzCommunication> outgoingClazzCommunications) {
 		this.outgoingClazzCommunications = outgoingClazzCommunications;
-	}
-
-	public List<ClazzCommunication> getAggregatedClazzCommunications() {
-		return aggregatedOutgoingClazzCommunications;
-	}
-
-	public void setAggregatedOutgoingClazzCommunications(
-			final List<ClazzCommunication> aggregatedOutgoingClazzCommunications) {
-		this.aggregatedOutgoingClazzCommunications = aggregatedOutgoingClazzCommunications;
 	}
 
 	/**
@@ -122,7 +109,8 @@ public class Application extends BaseEntity {
 				clazz.clearCommunication();
 			}
 		}
-		this.setOutgoingApplicationCommunication(new ArrayList<ApplicationCommunication>());
+		this.setOutgoingApplicationCommunications(new ArrayList<ApplicationCommunication>());
+		this.setOutgoingClazzCommunications(new ArrayList<ClazzCommunication>());
 	}
 
 }

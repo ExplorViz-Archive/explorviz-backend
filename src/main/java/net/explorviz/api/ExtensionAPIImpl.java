@@ -71,7 +71,7 @@ public final class ExtensionAPIImpl implements IExtensionAPI {
 			for (final NodeGroup nodegroup : system.getNodeGroups()) {
 				for (final Node node : nodegroup.getNodes()) {
 					for (final Application application : node.getApplications()) {
-						ApplicationHelper.calculateAggregatedOutgoingClazzCommunications(application);
+						ApplicationHelper.computeOutgoingClazzCommunications(application);
 					}
 				}
 			}
@@ -102,7 +102,7 @@ public final class ExtensionAPIImpl implements IExtensionAPI {
 				for (final NodeGroup nodegroup : system.getNodeGroups()) {
 					for (final Node node : nodegroup.getNodes()) {
 						for (final Application application : node.getApplications()) {
-							ApplicationHelper.calculateAggregatedOutgoingClazzCommunications(application);
+							ApplicationHelper.computeOutgoingClazzCommunications(application);
 						}
 					}
 				}
