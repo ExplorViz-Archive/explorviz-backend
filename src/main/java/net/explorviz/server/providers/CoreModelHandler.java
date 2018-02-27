@@ -34,6 +34,7 @@ public final class CoreModelHandler {
 		GenericTypeFinder.typeMap.putIfAbsent("Clazz", Clazz.class);
 		GenericTypeFinder.typeMap.putIfAbsent("ClazzCommunication", ClazzCommunication.class);
 		GenericTypeFinder.typeMap.putIfAbsent("ApplicationCommunication", ApplicationCommunication.class);
+		GenericTypeFinder.typeMap.putIfAbsent("RuntimeInformation", ApplicationCommunication.class);
 		GenericTypeFinder.typeMap.putIfAbsent("DatabaseQuery", DatabaseQuery.class);
 		GenericTypeFinder.typeMap.putIfAbsent("User", User.class);
 	}
