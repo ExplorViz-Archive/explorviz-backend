@@ -3,6 +3,8 @@ package net.explorviz.model.application;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.github.jasminb.jsonapi.annotations.Type;
+
 import net.explorviz.model.helper.BaseEntity;
 
 /**
@@ -13,6 +15,7 @@ import net.explorviz.model.helper.BaseEntity;
  *
  */
 @SuppressWarnings("serial")
+@Type("runtimeinformation")
 public class RuntimeInformation extends BaseEntity {
 
 	private int calledTimes;
