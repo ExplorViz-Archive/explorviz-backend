@@ -21,6 +21,7 @@ public class ClazzCommunication extends BaseEntity {
 
 	private int requestsCacheCount = 0;
 	private String operationName;
+
 	@Relationship("runtimeInformations")
 	private final Map<Long, RuntimeInformation> runtimeInformations = new HashMap<Long, RuntimeInformation>();
 
