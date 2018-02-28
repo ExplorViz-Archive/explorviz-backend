@@ -411,8 +411,8 @@ class LandscapeDummyCreator {
 			final Clazz targetClazz, final Application application) {
 		final ClazzCommunication communication = new ClazzCommunication();
 		communication.initializeID();
-		communication.addRuntimeInformation(0L, 1, requests, DummyLandscapeHelper.getRandomNum(10, 1000),
-				DummyLandscapeHelper.getRandomNum(100, 10000));
+		communication.addRuntimeInformation(0L, 1, requests, (0L + DummyLandscapeHelper.getRandomNum(10, 1000)),
+				(0L + DummyLandscapeHelper.getRandomNum(1000, 10000)));
 		communication.setOperationName("getMethod" + DummyLandscapeHelper.getRandomNum(1, 50) + "()");
 		communication.setSourceClazz(sourceClazz);
 		communication.setTargetClazz(targetClazz);
