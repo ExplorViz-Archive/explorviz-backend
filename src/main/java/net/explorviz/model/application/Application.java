@@ -39,6 +39,9 @@ public class Application extends BaseEntity {
 	@Relationship("outgoingClazzCommunications")
 	private List<ClazzCommunication> outgoingClazzCommunications = new ArrayList<ClazzCommunication>();
 
+	@Relationship("aggregatedOutgoingClazzCommunications")
+	private List<AggregatedClazzCommunication> aggregatedOutgoingClazzCommunications = new ArrayList<AggregatedClazzCommunication>();
+
 	public String getName() {
 		return name;
 	}
@@ -99,6 +102,15 @@ public class Application extends BaseEntity {
 		this.outgoingClazzCommunications = outgoingClazzCommunications;
 	}
 
+	public List<AggregatedClazzCommunication> getAggregatedOutgoingClazzCommunications() {
+		return aggregatedOutgoingClazzCommunications;
+	}
+
+	public void setAggregatedOutgoingClazzCommunications(
+			final List<AggregatedClazzCommunication> aggregatedOutgoingClazzCommunications) {
+		this.aggregatedOutgoingClazzCommunications = aggregatedOutgoingClazzCommunications;
+	}
+
 	/**
 	 * Clears all existings communication from (landscape-perspective) and within
 	 * the application (application-perspective)
@@ -111,6 +123,7 @@ public class Application extends BaseEntity {
 		}
 		this.setOutgoingApplicationCommunications(new ArrayList<ApplicationCommunication>());
 		this.setOutgoingClazzCommunications(new ArrayList<ClazzCommunication>());
+		this.setAggregatedOutgoingClazzCommunications(new ArrayList<AggregatedClazzCommunication>());
 	}
 
 }

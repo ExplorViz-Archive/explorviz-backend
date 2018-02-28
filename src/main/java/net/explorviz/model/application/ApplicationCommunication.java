@@ -17,6 +17,8 @@ public class ApplicationCommunication extends BaseEntity {
 
 	private int requests;
 	private String technology;
+
+	// in ns
 	private float averageResponseTime;
 
 	@Relationship("sourceApplication")

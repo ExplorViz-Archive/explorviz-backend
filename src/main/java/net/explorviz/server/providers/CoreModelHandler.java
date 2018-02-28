@@ -1,5 +1,6 @@
 package net.explorviz.server.providers;
 
+import net.explorviz.model.application.AggregatedClazzCommunication;
 import net.explorviz.model.application.Application;
 import net.explorviz.model.application.ApplicationCommunication;
 import net.explorviz.model.application.Clazz;
@@ -34,6 +35,7 @@ public final class CoreModelHandler {
 		GenericTypeFinder.typeMap.putIfAbsent("Component", Component.class);
 		GenericTypeFinder.typeMap.putIfAbsent("Clazz", Clazz.class);
 		GenericTypeFinder.typeMap.putIfAbsent("ClazzCommunication", ClazzCommunication.class);
+		GenericTypeFinder.typeMap.putIfAbsent("AggregatedClazzCommunication", AggregatedClazzCommunication.class);
 		GenericTypeFinder.typeMap.putIfAbsent("ApplicationCommunication", ApplicationCommunication.class);
 		GenericTypeFinder.typeMap.putIfAbsent("RuntimeInformation", RuntimeInformation.class);
 		GenericTypeFinder.typeMap.putIfAbsent("DatabaseQuery", DatabaseQuery.class);

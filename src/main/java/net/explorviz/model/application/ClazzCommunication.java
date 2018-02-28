@@ -19,8 +19,8 @@ import net.explorviz.model.helper.BaseEntity;
 @Type("clazzcommunication")
 public class ClazzCommunication extends BaseEntity {
 
-	private int requestsCacheCount = 0;
-	private String operationName;
+	private int requests = 0;
+	private String operationName = "<unknown>";
 
 	@Relationship("runtimeInformations")
 	private final List<RuntimeInformation> runtimeInformations = new ArrayList<RuntimeInformation>();
@@ -31,12 +31,12 @@ public class ClazzCommunication extends BaseEntity {
 	@Relationship("targetClazz")
 	private Clazz targetClazz;
 
-	public int getRequestsCacheCount() {
-		return requestsCacheCount;
+	public int getRequests() {
+		return requests;
 	}
 
-	public void setRequestsCacheCount(final int requestsCacheCount) {
-		this.requestsCacheCount = requestsCacheCount;
+	public void setRequests(final int requests) {
+		this.requests = requests;
 	}
 
 	public String getOperationName() {
@@ -67,8 +67,8 @@ public class ClazzCommunication extends BaseEntity {
 		return runtimeInformations;
 	}
 
-	public void addRuntimeInformation(final Long traceId, final int calledTimes, final int orderIndex,
-			final int requests, final float averageResponseTime, final float overallTraceDuration) {
+	public void addRuntimeInformation(final Long traceId, final int orderIndex, final int requests,
+			final float averageResponseTime, final float overallTraceDuration) {
 
 		RuntimeInformation runtime = null;
 
@@ -82,14 +82,13 @@ public class ClazzCommunication extends BaseEntity {
 			runtime = new RuntimeInformation();
 			runtime.initializeID();
 			runtime.setTraceId(traceId);
-			runtime.setCalledTimes(calledTimes);
 			runtime.getOrderIndexes().add(orderIndex);
 			runtime.setRequests(requests);
 			runtime.setOverallTraceDuration(overallTraceDuration);
 			runtime.setAverageResponseTime(averageResponseTime);
 
 			runtimeInformations.add(runtime);
-			requestsCacheCount += requests;
+			this.setRequests(this.getRequests() + requests);
 			return;
 		}
 
@@ -100,11 +99,11 @@ public class ClazzCommunication extends BaseEntity {
 		runtime.setRequests(runtime.getRequests() + requests);
 		runtime.setOverallTraceDuration((overallTraceDuration + runtime.getOverallTraceDuration()) / 2f);
 		runtime.getOrderIndexes().add(orderIndex);
-		requestsCacheCount += requests;
+		this.setRequests(this.getRequests() + requests);
 	}
 
 	public void reset() {
-		requestsCacheCount = 0;
+		requests = 0;
 		runtimeInformations.clear();
 	}
 

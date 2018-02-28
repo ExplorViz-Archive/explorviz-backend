@@ -64,20 +64,24 @@ public final class ExtensionAPIImpl implements IExtensionAPI {
 		// updates in memory outgoingApplicationCommunication (landscape)
 		LandscapeHelper.computeOutgoingApplicationCommunications(currentLandscape);
 
-		// updates in memory (aggregated) outgoingClazzCommunications (each application
-		// in the
-		// landscape)
+		// updates in memory outgoingClazzCommunications (each application
+		// in the landscape)
 		for (final System system : currentLandscape.getSystems()) {
 			for (final NodeGroup nodegroup : system.getNodeGroups()) {
 				for (final Node node : nodegroup.getNodes()) {
 					for (final Application application : node.getApplications()) {
 						ApplicationHelper.computeOutgoingClazzCommunications(application);
+						ApplicationHelper.computeAggregatedOutgoingClazzCommunications(application);
+
+						final Application a = application;
+						a.getName();
 					}
 				}
 			}
 		}
 
 		return currentLandscape;
+
 	}
 
 	/**
@@ -103,6 +107,7 @@ public final class ExtensionAPIImpl implements IExtensionAPI {
 					for (final Node node : nodegroup.getNodes()) {
 						for (final Application application : node.getApplications()) {
 							ApplicationHelper.computeOutgoingClazzCommunications(application);
+							ApplicationHelper.computeAggregatedOutgoingClazzCommunications(application);
 						}
 					}
 				}

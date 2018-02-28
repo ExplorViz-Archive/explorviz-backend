@@ -433,29 +433,29 @@ public class InsertionRepositoryPart {
 
 	private void createOrUpdateCall(final Clazz caller, final Clazz callee, final Application application,
 			final int requests, final double average, final double overallTraceDuration, final long traceId,
-			final int orderIndex, final String methodName, final Landscape landscape) {
+			final int orderIndex, final String operationName, final Landscape landscape) {
+
 		landscape.setOverallCalls(landscape.getOverallCalls() + requests);
 
+		// clazzCommunication already exists
 		for (final ClazzCommunication commu : application.getOutgoingClazzCommunications()) {
 			if (((commu.getSourceClazz() == caller) && (commu.getTargetClazz() == callee)
-					&& (commu.getOperationName().equalsIgnoreCase(methodName)))) {
+					&& (commu.getOperationName().equalsIgnoreCase(operationName)))) {
 
-				commu.addRuntimeInformation(traceId, requests, orderIndex, requests, (float) average,
+				commu.addRuntimeInformation(traceId, orderIndex, requests, (float) average,
 						(float) overallTraceDuration);
 				return;
 			}
 		}
 
+		// create new clazzCommunication
 		final ClazzCommunication commu = new ClazzCommunication();
 		commu.initializeID();
-
 		commu.setSourceClazz(caller);
 		commu.setTargetClazz(callee);
+		commu.setOperationName(operationName);
 		commu.getSourceClazz().getOutgoingClazzCommunications().add(commu);
-
-		commu.addRuntimeInformation(traceId, requests, orderIndex, requests, (float) average,
-				(float) overallTraceDuration);
-		commu.setOperationName(methodName);
+		commu.addRuntimeInformation(traceId, orderIndex, requests, (float) average, (float) overallTraceDuration);
 	}
 
 	private Clazz seekOrCreateClazz(final String fullQName, final Application application,
