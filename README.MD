@@ -2,18 +2,21 @@
 <a href="https://travis-ci.org/ExplorViz/explorviz-backend"><img src="https://travis-ci.org/ExplorViz/explorviz-backend.svg?branch=master" alt="Build Status"></a>
 [![](https://img.shields.io/docker/pulls/explorviz/explorviz-docker.svg)](https://hub.docker.com/r/explorviz/explorviz-docker "Click to view the image on Docker Hub")
 
-This project is a wip replica of ExplorViz's visualization component. 
+This project contains the modernized version of [ExplorViz](https://github.com/ExplorViz/Explorviz). 
 It substitutes [GWT](http://www.gwtproject.org/) and it's (asynchronous) RPC framework with [Jersey](https://jersey.java.net/) for creating a RESTful API. 
 This is only the backend, you will need the [explorviz-frontend](https://github.com/ExplorViz/explorviz-frontend) as well.
 
 This gradle project includes or installs every necessary dependency.
 
 ### Eclipse Setup
-1. Download the latest **Eclipse IDE for Java and DSL Developers** and Java SDK 8
-2. *Start Eclipse -> Help -> Eclipse Marketplace*, insert and download
-- *SpotBugs Eclipse plugin 3.1.2*
-- *Checkstyle Plug-in 8.8.0*
-3. In Eclipse: *Help -> Install New Software -> Insert https://dl.bintray.com/pmd/pmd-eclipse-plugin/updates/ in "Work with" -> Check "PMD for Eclipse 4" -> Finish and download* (**Attention:** Don't use the eclipse-pmd version from the marketplace)
+1. Download the latest **Eclipse IDE for Java and DSL Developers** and **Java SDK 8**
+2. Install **SpotBugs and Checkstyle**
+    - *Start Eclipse -> Help -> Eclipse Marketplace* - type in the following and install afterwards
+       1. *SpotBugs Eclipse plugin 3.1.2*
+       2. *Checkstyle Plug-in 8.8.0*
+3. Install **PMD**
+    - In Eclipse: *Help -> Install New Software -> Insert https://dl.bintray.com/pmd/pmd-eclipse-plugin/updates/ in "Work with" -> Check "PMD for Eclipse 4" -> Finish, download, and install* (**Attention:** Don't use the eclipse-pmd version from the marketplace)
+4. Configure the respective tool views (In Eclipse: *Window -> Show View -> Other -> ...)
 
 ## Setup Development
 1. Follow the [Eclipse Setup](https://github.com/ExplorViz/explorviz-backend#eclipse-setup)
