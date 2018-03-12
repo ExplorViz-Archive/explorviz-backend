@@ -21,9 +21,9 @@ public class Node extends BaseEntity {
 
 	private String name;
 	private String ipAddress;
-	private double cpuUtilization;
-	private long freeRAM;
-	private long usedRAM;
+	private double cpuUtilization = 0;
+	private long freeRAM = 0;
+	private long usedRAM = 0;
 
 	@Relationship("applications")
 	private final List<Application> applications = new ArrayList<Application>();
