@@ -26,9 +26,9 @@ import gnu.trove.iterator.TIntIterator;
 import gnu.trove.set.hash.TIntHashSet;
 import net.explorviz.model.application.Application;
 import net.explorviz.model.application.Clazz;
-import net.explorviz.model.application.ClazzCommunication;
 import net.explorviz.model.application.Component;
 import net.explorviz.model.application.DatabaseQuery;
+import net.explorviz.model.helper.ClazzCommunicationHelper;
 import net.explorviz.model.helper.EProgrammingLanguage;
 import net.explorviz.model.landscape.Landscape;
 import net.explorviz.model.landscape.Node;
@@ -437,25 +437,10 @@ public class InsertionRepositoryPart {
 
 		landscape.setOverallCalls(landscape.getOverallCalls() + requests);
 
-		// clazzCommunication already exists
-		for (final ClazzCommunication commu : application.getOutgoingClazzCommunications()) {
-			if (((commu.getSourceClazz() == caller) && (commu.getTargetClazz() == callee)
-					&& (commu.getOperationName().equalsIgnoreCase(operationName)))) {
-
-				commu.addRuntimeInformation(traceId, orderIndex, requests, (float) average,
-						(float) overallTraceDuration);
-				return;
-			}
-		}
-
-		// create new clazzCommunication
-		final ClazzCommunication commu = new ClazzCommunication();
-		commu.initializeID();
-		commu.setSourceClazz(caller);
-		commu.setTargetClazz(callee);
-		commu.setOperationName(operationName);
-		commu.getSourceClazz().getOutgoingClazzCommunications().add(commu);
-		commu.addRuntimeInformation(traceId, orderIndex, requests, (float) average, (float) overallTraceDuration);
+		// add clazzCommunication to clazz and aggregatedClazzCommunication to
+		// application
+		ClazzCommunicationHelper.addClazzCommunication(caller, callee, application, requests, average,
+				overallTraceDuration, traceId, orderIndex, operationName);
 	}
 
 	private Clazz seekOrCreateClazz(final String fullQName, final Application application,

@@ -63,13 +63,15 @@ public class AggregatedClazzCommunication extends BaseEntity {
 	}
 
 	// adds a clazzCommunication if sourceClazz and targetClazz matches
-	public void addClazzCommunication(final ClazzCommunication clazzcommunication) {
+	public boolean addClazzCommunication(final ClazzCommunication clazzcommunication) {
 
 		if (this.sourceClazz.equals(clazzcommunication.getSourceClazz())
 				&& this.targetClazz.equals(clazzcommunication.getTargetClazz())) {
 			this.setRequests(this.getRequests() + clazzcommunication.getRequests());
 			this.clazzCommunications.add(clazzcommunication);
+			return true;
 		}
+		return false;
 	}
 
 	public void reset() {

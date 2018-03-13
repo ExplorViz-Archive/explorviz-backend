@@ -7,14 +7,9 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.explorviz.model.application.Application;
-import net.explorviz.model.helper.ApplicationHelper;
 import net.explorviz.model.helper.LandscapeHelper;
 import net.explorviz.model.helper.TimestampHelper;
 import net.explorviz.model.landscape.Landscape;
-import net.explorviz.model.landscape.Node;
-import net.explorviz.model.landscape.NodeGroup;
-import net.explorviz.model.landscape.System;
 import net.explorviz.model.store.Timestamp;
 import net.explorviz.repository.LandscapeExchangeService;
 import net.explorviz.server.providers.CoreModelHandler;
@@ -61,27 +56,8 @@ public final class ExtensionAPIImpl implements IExtensionAPI {
 	public Landscape getLatestLandscape() {
 		// workaround until frontend is able to generate this list for rendering
 		final Landscape currentLandscape = service.getCurrentLandscape();
-		// updates in memory outgoingApplicationCommunication (landscape)
-		LandscapeHelper.computeOutgoingApplicationCommunications(currentLandscape);
-
-		// updates in memory outgoingClazzCommunications (each application
-		// in the landscape)
-		for (final System system : currentLandscape.getSystems()) {
-			for (final NodeGroup nodegroup : system.getNodeGroups()) {
-				for (final Node node : nodegroup.getNodes()) {
-					for (final Application application : node.getApplications()) {
-						ApplicationHelper.computeOutgoingClazzCommunications(application);
-						ApplicationHelper.computeAggregatedOutgoingClazzCommunications(application);
-
-						final Application a = application;
-						a.getName();
-					}
-				}
-			}
-		}
 
 		return currentLandscape;
-
 	}
 
 	/**
@@ -98,20 +74,6 @@ public final class ExtensionAPIImpl implements IExtensionAPI {
 
 			// updates in memory outgoingApplicationCommunication (landscape)
 			LandscapeHelper.computeOutgoingApplicationCommunications(specificLandscape);
-
-			// updates in memory (aggregated) outgoingClazzCommunication (each application
-			// in the
-			// landscape)
-			for (final System system : specificLandscape.getSystems()) {
-				for (final NodeGroup nodegroup : system.getNodeGroups()) {
-					for (final Node node : nodegroup.getNodes()) {
-						for (final Application application : node.getApplications()) {
-							ApplicationHelper.computeOutgoingClazzCommunications(application);
-							ApplicationHelper.computeAggregatedOutgoingClazzCommunications(application);
-						}
-					}
-				}
-			}
 
 			return specificLandscape;
 

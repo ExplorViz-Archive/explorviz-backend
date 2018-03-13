@@ -26,7 +26,7 @@ class LandscapeDummyCreator {
 	public static int counter = 1;
 	static int applicationId = 0;
 	static Landscape dummyLandscape = null;
-	public static int formatFactor = (1024 * 1024 * 1024);
+	static int formatFactor = 1024 * 1024 * 1024;
 
 	public static Landscape createDummyLandscape() {
 
@@ -504,6 +504,7 @@ class LandscapeDummyCreator {
 		createCommuClazz(150, lifecycleClazz, loggingClazz, application);
 		createCommuClazz(12000, guardClazz, implClazz, application);
 		createCommuClazz(3500, implClazz, loggingClazz, application);
+		createCommuClazz(500, loggingClazz, implClazz, application);
 
 		return application;
 	}

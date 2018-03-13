@@ -10,10 +10,10 @@ import org.nustaq.serialization.FSTConfiguration;
 import explorviz.live_trace_processing.reader.IPeriodicTimeSignalReceiver;
 import explorviz.live_trace_processing.reader.TimeSignalReader;
 import explorviz.live_trace_processing.record.IRecord;
+import net.explorviz.model.application.AggregatedClazzCommunication;
 import net.explorviz.model.application.Application;
 import net.explorviz.model.application.ApplicationCommunication;
 import net.explorviz.model.application.Clazz;
-import net.explorviz.model.application.ClazzCommunication;
 import net.explorviz.model.application.Component;
 import net.explorviz.model.landscape.Landscape;
 import net.explorviz.model.landscape.Node;
@@ -120,7 +120,6 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
 				} else {
 					internalLandscape.updateTimestamp(milliseconds);
 					RepositoryStorage.writeToFile(internalLandscape, milliseconds);
-
 					final Landscape l = fstConf.deepCopy(internalLandscape);
 					lastPeriodLandscape = LandscapePreparer.prepareLandscape(l);
 				}
@@ -134,7 +133,13 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
 
 	private void resetCommunication() {
 		internalLandscape.getExceptions().clear();
+		internalLandscape.getEvents().clear();
 		internalLandscape.setOverallCalls(0L);
+
+		for (final ApplicationCommunication commu : internalLandscape.getOutgoingApplicationCommunications()) {
+			commu.setRequests(0);
+			commu.setAverageResponseTime(0);
+		}
 
 		for (final System system : internalLandscape.getSystems()) {
 			for (final NodeGroup nodeGroup : system.getNodeGroups()) {
@@ -143,11 +148,11 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
 						app.getDatabaseQueries().clear();
 
 						for (final ApplicationCommunication commu : app.getOutgoingApplicationCommunications()) {
-							commu.setRequests(0);
-							commu.setAverageResponseTime(0);
+							commu.reset();
 						}
 
-						for (final ClazzCommunication commu : app.getOutgoingClazzCommunications()) {
+						for (final AggregatedClazzCommunication commu : app
+								.getAggregatedOutgoingClazzCommunications()) {
 							commu.reset();
 						}
 
@@ -157,20 +162,13 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
 			}
 		}
 
-		for (final ApplicationCommunication commu : internalLandscape.getOutgoingApplicationCommunications()) {
-			commu.setRequests(0);
-			commu.setAverageResponseTime(0);
-		}
-
 	}
 
 	private void resetClazzInstances(final List<Component> components) {
 		for (final Component compo : components) {
 			for (final Clazz clazz : compo.getClazzes()) {
-				clazz.getObjectIds().clear();
-				clazz.setInstanceCount(0);
+				clazz.reset();
 			}
-
 			resetClazzInstances(compo.getChildren());
 		}
 	}

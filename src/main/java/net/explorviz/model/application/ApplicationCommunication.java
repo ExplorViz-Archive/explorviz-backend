@@ -89,4 +89,9 @@ public class ApplicationCommunication extends BaseEntity {
 		this.targetClazz = targetClazz;
 	}
 
+	public void reset() {
+		requests = 0;
+		averageResponseTime = 0;
+	}
+
 }

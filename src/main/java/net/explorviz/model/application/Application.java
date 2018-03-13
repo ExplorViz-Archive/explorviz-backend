@@ -36,9 +36,6 @@ public class Application extends BaseEntity {
 	@Relationship("outgoingApplicationCommunications")
 	private List<ApplicationCommunication> outgoingApplicationCommunications = new ArrayList<ApplicationCommunication>();
 
-	@Relationship("outgoingClazzCommunications")
-	private List<ClazzCommunication> outgoingClazzCommunications = new ArrayList<ClazzCommunication>();
-
 	@Relationship("aggregatedOutgoingClazzCommunications")
 	private List<AggregatedClazzCommunication> aggregatedOutgoingClazzCommunications = new ArrayList<AggregatedClazzCommunication>();
 
@@ -94,14 +91,6 @@ public class Application extends BaseEntity {
 		this.outgoingApplicationCommunications = outgoingCommunications;
 	}
 
-	public List<ClazzCommunication> getOutgoingClazzCommunications() {
-		return outgoingClazzCommunications;
-	}
-
-	public void setOutgoingClazzCommunications(final List<ClazzCommunication> outgoingClazzCommunications) {
-		this.outgoingClazzCommunications = outgoingClazzCommunications;
-	}
-
 	public List<AggregatedClazzCommunication> getAggregatedOutgoingClazzCommunications() {
 		return aggregatedOutgoingClazzCommunications;
 	}
@@ -118,12 +107,12 @@ public class Application extends BaseEntity {
 	public void clearCommunication() {
 		for (final Component component : this.getComponents()) {
 			for (final Clazz clazz : component.getClazzes()) {
-				clazz.clearCommunication();
+				clazz.reset();
 			}
 		}
-		this.setOutgoingApplicationCommunications(new ArrayList<ApplicationCommunication>());
-		this.setOutgoingClazzCommunications(new ArrayList<ClazzCommunication>());
-		this.setAggregatedOutgoingClazzCommunications(new ArrayList<AggregatedClazzCommunication>());
+
+		this.getOutgoingApplicationCommunications().clear();
+		this.getAggregatedOutgoingClazzCommunications().clear();
 	}
 
 }

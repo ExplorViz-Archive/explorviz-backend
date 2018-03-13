@@ -83,12 +83,10 @@ public class Clazz extends BaseEntity {
 	/**
 	 * Clears all existings communication within the clazz
 	 */
-	public void clearCommunication() {
-		for (final ClazzCommunication clazzCommu : this.getOutgoingClazzCommunications()) {
-			clazzCommu.setSourceClazz(null);
-			clazzCommu.setTargetClazz(null);
-		}
-		this.setOutgoingClazzCommunications(new ArrayList<ClazzCommunication>());
+	public void reset() {
+		this.instanceCount = 0;
+		this.getObjectIds().clear();
+		this.getOutgoingClazzCommunications().clear();
 	}
 
 }

@@ -14,6 +14,7 @@ import org.nustaq.serialization.FSTConfiguration;
 import org.nustaq.serialization.FSTObjectInput;
 import org.nustaq.serialization.FSTObjectOutput;
 
+import net.explorviz.model.application.AggregatedClazzCommunication;
 import net.explorviz.model.application.Application;
 import net.explorviz.model.application.ApplicationCommunication;
 import net.explorviz.model.application.Clazz;
@@ -55,14 +56,15 @@ public class RepositoryStorage {
 		result.registerClass(System.class);
 		result.registerClass(NodeGroup.class);
 		result.registerClass(Node.class);
-		result.registerClass(ApplicationCommunication.class);
 		result.registerClass(Application.class);
+		result.registerClass(ApplicationCommunication.class);
+		result.registerClass(AggregatedClazzCommunication.class);
+		result.registerClass(DatabaseQuery.class);
 		result.registerClass(EProgrammingLanguage.class);
 		result.registerClass(Component.class);
 		result.registerClass(Clazz.class);
-		result.registerClass(RuntimeInformation.class);
-		result.registerClass(DatabaseQuery.class);
 		result.registerClass(ClazzCommunication.class);
+		result.registerClass(RuntimeInformation.class);
 
 		return result;
 	}

@@ -73,14 +73,13 @@ public class GenericExplorVizExternalLogAdapter {
 				firstWallclockTimestamp = System.nanoTime();
 			} else {
 				final long passedTime = timestamp - firstTimestamp;
-				// System.out.println("Replaying timestamp " + timestamp +
-				// " passed time "
-				// + passedTime);
+				
 				while (replayInRealTime && System.nanoTime() - firstWallclockTimestamp < passedTime) {
 					if (passedTime > 1000L * 1000L) {
 						try {
 							Thread.sleep(1000L);
 						} catch (final InterruptedException e) {
+							logger.warn(logger.getName() + ": " + e.getMessage());
 						}
 					}
 				}

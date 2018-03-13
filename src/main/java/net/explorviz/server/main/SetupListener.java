@@ -14,6 +14,12 @@ import net.explorviz.server.security.HibernateSessionFactory;
 import net.explorviz.server.security.PasswordStorage;
 import net.explorviz.server.security.PasswordStorage.CannotPerformOperationException;
 
+/**
+ * Primary starting class - executed, once the servlet context is started
+ * 
+ * @author Christian Zirkelbach (czi@informatik.uni-kiel.de)
+ *
+ */
 @WebListener
 public class SetupListener implements ServletContextListener {
 

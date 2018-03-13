@@ -32,7 +32,7 @@ import net.explorviz.server.security.PasswordStorage;
 @Path("users")
 public class UserResource {
 
-	private static Logger LOGGER = LoggerFactory.getLogger(UserResource.class.getName());
+	private static Logger logger = LoggerFactory.getLogger(UserResource.class.getName());
 
 	private final HibernateSessionFactory sessionFactory;
 	private final ResourceConverter converter;
@@ -66,7 +66,7 @@ public class UserResource {
 			try {
 				return Response.ok(this.converter.writeDocument(document)).type("application/vnd.api+json").build();
 			} catch (final DocumentSerializationException e) {
-				LOGGER.debug(e.getMessage());
+				logger.debug(e.getMessage());
 				return getAuthenticationErrorResponse();
 			}
 		} else {
@@ -97,7 +97,7 @@ public class UserResource {
 			try {
 				return Response.ok(this.converter.writeDocument(document)).type("application/vnd.api+json").build();
 			} catch (final DocumentSerializationException e) {
-				LOGGER.debug(e.getMessage());
+				logger.debug(e.getMessage());
 				return getAuthenticationErrorResponse();
 			}
 
@@ -120,7 +120,7 @@ public class UserResource {
 				return currentUser;
 			}
 		} catch (final Exception e) {
-			LOGGER.error("Error when authenticating user: ", e);
+			logger.error("Error when authenticating user: ", e);
 			return null;
 		}
 
@@ -144,7 +144,7 @@ public class UserResource {
 			return Response.status(Response.Status.UNAUTHORIZED).type("application/vnd.api+json")
 					.entity(this.converter.writeDocument(errorDocument)).build();
 		} catch (final DocumentSerializationException e) {
-			LOGGER.debug(e.getMessage());
+			logger.debug(e.getMessage());
 			return getAuthenticationErrorResponse();
 		}
 	}
