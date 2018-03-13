@@ -32,7 +32,6 @@ public class Landscape extends BaseEntity {
 	private final Map<Long, String> exceptions = new TreeMap<Long, String>();
 
 	@Relationship("outgoingApplicationCommunications")
-	// workaround until frontend is able to generate this list for rendering
 	private List<ApplicationCommunication> outgoingApplicationCommunications = new ArrayList<ApplicationCommunication>();
 
 	public long getTimestamp() {
@@ -79,7 +78,13 @@ public class Landscape extends BaseEntity {
 	/**
 	 * Clears all existing communication within the landscape
 	 */
-	public void clearCommunication() {
+	private void clearCommunication() {
+
+		// keeps applicationCommunication, but sets it to zero requests
+		for (final ApplicationCommunication commu : this.getOutgoingApplicationCommunications()) {
+			commu.reset();
+		}
+
 		for (final System system : this.getSystems()) {
 			for (final NodeGroup nodegroup : system.getNodeGroups()) {
 				for (final Node node : nodegroup.getNodes()) {
@@ -89,6 +94,16 @@ public class Landscape extends BaseEntity {
 				}
 			}
 		}
+	}
+
+	/**
+	 * Resets the landscape
+	 */
+	public void reset() {
+		this.getExceptions().clear();
+		this.getEvents().clear();
+		this.setOverallCalls(0L);
+		this.clearCommunication();
 	}
 
 }

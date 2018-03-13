@@ -28,7 +28,7 @@ import net.explorviz.model.application.Application;
 import net.explorviz.model.application.Clazz;
 import net.explorviz.model.application.Component;
 import net.explorviz.model.application.DatabaseQuery;
-import net.explorviz.model.helper.ClazzCommunicationHelper;
+import net.explorviz.model.helper.ModelHelper;
 import net.explorviz.model.helper.EProgrammingLanguage;
 import net.explorviz.model.landscape.Landscape;
 import net.explorviz.model.landscape.Node;
@@ -439,7 +439,7 @@ public class InsertionRepositoryPart {
 
 		// add clazzCommunication to clazz and aggregatedClazzCommunication to
 		// application
-		ClazzCommunicationHelper.addClazzCommunication(caller, callee, application, requests, average,
+		ModelHelper.addClazzCommunication(caller, callee, application, requests, average,
 				overallTraceDuration, traceId, orderIndex, operationName);
 	}
 

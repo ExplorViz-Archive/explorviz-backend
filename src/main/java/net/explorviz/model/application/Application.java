@@ -7,6 +7,7 @@ import com.github.jasminb.jsonapi.annotations.Relationship;
 import com.github.jasminb.jsonapi.annotations.Type;
 
 import net.explorviz.model.helper.BaseEntity;
+import net.explorviz.model.helper.ModelHelper;
 import net.explorviz.model.helper.EProgrammingLanguage;
 import net.explorviz.model.landscape.Node;
 
@@ -105,14 +106,31 @@ public class Application extends BaseEntity {
 	 * the application (application-perspective)
 	 */
 	public void clearCommunication() {
+
+		// reset clazzes (instance count zero) and clears clazzCommunications
 		for (final Component component : this.getComponents()) {
-			for (final Clazz clazz : component.getClazzes()) {
+			final List<Clazz> foundClazzes = ModelHelper.getChildrenComponentClazzes(component);
+			for (final Clazz clazz : foundClazzes) {
 				clazz.reset();
 			}
 		}
 
-		this.getOutgoingApplicationCommunications().clear();
+		// resets applicationCommunication
+		for (final ApplicationCommunication commu : this.getOutgoingApplicationCommunications()) {
+			commu.reset();
+		}
+
+		// clears the aggregatedClazzCommunication
 		this.getAggregatedOutgoingClazzCommunications().clear();
+
+		/*
+		 * // resets aggregatedClazzCommunication for (final
+		 * AggregatedClazzCommunication commu :
+		 * this.getAggregatedOutgoingClazzCommunications()) { commu.reset(); }
+		 */
+
+		// clears database queries
+		this.getDatabaseQueries().clear();
 	}
 
 }

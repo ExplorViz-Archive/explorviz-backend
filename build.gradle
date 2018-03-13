@@ -155,6 +155,6 @@ gretty {
   	reloadOnClassChange = false
   	reloadOnConfigChange = false
   	reloadOnLibChange = false
-	// debugging JVM GC
-	jvmArgs = [ '-XX:+PrintGCDetails', '-XX:+PrintGCDateStamps', '-Xloggc:gc_jvm.log' ]
+	// debugging JVM GC - for http://gceasy.io/
+	// jvmArgs = [ '-XX:+PrintGCDetails', '-XX:+PrintGCDateStamps', '-Xloggc:gc_jvm.log' ]
 }

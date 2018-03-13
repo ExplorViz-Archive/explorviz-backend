@@ -1,7 +1,6 @@
 package net.explorviz.repository;
 
 import java.io.FileNotFoundException;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -10,15 +9,7 @@ import org.nustaq.serialization.FSTConfiguration;
 import explorviz.live_trace_processing.reader.IPeriodicTimeSignalReceiver;
 import explorviz.live_trace_processing.reader.TimeSignalReader;
 import explorviz.live_trace_processing.record.IRecord;
-import net.explorviz.model.application.AggregatedClazzCommunication;
-import net.explorviz.model.application.Application;
-import net.explorviz.model.application.ApplicationCommunication;
-import net.explorviz.model.application.Clazz;
-import net.explorviz.model.application.Component;
 import net.explorviz.model.landscape.Landscape;
-import net.explorviz.model.landscape.Node;
-import net.explorviz.model.landscape.NodeGroup;
-import net.explorviz.model.landscape.System;
 import net.explorviz.server.main.Configuration;
 
 public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiver {
@@ -95,11 +86,7 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
 
 	public void reset() {
 		synchronized (internalLandscape) {
-			internalLandscape.clearCommunication();
-			internalLandscape.getSystems().clear();
-			internalLandscape.getEvents().clear();
-			internalLandscape.getExceptions().clear();
-			internalLandscape.setOverallCalls(0L);
+			internalLandscape.reset();
 		}
 	}
 
@@ -132,45 +119,7 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
 	}
 
 	private void resetCommunication() {
-		internalLandscape.getExceptions().clear();
-		internalLandscape.getEvents().clear();
-		internalLandscape.setOverallCalls(0L);
-
-		for (final ApplicationCommunication commu : internalLandscape.getOutgoingApplicationCommunications()) {
-			commu.setRequests(0);
-			commu.setAverageResponseTime(0);
-		}
-
-		for (final System system : internalLandscape.getSystems()) {
-			for (final NodeGroup nodeGroup : system.getNodeGroups()) {
-				for (final Node node : nodeGroup.getNodes()) {
-					for (final Application app : node.getApplications()) {
-						app.getDatabaseQueries().clear();
-
-						for (final ApplicationCommunication commu : app.getOutgoingApplicationCommunications()) {
-							commu.reset();
-						}
-
-						for (final AggregatedClazzCommunication commu : app
-								.getAggregatedOutgoingClazzCommunications()) {
-							commu.reset();
-						}
-
-						resetClazzInstances(app.getComponents());
-					}
-				}
-			}
-		}
-
-	}
-
-	private void resetClazzInstances(final List<Component> components) {
-		for (final Component compo : components) {
-			for (final Clazz clazz : compo.getClazzes()) {
-				clazz.reset();
-			}
-			resetClazzInstances(compo.getChildren());
-		}
+		internalLandscape.reset();
 	}
 
 	public void insertIntoModel(final IRecord inputIRecord) {
