@@ -10,6 +10,7 @@ import net.explorviz.model.application.ClazzCommunication;
 import net.explorviz.model.application.Component;
 import net.explorviz.model.application.DatabaseQuery;
 import net.explorviz.model.helper.EProgrammingLanguage;
+import net.explorviz.model.helper.ModelHelper;
 import net.explorviz.model.landscape.Landscape;
 import net.explorviz.model.landscape.Node;
 import net.explorviz.model.landscape.NodeGroup;
@@ -353,6 +354,7 @@ class LandscapeDummyCreator {
 		communication.setTargetApplication(target);
 		communication.setRequests(requests);
 		source.getOutgoingApplicationCommunications().add(communication);
+		landscape.getOutgoingApplicationCommunications().add(communication);
 
 		return communication;
 	}
@@ -407,18 +409,12 @@ class LandscapeDummyCreator {
 	 * @param targetClazz
 	 * @param application
 	 */
-	private static ClazzCommunication createCommuClazz(final int requests, final Clazz sourceClazz,
-			final Clazz targetClazz, final Application application) {
-		final ClazzCommunication communication = new ClazzCommunication();
-		communication.initializeID();
-		communication.addRuntimeInformation(0L, 1, requests, (0L + DummyLandscapeHelper.getRandomNum(10, 1000)),
-				(0L + DummyLandscapeHelper.getRandomNum(1000, 10000)));
-		communication.setOperationName("getMethod" + DummyLandscapeHelper.getRandomNum(1, 50) + "()");
-		communication.setSourceClazz(sourceClazz);
-		communication.setTargetClazz(targetClazz);
-		communication.getSourceClazz().getOutgoingClazzCommunications().add(communication);
-
-		return communication;
+	private static void createClazzCommunication(final int requests, final Clazz sourceClazz, final Clazz targetClazz,
+			final Application application) {
+		ModelHelper.addClazzCommunication(sourceClazz, targetClazz, application, requests,
+				(0L + DummyLandscapeHelper.getRandomNum(10, 1000)),
+				(0L + DummyLandscapeHelper.getRandomNum(1000, 10000)), 0L, 1,
+				"getMethod" + DummyLandscapeHelper.getRandomNum(1, 50) + "()");
 	}
 
 	/**
@@ -494,17 +490,18 @@ class LandscapeDummyCreator {
 		final Clazz loggingClazz = createClazz("AccountSqlMapDao", logging, 25);
 		createClazz("AccountSqlMapDao2", logging, 5);
 
-		createCommuClazz(40, graphDbClazz, helpersClazz, application);
-		createCommuClazz(800, toolingClazz, implClazz, application);
-		createCommuClazz(60, implClazz, helpersClazz, application);
-		createCommuClazz(600, implClazz, apiImplClazz, application);
-		createCommuClazz(1000, implClazz, loggingClazz, application);
-		createCommuClazz(100, guardClazz, unsafeClazz, application);
-		createCommuClazz(1000, apiClazz, configurationClazz, application);
-		createCommuClazz(150, lifecycleClazz, loggingClazz, application);
-		createCommuClazz(12000, guardClazz, implClazz, application);
-		createCommuClazz(3500, implClazz, loggingClazz, application);
-		createCommuClazz(500, loggingClazz, implClazz, application);
+		createClazzCommunication(40, graphDbClazz, helpersClazz, application);
+		createClazzCommunication(800, toolingClazz, implClazz, application);
+		createClazzCommunication(60, implClazz, helpersClazz, application);
+		createClazzCommunication(600, implClazz, apiImplClazz, application);
+		createClazzCommunication(1000, implClazz, loggingClazz, application);
+		createClazzCommunication(100, guardClazz, unsafeClazz, application);
+		createClazzCommunication(1000, apiClazz, configurationClazz, application);
+		createClazzCommunication(150, lifecycleClazz, loggingClazz, application);
+		createClazzCommunication(12000, guardClazz, implClazz, application);
+
+		createClazzCommunication(3500, implClazz, loggingClazz, application);
+		createClazzCommunication(500, loggingClazz, implClazz, application);
 
 		return application;
 	}

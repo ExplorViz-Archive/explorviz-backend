@@ -8,6 +8,7 @@ import net.explorviz.model.application.Application;
 import net.explorviz.model.application.Clazz;
 import net.explorviz.model.application.ClazzCommunication;
 import net.explorviz.model.application.Component;
+import net.explorviz.model.application.CumulatedClazzCommunication;
 
 /**
  * Helper class for several model classes
@@ -57,7 +58,7 @@ public final class ModelHelper {
 		// add clazzCommunication to calling clazz (sourceClazz)
 		caller.getOutgoingClazzCommunications().add(commu);
 
-		// add aggregtaedClazzCommunication to application
+		// add aggregatedClazzCommunication to application
 		ModelHelper.updateAggregatedClazzCommunication(application, commu);
 	}
 
@@ -140,6 +141,43 @@ public final class ModelHelper {
 		// adds a clazzCommunication if sourceClazz and targetClazz matches
 		if (aggCommu.addClazzCommunication(newCommunication)) {
 			aggregatedOutgoingClazzCommunications.add(aggCommu);
+			updateCumulatedClazzCommunication(application, aggCommu);
+		}
+	}
+
+	/**
+	 * Adds an aggregatedClazzCommunication to a matching
+	 * cumulatedClazzCommunication or creates a new one
+	 *
+	 * @param application
+	 * @param newCommunication
+	 */
+	public static void updateCumulatedClazzCommunication(final Application application,
+			final AggregatedClazzCommunication newCommunication) {
+		final List<CumulatedClazzCommunication> cumulatedClazzCommunications = application
+				.getCumulatedClazzCommunications();
+
+		// matching aggregatedClazzCommunication already exists
+		for (final CumulatedClazzCommunication aggClazzCommu : cumulatedClazzCommunications) {
+			if ((aggClazzCommu.getSourceClazz().equals(newCommunication.getSourceClazz())
+					&& aggClazzCommu.getTargetClazz().equals(newCommunication.getTargetClazz()))
+					|| (aggClazzCommu.getTargetClazz().equals(newCommunication.getSourceClazz())
+							&& aggClazzCommu.getSourceClazz().equals(newCommunication.getTargetClazz()))) {
+				aggClazzCommu.addAggregatedClazzCommunication(newCommunication);
+				return;
+			}
+		}
+
+		// creates a new aggregatedClazzCommunication
+		final CumulatedClazzCommunication aggCommu = new CumulatedClazzCommunication();
+		aggCommu.initializeID();
+		aggCommu.setSourceClazz(newCommunication.getSourceClazz());
+		aggCommu.setTargetClazz(newCommunication.getTargetClazz());
+		aggCommu.setRequests(newCommunication.getRequests());
+
+		// adds a clazzCommunication if sourceClazz and targetClazz matches
+		if (aggCommu.addAggregatedClazzCommunication(newCommunication)) {
+			cumulatedClazzCommunications.add(aggCommu);
 		}
 	}
 

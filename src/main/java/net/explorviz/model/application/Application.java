@@ -7,8 +7,8 @@ import com.github.jasminb.jsonapi.annotations.Relationship;
 import com.github.jasminb.jsonapi.annotations.Type;
 
 import net.explorviz.model.helper.BaseEntity;
-import net.explorviz.model.helper.ModelHelper;
 import net.explorviz.model.helper.EProgrammingLanguage;
+import net.explorviz.model.helper.ModelHelper;
 import net.explorviz.model.landscape.Node;
 
 /**
@@ -39,6 +39,9 @@ public class Application extends BaseEntity {
 
 	@Relationship("aggregatedOutgoingClazzCommunications")
 	private List<AggregatedClazzCommunication> aggregatedOutgoingClazzCommunications = new ArrayList<AggregatedClazzCommunication>();
+
+	@Relationship("cumulatedClazzCommunications")
+	private List<CumulatedClazzCommunication> cumulatedClazzCommunications = new ArrayList<CumulatedClazzCommunication>();
 
 	public String getName() {
 		return name;
@@ -101,6 +104,14 @@ public class Application extends BaseEntity {
 		this.aggregatedOutgoingClazzCommunications = aggregatedOutgoingClazzCommunications;
 	}
 
+	public List<CumulatedClazzCommunication> getCumulatedClazzCommunications() {
+		return cumulatedClazzCommunications;
+	}
+
+	public void setCumulatedClazzCommunications(final List<CumulatedClazzCommunication> cumulatedClazzCommunications) {
+		this.cumulatedClazzCommunications = cumulatedClazzCommunications;
+	}
+
 	/**
 	 * Clears all existings communication from (landscape-perspective) and within
 	 * the application (application-perspective)
@@ -123,11 +134,8 @@ public class Application extends BaseEntity {
 		// clears the aggregatedClazzCommunication
 		this.getAggregatedOutgoingClazzCommunications().clear();
 
-		/*
-		 * // resets aggregatedClazzCommunication for (final
-		 * AggregatedClazzCommunication commu :
-		 * this.getAggregatedOutgoingClazzCommunications()) { commu.reset(); }
-		 */
+		// clears the cumulatedClazzCommunication
+		this.getCumulatedClazzCommunications().clear();
 
 		// clears database queries
 		this.getDatabaseQueries().clear();

@@ -9,8 +9,8 @@ import com.github.jasminb.jsonapi.annotations.Type;
 import net.explorviz.model.helper.BaseEntity;
 
 /**
- * Model representing aggregated communication between classes (within a single
- * application)
+ * Model representing aggregated communication between classes (sourceClazz ->
+ * targetClazz) (within a single application)
  *
  * @author Christian Zirkelbach (czi@informatik.uni-kiel.de)
  *
@@ -27,8 +27,8 @@ public class AggregatedClazzCommunication extends BaseEntity {
 	@Relationship("targetClazz")
 	private Clazz targetClazz;
 
-	@Relationship("clazzCommunications")
-	private List<ClazzCommunication> clazzCommunications = new ArrayList<ClazzCommunication>();
+	@Relationship("outgoingClazzCommunications")
+	private List<ClazzCommunication> outgoingClazzCommunications = new ArrayList<ClazzCommunication>();
 
 	public int getRequests() {
 		return requests;
@@ -54,12 +54,12 @@ public class AggregatedClazzCommunication extends BaseEntity {
 		this.targetClazz = targetClazz;
 	}
 
-	public List<ClazzCommunication> getClazzCommunications() {
-		return clazzCommunications;
+	public List<ClazzCommunication> getOutgoingClazzCommunications() {
+		return outgoingClazzCommunications;
 	}
 
-	public void getClazzCommunications(final List<ClazzCommunication> clazzCommunications) {
-		this.clazzCommunications = clazzCommunications;
+	public void getOutgoingClazzCommunications(final List<ClazzCommunication> clazzCommunications) {
+		this.outgoingClazzCommunications = clazzCommunications;
 	}
 
 	// adds a clazzCommunication if sourceClazz and targetClazz matches
@@ -68,7 +68,7 @@ public class AggregatedClazzCommunication extends BaseEntity {
 		if (this.sourceClazz.equals(clazzcommunication.getSourceClazz())
 				&& this.targetClazz.equals(clazzcommunication.getTargetClazz())) {
 			this.setRequests(this.getRequests() + clazzcommunication.getRequests());
-			this.clazzCommunications.add(clazzcommunication);
+			this.outgoingClazzCommunications.add(clazzcommunication);
 			return true;
 		}
 		return false;
@@ -76,7 +76,7 @@ public class AggregatedClazzCommunication extends BaseEntity {
 
 	public void reset() {
 		requests = 0;
-		clazzCommunications.clear();
+		outgoingClazzCommunications.clear();
 	}
 
 }
