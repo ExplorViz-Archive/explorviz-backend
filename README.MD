@@ -15,7 +15,7 @@ This gradle project includes or installs every necessary dependency.
 3. Install **PMD** and **Checkstyle** embedded in [qa-eclipse-plugin
 ](https://github.com/ChristianWulf/qa-eclipse-plugin)
     - In Eclipse: *Help -> Install New Software -> Insert https://build.se.informatik.uni-kiel.de/eus/qa/snapshot/ in "Work with" -> Check "QA tooling" -> Finish, download, and install*
-    - Following the configuration as listed [here](https://github.com/ChristianWulf/qa-eclipse-plugin)
+    - Follow the configuration as listed [here](https://github.com/ChristianWulf/qa-eclipse-plugin)
 4. Configure the respective tool views (In Eclipse: *Window -> Show View -> Other -> ...)
 
 ## Setup Development
