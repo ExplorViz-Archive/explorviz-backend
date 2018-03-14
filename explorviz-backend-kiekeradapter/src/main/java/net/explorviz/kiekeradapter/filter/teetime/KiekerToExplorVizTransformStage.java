@@ -9,7 +9,6 @@ import kieker.common.record.IMonitoringRecord;
 import kieker.common.record.database.AfterDatabaseEvent;
 import kieker.common.record.database.BeforeDatabaseEvent;
 import kieker.common.record.database.DatabaseFailedEvent;
-import kieker.common.record.flow.IInterfaceRecord;
 import kieker.common.record.flow.IObjectRecord;
 import kieker.common.record.flow.trace.ApplicationTraceMetadata;
 import kieker.common.record.flow.trace.operation.AfterOperationEvent;
@@ -21,7 +20,6 @@ import kieker.common.record.flow.trace.operation.constructor.BeforeConstructorEv
 import kieker.common.record.system.CPUUtilizationRecord;
 import kieker.common.record.system.MemSwapUsageRecord;
 import net.explorviz.kiekeradapter.configuration.GenericExplorVizExternalLogAdapter;
-import net.explorviz.kiekeradapter.main.KiekerAdapter;
 import teetime.framework.AbstractConsumerStage;
 
 /**
@@ -36,7 +34,7 @@ public class KiekerToExplorVizTransformStage extends AbstractConsumerStage<IMoni
 	private final Stack<IMonitoringRecord> stack = new Stack<IMonitoringRecord>();
 
 	@Override
-	protected void execute(IMonitoringRecord element) throws Exception {
+	protected void execute(final IMonitoringRecord element) throws Exception {
 		inputKiekerRecords(element);
 	}
 
@@ -80,11 +78,11 @@ public class KiekerToExplorVizTransformStage extends AbstractConsumerStage<IMoni
 				objectId = iObjectRecord.getObjectId();
 			}
 
-			final String interfaceImpl = getInterface(kiekerRecord);
+			final String interfaceImpl = KiekerToExplorVizTransformationHelper.getInterface(kiekerRecord);
 
 			GenericExplorVizExternalLogAdapter.sendBeforeConstructorRecord(kiekerBefore.getLoggingTimestamp(),
 					kiekerBefore.getTraceId(), kiekerBefore.getOrderIndex(), objectId,
-					convertSignatureToExplorViz(kiekerBefore), kiekerBefore.getClassSignature(), interfaceImpl);
+					KiekerToExplorVizTransformationHelper.convertSignatureToExplorViz(kiekerBefore), kiekerBefore.getClassSignature(), interfaceImpl);
 		} else if (kiekerRecord instanceof AfterConstructorFailedEvent) {
 			final AfterConstructorFailedEvent kiekerAfter = (AfterConstructorFailedEvent) kiekerRecord;
 
@@ -123,11 +121,11 @@ public class KiekerToExplorVizTransformStage extends AbstractConsumerStage<IMoni
 				objectId = iObjectRecord.getObjectId();
 			}
 
-			final String interfaceImpl = getInterface(kiekerRecord);
+			final String interfaceImpl = KiekerToExplorVizTransformationHelper.getInterface(kiekerRecord);
 
 			GenericExplorVizExternalLogAdapter.sendBeforeRecord(kiekerBefore.getLoggingTimestamp(),
 					kiekerBefore.getTraceId(), kiekerBefore.getOrderIndex(), objectId,
-					convertSignatureToExplorViz(kiekerBefore), kiekerBefore.getClassSignature(), interfaceImpl);
+					KiekerToExplorVizTransformationHelper.convertSignatureToExplorViz(kiekerBefore), kiekerBefore.getClassSignature(), interfaceImpl);
 		} else if (kiekerRecord instanceof AfterOperationFailedEvent) {
 			final AfterOperationFailedEvent kiekerAfter = (AfterOperationFailedEvent) kiekerRecord;
 
@@ -170,7 +168,7 @@ public class KiekerToExplorVizTransformStage extends AbstractConsumerStage<IMoni
 			}
 
 			// TODO deprecated?
-			final String interfaceImpl = getInterface(kiekerRecord);
+			final String interfaceImpl = KiekerToExplorVizTransformationHelper.getInterface(kiekerRecord);
 
 			GenericExplorVizExternalLogAdapter.sendBeforeDatabaseEvent(beforeDatabaseEvent.getLoggingTimestamp(),
 					beforeDatabaseEvent.getClassSignature(), beforeDatabaseEvent.getTraceId(),
@@ -211,29 +209,4 @@ public class KiekerToExplorVizTransformStage extends AbstractConsumerStage<IMoni
 		}
 	}
 
-	private String getInterface(final IMonitoringRecord kiekerRecord) {
-		if (kiekerRecord instanceof IInterfaceRecord) {
-			final IInterfaceRecord iInterfaceRecord = (IInterfaceRecord) kiekerRecord;
-			final String interfaceImpl = iInterfaceRecord.getInterface();
-
-			if (!interfaceImpl.isEmpty() && !interfaceImpl.equals("[]")) {
-				final int indexOfSeperator = interfaceImpl.indexOf(", ");
-
-				if (indexOfSeperator > 0) {
-					return interfaceImpl.substring(1, indexOfSeperator);
-				} else {
-					return interfaceImpl.substring(1, interfaceImpl.length() - 1);
-				}
-			}
-		}
-		return "";
-	}
-
-	private String convertSignatureToExplorViz(final BeforeOperationEvent kiekerBefore) {
-		if (KiekerAdapter.getSignatureConverter() != null) {
-			return KiekerAdapter.getSignatureConverter().convertSignatureToExplorViz(kiekerBefore);
-		}
-
-		return kiekerBefore.getOperationSignature();
-	}
 }

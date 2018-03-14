@@ -56,17 +56,17 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
 		return LandscapeRepositoryModel.instance;
 	}
 
-	public final Landscape getLastPeriodLandscape() {
+	public Landscape getLastPeriodLandscape() {
 		synchronized (lastPeriodLandscape) {
 			return lastPeriodLandscape;
 		}
 	}
 
-	public final Landscape getLandscape(final long timestamp) throws FileNotFoundException {
+	public Landscape getLandscape(final long timestamp) throws FileNotFoundException {
 		return LandscapePreparer.prepareLandscape(RepositoryStorage.readFromFile(timestamp));
 	}
 
-	public final Map<Long, Long> getAvailableLandscapes() {
+	public Map<Long, Long> getAvailableLandscapes() {
 		return RepositoryStorage.getAvailableModelsForTimeshift();
 	}
 

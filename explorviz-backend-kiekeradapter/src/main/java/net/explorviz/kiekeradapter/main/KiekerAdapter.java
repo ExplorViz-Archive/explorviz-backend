@@ -15,7 +15,7 @@ import teetime.framework.Execution;
  */
 public final class KiekerAdapter {
 
-	final Logger logger = LoggerFactory.getLogger(KiekerAdapter.class.getName());
+	static final Logger LOG = LoggerFactory.getLogger(KiekerAdapter.class.getName());
 	private static KiekerAdapter instance = null;
 	private static SignatureConverter signatureConverter;
 
@@ -27,7 +27,7 @@ public final class KiekerAdapter {
 	}
 
 	public void startReader() {
-		logger.info("Starting kiekerAdapter...");
+		LOG.info("Starting kiekerAdapter...");
 		StageConfiguration config = new StageConfiguration();
 		Execution<StageConfiguration> execution = new Execution<StageConfiguration>(config);
 		execution.executeNonBlocking();
@@ -37,7 +37,7 @@ public final class KiekerAdapter {
 		return signatureConverter;
 	}
 
-	public static void setSignatureConverter(SignatureConverter signatureConverter) {
+	public static void setSignatureConverter(final SignatureConverter signatureConverter) {
 		KiekerAdapter.signatureConverter = signatureConverter;
 	}
 

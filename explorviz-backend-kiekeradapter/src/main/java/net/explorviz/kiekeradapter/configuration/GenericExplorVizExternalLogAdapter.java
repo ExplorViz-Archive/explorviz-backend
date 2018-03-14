@@ -28,15 +28,19 @@ import explorviz.live_trace_processing.record.trace.HostApplicationMetaDataRecor
  * @author Christian Zirkelbach (czi@informatik.uni-kiel.de)
  *
  */
-public class GenericExplorVizExternalLogAdapter {
+public final class GenericExplorVizExternalLogAdapter {
 
 	static final Logger logger = LoggerFactory.getLogger(GenericExplorVizExternalLogAdapter.class.getName());
 
-	public static boolean replayInRealTime = false;
+	private static boolean replayInRealTime = false;
 	private static final ByteBuffer explorVizBuffer;
 	private static long firstTimestamp = -1;
 	private static long firstWallclockTimestamp;
 
+	private GenericExplorVizExternalLogAdapter() {
+		// private constructor
+	}
+	
 	static {
 		// Defines the size of the ByteBuffer: Needs to match the largest record
 		// Check record size, if a new record is added!
