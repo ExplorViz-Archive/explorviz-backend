@@ -10,7 +10,7 @@ This gradle project includes or installs every necessary dependency.
 
 ### Eclipse Setup
 1. Download the latest **Eclipse IDE for Java and DSL Developers** and **Java SDK 8**
-2. Install **SpotBugs and Checkstyle**
+2. Install **SpotBugs (formerly known as Findbugs)**
     - *Start Eclipse -> Help -> Eclipse Marketplace* - type in the following and install **SpotBugs Eclipse plugin 3.1.2*
 3. Install **PMD** and **Checkstyle** embedded in [qa-eclipse-plugin
 ](https://github.com/ChristianWulf/qa-eclipse-plugin)
