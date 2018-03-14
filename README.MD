@@ -13,9 +13,8 @@ This gradle project includes or installs every necessary dependency.
 2. Install **SpotBugs and Checkstyle**
     - *Start Eclipse -> Help -> Eclipse Marketplace* - type in the following and install afterwards
        1. *SpotBugs Eclipse plugin 3.1.2*
-       2. *Checkstyle Plug-in 8.8.0*
-3. Install **PMD**
-    - In Eclipse: *Help -> Install New Software -> Insert https://dl.bintray.com/pmd/pmd-eclipse-plugin/updates/ in "Work with" -> Check "PMD for Eclipse 4" -> Finish, download, and install* (**Attention:** Don't use the eclipse-pmd version from the marketplace)
+3. Install **PMD** and **Checkstyle** via [QA tooling](https://github.com/ChristianWulf/qa-eclipse-plugin)
+    - In Eclipse: *Help -> Install New Software -> Insert https://build.se.informatik.uni-kiel.de/eus/qa/snapshot/ in "Work with" -> Check "QA tooling" -> Finish, download, and install*
 4. Configure the respective tool views (In Eclipse: *Window -> Show View -> Other -> ...)
 
 ## Setup Development
