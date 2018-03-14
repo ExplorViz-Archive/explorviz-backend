@@ -7,7 +7,6 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.explorviz.model.helper.LandscapeHelper;
 import net.explorviz.model.helper.TimestampHelper;
 import net.explorviz.model.landscape.Landscape;
 import net.explorviz.model.store.Timestamp;
@@ -54,10 +53,7 @@ public final class ExtensionAPIImpl implements IExtensionAPI {
 	 */
 	@Override
 	public Landscape getLatestLandscape() {
-		// workaround until frontend is able to generate this list for rendering
-		final Landscape currentLandscape = service.getCurrentLandscape();
-
-		return currentLandscape;
+		return service.getCurrentLandscape();
 	}
 
 	/**
@@ -67,14 +63,9 @@ public final class ExtensionAPIImpl implements IExtensionAPI {
 	 */
 	@Override
 	public Landscape getLandscape(final long timestamp) {
-		// workaround until frontend is able to generate this list for rendering
 		Landscape specificLandscape = new Landscape();
 		try {
 			specificLandscape = service.getLandscape(timestamp);
-
-			// updates in memory outgoingApplicationCommunication (landscape)
-			LandscapeHelper.computeOutgoingApplicationCommunications(specificLandscape);
-
 			return specificLandscape;
 
 		} catch (final FileNotFoundException e) {

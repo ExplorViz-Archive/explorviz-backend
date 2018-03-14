@@ -3,13 +3,12 @@ package net.explorviz.repository;
 import net.explorviz.model.application.Application;
 import net.explorviz.model.application.ApplicationCommunication;
 import net.explorviz.model.application.Component;
-import net.explorviz.model.helper.LandscapeHelper;
 import net.explorviz.model.landscape.Landscape;
 import net.explorviz.model.landscape.Node;
 import net.explorviz.model.landscape.NodeGroup;
 import net.explorviz.model.landscape.System;
 
-public class LandscapePreparer {
+public final class LandscapePreparer {
 
 	public static Landscape prepareLandscape(final Landscape landscape) {
 		if (landscape == null) {
@@ -49,7 +48,6 @@ public class LandscapePreparer {
 		}
 
 		// outgoing communication between applications
-		LandscapeHelper.computeOutgoingApplicationCommunications(landscape);
 		for (final ApplicationCommunication commu : landscape.getOutgoingApplicationCommunications()) {
 			createOutgoingApplicationCommunication(commu);
 		}

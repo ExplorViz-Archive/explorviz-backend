@@ -13,7 +13,6 @@ import explorviz.live_trace_processing.record.trace.HostApplicationMetaDataRecor
 import net.explorviz.model.application.Application;
 import net.explorviz.model.application.ApplicationCommunication;
 import net.explorviz.model.application.Clazz;
-import net.explorviz.model.helper.LandscapeHelper;
 import net.explorviz.model.landscape.Landscape;
 import net.explorviz.model.landscape.Node;
 import net.explorviz.repository.helper.RemoteRecordBuffer;
@@ -117,7 +116,6 @@ public class RemoteCallRepositoryPart {
 		final Application callerApplication = getHostApplication(sentRemoteCallRecord, inserter, landscape);
 		final Application currentApplication = getHostApplication(receivedRemoteCallRecord, inserter, landscape);
 
-		LandscapeHelper.computeOutgoingApplicationCommunications(landscape);
 		for (final ApplicationCommunication commu : landscape.getOutgoingApplicationCommunications()) {
 			if (commu.getSourceApplication() == callerApplication && commu.getTargetApplication() == currentApplication
 					|| commu.getSourceApplication() == currentApplication
@@ -149,7 +147,10 @@ public class RemoteCallRepositoryPart {
 				(float) sentRemoteCallRecord.getRuntimeStatisticInformationList().get(runtimeIndex).getAverage());
 		communication.setTechnology(sentRemoteCallRecord.getTechnology());
 
-		LandscapeHelper.computeOutgoingApplicationCommunications(landscape);
+		// add applicationCommunication to caller application
+		callerApplication.getOutgoingApplicationCommunications().add(communication);
+
+		// addapplicationCommunication to landscap
 		landscape.getOutgoingApplicationCommunications().add(communication);
 
 		landscape.setOverallCalls(landscape.getOverallCalls()
