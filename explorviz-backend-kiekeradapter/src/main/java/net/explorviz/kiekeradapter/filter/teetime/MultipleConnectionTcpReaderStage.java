@@ -33,9 +33,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import kieker.common.exception.RecordInstantiationException;
-import kieker.common.logging.Log;
-import kieker.common.logging.LogFactory;
 import kieker.common.record.AbstractMonitoringRecord;
 import kieker.common.record.IMonitoringRecord;
 import kieker.common.record.factory.CachedRecordFactoryCatalog;
@@ -54,7 +55,7 @@ public class MultipleConnectionTcpReaderStage extends AbstractProducerStage<IMon
 	private static final int INT_BYTES = AbstractMonitoringRecord.TYPE_SIZE_INT;
 	private static final int LONG_BYTES = AbstractMonitoringRecord.TYPE_SIZE_LONG;
 	private static final Charset ENCODING = StandardCharsets.UTF_8;
-	private static final Log LOG = LogFactory.getLog(MultipleConnectionTcpReaderStage.class);
+	private static final Logger LOG = LoggerFactory.getLogger(MultipleConnectionTcpReaderStage.class);
 
 	private final CachedRecordFactoryCatalog recordFactories = CachedRecordFactoryCatalog.getInstance();
 

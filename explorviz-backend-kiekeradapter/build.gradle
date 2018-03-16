@@ -18,7 +18,7 @@ dependencies {
 	compile fileTree(dir: 'libs', include: ['*.jar'])
 
 	// Teetime Pipe and Filter Framework
-	compile group: 'net.sourceforge.teetime', name: 'teetime', version: '3.0-SNAPSHOT'
+	compile group: 'net.sourceforge.teetime', name: 'teetime', version: '3.0-SNAPSHOT'	
 	compile group: 'net.sourceforge.teetime-stages', name: 'teetime-stages', version: '3.0-SNAPSHOT'
 	
 	// Kieker Monitoring Framework

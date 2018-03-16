@@ -6,6 +6,7 @@ import org.glassfish.hk2.utilities.binding.AbstractBinder;
 
 import com.github.jasminb.jsonapi.ResourceConverter;
 
+import net.explorviz.model.helper.ErrorObjectHelper;
 import net.explorviz.repository.LandscapeExchangeService;
 import net.explorviz.repository.LandscapeRepositoryModel;
 import net.explorviz.server.injection.LandscapeRepositoryFactory;
@@ -14,7 +15,7 @@ import net.explorviz.server.security.HibernateSessionFactory;
 
 /**
  * Configures the dependency binding setup for inject during runtime
- * 
+ *
  * @author Christian Zirkelbach (czi@informatik.uni-kiel.de)
  *
  */
@@ -27,5 +28,6 @@ public class DependencyInjectionBinder extends AbstractBinder {
 
 		this.bind(LandscapeExchangeService.class).to(LandscapeExchangeService.class).in(Singleton.class);
 		this.bind(HibernateSessionFactory.class).to(HibernateSessionFactory.class).in(Singleton.class);
+		this.bind(ErrorObjectHelper.class).to(ErrorObjectHelper.class).in(Singleton.class);
 	}
 }
