@@ -2,18 +2,22 @@
 <a href="https://travis-ci.org/ExplorViz/explorviz-backend"><img src="https://travis-ci.org/ExplorViz/explorviz-backend.svg?branch=master" alt="Build Status"></a>
 [![](https://img.shields.io/docker/pulls/explorviz/explorviz-docker.svg)](https://hub.docker.com/r/explorviz/explorviz-docker "Click to view the image on Docker Hub")
 
-This project is a WIP replica of ExplorViz's visualization component. 
+This project contains the modernized version of [ExplorViz](https://github.com/ExplorViz/Explorviz). 
+
 It substitutes [GWT](http://www.gwtproject.org/) and it's (asynchronous) RPC framework with [Jersey](https://jersey.java.net/) for creating a RESTful API. 
 This is only the backend, you will need the [explorviz-frontend](https://github.com/ExplorViz/explorviz-frontend) as well.
 
 This gradle project includes or installs every necessary dependency.
 
 ### Eclipse Setup
-1. Download the latest **[Eclipse IDE for Java Developers](http://www.eclipse.org/downloads/eclipse-packages/)** and **[Java SDK 8](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html)**
-2. *Start Eclipse -> Help -> Eclipse Marketplace*, insert and download
-- *SpotBugs Eclipse plugin 3.1.1*
-- *Checkstyle Plug-in 8.7.0*
-3. In Eclipse: *Help -> Install New Software -> Insert https://dl.bintray.com/pmd/pmd-eclipse-plugin/updates/ in "Work with" -> Check "PMD for Eclipse 4" -> Finish and download* (**Attention:** Don't use the eclipse-pmd version from the marketplace)
+1. Download the latest **Eclipse IDE for Java and DSL Developers** and **Java SDK 8**
+2. Install **SpotBugs (formerly known as Findbugs)**
+    - *Start Eclipse -> Help -> Eclipse Marketplace* - type in the following and install **SpotBugs Eclipse plugin 3.1.2*
+3. Install **PMD** and **Checkstyle** embedded in [qa-eclipse-plugin
+](https://github.com/ChristianWulf/qa-eclipse-plugin)
+    - In Eclipse: *Help -> Install New Software -> Insert https://build.se.informatik.uni-kiel.de/eus/qa/snapshot/ in "Work with" -> Check "QA tooling" -> Finish, download, and install*
+    - Follow the configuration as listed [here](https://github.com/ChristianWulf/qa-eclipse-plugin)
+4. Configure the respective tool views (In Eclipse: *Window -> Show View -> Other -> ...)
 
 ## Setup Development
 1. Follow the [Eclipse Setup](https://github.com/ExplorViz/explorviz-backend#eclipse-setup)
