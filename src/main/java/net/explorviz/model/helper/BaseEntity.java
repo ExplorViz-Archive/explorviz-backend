@@ -5,16 +5,21 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 
-import org.eclipse.xtext.xbase.lib.Pure;
-
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.github.jasminb.jsonapi.LongIdHandler;
 import com.github.jasminb.jsonapi.annotations.Id;
 
+/**
+ * Base Model for all other data model entities
+ *
+ * @author Christian Zirkelbach (czi@informatik.uni-kiel.de)
+ *
+ */
 @SuppressWarnings("serial")
 @JsonIdentityInfo(generator = ObjectIdGenerators.StringIdGenerator.class, property = "id")
 public class BaseEntity implements Serializable {
+
 	private static final AtomicLong ID_GENERATOR = new AtomicLong();
 
 	@Id(LongIdHandler.class)
@@ -23,13 +28,10 @@ public class BaseEntity implements Serializable {
 	/*
 	 * This attribute can be used by extensions to insert custom properties to any
 	 * meta-model object. Non primitive types (your custom model class) must be
-	 * annotated with type annotations, e.g., as shown in any meta-model entity
+	 * annotated with type annotations, e.g., as shown in any model entity
 	 */
 	private final Map<String, Object> extensionAttributes = new HashMap<String, Object>();
 
-	private long timestamp;
-
-	@Pure
 	public Long getId() {
 		return this.id;
 	}
@@ -40,14 +42,6 @@ public class BaseEntity implements Serializable {
 
 	public void setId(final Long id) {
 		this.id = id;
-	}
-
-	public long getTimestamp() {
-		return timestamp;
-	}
-
-	public void setTimestamp(final long timestamp) {
-		this.timestamp = timestamp;
 	}
 
 	public Map<String, Object> getExtensionAttributes() {

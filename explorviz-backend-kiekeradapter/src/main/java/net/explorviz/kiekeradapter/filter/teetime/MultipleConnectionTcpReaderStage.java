@@ -31,10 +31,12 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicLong;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import kieker.common.exception.RecordInstantiationException;
-import kieker.common.logging.Log;
-import kieker.common.logging.LogFactory;
 import kieker.common.record.AbstractMonitoringRecord;
 import kieker.common.record.IMonitoringRecord;
 import kieker.common.record.factory.CachedRecordFactoryCatalog;
@@ -53,7 +55,7 @@ public class MultipleConnectionTcpReaderStage extends AbstractProducerStage<IMon
 	private static final int INT_BYTES = AbstractMonitoringRecord.TYPE_SIZE_INT;
 	private static final int LONG_BYTES = AbstractMonitoringRecord.TYPE_SIZE_LONG;
 	private static final Charset ENCODING = StandardCharsets.UTF_8;
-	private static final Log LOG = LogFactory.getLog(MultipleConnectionTcpReaderStage.class);
+	private static final Logger LOG = LoggerFactory.getLogger(MultipleConnectionTcpReaderStage.class);
 
 	private final CachedRecordFactoryCatalog recordFactories = CachedRecordFactoryCatalog.getInstance();
 
@@ -61,7 +63,7 @@ public class MultipleConnectionTcpReaderStage extends AbstractProducerStage<IMon
 	private final int inputPort;
 	private final int bufferSize;
 
-	private volatile long traceId = 0;
+	private volatile AtomicLong traceId = new AtomicLong(0);
 	private final Map<String, Map<Long, TraceMetadata>> metadatamap = new HashMap<>();
 
 	/**
@@ -86,7 +88,7 @@ public class MultipleConnectionTcpReaderStage extends AbstractProducerStage<IMon
 			serverSocket.configureBlocking(false);
 			final Selector readSelector = Selector.open();
 
-//			while (this.isActive()) {
+			// while (this.isActive()) {
 			while (true) {
 				final SocketChannel socketChannel = serverSocket.accept();
 				if (socketChannel != null) {
@@ -219,15 +221,20 @@ public class MultipleConnectionTcpReaderStage extends AbstractProducerStage<IMon
 			} else {
 				try {
 					final IMonitoringRecord record = recordFactory.create(connection.getValueDeserializer());
-					record.setLoggingTimestamp(loggingTimestamp);
 
-					// TODO rewriting deactivated.
-					final IMonitoringRecord rewrittenRecord = record; // this.recordRewrite(connection,
-																		// record);
-					if (rewrittenRecord != null) {
-						this.outputPort.send(rewrittenRecord);
+					if (record != null) {
+						record.setLoggingTimestamp(loggingTimestamp);
+
+						// TODO rewriting deactivated.
+						final IMonitoringRecord rewrittenRecord = record; // this.recordRewrite(connection,
+																			// record);
+						if (rewrittenRecord != null) {
+							this.outputPort.send(rewrittenRecord);
+						}
+						return true;
+					} else {
+						return false;
 					}
-					return true;
 				} catch (final RecordInstantiationException ex) {
 					super.logger.error("Failed to create: " + recordClassName, ex);
 					return false;
@@ -245,18 +252,19 @@ public class MultipleConnectionTcpReaderStage extends AbstractProducerStage<IMon
 	 * @return
 	 * @throws IOException
 	 */
+	@SuppressWarnings("unused")
 	private IMonitoringRecord recordRewrite(final Connection connection, final IMonitoringRecord record)
 			throws IOException {
 		if (record instanceof TraceMetadata) {
 			final TraceMetadata traceMetadata = (TraceMetadata) record;
-			traceMetadata.setTraceId(this.traceId);
+			traceMetadata.setTraceId(this.traceId.get());
 			Map<Long, TraceMetadata> map = this.metadatamap.get(traceMetadata.getHostname());
 			if (map == null) {
 				map = new HashMap<>();
 				this.metadatamap.put(traceMetadata.getHostname(), map);
 			}
 			map.put(traceMetadata.getTraceId(), traceMetadata);
-			this.traceId++;
+			this.traceId.getAndIncrement();
 			return traceMetadata;
 		} else if (record instanceof ITraceRecord) {
 			final TraceMetadata metaData = this.metadatamap.get(this.getIP(connection.getChannel().getRemoteAddress()))

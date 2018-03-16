@@ -12,10 +12,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.explorviz.kiekeradapter.main.KiekerAdapter;
-import net.explorviz.model.Landscape;
-import net.explorviz.model.Timestamp;
+import net.explorviz.model.landscape.Landscape;
+import net.explorviz.model.store.Timestamp;
+import net.explorviz.server.helper.FileSystemHelper;
 import net.explorviz.server.main.Configuration;
-import net.explorviz.server.main.FileSystemHelper;
 
 /**
  * Exchange Service for timestamps and landscapes - used by resources (REST)

@@ -7,6 +7,12 @@ import com.github.jasminb.jsonapi.SerializationFeature;
 
 import net.explorviz.server.providers.GenericTypeFinder;
 
+/**
+ * Factory for creating resource converts for JSON conversion
+ * 
+ * @author Christian Zirkelbach (czi@informatik.uni-kiel.de)
+ *
+ */
 public class ResourceConverterFactory implements Factory<ResourceConverter> {
 	private final ResourceConverter converter;
 

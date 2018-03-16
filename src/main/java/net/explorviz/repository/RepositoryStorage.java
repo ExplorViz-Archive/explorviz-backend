@@ -14,23 +14,21 @@ import org.nustaq.serialization.FSTConfiguration;
 import org.nustaq.serialization.FSTObjectInput;
 import org.nustaq.serialization.FSTObjectOutput;
 
-import net.explorviz.model.Application;
-import net.explorviz.model.Clazz;
-import net.explorviz.model.Communication;
-import net.explorviz.model.CommunicationClazz;
-import net.explorviz.model.Component;
-import net.explorviz.model.DatabaseQuery;
-import net.explorviz.model.Landscape;
-import net.explorviz.model.Node;
-import net.explorviz.model.NodeGroup;
-import net.explorviz.model.RuntimeInformation;
-import net.explorviz.model.System;
-import net.explorviz.model.helper.CommunicationAccumulator;
-import net.explorviz.model.helper.CommunicationTileAccumulator;
-import net.explorviz.model.helper.ELanguage;
-import net.explorviz.model.helper.Point;
+import net.explorviz.model.application.AggregatedClazzCommunication;
+import net.explorviz.model.application.Application;
+import net.explorviz.model.application.ApplicationCommunication;
+import net.explorviz.model.application.Clazz;
+import net.explorviz.model.application.ClazzCommunication;
+import net.explorviz.model.application.Component;
+import net.explorviz.model.application.DatabaseQuery;
+import net.explorviz.model.application.RuntimeInformation;
+import net.explorviz.model.helper.EProgrammingLanguage;
+import net.explorviz.model.landscape.Landscape;
+import net.explorviz.model.landscape.Node;
+import net.explorviz.model.landscape.NodeGroup;
+import net.explorviz.model.landscape.System;
+import net.explorviz.server.helper.FileSystemHelper;
 import net.explorviz.server.main.Configuration;
-import net.explorviz.server.main.FileSystemHelper;
 
 public class RepositoryStorage {
 	private static String folder;
@@ -58,17 +56,15 @@ public class RepositoryStorage {
 		result.registerClass(System.class);
 		result.registerClass(NodeGroup.class);
 		result.registerClass(Node.class);
-		result.registerClass(Communication.class);
-		result.registerClass(CommunicationTileAccumulator.class);
-		result.registerClass(CommunicationAccumulator.class);
 		result.registerClass(Application.class);
-		result.registerClass(ELanguage.class);
+		result.registerClass(ApplicationCommunication.class);
+		result.registerClass(AggregatedClazzCommunication.class);
+		result.registerClass(DatabaseQuery.class);
+		result.registerClass(EProgrammingLanguage.class);
 		result.registerClass(Component.class);
 		result.registerClass(Clazz.class);
+		result.registerClass(ClazzCommunication.class);
 		result.registerClass(RuntimeInformation.class);
-		result.registerClass(DatabaseQuery.class);
-		result.registerClass(CommunicationClazz.class);
-		result.registerClass(Point.class);
 
 		return result;
 	}
@@ -89,7 +85,7 @@ public class RepositoryStorage {
 
 	public static void writeToFile(final Landscape landscape, final long timestamp) {
 		writeToFileGeneric(landscape, folder,
-				timestamp + "-" + landscape.getActivities() + Configuration.MODEL_EXTENSION);
+				timestamp + "-" + landscape.getOverallCalls() + Configuration.MODEL_EXTENSION);
 	}
 
 	private static void writeToFileGeneric(final Landscape landscape, final String destFolder,

@@ -28,15 +28,19 @@ import explorviz.live_trace_processing.record.trace.HostApplicationMetaDataRecor
  * @author Christian Zirkelbach (czi@informatik.uni-kiel.de)
  *
  */
-public class GenericExplorVizExternalLogAdapter {
+public final class GenericExplorVizExternalLogAdapter {
 
 	static final Logger logger = LoggerFactory.getLogger(GenericExplorVizExternalLogAdapter.class.getName());
 
-	public static boolean replayInRealTime = false;
+	private static boolean replayInRealTime = false;
 	private static final ByteBuffer explorVizBuffer;
 	private static long firstTimestamp = -1;
 	private static long firstWallclockTimestamp;
 
+	private GenericExplorVizExternalLogAdapter() {
+		// private constructor
+	}
+	
 	static {
 		// Defines the size of the ByteBuffer: Needs to match the largest record
 		// Check record size, if a new record is added!
@@ -73,14 +77,13 @@ public class GenericExplorVizExternalLogAdapter {
 				firstWallclockTimestamp = System.nanoTime();
 			} else {
 				final long passedTime = timestamp - firstTimestamp;
-				// System.out.println("Replaying timestamp " + timestamp +
-				// " passed time "
-				// + passedTime);
+				
 				while (replayInRealTime && System.nanoTime() - firstWallclockTimestamp < passedTime) {
 					if (passedTime > 1000L * 1000L) {
 						try {
 							Thread.sleep(1000L);
 						} catch (final InterruptedException e) {
+							logger.warn(logger.getName() + ": " + e.getMessage());
 						}
 					}
 				}

@@ -5,16 +5,24 @@ import java.util.List;
 
 import org.glassfish.jersey.server.ParamException.QueryParamException;
 
-import net.explorviz.model.Timestamp;
+import net.explorviz.model.store.Timestamp;
 
 /**
- * Helper class providing methods for filtering timestamps
+ * Helper class providing methods for filtering {@link Timestamp}
  *
  * @author Christian Zirkelbach (czi@informatik.uni-kiel.de)
  *
  */
 public class TimestampHelper {
 
+	/**
+	 * Retrieves timestamps BEFORE a passed timestamp
+	 *
+	 * @param allTimestamps
+	 * @param fromTimestamp
+	 * @param intervalSize
+	 * @return
+	 */
 	public static List<Timestamp> filterTimestampsBeforeTimestamp(final List<Timestamp> allTimestamps,
 			final long fromTimestamp, final int intervalSize) {
 
@@ -50,6 +58,14 @@ public class TimestampHelper {
 		return new LinkedList<Timestamp>();
 	}
 
+	/**
+	 * Retrieves timestamps AFTER a passed timestamp
+	 *
+	 * @param allTimestamps
+	 * @param afterTimestamp
+	 * @param intervalSize
+	 * @return
+	 */
 	public static List<Timestamp> filterTimestampsAfterTimestamp(final List<Timestamp> allTimestamps,
 			final long afterTimestamp, final int intervalSize) {
 
@@ -84,6 +100,13 @@ public class TimestampHelper {
 		return new LinkedList<Timestamp>();
 	}
 
+	/**
+	 * Retrieves the oldest timestamps in a passed interval
+	 *
+	 * @param allTimestamps
+	 * @param intervalSize
+	 * @return
+	 */
 	public static List<Timestamp> filterOldestTimestamps(final List<Timestamp> allTimestamps, final int intervalSize) {
 		if (allTimestamps.isEmpty())
 			return new LinkedList<Timestamp>();
@@ -107,6 +130,13 @@ public class TimestampHelper {
 		}
 	}
 
+	/**
+	 * Retrieves the newest timestamps in a passed interval
+	 *
+	 * @param allTimestamps
+	 * @param intervalSize
+	 * @return
+	 */
 	public static List<Timestamp> filterMostRecentTimestamps(final List<Timestamp> allTimestamps,
 			final int intervalSize) {
 		if (allTimestamps.isEmpty())

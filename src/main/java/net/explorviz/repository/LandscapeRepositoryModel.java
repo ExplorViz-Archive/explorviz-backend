@@ -1,7 +1,6 @@
 package net.explorviz.repository;
 
 import java.io.FileNotFoundException;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -10,15 +9,7 @@ import org.nustaq.serialization.FSTConfiguration;
 import explorviz.live_trace_processing.reader.IPeriodicTimeSignalReceiver;
 import explorviz.live_trace_processing.reader.TimeSignalReader;
 import explorviz.live_trace_processing.record.IRecord;
-import net.explorviz.model.Application;
-import net.explorviz.model.Clazz;
-import net.explorviz.model.Communication;
-import net.explorviz.model.CommunicationClazz;
-import net.explorviz.model.Component;
-import net.explorviz.model.Landscape;
-import net.explorviz.model.Node;
-import net.explorviz.model.NodeGroup;
-import net.explorviz.model.System;
+import net.explorviz.model.landscape.Landscape;
 import net.explorviz.server.main.Configuration;
 
 public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiver {
@@ -65,17 +56,17 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
 		return LandscapeRepositoryModel.instance;
 	}
 
-	public final Landscape getLastPeriodLandscape() {
+	public Landscape getLastPeriodLandscape() {
 		synchronized (lastPeriodLandscape) {
 			return lastPeriodLandscape;
 		}
 	}
 
-	public final Landscape getLandscape(final long timestamp) throws FileNotFoundException {
+	public Landscape getLandscape(final long timestamp) throws FileNotFoundException {
 		return LandscapePreparer.prepareLandscape(RepositoryStorage.readFromFile(timestamp));
 	}
 
-	public final Map<Long, Long> getAvailableLandscapes() {
+	public Map<Long, Long> getAvailableLandscapes() {
 		return RepositoryStorage.getAvailableModelsForTimeshift();
 	}
 
@@ -95,11 +86,7 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
 
 	public void reset() {
 		synchronized (internalLandscape) {
-			internalLandscape.getApplicationCommunication().clear();
-			internalLandscape.getSystems().clear();
-			internalLandscape.getEvents().clear();
-			internalLandscape.getErrors().clear();
-			internalLandscape.setActivities(0L);
+			internalLandscape.reset();
 		}
 	}
 
@@ -120,7 +107,6 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
 				} else {
 					internalLandscape.updateTimestamp(milliseconds);
 					RepositoryStorage.writeToFile(internalLandscape, milliseconds);
-
 					final Landscape l = fstConf.deepCopy(internalLandscape);
 					lastPeriodLandscape = LandscapePreparer.prepareLandscape(l);
 				}
@@ -133,40 +119,7 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
 	}
 
 	private void resetCommunication() {
-		internalLandscape.getErrors().clear();
-		internalLandscape.setActivities(0L);
-
-		for (final System system : internalLandscape.getSystems()) {
-			for (final NodeGroup nodeGroup : system.getNodeGroups()) {
-				for (final Node node : nodeGroup.getNodes()) {
-					for (final Application app : node.getApplications()) {
-						app.getDatabaseQueries().clear();
-
-						for (final CommunicationClazz commu : app.getCommunications()) {
-							commu.reset();
-						}
-
-						resetClazzInstances(app.getComponents());
-					}
-				}
-			}
-		}
-
-		for (final Communication commu : internalLandscape.getApplicationCommunication()) {
-			commu.setRequests(0);
-			commu.setAverageResponseTimeInNanoSec(0);
-		}
-	}
-
-	private void resetClazzInstances(final List<Component> components) {
-		for (final Component compo : components) {
-			for (final Clazz clazz : compo.getClazzes()) {
-				clazz.getObjectIds().clear();
-				clazz.setInstanceCount(0);
-			}
-
-			resetClazzInstances(compo.getChildren());
-		}
+		internalLandscape.reset();
 	}
 
 	public void insertIntoModel(final IRecord inputIRecord) {

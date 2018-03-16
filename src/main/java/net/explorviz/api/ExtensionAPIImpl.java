@@ -4,11 +4,12 @@ import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.Map;
 
-import org.glassfish.jersey.server.ParamException.QueryParamException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import net.explorviz.model.Landscape;
-import net.explorviz.model.Timestamp;
 import net.explorviz.model.helper.TimestampHelper;
+import net.explorviz.model.landscape.Landscape;
+import net.explorviz.model.store.Timestamp;
 import net.explorviz.repository.LandscapeExchangeService;
 import net.explorviz.server.providers.CoreModelHandler;
 import net.explorviz.server.providers.GenericTypeFinder;
@@ -22,6 +23,7 @@ import net.explorviz.server.providers.GenericTypeFinder;
  */
 public final class ExtensionAPIImpl implements IExtensionAPI {
 
+	static final Logger LOGGER = LoggerFactory.getLogger(ExtensionAPIImpl.class.getName());
 	private static ExtensionAPIImpl instance;
 
 	String versionNumber = "1.2.0a";
@@ -61,10 +63,14 @@ public final class ExtensionAPIImpl implements IExtensionAPI {
 	 */
 	@Override
 	public Landscape getLandscape(final long timestamp) {
+		Landscape specificLandscape = new Landscape();
 		try {
-			return service.getLandscape(timestamp);
+			specificLandscape = service.getLandscape(timestamp);
+			return specificLandscape;
+
 		} catch (final FileNotFoundException e) {
-			throw new QueryParamException(e, "Error in ExtensionAPI.getLandscape", "10");
+			LOGGER.debug("Specific landscape not found!", e.getMessage());
+			return specificLandscape;
 		}
 	}
 
@@ -150,4 +156,5 @@ public final class ExtensionAPIImpl implements IExtensionAPI {
 		CoreModelHandler.registerAllCoreModels();
 
 	}
+
 }
