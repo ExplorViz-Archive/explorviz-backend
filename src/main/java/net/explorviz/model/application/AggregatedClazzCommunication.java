@@ -58,7 +58,7 @@ public class AggregatedClazzCommunication extends BaseEntity {
 		return outgoingClazzCommunications;
 	}
 
-	public void getOutgoingClazzCommunications(final List<ClazzCommunication> clazzCommunications) {
+	public void setOutgoingClazzCommunications(final List<ClazzCommunication> clazzCommunications) {
 		this.outgoingClazzCommunications = clazzCommunications;
 	}
 
