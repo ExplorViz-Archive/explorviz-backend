@@ -24,10 +24,10 @@ public class Component extends BaseEntity {
 	private String fullQualifiedName;
 
 	@Relationship("children")
-	private final List<Component> children = new ArrayList<Component>();
+	private List<Component> children = new ArrayList<Component>();
 
 	@Relationship("clazzes")
-	private final List<Clazz> clazzes = new ArrayList<Clazz>();
+	private List<Clazz> clazzes = new ArrayList<Clazz>();
 
 	@Relationship("parentComponent")
 	private Component parentComponent;
@@ -73,7 +73,15 @@ public class Component extends BaseEntity {
 		return children;
 	}
 
+	public void setChildren(final List<Component> children) {
+		this.children = children;
+	}
+
 	public List<Clazz> getClazzes() {
 		return clazzes;
+	}
+
+	public void setClazzes(final List<Clazz> clazzes) {
+		this.clazzes = clazzes;
 	}
 }

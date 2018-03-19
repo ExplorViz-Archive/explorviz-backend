@@ -29,7 +29,7 @@ public class Application extends BaseEntity {
 	private Node parent;
 
 	@Relationship("components")
-	private final List<Component> components = new ArrayList<Component>();
+	private List<Component> components = new ArrayList<Component>();
 
 	@Relationship("databaseQueries")
 	private List<DatabaseQuery> databaseQueries = new ArrayList<DatabaseQuery>();
@@ -77,6 +77,10 @@ public class Application extends BaseEntity {
 
 	public List<Component> getComponents() {
 		return components;
+	}
+
+	public void setComponents(final List<Component> components) {
+		this.components = components;
 	}
 
 	public void setDatabaseQueries(final List<DatabaseQuery> databaseQueries) {
