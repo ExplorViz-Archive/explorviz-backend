@@ -25,13 +25,13 @@ The API documentation is available [here](https://explorviz.github.io/explorviz-
 ## Setup Development
 1. Follow the [Eclipse Setup](https://github.com/ExplorViz/explorviz-backend#eclipse-setup)
 2. Clone this repository
-3. Import project into eclipse: via *Import -> Gradle -> Existing Gradle project -> path/to/explorviz-backend*
-4. Start **explorviz-backend** via Eclipse Tab: *Gradle Tasks -> explorviz-backend -> gretty -> appStart*
+3. Import project into eclipse: via `Import -> Gradle -> Existing Gradle project -> path/to/explorviz-backend`
+4. Start **explorviz-backend** via Eclipse Tab: `Gradle Tasks -> explorviz-backend -> gretty -> appStart`
 5. Setup and start [explorviz-frontend](https://github.com/ExplorViz/explorviz-frontend)
 
 ### Further Information
-* To force the download of newly added dependencies: *Right click explorviz-backend -> Grade -> Refresh Gradle Project*. 
-* Generating API Documentation via *gradle javadoc*
+* To force the download of newly added dependencies: `Right click on the project explorviz-backend -> Grade -> Refresh Gradle Project`. 
+* Generating API Documentation via Eclipse Tab: `Gradle Tasks -> explorviz-backend -> documentation -> javadoc`
 
 ## Quick start with sample (dummy) monitoring
 
@@ -40,4 +40,4 @@ The API documentation is available [here](https://explorviz.github.io/explorviz-
 3. Start the [TestApplication](https://github.com/czirkelbach/kiekerSampleApplication) as described [here](https://github.com/czirkelbach/kiekerSampleApplication/blob/master/README.md).
 4. Open [explorviz-frontend](https://github.com/ExplorViz/explorviz-frontend)
 
-**Important**: Changes that are related to dependency injections require a recompilation of the application. Use the gradle task *explorviz-backend -> gretty -> appRestart* to recompile and start the server. Then, start the Test app again.
+**Important**: Changes that are related to dependency injections require a recompilation of the application. Use the gradle task `explorviz-backend -> gretty -> appRestart` to recompile and start the server. Then, start the monitoring again.
