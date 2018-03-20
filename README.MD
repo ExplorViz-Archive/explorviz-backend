@@ -15,12 +15,12 @@ The API documentation is available [here](https://explorviz.github.io/explorviz-
 ## Eclipse Setup
 1. Download the latest [**Eclipse IDE for Java Developers**](http://www.eclipse.org/downloads/eclipse-packages/) and [**Oracle Java SDK 8**](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html)
 2. Install **SpotBugs (formerly known as Findbugs)**
-    - *Start Eclipse -> Help -> Eclipse Marketplace* - type in the following and install **SpotBugs Eclipse plugin 3.1.2*
+    - `Start Eclipse -> Help -> Eclipse Marketplace*` - type in *Spotbugs* and install *SpotBugs Eclipse plugin 3.1.2*
 3. Install **PMD** and **Checkstyle** embedded in [qa-eclipse-plugin
 ](https://github.com/ChristianWulf/qa-eclipse-plugin)
-    - In Eclipse: *Help -> Install New Software -> Insert https://build.se.informatik.uni-kiel.de/eus/qa/snapshot/ in "Work with" -> Check "QA tooling" -> Finish, download, and install*
+    - `Help -> Install New Software`- type in `Work with` *https://build.se.informatik.uni-kiel.de/eus/qa/snapshot/* and install *Eclipse Plugins for QA Tools*
     - Follow the configuration as listed [here](https://github.com/ChristianWulf/qa-eclipse-plugin)
-4. Configure the respective tool views (In Eclipse: *Window -> Show View -> Other -> ...)
+4. Show the respective tool views (`Window -> Show View -> Other` - check *Bug Explorer*, *Checkstyle Violations*, and *PMD Violations*)
 
 ## Setup Development
 1. Follow the [Eclipse Setup](https://github.com/ExplorViz/explorviz-backend#eclipse-setup)
