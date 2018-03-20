@@ -29,7 +29,9 @@ The API documentation is available [here](https://explorviz.github.io/explorviz-
 4. Start **explorviz-backend** via Eclipse Tab: *Gradle Tasks -> explorviz-backend -> gretty -> appStart*
 5. Setup and start [explorviz-frontend](https://github.com/ExplorViz/explorviz-frontend)
 
-To force the download of newly added dependencies: *Right click explorviz-backend -> Grade -> Refresh Gradle Project*. 
+### Further Information
+* To force the download of newly added dependencies: *Right click explorviz-backend -> Grade -> Refresh Gradle Project*. 
+* Generating API Documentation via *gradle javadoc*
 
 ## Quick start with sample (dummy) monitoring
 
