@@ -1,0 +1,17 @@
+net.explorviz.api
+net.explorviz.model.application
+net.explorviz.model.helper
+net.explorviz.model.landscape
+net.explorviz.model.security
+net.explorviz.model.store
+net.explorviz.model.store.helper
+net.explorviz.repository
+net.explorviz.repository.helper
+net.explorviz.server.exceptions.mapper
+net.explorviz.server.filters
+net.explorviz.server.helper
+net.explorviz.server.injection
+net.explorviz.server.main
+net.explorviz.server.providers
+net.explorviz.server.resources
+net.explorviz.server.security

@@ -9,8 +9,8 @@ import com.github.jasminb.jsonapi.annotations.Type;
 import net.explorviz.model.helper.BaseEntity;
 
 /**
- * Model representing aggregated communication between classes (sourceClazz ->
- * targetClazz) (within a single application)
+ * Model representing aggregated communication between classes (from sourceClazz
+ * to targetClazz) within a single application
  *
  * @author Christian Zirkelbach (czi@informatik.uni-kiel.de)
  *

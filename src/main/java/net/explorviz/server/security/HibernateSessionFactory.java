@@ -34,7 +34,7 @@ public class HibernateSessionFactory {
 	/**
 	 * Starts a transaction
 	 *
-	 * @return
+	 * @return Session
 	 */
 	public synchronized Session beginTransaction() {
 		final Session session = getInstance().openSession();
@@ -46,6 +46,7 @@ public class HibernateSessionFactory {
 	 * Performs a commit and cloeses the transaction
 	 *
 	 * @param session
+	 *            (HibernateSession)
 	 */
 	public synchronized void commitTransactionAndClose(final Session session) {
 		session.getTransaction().commit();
@@ -55,7 +56,7 @@ public class HibernateSessionFactory {
 	/**
 	 * Returns an instance of SessionFactory
 	 *
-	 * @return
+	 * @return HibernateSessionFactory
 	 */
 	public synchronized SessionFactory getInstance() {
 		if (instance != null) {

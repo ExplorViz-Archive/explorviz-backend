@@ -13,6 +13,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class DummyLandscapeHelper {
 	/**
 	 * Returns the current timestamp for dummy queries
+	 *
+	 * @return current timestamp
 	 */
 	public static long getCurrentTimestamp() {
 		final Timestamp timestamp = new Timestamp(System.nanoTime());
@@ -21,6 +23,12 @@ public class DummyLandscapeHelper {
 
 	/**
 	 * Returns a random number between minValue and maxValue
+	 *
+	 * @param minValue
+	 *            (minimum random value)
+	 * @param maxValue
+	 *            (maximum random value)
+	 * @return random number
 	 */
 	public static int getRandomNum(final int minValue, final int maxValue) {
 		if (minValue > 0 && maxValue > 0)
@@ -31,6 +39,8 @@ public class DummyLandscapeHelper {
 
 	/**
 	 * Returns a unique next sequence number
+	 *
+	 * @return next unique number
 	 */
 	public static int getNextSequenceId() {
 		final AtomicInteger seqId = new AtomicInteger();

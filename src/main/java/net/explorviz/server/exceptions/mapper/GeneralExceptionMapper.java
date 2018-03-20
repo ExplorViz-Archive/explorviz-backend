@@ -12,8 +12,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Generic Excepting mapping for logging purposes
- * 
- * @author Mathis Neumann <mne@informatik.uni-kiel.de>
+ *
+ * @author Mathis Neumann (mne@informatik.uni-kiel.de)
  */
 public class GeneralExceptionMapper implements ExceptionMapper<Throwable> {
 	@Override

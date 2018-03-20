@@ -14,6 +14,8 @@ public final class ExtensionAPI {
 
 	/**
 	 * Provides the ExplorViz ExtensionAPI for backend extensions
+	 * 
+	 * @return ExtensionAPIImpl
 	 */
 	public static ExtensionAPIImpl get() {
 		return ExtensionAPIImpl.getInstance();

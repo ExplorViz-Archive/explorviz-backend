@@ -40,7 +40,7 @@ public final class GenericExplorVizExternalLogAdapter {
 	private GenericExplorVizExternalLogAdapter() {
 		// private constructor
 	}
-	
+
 	static {
 		// Defines the size of the ByteBuffer: Needs to match the largest record
 		// Check record size, if a new record is added!
@@ -77,7 +77,7 @@ public final class GenericExplorVizExternalLogAdapter {
 				firstWallclockTimestamp = System.nanoTime();
 			} else {
 				final long passedTime = timestamp - firstTimestamp;
-				
+
 				while (replayInRealTime && System.nanoTime() - firstWallclockTimestamp < passedTime) {
 					if (passedTime > 1000L * 1000L) {
 						try {
@@ -131,16 +131,21 @@ public final class GenericExplorVizExternalLogAdapter {
 	 * (HostApplicationMetaDataRecord)
 	 * 
 	 * @param timestamp
+	 *            (as configured in Kieker)
+	 * @param systemName
+	 *            (synthetic clustering of applications and nodes, is configured in ExplorViz)
+	 * @param ipAddress
+	 *            (of the monitored node)
 	 * @param hostname
+	 *            (of the monitored node)
 	 * @param applicationName
+	 *            (name of the application)
 	 * @param programmingLanguage
-	 * @param string2
-	 * @param string
+	 *            (of the monitored application, e.g., Java)
 	 */
 	public static void sendApplicationTraceMetaDataRecord(final long timestamp, final String systemName,
 			final String ipAddress, final String hostname, final String applicationName,
 			final String programmingLanguage) {
-
 		explorVizBuffer.put(HostApplicationMetaDataRecord.CLAZZ_ID);
 		explorVizBuffer.putInt(MonitoringStringRegistry.getIdForString(systemName));
 		explorVizBuffer.putInt(MonitoringStringRegistry.getIdForString(ipAddress));
@@ -149,7 +154,6 @@ public final class GenericExplorVizExternalLogAdapter {
 		explorVizBuffer.putInt(MonitoringStringRegistry.getIdForString(programmingLanguage));
 
 		sendBufferIfHasElements(timestamp);
-
 	}
 
 	/**
@@ -157,13 +161,15 @@ public final class GenericExplorVizExternalLogAdapter {
 	 * ExplorViz (MemSwapUsageRecord)
 	 * 
 	 * @param timestamp
+	 *            (as configured in Kieker)
 	 * @param hostname
+	 *            (of the monitored application)
 	 * @param cpuUtilization
-	 *            between 0 and 1
+	 *            (between 0 and 1)
 	 * @param usedRAM
-	 *            in byte
+	 *            (in byte)
 	 * @param absoluteRAM
-	 *            in byte
+	 *            (in byte)
 	 */
 	public static void sendSystemMonitoringRecord(final long timestamp, final String hostname,
 			final double cpuUtilization, final long usedRAM, final long absoluteRAM) {
@@ -216,7 +222,6 @@ public final class GenericExplorVizExternalLogAdapter {
 	// DatabaseEvents
 	public static void sendBeforeDatabaseEvent(long loggingTimestamp, String classSignature, long traceId,
 			int orderIndex, int objectId, String interfaceImpl, String parameters, String technology) {
-
 		explorVizBuffer.put(BeforeJDBCOperationEventRecord.CLAZZ_ID);
 		explorVizBuffer.putLong(traceId);
 		explorVizBuffer.putInt(orderIndex);
@@ -236,7 +241,6 @@ public final class GenericExplorVizExternalLogAdapter {
 
 	public static void sendAfterDatabaseEvent(long loggingTimestamp, long methodDuration, String classSignature,
 			long traceId, int orderIndex, String returnType, String returnValue) {
-
 		explorVizBuffer.put(AfterJDBCOperationEventRecord.CLAZZ_ID);
 		explorVizBuffer.putLong(methodDuration);
 		explorVizBuffer.putLong(traceId);
@@ -249,7 +253,6 @@ public final class GenericExplorVizExternalLogAdapter {
 
 	public static void sendDatabaseFailedEvent(long loggingTimestamp, long methodDuration, String classSignature,
 			long traceId, int orderIndex, String cause) {
-
 		explorVizBuffer.put(AfterFailedJDBCOperationEventRecord.CLAZZ_ID);
 		explorVizBuffer.putLong(methodDuration);
 		explorVizBuffer.putLong(traceId);

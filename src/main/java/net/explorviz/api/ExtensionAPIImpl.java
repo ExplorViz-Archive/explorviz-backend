@@ -7,9 +7,9 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.explorviz.model.helper.TimestampHelper;
 import net.explorviz.model.landscape.Landscape;
 import net.explorviz.model.store.Timestamp;
+import net.explorviz.model.store.helper.TimestampHelper;
 import net.explorviz.repository.LandscapeExchangeService;
 import net.explorviz.server.providers.CoreModelHandler;
 import net.explorviz.server.providers.GenericTypeFinder;
@@ -60,6 +60,7 @@ public final class ExtensionAPIImpl implements IExtensionAPI {
 	 * Provides a specific landscape determined by a passed timestamp
 	 *
 	 * @param timestamp
+	 *            (as configured in Kieker)
 	 */
 	@Override
 	public Landscape getLandscape(final long timestamp) {
@@ -75,9 +76,11 @@ public final class ExtensionAPIImpl implements IExtensionAPI {
 	}
 
 	/**
-	 * Provides the <intervalSize> newest timestamps within the server
+	 * Provides the "intervalSize" newest timestamps within the server
 	 *
 	 * @param intervalSize
+	 *            (number of retrieved timestamps)
+	 * @return List of Timestamp
 	 */
 	@Override
 	public List<Timestamp> getNewestTimestamps(final int intervalSize) {
@@ -86,9 +89,11 @@ public final class ExtensionAPIImpl implements IExtensionAPI {
 	}
 
 	/**
-	 * Provides the <intervalSize> oldest timestamps within the server
+	 * Provides the "intervalSize" oldest timestamps within the server
 	 *
 	 * @param intervalSize
+	 *            (number of retrieved timestamps)
+	 * @return List of Timestamp
 	 */
 
 	@Override
@@ -98,11 +103,14 @@ public final class ExtensionAPIImpl implements IExtensionAPI {
 	}
 
 	/**
-	 * Provides the <intervalSize> timestamps before a passed <fromTimestamp> within
+	 * Provides the "intervalSize" timestamps before a passed "fromTimestamp" within
 	 * the server
 	 *
-	 * @param fromTimestamp,
-	 *            intervalSize
+	 * @param fromTimestamp
+	 *            (timestamp, which sets the limit)
+	 * @param intervalSize
+	 *            (number of retrieved timestamps)
+	 * @return List of Timestamp
 	 */
 	@Override
 	public List<Timestamp> getPreviousTimestamps(final long fromTimestamp, final int intervalSize) {
@@ -111,11 +119,14 @@ public final class ExtensionAPIImpl implements IExtensionAPI {
 	}
 
 	/**
-	 * Provides the <intervalSize> timestamps after a passed <afterTimestamp> within
+	 * Provides the "intervalSize" timestamps after a passed "afterTimestamp" within
 	 * the server
 	 *
-	 * @param afterTimestamp,
-	 *            intervalSize
+	 * @param afterTimestamp
+	 *            (timestamp, which sets the limit)
+	 * @param intervalSize
+	 *            (number of retrieved timestamps)
+	 * @return List of Timestamp
 	 */
 	@Override
 	public List<Timestamp> getSubsequentTimestamps(final long afterTimestamp, final int intervalSize) {

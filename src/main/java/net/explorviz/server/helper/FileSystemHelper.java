@@ -13,7 +13,7 @@ public class FileSystemHelper {
 	/**
 	 * Retrieves the current ExplorViz directory for the running system user
 	 *
-	 * @return
+	 * @return ExplorVizDirectoryPath
 	 */
 	public static String getExplorVizDirectory() {
 		final String homefolder = System.getProperty("user.home");

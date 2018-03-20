@@ -5,7 +5,8 @@ import net.explorviz.kiekeradapter.filter.teetime.MultipleConnectionTcpReaderSta
 import teetime.framework.Configuration;
 
 /**
- * Teetime P&F configuration for the kiekeradapter
+ * Teetime Pipe and Filter configuration for the kiekeradapter
+ * 
  * @author Christian Zirkelbach (czi@informatik.uni-kiel.de)
  *
  */

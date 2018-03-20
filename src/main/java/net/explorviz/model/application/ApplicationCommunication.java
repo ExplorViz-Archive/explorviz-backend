@@ -6,7 +6,7 @@ import com.github.jasminb.jsonapi.annotations.Type;
 import net.explorviz.model.helper.BaseEntity;
 
 /**
- * Model representing communication between two {@link Applications}
+ * Model representing communication between two {@link Application}s
  *
  * @author Christian Zirkelbach (czi@informatik.uni-kiel.de)
  *

@@ -1,4 +1,4 @@
-package net.explorviz.model.helper;
+package net.explorviz.model.store.helper;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -19,9 +19,12 @@ public class TimestampHelper {
 	 * Retrieves timestamps BEFORE a passed timestamp
 	 *
 	 * @param allTimestamps
+	 *            (all timestamps within thr system)
 	 * @param fromTimestamp
+	 *            (define the timestamp, which sets the limit)
 	 * @param intervalSize
-	 * @return
+	 *            (the number of retrieved timestamps)
+	 * @return List of Timestamp
 	 */
 	public static List<Timestamp> filterTimestampsBeforeTimestamp(final List<Timestamp> allTimestamps,
 			final long fromTimestamp, final int intervalSize) {
@@ -62,9 +65,12 @@ public class TimestampHelper {
 	 * Retrieves timestamps AFTER a passed timestamp
 	 *
 	 * @param allTimestamps
+	 *            (all timestamps within thr system)
 	 * @param afterTimestamp
+	 *            (define the timestamp, which sets the limit)
 	 * @param intervalSize
-	 * @return
+	 *            (the number of retrieved timestamps)
+	 * @return List of Timestamp
 	 */
 	public static List<Timestamp> filterTimestampsAfterTimestamp(final List<Timestamp> allTimestamps,
 			final long afterTimestamp, final int intervalSize) {
@@ -104,8 +110,10 @@ public class TimestampHelper {
 	 * Retrieves the oldest timestamps in a passed interval
 	 *
 	 * @param allTimestamps
+	 *            (all timestamps within thr system)
 	 * @param intervalSize
-	 * @return
+	 *            (the number of retrieved timestamps)
+	 * @return List of Timestamp
 	 */
 	public static List<Timestamp> filterOldestTimestamps(final List<Timestamp> allTimestamps, final int intervalSize) {
 		if (allTimestamps.isEmpty())
@@ -134,8 +142,10 @@ public class TimestampHelper {
 	 * Retrieves the newest timestamps in a passed interval
 	 *
 	 * @param allTimestamps
+	 *            (all timestamps within thr system)
 	 * @param intervalSize
-	 * @return
+	 *            (the number of retrieved timestamps)
+	 * @return List of Timestamp
 	 */
 	public static List<Timestamp> filterMostRecentTimestamps(final List<Timestamp> allTimestamps,
 			final int intervalSize) {

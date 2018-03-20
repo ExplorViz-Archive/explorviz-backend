@@ -23,14 +23,23 @@ public final class ModelHelper {
 	 * an application
 	 *
 	 * @param caller
+	 *            (calling clazz)
 	 * @param callee
+	 *            (called clazz)
 	 * @param application
+	 *            (related application)
 	 * @param requests
+	 *            (amount of observed calls)
 	 * @param average
+	 *            (average response time in ns)
 	 * @param overallTraceDuration
+	 *            (in ns)
 	 * @param traceId
+	 *            (of the reconstructed trace)
 	 * @param orderIndex
+	 *            (position within the trace)
 	 * @param operationName
+	 *            (name of the called operation)
 	 */
 	public static void addClazzCommunication(final Clazz caller, final Clazz callee, final Application application,
 			final int requests, final double average, final double overallTraceDuration, final long traceId,
@@ -66,7 +75,8 @@ public final class ModelHelper {
 	 * Retrieves recursively all clazzCommunications for a component
 	 *
 	 * @param component
-	 * @return
+	 *            (the passed component)
+	 * @return List of ClazzCommunication
 	 */
 	public static List<ClazzCommunication> getChildrenComponentClazzCommunications(final Component component) {
 
@@ -91,7 +101,8 @@ public final class ModelHelper {
 	 * Retrieves recursively all clazzes for a component
 	 *
 	 * @param component
-	 * @return
+	 *            (the passed component)
+	 * @return List of Clazz
 	 */
 	public static List<Clazz> getChildrenComponentClazzes(final Component component) {
 
@@ -115,7 +126,9 @@ public final class ModelHelper {
 	 * creates a new one
 	 *
 	 * @param application
+	 *            (related application)
 	 * @param newCommunication
+	 *            (the ClazzCommunication which should be added)
 	 */
 	public static void updateAggregatedClazzCommunication(final Application application,
 			final ClazzCommunication newCommunication) {
@@ -150,7 +163,9 @@ public final class ModelHelper {
 	 * cumulatedClazzCommunication or creates a new one
 	 *
 	 * @param application
+	 *            (related application)
 	 * @param newCommunication
+	 *            (the AggregatedClazzCommunication which should be added)
 	 */
 	public static void updateCumulatedClazzCommunication(final Application application,
 			final AggregatedClazzCommunication newCommunication) {

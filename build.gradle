@@ -128,7 +128,7 @@ findbugs {
 tasks.withType(Pmd) {
 	reports {
     	xml.enabled = false
-        html.enabled = false
+        html.enabled = true
     }
 }
 
@@ -144,6 +144,13 @@ tasks.withType(Checkstyle) {
     	xml.enabled = false
         html.enabled = true
   }
+}
+
+// Javadoc settings
+javadoc {
+	source = sourceSets.main.allJava
+	  destinationDir = file("./docs/")
+	  failOnError false
 }
 
 // Embedded Webserver
