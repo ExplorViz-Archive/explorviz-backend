@@ -9,6 +9,9 @@ This is only the backend, you will need the [explorviz-frontend](https://github.
 
 This gradle project includes or installs every necessary dependency.
 
+### Documentation (Work in progress)
+The API documentation is available [here](https://explorviz.github.io/explorviz-backend/).
+
 ### Eclipse Setup
 1. Download the latest [**Eclipse IDE for Java Developers**](http://www.eclipse.org/downloads/eclipse-packages/) and [**Oracle Java SDK 8**](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html)
 2. Install **SpotBugs (formerly known as Findbugs)**
