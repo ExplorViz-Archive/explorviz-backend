@@ -81,7 +81,7 @@ public final class ExtensionAPIImpl implements IExtensionAPI {
 	 */
 	@Override
 	public List<Timestamp> getNewestTimestamps(final int intervalSize) {
-		final List<Timestamp> allTimestamps = this.service.getTimestampObjectsInRepo();
+		final List<Timestamp> allTimestamps = this.service.getTimestampObjectsInRepo("landscapeRepository");
 		return TimestampHelper.filterMostRecentTimestamps(allTimestamps, intervalSize);
 	}
 
@@ -93,7 +93,7 @@ public final class ExtensionAPIImpl implements IExtensionAPI {
 
 	@Override
 	public List<Timestamp> getOldestTimestamps(final int intervalSize) {
-		final List<Timestamp> allTimestamps = this.service.getTimestampObjectsInRepo();
+		final List<Timestamp> allTimestamps = this.service.getTimestampObjectsInRepo("landscapeRepository");
 		return TimestampHelper.filterOldestTimestamps(allTimestamps, intervalSize);
 	}
 
@@ -106,7 +106,7 @@ public final class ExtensionAPIImpl implements IExtensionAPI {
 	 */
 	@Override
 	public List<Timestamp> getPreviousTimestamps(final long fromTimestamp, final int intervalSize) {
-		final List<Timestamp> allTimestamps = this.service.getTimestampObjectsInRepo();
+		final List<Timestamp> allTimestamps = this.service.getTimestampObjectsInRepo("landscapeRepository");
 		return TimestampHelper.filterTimestampsBeforeTimestamp(allTimestamps, fromTimestamp, intervalSize);
 	}
 
@@ -119,8 +119,25 @@ public final class ExtensionAPIImpl implements IExtensionAPI {
 	 */
 	@Override
 	public List<Timestamp> getSubsequentTimestamps(final long afterTimestamp, final int intervalSize) {
-		final List<Timestamp> allTimestamps = this.service.getTimestampObjectsInRepo();
+		final List<Timestamp> allTimestamps = this.service.getTimestampObjectsInRepo("landscapeRepository");
 		return TimestampHelper.filterTimestampsAfterTimestamp(allTimestamps, afterTimestamp, intervalSize);
+	}
+
+	public List<Timestamp> getUploadedTimestamps() {
+		final List<Timestamp> allTimestamps = this.service.getTimestampObjectsInRepo("uploadedLandscapeRepository");
+		return allTimestamps;
+	}
+
+	public Landscape getUploadedLandscape(final long timestamp) {
+		Landscape specificLandscape = new Landscape();
+		try {
+			specificLandscape = service.getLandscape(timestamp);
+			return specificLandscape;
+
+		} catch (final FileNotFoundException e) {
+			LOGGER.debug("Specific landscape not found!", e.getMessage());
+			return specificLandscape;
+		}
 	}
 
 	/**

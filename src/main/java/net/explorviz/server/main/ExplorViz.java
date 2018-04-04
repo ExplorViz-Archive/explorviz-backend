@@ -2,6 +2,7 @@ package net.explorviz.server.main;
 
 import javax.ws.rs.ApplicationPath;
 
+import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.glassfish.jersey.server.ResourceConfig;
 
 import net.explorviz.server.exceptions.mapper.GeneralExceptionMapper;
@@ -12,7 +13,7 @@ import net.explorviz.server.providers.CoreModelHandler;
 /**
  * Starting configuration for the backend - includes registring models,
  * resources, exception handers, providers, and embedds extensions
- * 
+ *
  * @author Christian Zirkelbach (czi@informatik.uni-kiel.de)
  *
  */
@@ -22,6 +23,9 @@ class ExplorViz extends ResourceConfig {
 
 		// register model types for JSONAPI provider
 		CoreModelHandler.registerAllCoreModels();
+		// https://stackoverflow.com/questions/30653012/multipart-form-data-no-injection-source-found-for-a-parameter-of-type-public-ja/30656345
+		// register for uploading landscapes
+		register(MultiPartFeature.class);
 
 		register(new DependencyInjectionBinder());
 		// register(JacksonFeature)

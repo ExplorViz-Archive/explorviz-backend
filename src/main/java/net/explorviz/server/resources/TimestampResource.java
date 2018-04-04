@@ -58,4 +58,12 @@ public class TimestampResource {
 		return api.getNewestTimestamps(intervalSize);
 	}
 
+	@Produces("application/vnd.api+json")
+	@GET
+	@Path("/all-uploaded")
+	public List<Timestamp> getUploadedTimestamps() {
+
+		return api.getUploadedTimestamps();
+	}
+
 }
