@@ -1,12 +1,14 @@
 package net.explorviz.server.resources;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Base64;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -53,7 +55,7 @@ public class LandscapeResource {
 	@GET
 	@Path("/export/{timestamp}")
 	public Response getExportLandscape(@PathParam("timestamp") final long timestamp) throws FileNotFoundException {
-		// TODO encode with base64
+
 		final File landscapeRepository = new File(
 				FileSystemHelper.getExplorVizDirectory() + "/" + "landscapeRepository/");
 		// https://stackoverflow.com/questions/13515150/how-to-get-file-from-directory-with-pattern-filter
@@ -64,8 +66,17 @@ public class LandscapeResource {
 			}
 		});
 		final File exportLandscape = new File(filesWithTimestamp[0].getAbsolutePath());
+		String encodedLandscape = "";
+		// http://javasampleapproach.com/java/java-advanced/java-8-encode-decode-an-image-base64
+		try (FileInputStream streamedLandscape = new FileInputStream(exportLandscape)) {
+			final byte[] landscapeData = new byte[(int) exportLandscape.length()];
+			streamedLandscape.read(landscapeData);
+			encodedLandscape = Base64.getEncoder().encodeToString(landscapeData);
+		} catch (final IOException ioe) {
+			System.err.printf("I/O error: %s%n", ioe.getMessage());
+		}
 
-		return Response.ok(exportLandscape, "*/*").build();
+		return Response.ok(encodedLandscape, "*/*").build();
 	}
 
 	@Produces("application/vnd.api+json")
@@ -114,7 +125,6 @@ public class LandscapeResource {
 			out.flush();
 			out.close();
 		} catch (final IOException e) {
-
 			e.printStackTrace();
 		}
 
