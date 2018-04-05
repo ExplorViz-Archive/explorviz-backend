@@ -83,7 +83,7 @@ public class LandscapeExchangeService {
 
 					// second validation check -> deserialization
 					try {
-						this.getLandscape(timestamp);
+						this.getLandscape(timestamp, Configuration.REPLAY_REPOSITORY);
 					} catch (final FileNotFoundException e) {
 						LOGGER.warn(e.getMessage());
 						continue;
@@ -138,8 +138,8 @@ public class LandscapeExchangeService {
 		return timestamps;
 	}
 
-	public Landscape getLandscape(final long timestamp) throws FileNotFoundException {
-		return model.getLandscape(timestamp);
+	public Landscape getLandscape(final long timestamp, final String folderName) throws FileNotFoundException {
+		return model.getLandscape(timestamp, folderName);
 	}
 
 	public static void startRepository() {

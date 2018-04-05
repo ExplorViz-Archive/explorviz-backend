@@ -32,22 +32,32 @@ import net.explorviz.server.main.Configuration;
 
 public class RepositoryStorage {
 	private static String folder;
+	private static String landscapeFolder;
+	private static String replayFolder;
 	private static String folderForTargetModel;
 	private static String filenameForTargetModel = "targetModel" + Configuration.MODEL_EXTENSION;
 
 	private static final FSTConfiguration FST_CONF;
 
 	private static final int HISTORY_INTERVAL_IN_MINUTES = Configuration.HISTORY_INTERVAL_IN_MINUTES;
+	private static final String REPLAY_REPOSITORY = Configuration.REPLAY_REPOSITORY;
+	private static final String LANDSCAPE_REPOSITORY = Configuration.LANDSCAPE_REPOSITORY;
 
 	static {
 		FST_CONF = createFSTConfiguration();
 
-		folder = FileSystemHelper.getExplorVizDirectory() + "/" + "landscapeRepository";
+		folder = FileSystemHelper.getExplorVizDirectory() + File.separator;
 		folderForTargetModel = FileSystemHelper.getExplorVizDirectory();
+		replayFolder = folder + REPLAY_REPOSITORY;
+		landscapeFolder = folder + LANDSCAPE_REPOSITORY;
 
-		java.lang.System.out.println("writing to " + folder);
+		java.lang.System.out.println("writing to base folder " + folder);
+		java.lang.System.out.println("writing to replay folder " + replayFolder);
+		java.lang.System.out.println("writing to landscape folder " + landscapeFolder);
 
 		new File(folder).mkdir();
+		new File(replayFolder).mkdir();
+		new File(landscapeFolder).mkdir();
 	}
 
 	public static FSTConfiguration createFSTConfiguration() {
@@ -83,8 +93,9 @@ public class RepositoryStorage {
 		writeToFileGeneric(landscape, folderForTargetModel, filenameForTargetModel);
 	}
 
-	public static void writeToFile(final Landscape landscape, final long timestamp) {
-		writeToFileGeneric(landscape, folder,
+	public static void writeToFile(final Landscape landscape, final long timestamp, final String folderName) {
+		final String specificFolder = folder + folderName;
+		writeToFileGeneric(landscape, specificFolder,
 				timestamp + "-" + landscape.getOverallCalls() + Configuration.MODEL_EXTENSION);
 	}
 
@@ -110,8 +121,9 @@ public class RepositoryStorage {
 		}
 	}
 
-	public static Landscape readFromFile(final long timestamp) throws FileNotFoundException {
-		final Map<Long, Long> availableModels = getAvailableModels(HISTORY_INTERVAL_IN_MINUTES);
+	public static Landscape readFromFile(final long timestamp, final String folderName) throws FileNotFoundException {
+		final String specificFolder = folder + folderName;
+		final Map<Long, Long> availableModels = getAvailableModels(HISTORY_INTERVAL_IN_MINUTES, specificFolder);
 		String readInModel = null;
 
 		for (final Entry<Long, Long> availableModel : availableModels.entrySet()) {
@@ -124,7 +136,7 @@ public class RepositoryStorage {
 			throw new FileNotFoundException("Model not found for timestamp " + timestamp);
 		}
 
-		return readFromFileGeneric(folder, readInModel);
+		return readFromFileGeneric(specificFolder, readInModel);
 	}
 
 	public static Landscape readFromFileGeneric(final String sourceFolder, final String sourceFilename)
@@ -149,14 +161,15 @@ public class RepositoryStorage {
 		return landscape;
 	}
 
-	public static Map<Long, Long> getAvailableModelsForTimeshift() {
-		return getAvailableModels(Configuration.TIMESHIFT_INTERVAL_IN_MINUTES);
+	public static Map<Long, Long> getAvailableModelsForTimeshift(final String folderName) {
+		final String specificFolder = folder + folderName;
+		return getAvailableModels(Configuration.TIMESHIFT_INTERVAL_IN_MINUTES, specificFolder);
 	}
 
-	private static Map<Long, Long> getAvailableModels(final int minutesBackwards) {
+	private static Map<Long, Long> getAvailableModels(final int minutesBackwards, final String specificFolder) {
 		final Map<Long, Long> result = new TreeMap<Long, Long>();
 
-		final File[] files = new File(folder).listFiles();
+		final File[] files = new File(specificFolder).listFiles();
 		if (files != null) {
 			for (final File file : files) {
 				if (isExplorVizFile(file)) {
@@ -174,9 +187,9 @@ public class RepositoryStorage {
 		return result;
 	}
 
-	public static void cleanUpTooOldFiles(final long currentTimestamp) {
+	public static void cleanUpTooOldFiles(final long currentTimestamp, final String specificFolder) {
 		final long enddate = currentTimestamp - TimeUnit.MINUTES.toMillis(HISTORY_INTERVAL_IN_MINUTES);
-		final File[] files = new File(folder).listFiles();
+		final File[] files = new File(specificFolder).listFiles();
 		if (files != null) {
 			for (final File file : files) {
 				if (isExplorVizFile(file)
@@ -188,8 +201,9 @@ public class RepositoryStorage {
 		}
 	}
 
-	public static void clearRepository() {
-		final File[] files = new File(folder).listFiles();
+	public static void clearRepository(final String folderName) {
+		final String specificFolder = folder + folderName;
+		final File[] files = new File(specificFolder).listFiles();
 		if (files != null) {
 			for (final File file : files) {
 				if (isExplorVizFile(file)) {

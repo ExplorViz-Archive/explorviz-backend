@@ -25,6 +25,7 @@ import net.explorviz.api.ExtensionAPI;
 import net.explorviz.api.ExtensionAPIImpl;
 import net.explorviz.model.landscape.Landscape;
 import net.explorviz.server.helper.FileSystemHelper;
+import net.explorviz.server.main.Configuration;
 
 /**
  * REST resource providing landscape data for the frontend.
@@ -41,7 +42,7 @@ public class LandscapeResource {
 	@GET
 	@Path("/by-timestamp/{timestamp}")
 	public Landscape getLandscape(@PathParam("timestamp") final long timestamp) throws FileNotFoundException {
-		return api.getLandscape(timestamp);
+		return api.getLandscape(timestamp, Configuration.LANDSCAPE_REPOSITORY);
 	}
 
 	@Produces("application/vnd.api+json")
@@ -82,8 +83,8 @@ public class LandscapeResource {
 	@Produces("application/vnd.api+json")
 	@GET
 	@Path("/by-uploaded-timestamp/{timestamp}")
-	public Landscape getUploadedLandscape(@PathParam("timestamp") final long timestamp) throws FileNotFoundException {
-		return api.getUploadedLandscape(timestamp);
+	public Landscape getReplayLandscape(@PathParam("timestamp") final long timestamp) throws FileNotFoundException {
+		return api.getLandscape(timestamp, Configuration.REPLAY_REPOSITORY);
 	}
 
 	// https://stackoverflow.com/questions/25797650/fileupload-with-jax-rs
@@ -93,19 +94,18 @@ public class LandscapeResource {
 	public Response uploadLandscape(@FormDataParam("file") final InputStream uploadedInputStream,
 			@FormDataParam("file") final FormDataContentDisposition fileInfo) {
 
-		final String uploadedLandscapeFilePath = FileSystemHelper.getExplorVizDirectory() + "/";
-		System.out.println("uploadedLandscapeRepository: " + uploadedLandscapeFilePath);
+		final String uploadedLandscapeFilePath = FileSystemHelper.getExplorVizDirectory() + File.separator;
+		final String replayFilePath = uploadedLandscapeFilePath + Configuration.REPLAY_REPOSITORY + File.separator;
+		System.out.println("replay: " + uploadedLandscapeFilePath);
 
-		new File(uploadedLandscapeFilePath + "uploadedLandscapeRepository/").mkdir();
-		final File objFile = new File(
-				uploadedLandscapeFilePath + "uploadedLandscapeRepository/" + fileInfo.getFileName());
+		new File(replayFilePath).mkdir();
+		final File objFile = new File(replayFilePath + fileInfo.getFileName());
 		if (objFile.exists()) {
 			objFile.delete();
 
 		}
 
-		saveToFile(uploadedInputStream,
-				uploadedLandscapeFilePath + "uploadedLandscapeRepository/" + fileInfo.getFileName());
+		saveToFile(uploadedInputStream, replayFilePath + fileInfo.getFileName());
 
 		// TODO send other response, if sth. went wrong
 		return Response.ok().build();
