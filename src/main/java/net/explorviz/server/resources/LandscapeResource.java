@@ -58,7 +58,7 @@ public class LandscapeResource {
 	public Response getExportLandscape(@PathParam("timestamp") final long timestamp) throws FileNotFoundException {
 
 		final File landscapeRepository = new File(
-				FileSystemHelper.getExplorVizDirectory() + "/" + "landscapeRepository/");
+				FileSystemHelper.getExplorVizDirectory() + File.separator + Configuration.LANDSCAPE_REPOSITORY);
 		// https://stackoverflow.com/questions/13515150/how-to-get-file-from-directory-with-pattern-filter
 		final File[] filesWithTimestamp = landscapeRepository.listFiles(new FilenameFilter() {
 			@Override
@@ -112,20 +112,22 @@ public class LandscapeResource {
 	}
 
 	private void saveToFile(final InputStream uploadedInputStream, final String uploadedFileLocation) {
-
-		try {
+		// http://javasampleapproach.com/java/java-advanced/java-8-encode-decode-an-image-base64
+		try (InputStream base64is = Base64.getDecoder().wrap(uploadedInputStream)) {
+			int len = 0;
 			OutputStream out = null;
-			int read = 0;
 			final byte[] bytes = new byte[1024];
-
 			out = new FileOutputStream(new File(uploadedFileLocation));
-			while ((read = uploadedInputStream.read(bytes)) != -1) {
-				out.write(bytes, 0, read);
+			while ((len = base64is.read(bytes)) != -1) {
+				// System.out.print(new String(bytes, 0, len, "utf-8"));
+				out.write(bytes, 0, len);
 			}
 			out.flush();
 			out.close();
-		} catch (final IOException e) {
-			e.printStackTrace();
+		} catch (final IOException e1) {
+			// TODO Auto-generated catch block
+			System.out.println("in decoding\n");
+			e1.printStackTrace();
 		}
 
 	}
