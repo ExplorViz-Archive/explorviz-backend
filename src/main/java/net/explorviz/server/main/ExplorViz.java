@@ -12,7 +12,7 @@ import net.explorviz.server.providers.CoreModelHandler;
 /**
  * Starting configuration for the backend - includes registring models,
  * resources, exception handers, providers, and embedds extensions
- * 
+ *
  * @author Christian Zirkelbach (czi@informatik.uni-kiel.de)
  *
  */

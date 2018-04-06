@@ -1,5 +1,7 @@
 package net.explorviz.server.providers;
 
+import net.explorviz.discovery.model.Agent;
+import net.explorviz.discovery.model.Procezz;
 import net.explorviz.model.application.AggregatedClazzCommunication;
 import net.explorviz.model.application.Application;
 import net.explorviz.model.application.ApplicationCommunication;
@@ -42,5 +44,8 @@ public final class CoreModelHandler {
 		GenericTypeFinder.typeMap.putIfAbsent("RuntimeInformation", RuntimeInformation.class);
 		GenericTypeFinder.typeMap.putIfAbsent("DatabaseQuery", DatabaseQuery.class);
 		GenericTypeFinder.typeMap.putIfAbsent("User", User.class);
+
+		GenericTypeFinder.typeMap.putIfAbsent("Agent", Agent.class);
+		GenericTypeFinder.typeMap.putIfAbsent("Procezz", Procezz.class);
 	}
 }

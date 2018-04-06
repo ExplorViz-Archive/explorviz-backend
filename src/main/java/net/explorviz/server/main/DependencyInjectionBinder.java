@@ -6,9 +6,11 @@ import org.glassfish.hk2.utilities.binding.AbstractBinder;
 
 import com.github.jasminb.jsonapi.ResourceConverter;
 
+import net.explorviz.discovery.services.ClientService;
 import net.explorviz.model.helper.ErrorObjectHelper;
 import net.explorviz.repository.LandscapeExchangeService;
 import net.explorviz.repository.LandscapeRepositoryModel;
+import net.explorviz.repository.discovery.AgentRepository;
 import net.explorviz.server.injection.LandscapeRepositoryFactory;
 import net.explorviz.server.injection.ResourceConverterFactory;
 import net.explorviz.server.security.HibernateSessionFactory;
@@ -29,5 +31,9 @@ public class DependencyInjectionBinder extends AbstractBinder {
 		this.bind(LandscapeExchangeService.class).to(LandscapeExchangeService.class).in(Singleton.class);
 		this.bind(HibernateSessionFactory.class).to(HibernateSessionFactory.class).in(Singleton.class);
 		this.bind(ErrorObjectHelper.class).to(ErrorObjectHelper.class).in(Singleton.class);
+
+		// Discovery Mechanism
+		this.bind(ClientService.class).to(ClientService.class).in(Singleton.class);
+		this.bind(AgentRepository.class).to(AgentRepository.class).in(Singleton.class);
 	}
 }
