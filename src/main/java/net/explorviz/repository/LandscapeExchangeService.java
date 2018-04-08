@@ -38,8 +38,7 @@ public class LandscapeExchangeService {
 	private static Long activity;
 
 	private static final String REPLAY_FOLDER = FileSystemHelper.getExplorVizDirectory() + File.separator + "replay";
-	private static final String REPOSITORY_FOLDER = FileSystemHelper.getExplorVizDirectory() + File.separator
-			+ "landscapeRepository";
+	private static final String REPOSITORY_FOLDER = FileSystemHelper.getExplorVizDirectory() + File.separator;
 
 	public static synchronized LandscapeExchangeService getInstance() {
 		if (LandscapeExchangeService.instance == null) {
@@ -84,7 +83,7 @@ public class LandscapeExchangeService {
 
 					// second validation check -> deserialization
 					try {
-						this.getLandscape(timestamp);
+						this.getLandscape(timestamp, Configuration.REPLAY_REPOSITORY);
 					} catch (final FileNotFoundException e) {
 						LOGGER.warn(e.getMessage());
 						continue;
@@ -96,8 +95,8 @@ public class LandscapeExchangeService {
 		return names;
 	}
 
-	public List<Timestamp> getTimestampObjectsInRepo() {
-		final File directory = new File(REPOSITORY_FOLDER);
+	public List<Timestamp> getTimestampObjectsInRepo(final String folderName) {
+		final File directory = new File(REPOSITORY_FOLDER + folderName);
 		final File[] fList = directory.listFiles();
 		final List<Timestamp> timestamps = new LinkedList<Timestamp>();
 
@@ -139,8 +138,8 @@ public class LandscapeExchangeService {
 		return timestamps;
 	}
 
-	public Landscape getLandscape(final long timestamp) throws FileNotFoundException {
-		return model.getLandscape(timestamp);
+	public Landscape getLandscape(final long timestamp, final String folderName) throws FileNotFoundException {
+		return model.getLandscape(timestamp, folderName);
 	}
 
 	public static void startRepository() {

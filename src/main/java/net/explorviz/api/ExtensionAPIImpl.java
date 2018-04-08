@@ -11,6 +11,7 @@ import net.explorviz.model.landscape.Landscape;
 import net.explorviz.model.store.Timestamp;
 import net.explorviz.model.store.helper.TimestampHelper;
 import net.explorviz.repository.LandscapeExchangeService;
+import net.explorviz.server.main.Configuration;
 import net.explorviz.server.providers.CoreModelHandler;
 import net.explorviz.server.providers.GenericTypeFinder;
 
@@ -63,10 +64,10 @@ public final class ExtensionAPIImpl implements IExtensionAPI {
 	 *            (as configured in Kieker)
 	 */
 	@Override
-	public Landscape getLandscape(final long timestamp) {
+	public Landscape getLandscape(final long timestamp, final String folderName) {
 		Landscape specificLandscape = new Landscape();
 		try {
-			specificLandscape = service.getLandscape(timestamp);
+			specificLandscape = service.getLandscape(timestamp, folderName);
 			return specificLandscape;
 
 		} catch (final FileNotFoundException e) {
@@ -84,7 +85,8 @@ public final class ExtensionAPIImpl implements IExtensionAPI {
 	 */
 	@Override
 	public List<Timestamp> getNewestTimestamps(final int intervalSize) {
-		final List<Timestamp> allTimestamps = this.service.getTimestampObjectsInRepo();
+		final List<Timestamp> allTimestamps = this.service
+				.getTimestampObjectsInRepo(Configuration.LANDSCAPE_REPOSITORY);
 		return TimestampHelper.filterMostRecentTimestamps(allTimestamps, intervalSize);
 	}
 
@@ -98,7 +100,8 @@ public final class ExtensionAPIImpl implements IExtensionAPI {
 
 	@Override
 	public List<Timestamp> getOldestTimestamps(final int intervalSize) {
-		final List<Timestamp> allTimestamps = this.service.getTimestampObjectsInRepo();
+		final List<Timestamp> allTimestamps = this.service
+				.getTimestampObjectsInRepo(Configuration.LANDSCAPE_REPOSITORY);
 		return TimestampHelper.filterOldestTimestamps(allTimestamps, intervalSize);
 	}
 
@@ -114,7 +117,8 @@ public final class ExtensionAPIImpl implements IExtensionAPI {
 	 */
 	@Override
 	public List<Timestamp> getPreviousTimestamps(final long fromTimestamp, final int intervalSize) {
-		final List<Timestamp> allTimestamps = this.service.getTimestampObjectsInRepo();
+		final List<Timestamp> allTimestamps = this.service
+				.getTimestampObjectsInRepo(Configuration.LANDSCAPE_REPOSITORY);
 		return TimestampHelper.filterTimestampsBeforeTimestamp(allTimestamps, fromTimestamp, intervalSize);
 	}
 
@@ -130,8 +134,14 @@ public final class ExtensionAPIImpl implements IExtensionAPI {
 	 */
 	@Override
 	public List<Timestamp> getSubsequentTimestamps(final long afterTimestamp, final int intervalSize) {
-		final List<Timestamp> allTimestamps = this.service.getTimestampObjectsInRepo();
+		final List<Timestamp> allTimestamps = this.service
+				.getTimestampObjectsInRepo(Configuration.LANDSCAPE_REPOSITORY);
 		return TimestampHelper.filterTimestampsAfterTimestamp(allTimestamps, afterTimestamp, intervalSize);
+	}
+
+	public List<Timestamp> getUploadedTimestamps() {
+		final List<Timestamp> allTimestamps = this.service.getTimestampObjectsInRepo(Configuration.REPLAY_REPOSITORY);
+		return allTimestamps;
 	}
 
 	/**

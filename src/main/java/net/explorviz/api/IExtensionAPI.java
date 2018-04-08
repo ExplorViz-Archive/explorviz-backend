@@ -19,7 +19,7 @@ interface IExtensionAPI {
 	// Landscape related
 	Landscape getLatestLandscape();
 
-	Landscape getLandscape(long timestamp);
+	Landscape getLandscape(long timestamp, String folderName);
 
 	// Timestamp related
 	List<Timestamp> getNewestTimestamps(int intervalSize);

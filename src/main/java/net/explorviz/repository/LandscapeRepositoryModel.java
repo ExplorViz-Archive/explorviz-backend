@@ -28,7 +28,8 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
 		if (LOAD_LAST_LANDSCAPE_ON_LOAD) {
 			Landscape readLandscape = null;
 			try {
-				readLandscape = RepositoryStorage.readFromFile(java.lang.System.currentTimeMillis());
+				readLandscape = RepositoryStorage.readFromFile(java.lang.System.currentTimeMillis(),
+						Configuration.LANDSCAPE_REPOSITORY);
 			} catch (final FileNotFoundException e) {
 				readLandscape = new Landscape();
 			}
@@ -62,12 +63,12 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
 		}
 	}
 
-	public Landscape getLandscape(final long timestamp) throws FileNotFoundException {
-		return LandscapePreparer.prepareLandscape(RepositoryStorage.readFromFile(timestamp));
+	public Landscape getLandscape(final long timestamp, final String folderName) throws FileNotFoundException {
+		return LandscapePreparer.prepareLandscape(RepositoryStorage.readFromFile(timestamp, folderName));
 	}
 
-	public Map<Long, Long> getAvailableLandscapes() {
-		return RepositoryStorage.getAvailableModelsForTimeshift();
+	public Map<Long, Long> getAvailableLandscapes(final String folderName) {
+		return RepositoryStorage.getAvailableModelsForTimeshift(folderName);
 	}
 
 	static {
@@ -102,11 +103,11 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
 				if (Configuration.dummyMode) {
 					final Landscape dummyLandscape = LandscapeDummyCreator.createDummyLandscape();
 					dummyLandscape.setTimestamp(milliseconds);
-					RepositoryStorage.writeToFile(dummyLandscape, milliseconds);
+					RepositoryStorage.writeToFile(dummyLandscape, milliseconds, Configuration.LANDSCAPE_REPOSITORY);
 					lastPeriodLandscape = dummyLandscape;
 				} else {
 					internalLandscape.updateTimestamp(milliseconds);
-					RepositoryStorage.writeToFile(internalLandscape, milliseconds);
+					RepositoryStorage.writeToFile(internalLandscape, milliseconds, Configuration.LANDSCAPE_REPOSITORY);
 					final Landscape l = fstConf.deepCopy(internalLandscape);
 					lastPeriodLandscape = LandscapePreparer.prepareLandscape(l);
 				}
@@ -115,7 +116,7 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
 			}
 		}
 
-		RepositoryStorage.cleanUpTooOldFiles(java.lang.System.currentTimeMillis());
+		RepositoryStorage.cleanUpTooOldFiles(java.lang.System.currentTimeMillis(), Configuration.LANDSCAPE_REPOSITORY);
 	}
 
 	private void resetCommunication() {
