@@ -59,13 +59,18 @@ public class LandscapeResource {
 
 		final File landscapeRepository = new File(
 				FileSystemHelper.getExplorVizDirectory() + File.separator + Configuration.LANDSCAPE_REPOSITORY);
+		System.out.println("landscapeRepository: " + landscapeRepository.getAbsolutePath());
+		System.out.printf("timestamp: %d\n", timestamp);
 		// https://stackoverflow.com/questions/13515150/how-to-get-file-from-directory-with-pattern-filter
 		final File[] filesWithTimestamp = landscapeRepository.listFiles(new FilenameFilter() {
 			@Override
-			public boolean accept(final File dir, final String name) {
-				return name.matches("^" + timestamp + "\\-[0-9]\\.expl");
+			public boolean accept(final File landscapeRepository, final String filename) {
+				System.out.println("filename: " + filename);
+				System.out.println("filename that matches: \n" + filename.matches("^" + timestamp + "\\-[0-9]\\.expl"));
+				return filename.startsWith(Long.toString(timestamp));
 			}
 		});
+		System.out.println("filesWithTimestamp[0]: " + filesWithTimestamp[0]);
 		final File exportLandscape = new File(filesWithTimestamp[0].getAbsolutePath());
 		String encodedLandscape = "";
 		// http://javasampleapproach.com/java/java-advanced/java-8-encode-decode-an-image-base64
@@ -74,7 +79,7 @@ public class LandscapeResource {
 			streamedLandscape.read(landscapeData);
 			encodedLandscape = Base64.getEncoder().encodeToString(landscapeData);
 		} catch (final IOException ioe) {
-			System.err.printf("I/O error: %s%n", ioe.getMessage());
+			System.err.printf("I/O error in encoding landscape: %s%n", ioe.getMessage());
 		}
 
 		return Response.ok(encodedLandscape, "*/*").build();
