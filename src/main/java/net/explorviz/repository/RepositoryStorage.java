@@ -176,10 +176,16 @@ public class RepositoryStorage {
 					final String[] split = file.getName().split("-");
 					final long timestamp = Long.parseLong(split[0]);
 
-					if ((java.lang.System.currentTimeMillis()
-							- TimeUnit.MINUTES.toMillis(minutesBackwards)) < timestamp) {
+					if (specificFolder.endsWith(REPLAY_REPOSITORY)) {
+						// don't check age of files in the replay repository
 						final long activities = Long.parseLong(split[1].split("\\.")[0]);
 						result.put(timestamp, activities);
+					} else if (specificFolder.endsWith(LANDSCAPE_REPOSITORY)) {
+						if ((java.lang.System.currentTimeMillis()
+								- TimeUnit.MINUTES.toMillis(minutesBackwards)) < timestamp) {
+							final long activities = Long.parseLong(split[1].split("\\.")[0]);
+							result.put(timestamp, activities);
+						}
 					}
 				}
 			}
