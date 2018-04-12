@@ -1,5 +1,7 @@
 package net.explorviz.api;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -36,5 +38,7 @@ interface IExtensionAPI {
 	void registerSpecificCoreModels(Map<String, Class<?>> typeMap);
 
 	void registerSpecificModel(String typeName, Class<?> type);
+
+	void setDummyMode(boolean value) throws FileNotFoundException, IOException;
 
 }

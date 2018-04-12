@@ -48,7 +48,7 @@ public class LandscapeResource {
 	@Produces("application/vnd.api+json")
 	@GET
 	@Path("/latest-landscape")
-	public Landscape getLatestLandscape() {
+	public Landscape getLatestLandscape() throws FileNotFoundException, IOException {
 		return api.getLatestLandscape();
 	}
 

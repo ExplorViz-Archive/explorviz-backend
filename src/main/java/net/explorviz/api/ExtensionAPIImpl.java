@@ -1,6 +1,7 @@
 package net.explorviz.api;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -11,6 +12,7 @@ import net.explorviz.model.landscape.Landscape;
 import net.explorviz.model.store.Timestamp;
 import net.explorviz.model.store.helper.TimestampHelper;
 import net.explorviz.repository.LandscapeExchangeService;
+import net.explorviz.server.helper.PropertyService;
 import net.explorviz.server.main.Configuration;
 import net.explorviz.server.providers.CoreModelHandler;
 import net.explorviz.server.providers.GenericTypeFinder;
@@ -176,6 +178,18 @@ public final class ExtensionAPIImpl implements IExtensionAPI {
 	public void registerAllCoreModels() {
 		CoreModelHandler.registerAllCoreModels();
 
+	}
+
+	/**
+	 * Enable / disable dummy mode true = Use dummy monitoring data instead of real
+	 * monitoring data
+	 * 
+	 * @throws IOException
+	 * @throws FileNotFoundException
+	 */
+	@Override
+	public void setDummyMode(final boolean value) throws FileNotFoundException, IOException {
+		PropertyService.setBooleanProperty("useDummyMode", value);
 	}
 
 }

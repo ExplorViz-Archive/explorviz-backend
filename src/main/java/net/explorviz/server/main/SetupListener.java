@@ -10,13 +10,14 @@ import org.slf4j.LoggerFactory;
 
 import net.explorviz.model.security.User;
 import net.explorviz.repository.LandscapeExchangeService;
+import net.explorviz.server.helper.PropertyService;
 import net.explorviz.server.security.HibernateSessionFactory;
 import net.explorviz.server.security.PasswordStorage;
 import net.explorviz.server.security.PasswordStorage.CannotPerformOperationException;
 
 /**
  * Primary starting class - executed, once the servlet context is started
- * 
+ *
  * @author Christian Zirkelbach (czi@informatik.uni-kiel.de)
  *
  */
@@ -44,7 +45,7 @@ public class SetupListener implements ServletContextListener {
 		session.save(new User("admin", hashedPassword));
 		sessionFactory.commitTransactionAndClose(session);
 
-		final boolean dummyModeEnabled = Configuration.dummyMode;
+		final boolean dummyModeEnabled = PropertyService.getBooleanProperty("useDummyMode");
 
 		// Start ExplorViz Listener
 		LandscapeExchangeService.startRepository();

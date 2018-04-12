@@ -10,6 +10,7 @@ import explorviz.live_trace_processing.reader.IPeriodicTimeSignalReceiver;
 import explorviz.live_trace_processing.reader.TimeSignalReader;
 import explorviz.live_trace_processing.record.IRecord;
 import net.explorviz.model.landscape.Landscape;
+import net.explorviz.server.helper.PropertyService;
 import net.explorviz.server.main.Configuration;
 
 public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiver {
@@ -100,7 +101,7 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
 
 				final long milliseconds = java.lang.System.currentTimeMillis();
 
-				if (Configuration.dummyMode) {
+				if (PropertyService.getBooleanProperty("useDummyMode")) {
 					final Landscape dummyLandscape = LandscapeDummyCreator.createDummyLandscape();
 					dummyLandscape.setTimestamp(milliseconds);
 					RepositoryStorage.writeToFile(dummyLandscape, milliseconds, Configuration.LANDSCAPE_REPOSITORY);
