@@ -86,6 +86,12 @@ public class Clazz extends BaseEntity {
 	public void reset() {
 		this.instanceCount = 0;
 		this.getObjectIds().clear();
+
+		// Do we need this bi-directional reset due to JSON API converter?
+		this.getOutgoingClazzCommunications().forEach((outgoingClazz) -> {
+			outgoingClazz.reset();
+		});
+
 		this.getOutgoingClazzCommunications().clear();
 	}
 

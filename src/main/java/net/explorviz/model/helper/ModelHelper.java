@@ -86,6 +86,12 @@ public final class ModelHelper {
 			if (!child.getChildren().isEmpty()) {
 				outgoingClazzCommunicationPartialList.addAll(getChildrenComponentClazzCommunications(child));
 			}
+
+			for (final Clazz clazz : child.getClazzes()) {
+				for (final ClazzCommunication clazzCommunication : clazz.getOutgoingClazzCommunications()) {
+					outgoingClazzCommunicationPartialList.add(clazzCommunication);
+				}
+			}
 		}
 		// get clazz communications
 		for (final Clazz clazz : component.getClazzes()) {
@@ -111,6 +117,9 @@ public final class ModelHelper {
 		for (final Component child : component.getChildren()) {
 			if (!child.getChildren().isEmpty()) {
 				retrievedClazzes.addAll(getChildrenComponentClazzes(child));
+			}
+			for (final Clazz clazz : child.getClazzes()) {
+				retrievedClazzes.add(clazz);
 			}
 		}
 		// get clazz communications
