@@ -26,13 +26,14 @@ import net.explorviz.api.ExtensionAPIImpl;
 import net.explorviz.model.landscape.Landscape;
 import net.explorviz.server.helper.FileSystemHelper;
 import net.explorviz.server.main.Configuration;
+import net.explorviz.server.security.Secured;
 
 /**
  * REST resource providing landscape data for the frontend.
  *
  * @author Christian Zirkelbach (czi@informatik.uni-kiel.de)
  */
-// @Secured
+@Secured
 @Path("landscape")
 public class LandscapeResource {
 
