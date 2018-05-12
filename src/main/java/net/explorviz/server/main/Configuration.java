@@ -17,6 +17,7 @@ public class Configuration {
 	public static final String MODEL_EXTENSION = ".expl";
 	public static final String LANDSCAPE_REPOSITORY = "landscapeRepository";
 	public static final String REPLAY_REPOSITORY = "replayRepository";
+	public static final String MODELL_REPOSITORY = "modellRepository";
 
 	// ENABLE_KIEKER_ADAPTER allows the usage of Kieker as monitoring component
 	public static final boolean ENABLE_KIEKER_ADAPTER = true;

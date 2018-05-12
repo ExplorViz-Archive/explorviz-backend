@@ -12,6 +12,7 @@ import java.util.Base64;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.PATCH;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -38,6 +39,36 @@ import net.explorviz.server.security.Secured;
 public class LandscapeResource {
 
 	private final ExtensionAPIImpl api = ExtensionAPI.get();
+	//
+	// @Produces("application/vnd.api+json")
+	// @PATCH
+	// @Path("/landscapes/{id}")
+	// public void updateLandscape(final Landscape landscape,
+	// @QueryParam("filename") final String fileName) {
+	// api.saveLandscape(landscape, fileName);
+	// }
+	//
+	// @Produces("application/vnd.api+json")
+	// @POST
+	// @Path("/landscapes")
+	// public void saveLandscape(final Landscape landscape, @QueryParam("filename")
+	// final String fileName) {
+	// api.saveLandscape(landscape, fileName);
+	// }
+
+	@Produces("application/vnd.api+json")
+	@PATCH
+	@Path("/landscapes/{id}")
+	public void updateLandscape(final Landscape landscape) {
+		api.saveLandscape(landscape);
+	}
+
+	@Produces("application/vnd.api+json")
+	@POST
+	@Path("/landscapes")
+	public void saveLandscape(final Landscape landscape) {
+		api.saveLandscape(landscape);
+	}
 
 	@Produces("application/vnd.api+json")
 	@GET

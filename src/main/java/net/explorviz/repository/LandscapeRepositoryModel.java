@@ -128,4 +128,12 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
 		// called every second
 		insertionRepositoryPart.insertIntoModel(inputIRecord, internalLandscape, remoteCallRepositoryPart);
 	}
+
+	public void saveLandscape(final Landscape landscape, final String fileName) {
+		RepositoryStorage.writeToFile(landscape, fileName, Configuration.MODELL_REPOSITORY);
+	}
+
+	public void saveLandscape(final Landscape landscape) {
+		RepositoryStorage.writeToFile(landscape, landscape.getTimestamp(), Configuration.MODELL_REPOSITORY);
+	}
 }

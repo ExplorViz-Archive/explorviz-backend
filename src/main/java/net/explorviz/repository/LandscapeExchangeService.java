@@ -164,4 +164,14 @@ public class LandscapeExchangeService {
 			}).start();
 		}
 	}
+
+	public void saveLandscape(final Landscape landscape, final String fileName) {
+		model.saveLandscape(landscape, fileName);
+
+	}
+
+	public void saveLandscape(final Landscape landscape) {
+		model.saveLandscape(landscape);
+
+	}
 }

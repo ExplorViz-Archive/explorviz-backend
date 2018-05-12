@@ -183,7 +183,7 @@ public final class ExtensionAPIImpl implements IExtensionAPI {
 	/**
 	 * Enable / disable dummy mode true = Use dummy monitoring data instead of real
 	 * monitoring data
-	 * 
+	 *
 	 * @throws IOException
 	 * @throws FileNotFoundException
 	 */
@@ -192,4 +192,13 @@ public final class ExtensionAPIImpl implements IExtensionAPI {
 		PropertyService.setBooleanProperty("useDummyMode", value);
 	}
 
+	public void saveLandscape(final Landscape landscape, final String fileName) {
+		service.saveLandscape(landscape, fileName);
+
+	}
+
+	public void saveLandscape(final Landscape landscape) {
+		service.saveLandscape(landscape);
+
+	}
 }
