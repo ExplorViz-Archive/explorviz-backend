@@ -74,11 +74,10 @@ public class HibernateSessionFactory {
 					return instance;
 				} catch (final Exception e) {
 					StandardServiceRegistryBuilder.destroy(registry);
-					LOGGER.debug(e.getMessage());
+					LOGGER.error("{}", e);
 				}
 			} catch (final MalformedURLException e) {
-				LOGGER.debug(e.getMessage());
-
+				LOGGER.error("{}", e);
 			}
 			return null;
 		}
