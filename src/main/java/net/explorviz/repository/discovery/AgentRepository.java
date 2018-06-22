@@ -18,13 +18,10 @@ public class AgentRepository {
 	private static final AtomicLong ID_GENERATOR = new AtomicLong(0);
 
 	private static final List<Agent> AGENTS = new ArrayList<Agent>();
+	private static final List<Procezz> ACTIVE_MONITORED_PROCEZZES = new ArrayList<Procezz>();
 
 	public String getUniqueIdString() {
 		return String.valueOf(ID_GENERATOR.incrementAndGet());
-	}
-
-	public List<Agent> getAgents() {
-		return AGENTS;
 	}
 
 	public Agent lookupAgent(final Agent agent) {
@@ -78,6 +75,14 @@ public class AgentRepository {
 
 		throw new AgentNotFoundException(ResponseUtil.ERROR_NO_AGENT_DETAIL, new Exception());
 
+	}
+
+	public List<Agent> getAgents() {
+		return AGENTS;
+	}
+
+	public static List<Procezz> getActiveMonitoredProcezzes() {
+		return ACTIVE_MONITORED_PROCEZZES;
 	}
 
 }

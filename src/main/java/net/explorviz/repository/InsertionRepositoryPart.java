@@ -24,22 +24,24 @@ import explorviz.live_trace_processing.record.trace.HostApplicationMetaDataRecor
 import explorviz.live_trace_processing.record.trace.Trace;
 import gnu.trove.iterator.TIntIterator;
 import gnu.trove.set.hash.TIntHashSet;
+import net.explorviz.discovery.model.Procezz;
 import net.explorviz.model.application.Application;
 import net.explorviz.model.application.Clazz;
 import net.explorviz.model.application.Component;
 import net.explorviz.model.application.DatabaseQuery;
-import net.explorviz.model.helper.ModelHelper;
 import net.explorviz.model.helper.EProgrammingLanguage;
+import net.explorviz.model.helper.ModelHelper;
 import net.explorviz.model.landscape.Landscape;
 import net.explorviz.model.landscape.Node;
 import net.explorviz.model.landscape.NodeGroup;
 import net.explorviz.model.landscape.System;
+import net.explorviz.repository.discovery.AgentRepository;
 import net.explorviz.repository.helper.Signature;
 import net.explorviz.repository.helper.SignatureParser;
 
 public class InsertionRepositoryPart {
 
-	static final Logger logger = LoggerFactory.getLogger(InsertionRepositoryPart.class.getName());
+	private static final Logger LOGGER = LoggerFactory.getLogger(InsertionRepositoryPart.class.getName());
 	private static final String DEFAULT_COMPONENT_NAME = "(default)";
 
 	private final Map<String, Node> nodeCache = new HashMap<String, Node>();
@@ -67,6 +69,18 @@ public class InsertionRepositoryPart {
 					final boolean isNewApplication = applicationCache
 							.get(node.getName() + "_" + hostApplicationRecord.getApplication()) == null;
 					final Application application = seekOrCreateApplication(node, hostApplicationRecord, landscape);
+
+					// check if user-initiated discovery-based monitoring
+					// is successful
+					final List<Procezz> procezzes = AgentRepository.getActiveMonitoredProcezzes();
+					for (final Procezz p : procezzes) {
+
+						LOGGER.info("{}", "found procezzes iteration");
+
+						if (p.getName().equals(application.getName())) {
+							LOGGER.info("found the same name {}", p.getName());
+						}
+					}
 
 					if (isNewNode) {
 						final NodeGroup nodeGroup = seekOrCreateNodeGroup(system, node);
@@ -439,8 +453,8 @@ public class InsertionRepositoryPart {
 
 		// add clazzCommunication to clazz and aggregatedClazzCommunication to
 		// application
-		ModelHelper.addClazzCommunication(caller, callee, application, requests, average,
-				overallTraceDuration, traceId, orderIndex, operationName);
+		ModelHelper.addClazzCommunication(caller, callee, application, requests, average, overallTraceDuration, traceId,
+				orderIndex, operationName);
 	}
 
 	private Clazz seekOrCreateClazz(final String fullQName, final Application application,
