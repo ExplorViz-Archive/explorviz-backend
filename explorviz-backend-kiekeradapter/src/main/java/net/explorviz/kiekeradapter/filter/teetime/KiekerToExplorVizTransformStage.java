@@ -30,7 +30,7 @@ import teetime.framework.AbstractConsumerStage;
  */
 public class KiekerToExplorVizTransformStage extends AbstractConsumerStage<IMonitoringRecord> {
 
-	final Logger logger = LoggerFactory.getLogger(KiekerToExplorVizTransformStage.class.getName());
+	static final Logger logger = LoggerFactory.getLogger(KiekerToExplorVizTransformStage.class.getName());
 	private final Stack<IMonitoringRecord> stack = new Stack<IMonitoringRecord>();
 
 	@Override
