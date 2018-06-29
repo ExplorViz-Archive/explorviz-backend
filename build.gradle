@@ -131,22 +131,22 @@ findbugs {
 
 tasks.withType(Pmd) {
 	reports {
-    	xml.enabled = false
-        html.enabled = true
+    	xml.enabled = true
+        html.enabled = false
     }
 }
 
 tasks.withType(FindBugs) {
 	reports {
-    	xml.enabled = false
-        html.enabled = true
+    	xml.enabled = true
+        html.enabled = false
     }
 }
 
 tasks.withType(Checkstyle) {
   	reports {
-    	xml.enabled = false
-        html.enabled = true
+    	xml.enabled = true
+        html.enabled = false
   }
 }
 
