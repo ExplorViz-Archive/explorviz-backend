@@ -24,15 +24,7 @@ pipeline {
         sh './gradlew check'
       }
     }
-    
-    
-    stage('Testing') {
-      steps {
-        echo 'Building...'
-        sh './gradlew test'
-      }
-    }
-    
+          
     stage('Building') {
       steps {
         echo 'Building...'
