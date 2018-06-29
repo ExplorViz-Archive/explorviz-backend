@@ -17,15 +17,11 @@ pipeline {
       }
     }
     
-    stage('Quality Checks') {
+    stage('Checking') {
       steps {
-        echo 'Performing software quality checks...'
-        echo 'Running checkstyle...'
-        sh './gradlew checkstyle'
-        echo 'Running pmd...'
-        sh './gradlew pmd'
-        echo 'Running findbugs...'
-        sh './gradlew findbugs'
+        echo 'Performing quality checks...'
+        echo 'Running checkstyle, pmd, and findbugs...'
+        sh './gradlew check'
       }
     }
     
