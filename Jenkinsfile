@@ -2,13 +2,21 @@
 pipeline {
   agent any
   
-  stage('Checkout'){
-    git branch: 'jenkins', url: 'https://github.com/ExplorViz/explorviz-backend/'
-  }
+  stages {  
+    stage('Checkout') {
+      steps {
+        echo 'Cloning...'
+        git branch: 'jenkins', url: 'https://github.com/ExplorViz/explorviz-backend/'
+      }   
+    }
 
-  stage('Build'){
-    sh './gradlew clean build'
-  }
-  
+    stage('Build') {
+      steps {
+        echo 'Building...'
+        sh './gradlew clean build'
+      }
+    }
+    
+  } 
 }
 //}
