@@ -10,7 +10,14 @@ pipeline {
       }   
     }
 
-    stage('Build') {
+    stage('Testing') {
+      steps {
+        echo 'Building...'
+        sh './gradlew clean test'
+      }
+    }
+    
+    stage('Building') {
       steps {
         echo 'Building...'
         sh './gradlew clean build'
