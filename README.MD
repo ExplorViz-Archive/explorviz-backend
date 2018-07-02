@@ -1,5 +1,5 @@
 # ExplorViz Backend
-<a href="https://travis-ci.org/ExplorViz/explorviz-backend"><img src="https://travis-ci.org/ExplorViz/explorviz-backend.svg?branch=master" alt="Build Status"></a>
+[![](http://build.se.informatik.uni-kiel.de/jenkins/buildStatus/icon?job=explorviz-backend)](http://build.se.informatik.uni-kiel.de/jenkins/job/explorviz-backend/)
 [![](https://img.shields.io/docker/pulls/explorviz/explorviz-docker.svg)](https://hub.docker.com/r/explorviz/explorviz-docker "Click to view the image on Docker Hub")
 
 This project contains the modernized version of [ExplorViz](https://github.com/ExplorViz/Explorviz). 
