@@ -39,6 +39,7 @@ public class LandscapeExchangeService {
 
 	private static final String REPLAY_FOLDER = FileSystemHelper.getExplorVizDirectory() + File.separator + "replay";
 	private static final String REPOSITORY_FOLDER = FileSystemHelper.getExplorVizDirectory() + File.separator;
+	private static final String MODELL_FOLDER = FileSystemHelper.getExplorVizDirectory() + File.separator + "modell";
 
 	public static synchronized LandscapeExchangeService getInstance() {
 		if (LandscapeExchangeService.instance == null) {

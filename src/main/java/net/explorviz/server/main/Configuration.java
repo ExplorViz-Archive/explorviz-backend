@@ -21,4 +21,5 @@ public class Configuration {
 
 	// ENABLE_KIEKER_ADAPTER allows the usage of Kieker as monitoring component
 	public static final boolean ENABLE_KIEKER_ADAPTER = true;
+
 }

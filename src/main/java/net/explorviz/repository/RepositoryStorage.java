@@ -5,6 +5,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
@@ -95,12 +97,24 @@ public class RepositoryStorage {
 
 	public static void writeToFile(final Landscape landscape, final long timestamp, final String folderName) {
 		final String specificFolder = folder + folderName;
+		try {
+			Files.createDirectories(Paths.get(specificFolder));
+		} catch (final IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		writeToFileGeneric(landscape, specificFolder,
 				timestamp + "-" + landscape.getOverallCalls() + Configuration.MODEL_EXTENSION);
 	}
 
 	public static void writeToFile(final Landscape landscape, final String fileName, final String folderName) {
 		final String specificFolder = folder + folderName;
+		try {
+			Files.createDirectories(Paths.get(specificFolder));
+		} catch (final IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		writeToFileGeneric(landscape, specificFolder, fileName + Configuration.MODEL_EXTENSION);
 	}
 
