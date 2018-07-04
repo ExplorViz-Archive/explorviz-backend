@@ -1,12 +1,18 @@
+#!/usr/bin/env groovy
+
 //node("linux && jdk8") {
 pipeline {
   agent any
+  
+  options {
+    skipDefaultCheckout(true)
+  }
   
   stages {  
     stage('Cloning') {
       steps {
         echo 'Cloning...'
-        git clone 'https://github.com/ExplorViz/explorviz-backend/' -b jenkins
+        git branch: 'jenkins', url: 'https://github.com/ExplorViz/explorviz-backend/'
       }   
     }
 
