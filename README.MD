@@ -1,5 +1,6 @@
 # ExplorViz Backend
-[![Build Status](https://build.se.informatik.uni-kiel.de/jenkins/job/explorviz-backend/badge/icon)](https://build.se.informatik.uni-kiel.de/jenkins/job/ExplorViz-backend/)
+[![TravsCI Build Status](https://travis-ci.org/ExplorViz/explorviz-backend.svg?branch=master)](https://travis-ci.org/ExplorViz/explorviz-backend)
+[![Jenkins Build Status](https://build.se.informatik.uni-kiel.de/jenkins/job/explorviz-backend/badge/icon)](https://build.se.informatik.uni-kiel.de/jenkins/job/ExplorViz-backend/)
 [![Sonarcloud Status](https://sonarcloud.io/api/project_badges/measure?project=explorviz-backend&metric=alert_status)](https://sonarcloud.io/dashboard?id=explorviz-backend)
 [![Dockerhub Pulls](https://img.shields.io/docker/pulls/explorviz/explorviz-docker.svg)](https://hub.docker.com/r/explorviz/explorviz-docker)
 
