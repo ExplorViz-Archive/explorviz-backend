@@ -20,6 +20,8 @@ import javax.ws.rs.core.Response;
 
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.explorviz.api.ExtensionAPI;
 import net.explorviz.api.ExtensionAPIImpl;
@@ -36,6 +38,7 @@ import net.explorviz.server.security.Secured;
 @Secured
 @Path("landscape")
 public class LandscapeResource {
+	static final Logger LOGGER = LoggerFactory.getLogger(LandscapeResource.class.getName());
 
 	private final ExtensionAPIImpl api = ExtensionAPI.get();
 
@@ -53,6 +56,9 @@ public class LandscapeResource {
 		return api.getLatestLandscape();
 	}
 
+	/**
+	 * For downloading a landscape from the landscape repository.
+	 */
 	@Produces("*/*")
 	@GET
 	@Path("/export/{timestamp}")
@@ -61,7 +67,7 @@ public class LandscapeResource {
 		final File landscapeRepository = new File(
 				FileSystemHelper.getExplorVizDirectory() + File.separator + Configuration.LANDSCAPE_REPOSITORY);
 
-		// https://stackoverflow.com/questions/13515150/how-to-get-file-from-directory-with-pattern-filter
+		// retrieve file from landscape repository with specific timestamp
 		final File[] filesWithTimestamp = landscapeRepository.listFiles(new FilenameFilter() {
 			@Override
 			public boolean accept(final File landscapeRepository, final String filename) {
@@ -69,18 +75,24 @@ public class LandscapeResource {
 			}
 		});
 
-		final File exportLandscape = new File(filesWithTimestamp[0].getAbsolutePath());
-		String encodedLandscape = "";
+		File exportLandscape;
 
-		// http://javasampleapproach.com/java/java-advanced/java-8-encode-decode-an-image-base64
+		if (filesWithTimestamp == null) {
+			throw new FileNotFoundException("No landscape found with timestamp:" + timestamp);
+		} else {
+			exportLandscape = new File(filesWithTimestamp[0].getAbsolutePath());
+		}
+
+		String encodedLandscape = "";
+		// encode to Base64
 		try (FileInputStream streamedLandscape = new FileInputStream(exportLandscape)) {
 			final byte[] landscapeData = new byte[(int) exportLandscape.length()];
 			streamedLandscape.read(landscapeData);
 			encodedLandscape = Base64.getEncoder().encodeToString(landscapeData);
 		} catch (final IOException ioe) {
-			System.err.printf("I/O error in encoding landscape: %s%n", ioe.getMessage());
+			LOGGER.error("error {} in encoding landscape with timestamp {}.", ioe.getMessage(), timestamp);
 		}
-
+		// send encoded landscape
 		return Response.ok(encodedLandscape, "*/*").build();
 	}
 
@@ -91,6 +103,9 @@ public class LandscapeResource {
 		return api.getLandscape(timestamp, Configuration.REPLAY_REPOSITORY);
 	}
 
+	/**
+	 * For uploading a landscape to the replay repository.
+	 */
 	// https://stackoverflow.com/questions/25797650/fileupload-with-jax-rs
 	@Consumes("multipart/form-data")
 	@POST
@@ -98,9 +113,8 @@ public class LandscapeResource {
 	public Response uploadLandscape(@FormDataParam("file") final InputStream uploadedInputStream,
 			@FormDataParam("file") final FormDataContentDisposition fileInfo) {
 
-		final String uploadedLandscapeFilePath = FileSystemHelper.getExplorVizDirectory() + File.separator;
-		final String replayFilePath = uploadedLandscapeFilePath + Configuration.REPLAY_REPOSITORY + File.separator;
-		System.out.println("replay: " + uploadedLandscapeFilePath);
+		final String baseFilePath = FileSystemHelper.getExplorVizDirectory() + File.separator;
+		final String replayFilePath = baseFilePath + Configuration.REPLAY_REPOSITORY + File.separator;
 
 		new File(replayFilePath).mkdir();
 		final File objFile = new File(replayFilePath + fileInfo.getFileName());
@@ -111,27 +125,26 @@ public class LandscapeResource {
 
 		saveToFile(uploadedInputStream, replayFilePath + fileInfo.getFileName());
 
-		// TODO send other response, if sth. went wrong
 		return Response.ok().build();
 	}
 
 	private void saveToFile(final InputStream uploadedInputStream, final String uploadedFileLocation) {
-		// http://javasampleapproach.com/java/java-advanced/java-8-encode-decode-an-image-base64
+		// decode and save landscape
 		try (InputStream base64is = Base64.getDecoder().wrap(uploadedInputStream)) {
 			int len = 0;
 			OutputStream out = null;
 			final byte[] bytes = new byte[1024];
 			out = new FileOutputStream(new File(uploadedFileLocation));
 			while ((len = base64is.read(bytes)) != -1) {
-				// System.out.print(new String(bytes, 0, len, "utf-8"));
 				out.write(bytes, 0, len);
 			}
 			out.flush();
 			out.close();
 		} catch (final IOException e1) {
-			// TODO Auto-generated catch block
-			System.out.println("in decoding\n");
-			e1.printStackTrace();
+			LOGGER.error(
+					"Replay landscape could not be saved to replay repository. Error {} occured. With stacktrace {}",
+					e1.getMessage(), e1.getStackTrace());
+
 		}
 
 	}

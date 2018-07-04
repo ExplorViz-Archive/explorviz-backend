@@ -62,7 +62,6 @@ public class TimestampResource {
 	@GET
 	@Path("/all-uploaded")
 	public List<Timestamp> getUploadedTimestamps() {
-
 		return api.getUploadedTimestamps();
 	}
 
