@@ -38,6 +38,16 @@ pipeline {
       }
     }
     
+    stage('Sonarqube') {
+      steps {
+        echo 'Executing Sonarqube'
+        sh './gradlew sonarqube \
+              -Dsonar.organization=explorviz \
+              -Dsonar.host.url=https://sonarcloud.io \
+              -Dsonar.login=687f4a75d3eedf589f513894b46561ffa00e01a2'
+      }
+    }
+    
   } 
 }
 //}
