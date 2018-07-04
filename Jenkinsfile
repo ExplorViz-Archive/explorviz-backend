@@ -1,6 +1,5 @@
 #!/usr/bin/env groovy
 
-//node("linux && jdk8") {
 pipeline {
   agent any
   
@@ -12,7 +11,7 @@ pipeline {
     stage('Cloning') {
       steps {
         echo 'Cloning...'
-        git branch: 'jenkins', url: 'https://github.com/ExplorViz/explorviz-backend/'
+        git branch: 'master', url: 'https://github.com/ExplorViz/explorviz-backend/'
       }   
     }
 
@@ -40,7 +39,7 @@ pipeline {
     
     stage('Sonarqube') {
       steps {
-        echo 'Executing Sonarqube'
+        echo 'Executing Sonarqube...'
         sh './gradlew sonarqube \
               -Dsonar.organization=explorviz \
               -Dsonar.host.url=https://sonarcloud.io \
@@ -50,4 +49,3 @@ pipeline {
     
   } 
 }
-//}
