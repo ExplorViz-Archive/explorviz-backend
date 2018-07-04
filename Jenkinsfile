@@ -6,7 +6,7 @@ pipeline {
     stage('Cloning') {
       steps {
         echo 'Cloning...'
-        git branch: 'jenkins', url: 'https://github.com/ExplorViz/explorviz-backend/'
+        git clone 'https://github.com/ExplorViz/explorviz-backend/' -b jenkins
       }   
     }
 
