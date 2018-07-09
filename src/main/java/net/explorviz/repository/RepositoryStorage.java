@@ -169,6 +169,10 @@ public class RepositoryStorage {
 	private static Map<Long, Long> getAvailableModels(final int minutesBackwards, final String specificFolder) {
 		final Map<Long, Long> result = new TreeMap<Long, Long>();
 
+		if (specificFolder == null) {
+			return result;
+		}
+
 		final File[] files = new File(specificFolder).listFiles();
 		if (files != null) {
 			for (final File file : files) {
@@ -186,6 +190,10 @@ public class RepositoryStorage {
 							final long activities = Long.parseLong(split[1].split("\\.")[0]);
 							result.put(timestamp, activities);
 						}
+					} else {
+						// every other folder
+						final long activities = Long.parseLong(split[1].split("\\.")[0]);
+						result.put(timestamp, activities);
 					}
 				}
 			}
