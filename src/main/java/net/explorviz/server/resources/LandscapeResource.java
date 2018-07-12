@@ -1,10 +1,8 @@
 package net.explorviz.server.resources;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -26,6 +24,7 @@ import org.slf4j.LoggerFactory;
 import net.explorviz.api.ExtensionAPI;
 import net.explorviz.api.ExtensionAPIImpl;
 import net.explorviz.model.landscape.Landscape;
+import net.explorviz.repository.RepositoryStorage;
 import net.explorviz.server.helper.FileSystemHelper;
 import net.explorviz.server.main.Configuration;
 import net.explorviz.server.security.Secured;
@@ -61,37 +60,19 @@ public class LandscapeResource {
 	 */
 	@Produces("*/*")
 	@GET
-	@Path("/export/{timestamp}")
-	public Response getExportLandscape(@PathParam("timestamp") final long timestamp) throws FileNotFoundException {
+	@Path("/export/{fileName}")
+	public Response getExportLandscape(@PathParam("fileName") final String fileName) throws FileNotFoundException {
 
-		final File landscapeRepository = new File(
-				FileSystemHelper.getExplorVizDirectory() + File.separator + Configuration.LANDSCAPE_REPOSITORY);
+		final String landscapeFolder = FileSystemHelper.getExplorVizDirectory() + File.separator
+				+ Configuration.LANDSCAPE_REPOSITORY;
 
-		// retrieve file from landscape repository with specific timestamp
-		final File[] filesWithTimestamp = landscapeRepository.listFiles(new FilenameFilter() {
-			@Override
-			public boolean accept(final File landscapeRepository, final String filename) {
-				return filename.startsWith(Long.toString(timestamp));
-			}
-		});
+		final Landscape landscapeWithNewIDs = RepositoryStorage.readFromFileGeneric(landscapeFolder,
+				fileName + ".expl");
 
-		File exportLandscape;
+		final byte[] landscapeAsBytes = RepositoryStorage.convertLandscapeToBytes(landscapeWithNewIDs);
 
-		if (filesWithTimestamp == null) {
-			throw new FileNotFoundException("No landscape found with timestamp:" + timestamp);
-		} else {
-			exportLandscape = new File(filesWithTimestamp[0].getAbsolutePath());
-		}
+		final String encodedLandscape = Base64.getEncoder().encodeToString(landscapeAsBytes);
 
-		String encodedLandscape = "";
-		// encode to Base64
-		try (FileInputStream streamedLandscape = new FileInputStream(exportLandscape)) {
-			final byte[] landscapeData = new byte[(int) exportLandscape.length()];
-			streamedLandscape.read(landscapeData);
-			encodedLandscape = Base64.getEncoder().encodeToString(landscapeData);
-		} catch (final IOException ioe) {
-			LOGGER.error("error {} in encoding landscape with timestamp {}.", ioe.getMessage(), timestamp);
-		}
 		// send encoded landscape
 		return Response.ok(encodedLandscape, "*/*").build();
 	}
