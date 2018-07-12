@@ -99,6 +99,10 @@ public class RepositoryStorage {
 				timestamp + "-" + landscape.getOverallCalls() + Configuration.MODEL_EXTENSION);
 	}
 
+	public static byte[] convertLandscapeToBytes(final Landscape l) {
+		return FST_CONF.asByteArray(l);
+	}
+
 	private static void writeToFileGeneric(final Landscape landscape, final String destFolder,
 			final String destFilename) {
 		FSTObjectOutput output = null;
