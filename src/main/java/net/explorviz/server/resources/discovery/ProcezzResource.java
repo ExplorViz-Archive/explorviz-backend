@@ -78,8 +78,9 @@ public class ProcezzResource {
 		if (httpStatus == Response.Status.OK.getStatusCode()) {
 			final Procezz updatedProcezz = httpResponse.readEntity(Procezz.class);
 
-			if (updatedProcezz.isMonitoredFlag()) {
-				AgentRepository.getActiveMonitoredProcezzes().add(updatedProcezz);
+			// TODO
+			if (updatedProcezz.isMonitoredFlag() && !updatedProcezz.wasFoundByBackend()) {
+				AgentRepository.getActiveMonitoredProcezzesMap().put(System.currentTimeMillis(), updatedProcezz);
 			}
 
 			// return updated (possibly restarted) procezz to frontend

@@ -48,6 +48,7 @@ public class InsertionRepositoryPart {
 	private final Map<String, Application> applicationCache = new HashMap<String, Application>();
 	private final Map<Application, Map<String, Clazz>> clazzCache = new HashMap<Application, Map<String, Clazz>>();
 
+	// is called every second
 	public void insertIntoModel(final IRecord inputIRecord, final Landscape landscape,
 			final RemoteCallRepositoryPart remoteCallRepositoryPart) {
 
@@ -75,10 +76,9 @@ public class InsertionRepositoryPart {
 					final List<Procezz> procezzes = AgentRepository.getActiveMonitoredProcezzes();
 					for (final Procezz p : procezzes) {
 
-						LOGGER.info("{}", "found procezzes iteration");
-
-						if (p.getName().equals(application.getName())) {
+						if (!p.wasFoundByBackend() && p.getName().equals(application.getName())) {
 							LOGGER.info("found the same name {}", p.getName());
+							p.setWasFoundByBackend(true);
 						}
 					}
 

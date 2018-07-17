@@ -8,6 +8,11 @@ apply plugin: 'checkstyle'
 apply plugin: 'findbugs'
 apply plugin: 'org.sonarqube'
 
+// # Uncomment lines below to force dependency downloading (e.g. when explorviz-discovery-common)
+//configurations.all {
+//  resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+//}
+
 def loadProperties = {
     def properties = new Properties()
     file('src/main/webapp/WEB-INF/classes/explorviz.properties').withInputStream {

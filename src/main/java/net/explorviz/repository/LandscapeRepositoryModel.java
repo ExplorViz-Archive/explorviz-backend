@@ -10,6 +10,7 @@ import explorviz.live_trace_processing.reader.IPeriodicTimeSignalReceiver;
 import explorviz.live_trace_processing.reader.TimeSignalReader;
 import explorviz.live_trace_processing.record.IRecord;
 import net.explorviz.model.landscape.Landscape;
+import net.explorviz.repository.discovery.AgentRepository;
 import net.explorviz.server.helper.PropertyService;
 import net.explorviz.server.main.Configuration;
 
@@ -124,8 +125,9 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
 		internalLandscape.reset();
 	}
 
+	// called every second
 	public void insertIntoModel(final IRecord inputIRecord) {
-		// called every second
+		AgentRepository.filterActivelyMonitoredProcezzes();
 		insertionRepositoryPart.insertIntoModel(inputIRecord, internalLandscape, remoteCallRepositoryPart);
 	}
 }
