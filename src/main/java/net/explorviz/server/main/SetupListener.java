@@ -43,6 +43,7 @@ public class SetupListener implements ServletContextListener {
 
 		final Session session = sessionFactory.beginTransaction();
 		session.save(new User("admin", hashedPassword));
+		session.save(new User("admin2", hashedPassword));
 		sessionFactory.commitTransactionAndClose(session);
 
 		final boolean dummyModeEnabled = PropertyService.getBooleanProperty("useDummyMode");
