@@ -32,8 +32,8 @@ The API documentation is available [here](https://explorviz.github.io/explorviz-
 5. Setup and start [explorviz-frontend](https://github.com/ExplorViz/explorviz-frontend)
 
 ### Further Information
-* To force the download of newly added dependencies: `Right click on the project explorviz-backend -> Gradle -> Refresh Gradle Project`. 
-* Generating API Documentation via Eclipse Tab: `Gradle Tasks -> explorviz-backend -> documentation -> javadoc`
+* To force the download of newly added dependencies: `Right click on the project explorviz-backend -> Gradle -> Refresh Gradle Project`. You might need to uncomment the respective lines in the build.gradle file.
+* Generating API Documentation: Travis CI automatically builds all Javadoc on successful master-branch builds
 
 ## Quick start with sample (dummy) monitoring
 
