@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Main Configuration for the backend
+ * Main Configuration settings for the backend
  *
  * @author Christian Zirkelbach (czi@informatik.uni-kiel.de)
  *
