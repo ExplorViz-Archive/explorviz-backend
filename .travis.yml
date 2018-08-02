@@ -2,18 +2,23 @@ language: java
 
 jdk:
 - oraclejdk8
+- oraclejdk9
+- openjdk8
+
+matrix:
+  fast_finish: true
+  allow_failures:
+  - jdk: oraclejdk9
 
 before_script:
   - chmod +x .travis/push.sh
+  - chmod +x .travis/javadoc-push.sh
 
-before_install:
-
-script: gradle build
+script: gradle build javadoc
 
 after_success:
+  - .travis/javadoc-push.sh
   - .travis/push.sh
-  
-env:
 
 branches:
   only:

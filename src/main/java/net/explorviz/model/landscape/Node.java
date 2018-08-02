@@ -3,6 +3,7 @@ package net.explorviz.model.landscape;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.github.jasminb.jsonapi.annotations.Relationship;
 import com.github.jasminb.jsonapi.annotations.Type;
 
@@ -82,4 +83,11 @@ public class Node extends BaseEntity {
 	public List<Application> getApplications() {
 		return applications;
 	}
+
+	@JsonIgnore
+	public String getDisplayName() {
+		final String displayName = this.name == null ? this.ipAddress : this.name;
+		return displayName == null ? "This node has not been configured correctly" : displayName;
+	}
+
 }

@@ -41,4 +41,6 @@ interface IExtensionAPI {
 
 	void setDummyMode(boolean value) throws FileNotFoundException, IOException;
 
+	void saveLandscapeToFile(Landscape landscape, String folderName);
+
 }

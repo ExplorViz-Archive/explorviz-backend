@@ -25,6 +25,10 @@ public class BaseEntity implements Serializable {
 	@Id(LongIdHandler.class)
 	private Long id;
 
+	public BaseEntity() {
+		this.id = Long.valueOf(BaseEntity.ID_GENERATOR.incrementAndGet());
+	}
+
 	/*
 	 * This attribute can be used by extensions to insert custom properties to any
 	 * meta-model object. Non primitive types (your custom model class) must be
@@ -37,7 +41,7 @@ public class BaseEntity implements Serializable {
 	}
 
 	public void initializeID() {
-		this.id = Long.valueOf(BaseEntity.ID_GENERATOR.incrementAndGet());
+		// this.id = Long.valueOf(BaseEntity.ID_GENERATOR.incrementAndGet());
 	}
 
 	public void setId(final Long id) {

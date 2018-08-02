@@ -12,6 +12,7 @@ import net.explorviz.model.landscape.Landscape;
 import net.explorviz.model.store.Timestamp;
 import net.explorviz.model.store.helper.TimestampHelper;
 import net.explorviz.repository.LandscapeExchangeService;
+import net.explorviz.repository.RepositoryStorage;
 import net.explorviz.server.helper.PropertyService;
 import net.explorviz.server.main.Configuration;
 import net.explorviz.server.providers.CoreModelHandler;
@@ -183,13 +184,18 @@ public final class ExtensionAPIImpl implements IExtensionAPI {
 	/**
 	 * Enable / disable dummy mode true = Use dummy monitoring data instead of real
 	 * monitoring data
-	 * 
+	 *
 	 * @throws IOException
 	 * @throws FileNotFoundException
 	 */
 	@Override
 	public void setDummyMode(final boolean value) throws FileNotFoundException, IOException {
 		PropertyService.setBooleanProperty("useDummyMode", value);
+	}
+
+	@Override
+	public void saveLandscapeToFile(final Landscape landscape, final String folderName) {
+		RepositoryStorage.writeToFile(landscape, landscape.getTimestamp(), folderName);
 	}
 
 }
