@@ -49,7 +49,7 @@ public final class LandscapePreparer {
 
 		// outgoing communication between applications
 		for (final ApplicationCommunication commu : landscape.getOutgoingApplicationCommunications()) {
-			createOutgoingApplicationCommunication(commu);
+			//createOutgoingApplicationCommunication(commu);
 		}
 		return landscape;
 	}
