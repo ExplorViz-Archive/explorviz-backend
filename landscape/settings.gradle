@@ -1,0 +1,4 @@
+rootProject.name = 'landscape'
+
+include ':kiekeradapter'
+project(':kiekeradapter').projectDir = new File('../kiekeradapter')
