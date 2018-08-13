@@ -43,6 +43,8 @@ dependencies {
   
   // explorviz-kieker-adapter
   compile project(':kiekeradapter')
+  
+  compile project(':shared')
     
   // Jersey and Servlet
   compile group: 'org.glassfish.jersey.containers', name: 'jersey-container-servlet', version:'2.26'

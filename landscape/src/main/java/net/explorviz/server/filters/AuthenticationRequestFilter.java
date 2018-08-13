@@ -17,9 +17,7 @@ import org.hibernate.Session;
 
 import net.explorviz.model.security.User;
 import net.explorviz.server.security.HibernateSessionFactory;
-import net.explorviz.server.security.Secured;
 
-@Secured
 @Provider
 @Priority(Priorities.AUTHENTICATION)
 public class AuthenticationRequestFilter implements ContainerRequestFilter {

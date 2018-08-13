@@ -27,7 +27,7 @@ import net.explorviz.model.landscape.Landscape;
 import net.explorviz.repository.RepositoryStorage;
 import net.explorviz.server.helper.FileSystemHelper;
 import net.explorviz.server.main.Configuration;
-import net.explorviz.server.security.Secured;
+import net.explorviz.shared.annotations.Secured;
 
 /**
  * REST resource providing landscape data for the frontend.

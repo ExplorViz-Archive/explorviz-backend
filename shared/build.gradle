@@ -1,0 +1,11 @@
+apply plugin: 'java-library'
+
+repositories {
+  jcenter()
+}
+
+dependencies {
+  compile group: 'org.glassfish.jersey.containers', name: 'jersey-container-servlet', version:'2.26'
+       
+  testImplementation 'junit:junit:4.12'
+}

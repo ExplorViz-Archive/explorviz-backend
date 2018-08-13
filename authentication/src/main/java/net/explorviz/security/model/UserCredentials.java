@@ -1,13 +1,6 @@
 package net.explorviz.security.model;
 
-import com.github.jasminb.jsonapi.annotations.Id;
-import com.github.jasminb.jsonapi.annotations.Type;
-
-@Type("user-credentials")
 public class UserCredentials {
-
-	@Id
-	private String id;
 
 	private String username;
 	private String password;

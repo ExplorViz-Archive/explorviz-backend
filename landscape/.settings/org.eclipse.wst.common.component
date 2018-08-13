@@ -8,5 +8,8 @@
 		<dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/kiekeradapter/kiekeradapter">
 			<dependency-type>uses</dependency-type>
 		</dependent-module>
+		<dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/shared/shared">
+			<dependency-type>uses</dependency-type>
+		</dependent-module>
 	</wb-module>
 </project-modules>

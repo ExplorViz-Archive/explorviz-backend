@@ -2,3 +2,6 @@ rootProject.name = 'landscape'
 
 include ':kiekeradapter'
 project(':kiekeradapter').projectDir = new File('../kiekeradapter')
+
+include ':shared'
+project(':shared').projectDir = new File('../shared')
