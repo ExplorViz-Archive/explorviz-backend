@@ -34,7 +34,7 @@ public final class TokenDetails {
 		return username;
 	}
 
-	public List<String> getAuthorities() {
+	public List<String> getRoles() {
 		return roles;
 	}
 

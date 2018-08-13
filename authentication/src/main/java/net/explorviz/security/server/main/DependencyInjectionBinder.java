@@ -6,6 +6,8 @@ import org.glassfish.hk2.utilities.binding.AbstractBinder;
 
 import net.explorviz.security.services.TokenService;
 import net.explorviz.security.services.UserService;
+import net.explorviz.security.services.TokenParserService;
+
 
 public class DependencyInjectionBinder extends AbstractBinder {
 
@@ -14,6 +16,7 @@ public class DependencyInjectionBinder extends AbstractBinder {
 
 		this.bind(TokenService.class).to(TokenService.class).in(Singleton.class);
 		this.bind(UserService.class).to(UserService.class).in(Singleton.class);
+		this.bind(TokenParserService.class).to(TokenParserService.class).in(Singleton.class);
 
 	}
 }

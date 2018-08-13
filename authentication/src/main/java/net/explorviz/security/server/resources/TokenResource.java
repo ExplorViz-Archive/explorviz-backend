@@ -6,13 +6,19 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.container.ContainerRequestContext;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import net.explorviz.security.model.Token;
+import net.explorviz.security.model.TokenDetails;
 import net.explorviz.security.model.User;
 import net.explorviz.security.model.UserCredentials;
+import net.explorviz.security.server.main.TokenBasedSecurityContext;
 import net.explorviz.security.services.TokenService;
 import net.explorviz.security.services.UserService;
+import net.explorviz.shared.annotations.Secured;
 
 @Path("v1/tokens")
 public class TokenResource {
@@ -40,25 +46,30 @@ public class TokenResource {
 		final User user = this.userService.validateUserCredentials(credentials);
 
 		final Token t = new Token();
-		t.setToken(this.tokenService.issueToken(user));
+		t.setToken(this.tokenService.issueNewToken(user));
 
 		return t;
 	}
 
-	/*
-	 * @POST
-	 *
-	 * @Path("refresh")
-	 *
-	 * @Produces(MediaType.APPLICATION_JSON) public Response refresh() {
-	 *
-	 * final AuthenticationTokenDetails tokenDetails = ((TokenBasedSecurityContext)
-	 * securityContext) .getAuthenticationTokenDetails(); final String token =
-	 * authenticationTokenService.refreshToken(tokenDetails);
-	 *
-	 * final AuthenticationToken authenticationToken = new AuthenticationToken();
-	 * authenticationToken.setToken(token); return
-	 * Response.ok(authenticationToken).build(); }
-	 */
+	@POST
+	@Path("refresh")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Secured
+	public Response refresh(@Context final ContainerRequestContext context) {
+
+		// curl -X POST
+		// 'http://localhost:8082/v1/tokens/refresh/'
+		// -H 'Accept: application/json'
+		// -H 'Authorization: Bearer <authentication-token>'
+
+		final TokenBasedSecurityContext sec = (TokenBasedSecurityContext) context.getSecurityContext();
+
+		final TokenDetails tokenDetails = sec.getTokenDetails();
+		final String token = this.tokenService.issueRefreshmentToken(tokenDetails);
+
+		final Token authenticationToken = new Token();
+		authenticationToken.setToken(token);
+		return Response.ok(authenticationToken).build();
+	}
 
 }
