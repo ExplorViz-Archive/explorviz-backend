@@ -2,3 +2,4 @@ rootProject.name = 'explorviz-backend'
 
 include ':landscape'
 include ':kiekeradapter'
+include ':authentication'

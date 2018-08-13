@@ -1,5 +1,5 @@
 apply plugin: 'war'
-apply plugin: 'org.akhikhl.gretty'
+apply from: 'https://raw.github.com/gretty-gradle-plugin/gretty/master/pluginScripts/gretty.plugin'
 apply plugin: 'java-library'
 apply plugin: 'eclipse'
 apply plugin: 'maven'
@@ -26,7 +26,7 @@ buildscript {
   }
 
     dependencies {
-      	classpath 'org.akhikhl.gretty:gretty:+'
+      	classpath 'org.gretty:gretty:+'
 		classpath 'org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.6.1'
     }
 }

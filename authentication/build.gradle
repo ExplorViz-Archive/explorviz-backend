@@ -1,0 +1,112 @@
+apply plugin: 'java-library'
+apply from: 'https://raw.github.com/gretty-gradle-plugin/gretty/master/pluginScripts/gretty.plugin'
+apply plugin: 'war'
+apply plugin: 'pmd'
+apply plugin: 'checkstyle'
+apply plugin: 'findbugs'
+
+
+buildscript {
+    repositories {
+    jcenter()
+    }
+    dependencies {
+        classpath 'org.gretty:gretty:+'
+    }
+}
+
+
+repositories {
+  jcenter()
+}
+
+
+// # Uncomment lines below to force dependency downloading (e.g. when explorviz-backend was updated)
+//configurations.all {
+//    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+//}
+
+
+configurations {
+	provided
+	compile.extendsFrom(provided)
+}
+
+
+dependencies {
+
+	compile group: 'org.glassfish.jersey.media', name: 'jersey-media-sse', version: '2.27'
+    
+	// Jersey and Servlet
+	compile group: 'org.glassfish.jersey.containers', name: 'jersey-container-servlet', version:'2.26'
+	compile group: 'javax.servlet', name: 'javax.servlet-api', version:'3.0.1'
+	compile group: 'org.glassfish.jersey.inject', name: 'jersey-hk2', version:'2.26'
+	
+    // Database, ORM and Serialization
+    compile group: 'com.h2database', name: 'h2', version:'1.4.196'
+    compile group: 'de.ruedigermoeller', name: 'fst', version:'2.47'
+    compile group: 'org.hibernate', name: 'hibernate-core', version:'5.2.11.Final'
+    compile group: 'org.hibernate', name: 'hibernate-c3p0', version:'5.2.11.Final'
+    
+    // JSON Web Token (JWT)
+	compile group: 'io.jsonwebtoken', name: 'jjwt', version: '0.9.1'
+  
+    // JSON + Parsing
+    compile group: 'com.github.jasminb', name: 'jsonapi-converter', version:'0.8.1'
+    compile group: 'org.glassfish.jersey.media', name: 'jersey-media-json-jackson', version:'2.27'
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version:'2.9.6'
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version:'2.9.6'
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version:'2.9.6'
+    
+    // SL4J
+	compile group: 'org.slf4j', name: 'slf4j-simple', version: '1.6.1'
+
+    testCompile 'junit:junit:4.12'
+}
+
+
+// Don't build war when tests fail
+war.dependsOn check
+
+
+// War plugin typically disables jar build
+assemble.dependsOn jar
+
+// Build .jar file with your "provided" dependencies only
+jar {
+  baseName = project.name 
+  from configurations.provided.asFileTree.files.collect { zipTree(it) }
+}
+
+
+// Tooling
+pmd {
+	ignoreFailures = false
+	// Clear the rule set first. Otherwise we would have a lot of additional rules in our rule set.
+	ruleSets = []
+	ruleSetFiles = files("conf/pmd.xml")
+}
+
+    
+checkstyle {
+	ignoreFailures = false
+	showViolations = false
+	configFile = file("conf/checkstyle.xml")
+}
+
+findbugs {
+	reportLevel = "low"
+	ignoreFailures = false
+	effort = "max"
+}
+
+// Embedded Webserver
+gretty {
+  httpPort = 8082
+  servletContainer = 'jetty9'
+  contextPath = '/'
+  recompileOnSourceChange = false
+  reloadOnClassChange = false
+  reloadOnConfigChange = false
+  reloadOnLibChange = false
+}
