@@ -2,17 +2,23 @@ package net.explorviz.security.server.main;
 
 import javax.inject.Singleton;
 
+import org.glassfish.hk2.api.InjectionResolver;
+import org.glassfish.hk2.api.TypeLiteral;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
 
 import net.explorviz.security.services.TokenService;
 import net.explorviz.security.services.UserService;
+import net.explorviz.shared.annotations.Config;
+import net.explorviz.shared.annotations.injection.ConfigInjectionResolver;
 import net.explorviz.shared.security.TokenParserService;
-
 
 public class DependencyInjectionBinder extends AbstractBinder {
 
 	@Override
 	public void configure() {
+
+		this.bind(new ConfigInjectionResolver()).to(new TypeLiteral<InjectionResolver<Config>>() {
+		});
 
 		this.bind(TokenService.class).to(TokenService.class).in(Singleton.class);
 		this.bind(UserService.class).to(UserService.class).in(Singleton.class);

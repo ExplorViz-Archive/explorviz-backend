@@ -15,6 +15,7 @@ import net.explorviz.security.model.Token;
 import net.explorviz.security.model.UserCredentials;
 import net.explorviz.security.services.TokenService;
 import net.explorviz.security.services.UserService;
+import net.explorviz.shared.annotations.Config;
 import net.explorviz.shared.annotations.Secured;
 import net.explorviz.shared.security.TokenBasedSecurityContext;
 import net.explorviz.shared.security.TokenDetails;
@@ -23,20 +24,30 @@ import net.explorviz.shared.security.User;
 @Path("v1/tokens")
 public class TokenResource {
 
-	private final UserService userService;
-	private final TokenService tokenService;
+	@Inject
+	private UserService userService;
 
 	@Inject
-	public TokenResource(final UserService userService, final TokenService tokenService) {
-		this.userService = userService;
-		this.tokenService = tokenService;
-	}
+	private TokenService tokenService;
+
+	@Config("stringTest")
+	private String stringTest;
+
+	@Config("7")
+	private Integer intTest;
+
+	@Config("true")
+	private Boolean booleanTest;
 
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@PermitAll
 	public Token issueToken(final UserCredentials credentials) {
+
+		System.out.println(stringTest);
+		System.out.println(intTest);
+		System.out.println(booleanTest);
 
 		// curl -X POST
 		// 'http://localhost:8082/v1/tokens/'
