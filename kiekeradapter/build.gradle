@@ -9,7 +9,6 @@ buildscript {
 }
 
 repositories {
-  	jcenter()
   	maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
 }
 
@@ -23,9 +22,6 @@ dependencies {
 	
 	// Kieker Monitoring Framework
 	compile group: 'net.kieker-monitoring', name: 'kieker', version: '1.14-SNAPSHOT'
-	
-	// SL4J
-	compile group: 'org.slf4j', name: 'slf4j-simple', version: '1.6.1'
 	
     // Use JUnit test framework
     testImplementation 'junit:junit:4.12'

@@ -1,6 +1,3 @@
-apply plugin: 'war'
-apply from: 'https://raw.github.com/gretty-gradle-plugin/gretty/master/pluginScripts/gretty.plugin'
-apply plugin: 'java-library'
 apply plugin: 'eclipse'
 apply plugin: 'maven'
 apply plugin: 'pmd'
@@ -17,24 +14,20 @@ def loadProperties = {
 }
 
 buildscript {
-  repositories {
-  	jcenter()
-    maven {
-    	url 'https://plugins.gradle.org/m2/'
-    	url 'https://jitpack.io'
-    }
-  }
+	repositories {  		
+    	maven {
+    		url 'https://plugins.gradle.org/m2/'
+    	}
+  	}
 
     dependencies {
-      	classpath 'org.gretty:gretty:+'
 		classpath 'org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.6.1'
     }
 }
 
 repositories {
-  jcenter()
-  maven {url 'https://oss.sonatype.org/content/repositories/snapshots'}
-  maven {url 'https://jitpack.io'}
+	maven {url 'https://oss.sonatype.org/content/repositories/snapshots'}
+	maven {url 'https://jitpack.io'}
 }
 
 dependencies {
@@ -48,25 +41,18 @@ dependencies {
   
   // SSE context for injection
   compile group: 'org.glassfish.jersey.media', name: 'jersey-media-sse', version: '2.27'
-    
-  // Jersey and Servlet
-  compile group: 'org.glassfish.jersey.containers', name: 'jersey-container-servlet', version:'2.26'
-  compile group: 'javax.servlet', name: 'javax.servlet-api', version:'3.0.1'
-  compile group: 'org.glassfish.jersey.inject', name: 'jersey-hk2', version:'2.26'
   
   // ExplorViz Discovery Classes
   compile 'com.github.ExplorViz:explorviz-discovery-common:master-SNAPSHOT'
     
-  // Database, ORM and Serialization
+  // Serialization
   compile group: 'de.ruedigermoeller', name: 'fst', version:'2.47'
   
-  // JSON + Parsing
+  // JSON-API parsing
   compile group: 'com.github.jasminb', name: 'jsonapi-converter', version:'0.8'
-  compile group: 'org.glassfish.jersey.media', name: 'jersey-media-json-jackson', version:'2.23'
+  
+  // multipart/form-data type
   compile group: 'org.glassfish.jersey.media', name:'jersey-media-multipart', version:'2.26'
-  compile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version:'2.7.1'
-  compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version:'2.7.1'
-  compile group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version:'2.7.1'
    
   testImplementation 'junit:junit:4.12'
 }
