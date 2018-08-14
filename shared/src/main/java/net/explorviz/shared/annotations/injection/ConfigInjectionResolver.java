@@ -1,5 +1,7 @@
 package net.explorviz.shared.annotations.injection;
 
+import java.lang.reflect.Type;
+
 import javax.inject.Singleton;
 import javax.ws.rs.InternalServerErrorException;
 
@@ -21,22 +23,22 @@ public class ConfigInjectionResolver implements InjectionResolver<Config> {
 	@Override
 	public Object resolve(Injectee injectee, ServiceHandle<?> root) {
 
-		System.out.println("type: " + injectee.getRequiredType());
+		Type t = injectee.getRequiredType();
 
-		if (String.class == injectee.getRequiredType()) {
+		if (String.class == t) {
 			return String.valueOf(handlePropertyLoading(injectee));
 		}
-		
-		if (Integer.class == injectee.getRequiredType()) {
-			return Integer.valueOf(String.valueOf(handlePropertyLoading(injectee)));
-		}
-		
-		if (Boolean.class == injectee.getRequiredType()) {
-			return Boolean.valueOf(String.valueOf(handlePropertyLoading(injectee)));
-		}
-		
 
-		throw new InternalServerErrorException("Type for property injection is not valid.");
+		if ("int".equals(t.toString())) {
+			return Integer.valueOf(String.valueOf(handlePropertyLoading(injectee))).intValue();
+		}
+
+		if ("boolean".equals(t.toString())) {
+			return Boolean.valueOf(String.valueOf(handlePropertyLoading(injectee))).booleanValue();
+		}
+
+		throw new InternalServerErrorException(
+				"Type '" + t + "' for property injection is not valid. Use String, int or boolean.");
 	}
 
 	public Object handlePropertyLoading(Injectee injectee) {

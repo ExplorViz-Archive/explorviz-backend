@@ -34,10 +34,10 @@ public class TokenResource {
 	private String stringTest;
 
 	@Config("7")
-	private Integer intTest;
+	private int intTest;
 
 	@Config("true")
-	private Boolean booleanTest;
+	private boolean booleanTest;
 
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
