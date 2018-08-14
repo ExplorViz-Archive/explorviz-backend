@@ -1,6 +1,4 @@
 dependencies {  
   // JSON Web Token (JWT)
-  compile group: 'io.jsonwebtoken', name: 'jjwt', version: '0.9.1'
-       
-  testImplementation 'junit:junit:4.12'
+  api group: 'io.jsonwebtoken', name: 'jjwt', version: '0.9.1'
 }

@@ -32,29 +32,27 @@ repositories {
 
 dependencies {
   // Any .jar in libs
-  compile fileTree(dir: 'libs', include: '*.jar')
+  implementation fileTree(dir: 'libs', include: '*.jar')
   
   // explorviz-kieker-adapter
-  compile project(':kiekeradapter')
+  implementation project(':kiekeradapter')
   
-  compile project(':shared')
+  implementation project(':shared')
   
   // SSE context for injection
-  compile group: 'org.glassfish.jersey.media', name: 'jersey-media-sse', version: '2.27'
+  implementation group: 'org.glassfish.jersey.media', name: 'jersey-media-sse', version: '2.27'
   
   // ExplorViz Discovery Classes
-  compile 'com.github.ExplorViz:explorviz-discovery-common:master-SNAPSHOT'
+  implementation 'com.github.ExplorViz:explorviz-discovery-common:master-SNAPSHOT'
     
   // Serialization
-  compile group: 'de.ruedigermoeller', name: 'fst', version:'2.47'
+  implementation group: 'de.ruedigermoeller', name: 'fst', version:'2.47'
   
   // JSON-API parsing
-  compile group: 'com.github.jasminb', name: 'jsonapi-converter', version:'0.8'
+  implementation group: 'com.github.jasminb', name: 'jsonapi-converter', version:'0.8'
   
   // multipart/form-data type
-  compile group: 'org.glassfish.jersey.media', name:'jersey-media-multipart', version:'2.26'
-   
-  testImplementation 'junit:junit:4.12'
+  implementation group: 'org.glassfish.jersey.media', name:'jersey-media-multipart', version:'2.26'
 }
 
 // ##### BEGIN Jitpack section #####

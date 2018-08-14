@@ -1,6 +1,3 @@
 rootProject.name = 'explorviz-backend'
 
-include ':shared'
-include ':landscape'
-include ':kiekeradapter'
-include ':authentication'
+include ':shared', ':landscape', ':kiekeradapter', ':authentication'

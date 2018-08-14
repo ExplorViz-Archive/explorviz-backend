@@ -7,13 +7,9 @@ configurations {
 	compile.extendsFrom(provided)
 }
 
-
 dependencies {
-	compile project(':shared')
-	
-    testCompile 'junit:junit:4.12'
+	implementation project(':shared')
 }
-
 
 // Don't build war when tests fail
 war.dependsOn check
