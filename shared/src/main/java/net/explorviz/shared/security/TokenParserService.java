@@ -1,4 +1,4 @@
-package net.explorviz.security.services;
+package net.explorviz.shared.security;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -8,8 +8,6 @@ import java.util.List;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.ForbiddenException;
 
-import org.jvnet.hk2.annotations.Service;
-
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.InvalidClaimException;
@@ -17,23 +15,21 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureException;
 import io.jsonwebtoken.UnsupportedJwtException;
-import net.explorviz.security.model.TokenDetails;
 
-@Service
 public class TokenParserService {
 
 	// Credit: cassiomolin - https://github.com/cassiomolin/jersey-jwt
 
 	private final String secret = "secret";
 	private final String audience = "ExplorViz";
-	private final Long clockSkew = 10L;
+	private final long clockSkewInSeconds = 100;
 
 	public TokenDetails parseToken(final String token) {
 
 		try {
 
 			final Claims claims = Jwts.parser().setSigningKey(secret).requireAudience(audience)
-					.setAllowedClockSkewSeconds(clockSkew).parseClaimsJws(token).getBody();
+					.setAllowedClockSkewSeconds(clockSkewInSeconds).parseClaimsJws(token).getBody();
 
 			return new TokenDetails.Builder().withId(extractTokenIdFromClaims(claims))
 					.withUsername(extractUsernameFromClaims(claims))
