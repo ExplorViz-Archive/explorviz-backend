@@ -6,7 +6,7 @@ import org.glassfish.hk2.utilities.binding.AbstractBinder;
 
 import net.explorviz.security.services.TokenService;
 import net.explorviz.security.services.UserService;
-import net.explorviz.security.services.TokenParserService;
+import net.explorviz.shared.security.TokenParserService;
 
 
 public class DependencyInjectionBinder extends AbstractBinder {

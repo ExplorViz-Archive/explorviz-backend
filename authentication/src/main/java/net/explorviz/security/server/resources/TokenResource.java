@@ -12,13 +12,13 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import net.explorviz.security.model.Token;
-import net.explorviz.security.model.TokenDetails;
-import net.explorviz.security.model.User;
 import net.explorviz.security.model.UserCredentials;
-import net.explorviz.security.server.main.TokenBasedSecurityContext;
 import net.explorviz.security.services.TokenService;
 import net.explorviz.security.services.UserService;
 import net.explorviz.shared.annotations.Secured;
+import net.explorviz.shared.security.TokenBasedSecurityContext;
+import net.explorviz.shared.security.TokenDetails;
+import net.explorviz.shared.security.User;
 
 @Path("v1/tokens")
 public class TokenResource {

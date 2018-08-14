@@ -16,12 +16,12 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.ext.Provider;
 
-import net.explorviz.security.model.AuthenticatedUserDetails;
-import net.explorviz.security.model.TokenDetails;
-import net.explorviz.security.model.User;
-import net.explorviz.security.server.main.TokenBasedSecurityContext;
 import net.explorviz.security.services.TokenService;
 import net.explorviz.shared.annotations.Secured;
+import net.explorviz.shared.security.AuthenticatedUserDetails;
+import net.explorviz.shared.security.TokenBasedSecurityContext;
+import net.explorviz.shared.security.TokenDetails;
+import net.explorviz.shared.security.User;
 
 @Provider
 @Priority(Priorities.AUTHENTICATION)
@@ -66,12 +66,9 @@ public class AuthenticationFilter implements ContainerRequestFilter {
 
 		final TokenDetails tokenDetails = this.tokenService.parseToken(authenticationToken);
 
-		System.out.println("hii");
-
 		// TODO find user in DB
 		if (tokenDetails.getUsername().equals("admin")) {
 
-			System.out.println("hii");
 			final User user = new User(tokenDetails.getUsername());
 
 			final AuthenticatedUserDetails authenticatedUserDetails = new AuthenticatedUserDetails(user.getUsername(),

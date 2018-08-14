@@ -11,8 +11,9 @@ import org.jvnet.hk2.annotations.Service;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import net.explorviz.security.model.TokenDetails;
-import net.explorviz.security.model.User;
+import net.explorviz.shared.security.TokenDetails;
+import net.explorviz.shared.security.TokenParserService;
+import net.explorviz.shared.security.User;
 
 @Service
 public class TokenService {
