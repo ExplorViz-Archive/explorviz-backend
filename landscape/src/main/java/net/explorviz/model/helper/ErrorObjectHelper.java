@@ -2,6 +2,8 @@ package net.explorviz.model.helper;
 
 import java.util.Collections;
 
+import javax.inject.Inject;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -10,29 +12,15 @@ import com.github.jasminb.jsonapi.ResourceConverter;
 import com.github.jasminb.jsonapi.exceptions.DocumentSerializationException;
 import com.github.jasminb.jsonapi.models.errors.Error;
 
-import net.explorviz.server.injection.ResourceConverterFactory;
-
 public final class ErrorObjectHelper {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ErrorObjectHelper.class);
 
-	private static final Object LOCK = new Object();
-
-	private static ErrorObjectHelper instance;
-
 	private final ResourceConverter converter;
 
-	private ErrorObjectHelper() {
-		this.converter = new ResourceConverterFactory().provide();
-	}
-
-	public static ErrorObjectHelper getInstance() {
-		synchronized (LOCK) {
-			if (ErrorObjectHelper.instance == null) {
-				ErrorObjectHelper.instance = new ErrorObjectHelper();
-			}
-			return ErrorObjectHelper.instance;
-		}
+	@Inject
+	public ErrorObjectHelper(final ResourceConverter converter) {
+		this.converter = converter;
 	}
 
 	public String createErrorObjectString(final String errorTitle, final String errorDetail) {

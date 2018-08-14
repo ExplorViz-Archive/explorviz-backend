@@ -8,6 +8,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
+import org.jvnet.hk2.annotations.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,12 +27,11 @@ import net.explorviz.server.main.Configuration;
  * @author Christian Zirkelbach (czi@informatik.uni-kiel.de)
  *
  */
+@Service
+@Singleton
 public class LandscapeExchangeService {
-	private static final Logger LOGGER = LoggerFactory.getLogger(LandscapeExchangeService.class.getName());
 
-	private static LandscapeExchangeService instance;
-	private static LandscapeRepositoryModel model;
-	private static KiekerAdapter adapter;
+	private static final Logger LOGGER = LoggerFactory.getLogger(LandscapeExchangeService.class.getName());
 
 	private static Map<String, Timestamp> timestampCache = new HashMap<String, Timestamp>();
 
@@ -40,11 +43,13 @@ public class LandscapeExchangeService {
 	private static final String REPLAY_FOLDER = FileSystemHelper.getExplorVizDirectory() + File.separator + "replay";
 	private static final String REPOSITORY_FOLDER = FileSystemHelper.getExplorVizDirectory() + File.separator;
 
-	public static synchronized LandscapeExchangeService getInstance() {
-		if (LandscapeExchangeService.instance == null) {
-			LandscapeExchangeService.instance = new LandscapeExchangeService();
-		}
-		return LandscapeExchangeService.instance;
+	private final LandscapeRepositoryModel model;
+	private final KiekerAdapter adapter;
+
+	@Inject
+	public LandscapeExchangeService(final LandscapeRepositoryModel model) {
+		this.model = model;
+		this.adapter = KiekerAdapter.getInstance();
 	}
 
 	public Landscape getLandscapeByTimestampAndActivity(final long timestamp, final long activity) {
@@ -142,8 +147,7 @@ public class LandscapeExchangeService {
 		return model.getLandscape(timestamp, folderName);
 	}
 
-	public static void startRepository() {
-		model = LandscapeRepositoryModel.getInstance();
+	public void startRepository() {
 		new Thread(new Runnable() {
 
 			@Override
@@ -154,7 +158,6 @@ public class LandscapeExchangeService {
 
 		// Start Kieker monitoring adapter
 		if (Configuration.ENABLE_KIEKER_ADAPTER) {
-			adapter = KiekerAdapter.getInstance();
 			new Thread(new Runnable() {
 
 				@Override

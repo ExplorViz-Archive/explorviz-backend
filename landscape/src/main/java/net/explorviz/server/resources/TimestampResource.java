@@ -2,67 +2,65 @@ package net.explorviz.server.resources;
 
 import java.util.List;
 
+import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 
-import net.explorviz.api.ExtensionAPI;
 import net.explorviz.api.ExtensionAPIImpl;
 import net.explorviz.model.store.Timestamp;
-import net.explorviz.shared.annotations.Secured;
 
 /**
  * REST resource providing timestamp data for the frontend
- *
- * @author Christian Zirkelbach (czi@informatik.uni-kiel.de)
  */
-@Secured
-@Path("timestamp")
+//@Secured
+@Path("v1/timestamps")
 public class TimestampResource {
 
-	private final ExtensionAPIImpl api = ExtensionAPI.get();
+	private final ExtensionAPIImpl api;
 
-	@Produces("application/vnd.api+json")
+	@Inject
+	public TimestampResource(final ExtensionAPIImpl api) {
+		this.api = api;
+	}
+
 	@GET
-	@Path("/after-timestamp/{timestamp}")
-	public List<Timestamp> getSubsequentTimestamps(@PathParam("timestamp") final long afterTimestamp,
-			@QueryParam("intervalSize") final int intervalSize) {
+	@Produces("application/vnd.api+json")
+	public List<Timestamp> getSubsequentTimestamps(@QueryParam("after") final long afterTimestamp,
+			@QueryParam("before") final long beforeTimestamp, @QueryParam("intervalSize") final int intervalSize) {
 
+		// return api.getPreviousTimestamps(beforeTimestamp, intervalSize);
 		return api.getSubsequentTimestamps(afterTimestamp, intervalSize);
 	}
 
-	@Produces("application/vnd.api+json")
-	@GET
-	@Path("/before-timestamp/{timestamp}")
-	public List<Timestamp> getPreviousTimestamps(@PathParam("timestamp") final long beforeTimestamp,
-			@QueryParam("intervalSize") final int intervalSize) {
-
-		return api.getPreviousTimestamps(beforeTimestamp, intervalSize);
-	}
-
-	@Produces("application/vnd.api+json")
-	@GET
-	@Path("/from-oldest")
-	public List<Timestamp> getOldestTimestamps(@QueryParam("intervalSize") final int intervalSize) {
-
-		return api.getOldestTimestamps(intervalSize);
-	}
-
-	@Produces("application/vnd.api+json")
-	@GET
-	@Path("/from-recent")
-	public List<Timestamp> getNewestTimestamps(@QueryParam("intervalSize") final int intervalSize) {
-
-		return api.getNewestTimestamps(intervalSize);
-	}
-
-	@Produces("application/vnd.api+json")
-	@GET
-	@Path("/all-uploaded")
-	public List<Timestamp> getUploadedTimestamps() {
-		return api.getUploadedTimestamps();
-	}
+	/*
+	 * @GET
+	 *
+	 * @Path("/from-oldest")
+	 *
+	 * @Produces("application/vnd.api+json") public List<Timestamp>
+	 * getOldestTimestamps(@QueryParam("intervalSize") final int intervalSize) {
+	 *
+	 * return api.getOldestTimestamps(intervalSize); }
+	 *
+	 * @GET
+	 *
+	 * @Path("/from-recent")
+	 *
+	 * @Produces("application/vnd.api+json")
+	 *
+	 * public List<Timestamp> getNewestTimestamps(@QueryParam("intervalSize") final
+	 * int intervalSize) {
+	 *
+	 * return api.getNewestTimestamps(intervalSize); }
+	 *
+	 * @GET
+	 *
+	 * @Path("/all-uploaded")
+	 *
+	 * @Produces("application/vnd.api+json") public List<Timestamp>
+	 * getUploadedTimestamps() { return api.getUploadedTimestamps(); }
+	 */
 
 }

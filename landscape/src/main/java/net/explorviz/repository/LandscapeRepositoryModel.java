@@ -4,36 +4,44 @@ import java.io.FileNotFoundException;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
+import org.jvnet.hk2.annotations.Service;
 import org.nustaq.serialization.FSTConfiguration;
 
 import explorviz.live_trace_processing.reader.IPeriodicTimeSignalReceiver;
 import explorviz.live_trace_processing.reader.TimeSignalReader;
 import explorviz.live_trace_processing.record.IRecord;
 import net.explorviz.model.landscape.Landscape;
+import net.explorviz.server.helper.BroadcastService;
 import net.explorviz.server.helper.PropertyService;
 import net.explorviz.server.main.Configuration;
 
+@Service
+@Singleton
 public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiver {
-	private static final boolean LOAD_LAST_LANDSCAPE_ON_LOAD = false;
-	private static LandscapeRepositoryModel instance = null;
 
+	private static final boolean LOAD_LAST_LANDSCAPE_ON_LOAD = false;
 	private volatile Landscape lastPeriodLandscape;
 	private final Landscape internalLandscape;
 	private final FSTConfiguration fstConf;
 	private final InsertionRepositoryPart insertionRepositoryPart;
 	private final RemoteCallRepositoryPart remoteCallRepositoryPart;
 
-	private LandscapeRepositoryModel() {
+	private final BroadcastService broadcastService;
+
+	@Inject
+	public LandscapeRepositoryModel(final BroadcastService broadcastService) {
+
+		this.broadcastService = broadcastService;
+
 		fstConf = initFSTConf();
 
 		if (LOAD_LAST_LANDSCAPE_ON_LOAD) {
-			Landscape readLandscape = null;
-			try {
-				readLandscape = RepositoryStorage.readFromFile(java.lang.System.currentTimeMillis(),
-						Configuration.LANDSCAPE_REPOSITORY);
-			} catch (final FileNotFoundException e) {
-				readLandscape = new Landscape();
-			}
+
+			final Landscape readLandscape = RepositoryStorage.readFromFile(java.lang.System.currentTimeMillis(),
+					Configuration.LANDSCAPE_REPOSITORY);
 
 			internalLandscape = readLandscape;
 		} else {
@@ -49,13 +57,6 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
 		lastPeriodLandscape = LandscapePreparer.prepareLandscape(l);
 
 		new TimeSignalReader(TimeUnit.SECONDS.toMillis(Configuration.outputIntervalSeconds), this).start();
-	}
-
-	public static synchronized LandscapeRepositoryModel getInstance() {
-		if (LandscapeRepositoryModel.instance == null) {
-			LandscapeRepositoryModel.instance = new LandscapeRepositoryModel();
-		}
-		return LandscapeRepositoryModel.instance;
 	}
 
 	public Landscape getLastPeriodLandscape() {
@@ -112,6 +113,8 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
 					final Landscape l = fstConf.deepCopy(internalLandscape);
 					lastPeriodLandscape = LandscapePreparer.prepareLandscape(l);
 				}
+				// TODO broadcast here
+				broadcastService.broadcastMessage(lastPeriodLandscape);
 				remoteCallRepositoryPart.checkForTimedoutRemoteCalls();
 				resetCommunication();
 			}

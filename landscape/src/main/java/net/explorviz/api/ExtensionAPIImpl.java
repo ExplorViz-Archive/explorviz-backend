@@ -4,7 +4,12 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
+import org.jvnet.hk2.annotations.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,23 +30,18 @@ import net.explorviz.server.providers.GenericTypeFinder;
  * @author Christian Zirkelbach (czi@informatik.uni-kiel.de)
  *
  */
+@Service
+@Singleton
 public final class ExtensionAPIImpl implements IExtensionAPI {
 
 	static final Logger LOGGER = LoggerFactory.getLogger(ExtensionAPIImpl.class.getName());
-	private static ExtensionAPIImpl instance;
 
 	String versionNumber = "1.2.0a";
 	LandscapeExchangeService service;
 
-	private ExtensionAPIImpl() {
-		this.service = LandscapeExchangeService.getInstance();
-	}
-
-	public static synchronized ExtensionAPIImpl getInstance() {
-		if (ExtensionAPIImpl.instance == null) {
-			ExtensionAPIImpl.instance = new ExtensionAPIImpl();
-		}
-		return ExtensionAPIImpl.instance;
+	@Inject
+	public ExtensionAPIImpl(final LandscapeExchangeService service) {
+		this.service = service;
 	}
 
 	/**
@@ -63,28 +63,23 @@ public final class ExtensionAPIImpl implements IExtensionAPI {
 	/**
 	 * Provides a specific landscape determined by a passed timestamp
 	 *
-	 * @param timestamp
-	 *            (as configured in Kieker)
+	 * @param {@link Timestamp} (as configured in Kieker)
 	 */
 	@Override
 	public Landscape getLandscape(final long timestamp, final String folderName) {
-		Landscape specificLandscape = new Landscape();
 		try {
-			specificLandscape = service.getLandscape(timestamp, folderName);
-			return specificLandscape;
-
+			return service.getLandscape(timestamp, folderName);
 		} catch (final FileNotFoundException e) {
 			LOGGER.debug("Specific landscape not found!", e.getMessage());
-			return specificLandscape;
+			throw new NoSuchElementException("The requested landscape could not be found");
 		}
 	}
 
 	/**
 	 * Provides the "intervalSize" newest timestamps within the server
 	 *
-	 * @param intervalSize
-	 *            (number of retrieved timestamps)
-	 * @return List of Timestamp
+	 * @param intervalSize (number of retrieved timestamps)
+	 * @return List of {@link Timestamp}
 	 */
 	@Override
 	public List<Timestamp> getNewestTimestamps(final int intervalSize) {
@@ -96,8 +91,7 @@ public final class ExtensionAPIImpl implements IExtensionAPI {
 	/**
 	 * Provides the "intervalSize" oldest timestamps within the server
 	 *
-	 * @param intervalSize
-	 *            (number of retrieved timestamps)
+	 * @param intervalSize (number of retrieved timestamps)
 	 * @return List of Timestamp
 	 */
 
@@ -112,10 +106,8 @@ public final class ExtensionAPIImpl implements IExtensionAPI {
 	 * Provides the "intervalSize" timestamps before a passed "fromTimestamp" within
 	 * the server
 	 *
-	 * @param fromTimestamp
-	 *            (timestamp, which sets the limit)
-	 * @param intervalSize
-	 *            (number of retrieved timestamps)
+	 * @param fromTimestamp (timestamp, which sets the limit)
+	 * @param intervalSize  (number of retrieved timestamps)
 	 * @return List of Timestamp
 	 */
 	@Override
@@ -129,10 +121,8 @@ public final class ExtensionAPIImpl implements IExtensionAPI {
 	 * Provides the "intervalSize" timestamps after a passed "afterTimestamp" within
 	 * the server
 	 *
-	 * @param afterTimestamp
-	 *            (timestamp, which sets the limit)
-	 * @param intervalSize
-	 *            (number of retrieved timestamps)
+	 * @param afterTimestamp (timestamp, which sets the limit)
+	 * @param intervalSize   (number of retrieved timestamps)
 	 * @return List of Timestamp
 	 */
 	@Override

@@ -8,59 +8,81 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Base64;
 
+import javax.annotation.security.RolesAllowed;
+import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.sse.Sse;
 
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.explorviz.api.ExtensionAPI;
 import net.explorviz.api.ExtensionAPIImpl;
 import net.explorviz.model.landscape.Landscape;
 import net.explorviz.repository.RepositoryStorage;
 import net.explorviz.server.helper.FileSystemHelper;
 import net.explorviz.server.main.Configuration;
-import net.explorviz.shared.annotations.Secured;
 
 /**
- * REST resource providing landscape data for the frontend.
- *
- * @author Christian Zirkelbach (czi@informatik.uni-kiel.de)
+ * Resource providing landscape data.
  */
-@Secured
-@Path("landscape")
+@Path("v1/landscapes")
+@RolesAllowed({ "admin" })
 public class LandscapeResource {
-	static final Logger LOGGER = LoggerFactory.getLogger(LandscapeResource.class.getName());
 
-	private final ExtensionAPIImpl api = ExtensionAPI.get();
+	private static final Logger LOGGER = LoggerFactory.getLogger(LandscapeResource.class);
+	private static final String APPLICATION_JSON_API_TYPE_STRING = "application/vnd.api+json";
 
-	@Produces("application/vnd.api+json")
-	@GET
-	@Path("/by-timestamp/{timestamp}")
-	public Landscape getLandscape(@PathParam("timestamp") final long timestamp) throws FileNotFoundException {
-		return api.getLandscape(timestamp, Configuration.LANDSCAPE_REPOSITORY);
+	private final ExtensionAPIImpl api;
+
+	@Inject
+	public LandscapeResource(final ExtensionAPIImpl api) {
+		this.api = api;
 	}
 
-	@Produces("application/vnd.api+json")
 	@GET
-	@Path("/latest-landscape")
-	public Landscape getLatestLandscape() throws FileNotFoundException, IOException {
-		return api.getLatestLandscape();
+	@Path("{id}")
+	@Produces(APPLICATION_JSON_API_TYPE_STRING)
+	public Landscape getLandscapeById(@PathParam("id") final String id) {
+
+		// curl -X GET 'http://localhost:8081/v1/landscapes/1/' -H 'Accept:
+		// application/vnd.api+json' -H 'Authorization: Bearer <token>'
+
+		// TODO return Landscape By Id
+		return new Landscape();
+	}
+
+	@GET
+	@Produces(APPLICATION_JSON_API_TYPE_STRING)
+	public Landscape getLandscapeByTimestamp(@QueryParam("timestamp") final long timestamp) {
+		return api.getLandscape(timestamp, "landscapeRepository");
+	}
+
+	@Path("/broadcast")
+	public LandscapeBroadcastSubResource getLandscapeBroadcastResource(@Context final Sse sse,
+			@Context final LandscapeBroadcastSubResource landscapeBroadcastSubResource) {
+
+		// curl -v -X GET http://localhost:8081/v1/landscapes/broadcast/ -H
+		// "Content-Type: text/event-stream" -H 'Authorization: Bearer <token>'
+
+		return landscapeBroadcastSubResource;
 	}
 
 	/**
 	 * For downloading a landscape from the landscape repository.
 	 */
-	@Produces("*/*")
 	@GET
 	@Path("/export/{fileName}")
+	@Produces("*/*")
 	public Response getExportLandscape(@PathParam("fileName") final String fileName) throws FileNotFoundException {
 
 		final String landscapeFolder = FileSystemHelper.getExplorVizDirectory() + File.separator
@@ -77,9 +99,9 @@ public class LandscapeResource {
 		return Response.ok(encodedLandscape, "*/*").build();
 	}
 
-	@Produces("application/vnd.api+json")
 	@GET
 	@Path("/by-uploaded-timestamp/{timestamp}")
+	@Produces(APPLICATION_JSON_API_TYPE_STRING)
 	public Landscape getReplayLandscape(@PathParam("timestamp") final long timestamp) throws FileNotFoundException {
 		return api.getLandscape(timestamp, Configuration.REPLAY_REPOSITORY);
 	}
@@ -88,9 +110,9 @@ public class LandscapeResource {
 	 * For uploading a landscape to the replay repository.
 	 */
 	// https://stackoverflow.com/questions/25797650/fileupload-with-jax-rs
-	@Consumes("multipart/form-data")
 	@POST
 	@Path("/upload-landscape")
+	@Consumes("multipart/form-data")
 	public Response uploadLandscape(@FormDataParam("file") final InputStream uploadedInputStream,
 			@FormDataParam("file") final FormDataContentDisposition fileInfo) {
 

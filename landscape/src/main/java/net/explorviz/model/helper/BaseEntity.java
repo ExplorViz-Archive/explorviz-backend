@@ -22,19 +22,19 @@ public class BaseEntity implements Serializable {
 
 	private static final AtomicLong ID_GENERATOR = new AtomicLong();
 
-	@Id(LongIdHandler.class)
-	private Long id;
-
-	public BaseEntity() {
-		this.id = Long.valueOf(BaseEntity.ID_GENERATOR.incrementAndGet());
-	}
-
 	/*
 	 * This attribute can be used by extensions to insert custom properties to any
 	 * meta-model object. Non primitive types (your custom model class) must be
 	 * annotated with type annotations, e.g., as shown in any model entity
 	 */
 	private final Map<String, Object> extensionAttributes = new HashMap<String, Object>();
+
+	@Id(LongIdHandler.class)
+	private Long id;
+
+	public BaseEntity() {
+		this.id = Long.valueOf(BaseEntity.ID_GENERATOR.incrementAndGet());
+	}
 
 	public Long getId() {
 		return this.id;

@@ -10,6 +10,8 @@ import java.util.Map.Entry;
 import java.util.TreeMap;
 import java.util.concurrent.TimeUnit;
 
+import javax.ws.rs.ClientErrorException;
+
 import org.nustaq.serialization.FSTConfiguration;
 import org.nustaq.serialization.FSTObjectInput;
 import org.nustaq.serialization.FSTObjectOutput;
@@ -80,13 +82,7 @@ public class RepositoryStorage {
 	}
 
 	public static Landscape readTargetArchitecture() {
-		try {
-			return readFromFileGeneric(folderForTargetModel, filenameForTargetModel);
-		} catch (final FileNotFoundException e) {
-			java.lang.System.err.println(e);
-		}
-
-		return new Landscape();
+		return readFromFileGeneric(folderForTargetModel, filenameForTargetModel);
 	}
 
 	public static void saveTargetArchitecture(final Landscape landscape) {
@@ -129,28 +125,33 @@ public class RepositoryStorage {
 		}
 	}
 
-	public static Landscape readFromFile(final long timestamp, final String folderName) throws FileNotFoundException {
+	public static Landscape readFromFile(final long timestamp, final String folderName) {
 		final String specificFolder = folder + folderName;
 		final Map<Long, Long> availableModels = getAvailableModels(HISTORY_INTERVAL_IN_MINUTES, specificFolder);
 		String readInModel = null;
 
 		for (final Entry<Long, Long> availableModel : availableModels.entrySet()) {
-			if (availableModel.getKey() <= timestamp) {
+			if (availableModel.getKey() == timestamp) {
 				readInModel = availableModel.getKey() + "-" + availableModel.getValue() + Configuration.MODEL_EXTENSION;
+				break;
 			}
 		}
 
 		if (readInModel == null) {
-			throw new FileNotFoundException("Model not found for timestamp " + timestamp);
+			throw new ClientErrorException("Model not found for provided timestamp " + timestamp, 404);
 		}
 
 		return readFromFileGeneric(specificFolder, readInModel);
 	}
 
-	public static Landscape readFromFileGeneric(final String sourceFolder, final String sourceFilename)
-			throws FileNotFoundException {
+	public static Landscape readFromFileGeneric(final String sourceFolder, final String sourceFilename) {
 
-		final FileInputStream stream = new FileInputStream(sourceFolder + "/" + sourceFilename);
+		FileInputStream stream;
+		try {
+			stream = new FileInputStream(sourceFolder + "/" + sourceFilename);
+		} catch (final FileNotFoundException e) {
+			throw new ClientErrorException("Model not found", 404, e);
+		}
 
 		final FSTObjectInput input = FST_CONF.getObjectInput(stream);
 		Landscape landscape = null;

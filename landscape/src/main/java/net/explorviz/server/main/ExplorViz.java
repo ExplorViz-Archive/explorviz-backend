@@ -8,14 +8,12 @@ import org.glassfish.jersey.server.ResourceConfig;
 import net.explorviz.server.exceptions.mapper.GeneralExceptionMapper;
 import net.explorviz.server.exceptions.mapper.PathParamExceptionMapper;
 import net.explorviz.server.exceptions.mapper.QueryParamExceptionMapper;
+import net.explorviz.server.exceptions.mapper.WebApplicationExceptionMapper;
 import net.explorviz.server.providers.CoreModelHandler;
 
 /**
  * Starting configuration for the backend - includes registring models,
  * resources, exception handers, providers, and embedds extensions
- *
- * @author Christian Zirkelbach (czi@informatik.uni-kiel.de)
- *
  */
 @ApplicationPath("")
 class ExplorViz extends ResourceConfig {
@@ -29,16 +27,20 @@ class ExplorViz extends ResourceConfig {
 
 		register(new DependencyInjectionBinder());
 		// register(JacksonFeature)
-		// Authentication & Authorization
-		packages("net.explorviz.server.filters");
+
+		// register filters, e.g., authentication
+		packages("net.explorviz.shared.security.filters");
 
 		// resources
 		packages("net.explorviz.server.resources");
 
 		// exception handling (mind the order !)
+		register(WebApplicationExceptionMapper.class);
 		register(QueryParamExceptionMapper.class);
 		register(PathParamExceptionMapper.class);
 		register(GeneralExceptionMapper.class);
+
+		register(SetupApplicationListener.class);
 
 		// easy (de-)serializing models for HTTP Requests
 		packages("net.explorviz.server.providers");
