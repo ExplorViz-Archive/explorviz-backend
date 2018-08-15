@@ -16,6 +16,14 @@ import org.slf4j.LoggerFactory;
 import net.explorviz.shared.annotations.Config;
 
 /**
+ * InjectionResolver for {@code @Config} annotation. You must bind it in your
+ * implemented {@link org.glassfish.hk2.utilities.binding.AbstractBinder}},
+ * e.g.:
+ * 
+ * <pre>
+ * {@code this.bind(new ConfigInjectionResolver()).to(new TypeLiteral<InjectionResolver<Config>>() {});}
+ * </pre>
+ * 
  * @see net.explorviz.shared.annotations.Config
  */
 

@@ -18,6 +18,7 @@ public class DependencyInjectionBinder extends AbstractBinder {
 	@Override
 	public void configure() {
 
+		// injectable config properties
 		this.bind(new ConfigInjectionResolver()).to(new TypeLiteral<InjectionResolver<Config>>() {
 		});
 

@@ -2,6 +2,8 @@ package net.explorviz.server.main;
 
 import javax.inject.Singleton;
 
+import org.glassfish.hk2.api.InjectionResolver;
+import org.glassfish.hk2.api.TypeLiteral;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
 
 import com.github.jasminb.jsonapi.ResourceConverter;
@@ -14,6 +16,8 @@ import net.explorviz.repository.discovery.AgentRepository;
 import net.explorviz.server.helper.BroadcastService;
 import net.explorviz.server.injection.ResourceConverterFactory;
 import net.explorviz.server.resources.LandscapeBroadcastSubResource;
+import net.explorviz.shared.annotations.Config;
+import net.explorviz.shared.annotations.injection.ConfigInjectionResolver;
 import net.explorviz.shared.exceptions.ErrorObjectHelper;
 import net.explorviz.shared.security.TokenParserService;
 
@@ -36,6 +40,10 @@ public class DependencyInjectionBinder extends AbstractBinder {
 		// Broadcast Mechanism
 		this.bind(BroadcastService.class).to(BroadcastService.class).in(Singleton.class);
 		this.bind(LandscapeBroadcastSubResource.class).to(LandscapeBroadcastSubResource.class);
+
+		// injectable config properties
+		this.bind(new ConfigInjectionResolver()).to(new TypeLiteral<InjectionResolver<Config>>() {
+		});
 
 		// ErrorObject Handler
 		this.bind(ErrorObjectHelper.class).to(ErrorObjectHelper.class).in(Singleton.class);

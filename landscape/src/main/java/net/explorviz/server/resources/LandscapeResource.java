@@ -72,7 +72,7 @@ public class LandscapeResource {
 			@Context final LandscapeBroadcastSubResource landscapeBroadcastSubResource) {
 
 		// curl -v -X GET http://localhost:8081/v1/landscapes/broadcast/ -H
-		// "Content-Type: text/event-stream" -H 'Authorization: Bearer <token>'
+		//  "Content-Type: text/event-stream" -H 'Authorization: Bearer <token>'
 
 		return landscapeBroadcastSubResource;
 	}

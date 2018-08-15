@@ -16,8 +16,8 @@ import net.explorviz.shared.exceptions.mapper.WebApplicationExceptionMapper;
  * resources, exception handers, providers, and embedds extensions
  */
 @ApplicationPath("")
-class ExplorViz extends ResourceConfig {
-	public ExplorViz() {
+class Application extends ResourceConfig {
+	public Application() {
 
 		// register model types for JSONAPI provider
 		CoreModelHandler.registerAllCoreModels();
