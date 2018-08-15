@@ -8,14 +8,13 @@ public final class ErrorObjectHelper {
 
 	public String createErrorObjectString(final int httpStatus, final String errorTitle, final String errorDetail) {
 
-		String httpStatusEntry = "";
+		String httpStatusEntry = "500";
 		if (httpStatus != 0) {
 			httpStatusEntry = String.valueOf(httpStatus);
 		}
-
-		// Fallback string
-		return "{\"errors\": [ \"status\": \"" + httpStatusEntry + "\", \"title\": \"" + errorTitle
-				+ "\", \"detail\": \"" + errorDetail + "\"]}";
+		
+		return "{\"errors\": [ { \"status\": \"" + httpStatusEntry + "\", \"title\": \"" + errorTitle
+				+ "\", \"detail\": \"" + errorDetail + "\" } ]}";
 
 	}
 }
