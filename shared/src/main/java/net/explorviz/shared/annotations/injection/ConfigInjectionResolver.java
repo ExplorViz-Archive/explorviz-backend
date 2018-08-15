@@ -1,6 +1,8 @@
 package net.explorviz.shared.annotations.injection;
 
+import java.io.IOException;
 import java.lang.reflect.Type;
+import java.util.Properties;
 
 import javax.inject.Singleton;
 import javax.ws.rs.InternalServerErrorException;
@@ -13,10 +15,19 @@ import org.slf4j.LoggerFactory;
 
 import net.explorviz.shared.annotations.Config;
 
+/**
+ * @see net.explorviz.shared.annotations.Config
+ */
+
 @Singleton
 public class ConfigInjectionResolver implements InjectionResolver<Config> {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ConfigInjectionResolver.class);
+
+	private static final String PROPERTIES_FILENAME = "explorviz.properties";
+	// private static String PROPERTIES_PATH;
+
+	private static final Properties PROP = new Properties();
 
 	/*
 	 * private final Properties properties; public
@@ -27,18 +38,32 @@ public class ConfigInjectionResolver implements InjectionResolver<Config> {
 	private final InternalServerErrorException exception = new InternalServerErrorException(
 			"An internal server error occured. Contact your administrator.");
 
+	public ConfigInjectionResolver() {
+		final ClassLoader loader = Thread.currentThread().getContextClassLoader();
+		// PROPERTIES_PATH = loader.getResource(PROPERTIES_FILENAME).getFile();
+
+		try {
+			PROP.load(loader.getResourceAsStream(PROPERTIES_FILENAME));
+		} catch (final IOException e) {
+			LOGGER.error(
+					"Couldn't load properties file. Is WEB-INF/classes/explorviz.properties a valid file?. Exception: {}",
+					e.getMessage());
+			throw exception;
+		}
+	}
+
 	@Override
 	public Object resolve(Injectee injectee, ServiceHandle<?> root) {
 
 		Type t = injectee.getRequiredType();
 
 		if (String.class == t) {
-			return String.valueOf(handlePropertyLoading(injectee));
+			return handlePropertyLoading(injectee);
 		}
 
 		if ("int".equals(t.toString())) {
 			try {
-				return Integer.valueOf(String.valueOf(handlePropertyLoading(injectee))).intValue();
+				return Integer.valueOf(handlePropertyLoading(injectee)).intValue();
 			} catch (NumberFormatException e) {
 				LOGGER.error("Property injection for type 'int' failed. Stacktrace:", e);
 				throw exception;
@@ -46,22 +71,24 @@ public class ConfigInjectionResolver implements InjectionResolver<Config> {
 		}
 
 		if ("boolean".equals(t.toString())) {
-			return Boolean.valueOf(String.valueOf(handlePropertyLoading(injectee))).booleanValue();
+			return Boolean.valueOf(handlePropertyLoading(injectee)).booleanValue();
 		}
 
 		LOGGER.error("Property injection failed: {}",
 				"Type '" + t + "' for property injection is not valid. Use String, int or boolean.");
+
 		throw exception;
 
 	}
 
-	public Object handlePropertyLoading(Injectee injectee) {
+	public String handlePropertyLoading(Injectee injectee) {
 		Config annotation = injectee.getParent().getAnnotation(Config.class);
+
 		if (annotation != null) {
-			String prop = annotation.value();
-			// return properties.getProperty(prop);
-			return prop;
+			String propName = annotation.value();
+			return String.valueOf(PROP.get(propName));
 		}
+
 		LOGGER.error("Property injection for type 'int' failed: {}",
 				"Annotation for property injection is not present.");
 		throw exception;

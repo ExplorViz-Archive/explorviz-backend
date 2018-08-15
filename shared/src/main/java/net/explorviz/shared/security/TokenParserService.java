@@ -15,14 +15,24 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureException;
 import io.jsonwebtoken.UnsupportedJwtException;
+import net.explorviz.shared.annotations.Config;
 
+/**
+ * If used, i.e., injected, do not forget to add the injectable properties to
+ * the explorviz.properties file.
+ */
 public class TokenParserService {
 
 	// Credit: cassiomolin - https://github.com/cassiomolin/jersey-jwt
 
-	private final String secret = "secret";
-	private final String audience = "ExplorViz";
-	private final long clockSkewInSeconds = 100;
+	@Config("jwt.secret")
+	private String secret;
+
+	@Config("jwt.audience")
+	private String audience;
+
+	@Config("jwt.clockSkewInSeconds")
+	private int clockSkewInSeconds;
 
 	public TokenDetails parseToken(final String token) {
 

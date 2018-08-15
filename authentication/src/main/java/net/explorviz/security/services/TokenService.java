@@ -11,6 +11,7 @@ import org.jvnet.hk2.annotations.Service;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import net.explorviz.shared.annotations.Config;
 import net.explorviz.shared.security.TokenDetails;
 import net.explorviz.shared.security.TokenParserService;
 import net.explorviz.shared.security.User;
@@ -18,39 +19,48 @@ import net.explorviz.shared.security.User;
 @Service
 public class TokenService {
 
-	private final String secret = "secret";
-	private final String audience = "ExplorViz";
+	@Config("jwt.secret")
+	private String secret;
 
-	private final TokenParserService tokenParser;
+	@Config("jwt.audience")
+	private String audience;
+
+	@Config("jwt.issuer")
+	private String issuer;
+
+	@Config("jwt.validFor")
+	private int validFor;
+
+	@Config("jwt.refreshLimit")
+	private int refreshLimit;
 
 	@Inject
-	public TokenService(final TokenParserService tokenParser) {
-		this.tokenParser = tokenParser;
-	}
+	private TokenParserService tokenParser;
 
 	public String issueNewToken(final User user) {
 		final String id = UUID.randomUUID().toString();
 
 		final ZonedDateTime issuedDate = ZonedDateTime.now();
-		final ZonedDateTime expirationDate = issuedDate.plusSeconds(60);
+		final ZonedDateTime expirationDate = issuedDate.plusSeconds(validFor);
 
-		final String authenticationToken = Jwts.builder().setId(id).setIssuer("ExplorViz").setAudience(audience)
+		final String authenticationToken = Jwts.builder().setId(id).setIssuer(issuer).setAudience(audience)
 				.setSubject(user.getUsername()).setIssuedAt(Date.from(issuedDate.toInstant()))
 				.setExpiration(Date.from(expirationDate.toInstant())).claim("roles", user.getRoles())
-				.claim("refreshCount", 0).claim("refreshLimit", 1).signWith(SignatureAlgorithm.HS256, secret).compact();
+				.claim("refreshCount", 0).claim("refreshLimit", refreshLimit).signWith(SignatureAlgorithm.HS256, secret)
+				.compact();
 
 		return authenticationToken;
 	}
 
-	public String issueRefreshmentToken(final TokenDetails newTokenDetails) {
+	private String issueRefreshmentToken(final TokenDetails newTokenDetails) {
 		final String id = UUID.randomUUID().toString();
 
-		final String authenticationToken = Jwts.builder().setId(id).setIssuer("ExplorViz").setAudience(audience)
+		final String authenticationToken = Jwts.builder().setId(id).setIssuer(issuer).setAudience(audience)
 				.setSubject(newTokenDetails.getUsername())
 				.setIssuedAt(Date.from(newTokenDetails.getIssuedDate().toInstant()))
 				.setExpiration(Date.from(newTokenDetails.getExpirationDate().toInstant()))
-				.claim("roles", newTokenDetails.getRoles()).claim("refreshCount", 0).claim("refreshLimit", 1)
-				.signWith(SignatureAlgorithm.HS256, secret).compact();
+				.claim("roles", newTokenDetails.getRoles()).claim("refreshCount", newTokenDetails.getRefreshCount())
+				.claim("refreshLimit", refreshLimit).signWith(SignatureAlgorithm.HS256, secret).compact();
 
 		return authenticationToken;
 	}
@@ -66,13 +76,12 @@ public class TokenService {
 		}
 
 		final ZonedDateTime issuedDate = ZonedDateTime.now();
-		final ZonedDateTime expirationDate = issuedDate.plusSeconds(60);
+		final ZonedDateTime expirationDate = issuedDate.plusSeconds(validFor);
 
-		final TokenDetails newTokenDetails = new TokenDetails.Builder().withId(currentTokenDetails.getId()) // Reuse the
-																											// same id
+		final TokenDetails newTokenDetails = new TokenDetails.Builder().withId(currentTokenDetails.getId())
 				.withUsername(currentTokenDetails.getUsername()).withAuthorities(currentTokenDetails.getRoles())
 				.withIssuedDate(issuedDate).withExpirationDate(expirationDate)
-				.withRefreshCount(currentTokenDetails.getRefreshCount() + 1).withRefreshLimit(1).build();
+				.withRefreshCount(currentTokenDetails.getRefreshCount() + 1).withRefreshLimit(refreshLimit).build();
 
 		return issueRefreshmentToken(newTokenDetails);
 	}
