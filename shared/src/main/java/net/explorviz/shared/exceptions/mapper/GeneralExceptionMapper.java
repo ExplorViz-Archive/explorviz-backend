@@ -1,4 +1,4 @@
-package net.explorviz.server.exceptions.mapper;
+package net.explorviz.shared.exceptions.mapper;
 
 import java.util.HashMap;
 import java.util.Map;

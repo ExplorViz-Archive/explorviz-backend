@@ -10,6 +10,7 @@ import net.explorviz.security.services.TokenService;
 import net.explorviz.security.services.UserService;
 import net.explorviz.shared.annotations.Config;
 import net.explorviz.shared.annotations.injection.ConfigInjectionResolver;
+import net.explorviz.shared.exceptions.ErrorObjectHelper;
 import net.explorviz.shared.security.TokenParserService;
 
 public class DependencyInjectionBinder extends AbstractBinder {
@@ -24,5 +25,7 @@ public class DependencyInjectionBinder extends AbstractBinder {
 		this.bind(UserService.class).to(UserService.class).in(Singleton.class);
 		this.bind(TokenParserService.class).to(TokenParserService.class).in(Singleton.class);
 
+		// ErrorObject Handler
+		this.bind(ErrorObjectHelper.class).to(ErrorObjectHelper.class).in(Singleton.class);
 	}
 }

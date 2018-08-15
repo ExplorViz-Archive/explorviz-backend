@@ -18,8 +18,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 /**
  * Exeception mapping for query parameter exceptions
  *
- * @author Christian Zirkelbach (czi@informatik.uni-kiel.de)
- *
  */
 public class QueryParamExceptionMapper implements ExceptionMapper<QueryParamException> {
 

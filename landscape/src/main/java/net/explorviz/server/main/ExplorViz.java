@@ -5,11 +5,11 @@ import javax.ws.rs.ApplicationPath;
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.glassfish.jersey.server.ResourceConfig;
 
-import net.explorviz.server.exceptions.mapper.GeneralExceptionMapper;
 import net.explorviz.server.exceptions.mapper.PathParamExceptionMapper;
 import net.explorviz.server.exceptions.mapper.QueryParamExceptionMapper;
-import net.explorviz.server.exceptions.mapper.WebApplicationExceptionMapper;
 import net.explorviz.server.providers.CoreModelHandler;
+import net.explorviz.shared.exceptions.mapper.GeneralExceptionMapper;
+import net.explorviz.shared.exceptions.mapper.WebApplicationExceptionMapper;
 
 /**
  * Starting configuration for the backend - includes registring models,

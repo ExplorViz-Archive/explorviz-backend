@@ -1,4 +1,4 @@
-package net.explorviz.server.exceptions.mapper;
+package net.explorviz.shared.exceptions.mapper;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
@@ -8,7 +8,7 @@ import javax.ws.rs.ext.ExceptionMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.explorviz.model.helper.ErrorObjectHelper;
+import net.explorviz.shared.exceptions.ErrorObjectHelper;
 
 public class WebApplicationExceptionMapper implements ExceptionMapper<WebApplicationException> {
 

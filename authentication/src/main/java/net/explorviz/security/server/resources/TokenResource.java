@@ -33,7 +33,7 @@ public class TokenResource {
 	@Config("stringTest")
 	private String stringTest;
 
-	@Config("7")
+	@Config("asd")
 	private int intTest;
 
 	@Config("true")

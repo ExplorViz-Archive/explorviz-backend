@@ -1,4 +1,7 @@
 dependencies {  
   // JSON Web Token (JWT)
   api group: 'io.jsonwebtoken', name: 'jjwt', version: '0.9.1'
+  
+  // JSON-API parsing
+  implementation group: 'com.github.jasminb', name: 'jsonapi-converter', version:'0.8'
 }

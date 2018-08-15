@@ -18,8 +18,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 /**
  * Exeception mapping for path parameter exceptions
  *
- * @author Christian Zirkelbach (czi@informatik.uni-kiel.de)
- *
  */
 public class PathParamExceptionMapper implements ExceptionMapper<PathParamException> {
 
