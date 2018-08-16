@@ -2,6 +2,7 @@ package net.explorviz.security.server.filter;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 
 import javax.annotation.Priority;
 import javax.annotation.security.PermitAll;
@@ -41,6 +42,11 @@ public class AuthenticationFilter implements ContainerRequestFilter {
 
 		final Method method = resourceInfo.getResourceMethod();
 
+		System.out.println(method.isAnnotationPresent(PermitAll.class));
+		System.out.println(method.getName());
+
+		System.out.println(Arrays.toString(method.getAnnotations()));
+
 		if (method.isAnnotationPresent(PermitAll.class)) {
 			// nothing to do
 			return;
@@ -55,6 +61,7 @@ public class AuthenticationFilter implements ContainerRequestFilter {
 			}
 		}
 
+		// non-annotated classes cannot be accessed
 		throw new ForbiddenException("Could not be authenticated");
 
 	}

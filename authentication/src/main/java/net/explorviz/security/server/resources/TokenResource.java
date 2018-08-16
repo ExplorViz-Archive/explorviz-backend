@@ -40,6 +40,8 @@ public class TokenResource {
 		// -H 'Content-Type: application/json'
 		// -d '{ "username": "admin", "password": "password" }'
 
+		System.out.println("through filter");
+
 		final User user = this.userService.validateUserCredentials(credentials);
 
 		final Token t = new Token();
