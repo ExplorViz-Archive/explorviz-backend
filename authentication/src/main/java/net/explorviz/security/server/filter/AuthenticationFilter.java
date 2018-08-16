@@ -2,7 +2,6 @@ package net.explorviz.security.server.filter;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
-import java.util.Arrays;
 
 import javax.annotation.Priority;
 import javax.annotation.security.PermitAll;
@@ -42,10 +41,12 @@ public class AuthenticationFilter implements ContainerRequestFilter {
 
 		final Method method = resourceInfo.getResourceMethod();
 
-		System.out.println(method.isAnnotationPresent(PermitAll.class));
-		System.out.println(method.getName());
-
-		System.out.println(Arrays.toString(method.getAnnotations()));
+		if (method.getName().equals("apply")) {
+			System.out.println(method.getDeclaringClass());
+			// TODO where does the apply message come from?
+			// It is only called, if the request is not issued with curl but the frontend
+			return;
+		}
 
 		if (method.isAnnotationPresent(PermitAll.class)) {
 			// nothing to do

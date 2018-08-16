@@ -12,8 +12,11 @@ public class UserService {
 
 	public User validateUserCredentials(final UserCredentials userCredentials) {
 
-		// TODO valid DB query
+		if (!checkIfDataIsNotNull(userCredentials)) {
+			new ForbiddenException("Enter username and password");
+		}
 
+		// TODO valid DB query
 		if (userCredentials.getUsername().equals("admin") && userCredentials.getPassword().equals("password")) {
 
 			final User user = new User("admin");
@@ -25,6 +28,14 @@ public class UserService {
 		} else {
 			throw new ForbiddenException("Wrong username or password");
 		}
+	}
+
+	private boolean checkIfDataIsNotNull(final UserCredentials credentials) {
+		if (credentials != null && credentials.getUsername() != null && credentials.getPassword() != null) {
+			return true;
+		}
+
+		return false;
 	}
 
 }
