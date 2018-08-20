@@ -42,7 +42,6 @@ public class AuthenticationFilter implements ContainerRequestFilter {
 		final Method method = resourceInfo.getResourceMethod();
 
 		if (method.getName().equals("apply")) {
-			System.out.println(method.getDeclaringClass());
 			// TODO where does the apply message come from?
 			// It is only called, if the request is not issued with curl but the frontend
 			return;

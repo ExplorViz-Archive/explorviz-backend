@@ -28,6 +28,12 @@ public class AuthorizationFilter implements ContainerRequestFilter {
 	public void filter(final ContainerRequestContext requestContext) throws IOException {
 
 		final Method method = resourceInfo.getResourceMethod();
+		
+		if (method.getName().equals("apply")) {
+			// TODO where does the apply message come from?
+			// It is only called, if the request is not issued with curl but the frontend
+			return;
+		}
 
 		// @DenyAll on the method takes precedence over @RolesAllowed and @PermitAll
 		if (method.isAnnotationPresent(DenyAll.class)) {
