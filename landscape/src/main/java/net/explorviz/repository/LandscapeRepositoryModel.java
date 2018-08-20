@@ -15,8 +15,8 @@ import explorviz.live_trace_processing.reader.TimeSignalReader;
 import explorviz.live_trace_processing.record.IRecord;
 import net.explorviz.model.landscape.Landscape;
 import net.explorviz.server.helper.BroadcastService;
-import net.explorviz.server.helper.PropertyService;
 import net.explorviz.server.main.Configuration;
+import net.explorviz.shared.annotations.Config;
 
 @Service
 @Singleton
@@ -30,6 +30,9 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
 	private final RemoteCallRepositoryPart remoteCallRepositoryPart;
 
 	private final BroadcastService broadcastService;
+
+	@Config("repository.useDummyMode")
+	private boolean useDummyMode;
 
 	@Inject
 	public LandscapeRepositoryModel(final BroadcastService broadcastService) {
@@ -102,7 +105,7 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
 
 				final long milliseconds = java.lang.System.currentTimeMillis();
 
-				if (PropertyService.getBooleanProperty("useDummyMode")) {
+				if (useDummyMode) {
 					final Landscape dummyLandscape = LandscapeDummyCreator.createDummyLandscape();
 					dummyLandscape.setTimestamp(milliseconds);
 					RepositoryStorage.writeToFile(dummyLandscape, milliseconds, Configuration.LANDSCAPE_REPOSITORY);
@@ -113,8 +116,10 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
 					final Landscape l = fstConf.deepCopy(internalLandscape);
 					lastPeriodLandscape = LandscapePreparer.prepareLandscape(l);
 				}
-				// TODO broadcast here
+
+				// broadcast to registered clients
 				broadcastService.broadcastMessage(lastPeriodLandscape);
+
 				remoteCallRepositoryPart.checkForTimedoutRemoteCalls();
 				resetCommunication();
 			}
