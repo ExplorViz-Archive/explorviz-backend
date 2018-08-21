@@ -23,8 +23,8 @@ import net.explorviz.discovery.exceptions.mapper.ResponseUtil;
 import net.explorviz.discovery.model.Agent;
 import net.explorviz.discovery.services.ClientService;
 import net.explorviz.repository.discovery.AgentRepository;
-import net.explorviz.server.helper.PropertyService;
 import net.explorviz.server.providers.JSONAPIProvider;
+import net.explorviz.shared.server.helper.PropertyService;
 
 @Path("discovery")
 public class AgentResource {

@@ -24,15 +24,18 @@ subprojects {
         	// exclude subprojects, which are not supposed to be a JAX-RS-based microservice        
         
         	// Jersey and Servlet
-			implementation group: 'org.glassfish.jersey.containers', name: 'jersey-container-servlet', version:'2.26'
+			implementation group: 'org.glassfish.jersey.containers', name: 'jersey-container-servlet', version:'2.27'
 			implementation group: 'javax.servlet', name: 'javax.servlet-api', version:'3.0.1'
-			implementation group: 'org.glassfish.jersey.inject', name: 'jersey-hk2', version:'2.26'
+			implementation group: 'org.glassfish.jersey.inject', name: 'jersey-hk2', version:'2.27'
 		  
 		    // JSON + Parsing
 		    implementation group: 'org.glassfish.jersey.media', name: 'jersey-media-json-jackson', version:'2.27'
 		    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-core', version:'2.9.6'
 		    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version:'2.9.6'
 		    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version:'2.9.6'
+		    
+		    // Grizzly servlet-container
+  			implementation group: 'org.glassfish.jersey.containers', name: 'jersey-container-grizzly2-http', version: '2.27'
     	}
     	
     	testImplementation 'junit:junit:4.12'

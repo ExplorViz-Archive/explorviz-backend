@@ -18,10 +18,10 @@ import net.explorviz.model.store.Timestamp;
 import net.explorviz.model.store.helper.TimestampHelper;
 import net.explorviz.repository.LandscapeExchangeService;
 import net.explorviz.repository.RepositoryStorage;
-import net.explorviz.server.helper.PropertyService;
 import net.explorviz.server.main.Configuration;
 import net.explorviz.server.providers.CoreModelHandler;
 import net.explorviz.server.providers.GenericTypeFinder;
+import net.explorviz.shared.server.helper.PropertyService;
 
 /**
  * Interface implementation of the extension API - Offers version information

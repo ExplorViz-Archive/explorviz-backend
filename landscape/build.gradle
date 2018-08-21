@@ -7,7 +7,7 @@ apply plugin: 'org.sonarqube'
 
 def loadProperties = {
     def properties = new Properties()
-    file('src/main/webapp/WEB-INF/classes/explorviz.properties').withInputStream {
+    file('src/main/resources/explorviz.properties').withInputStream {
         properties.load(it)
     }
     return properties

@@ -1,4 +1,4 @@
-package net.explorviz.server.helper;
+package net.explorviz.shared.server.helper;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;

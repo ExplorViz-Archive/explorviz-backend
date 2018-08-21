@@ -12,7 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.explorviz.repository.LandscapeExchangeService;
-import net.explorviz.server.helper.PropertyService;
+import net.explorviz.shared.server.helper.PropertyService;
 
 /**
  * Primary starting class - executed, when the servlet context is started
@@ -57,7 +57,7 @@ public class SetupApplicationListener implements ApplicationEventListener {
 		// Start ExplorViz Listener
 		exchangeService.startRepository();
 
-		final boolean dummyModeEnabled = PropertyService.getBooleanProperty("useDummyMode");
+		final boolean dummyModeEnabled = PropertyService.getBooleanProperty("repository.useDummyMode");
 
 		LOGGER.info("\n");
 		LOGGER.info("* * * * * * * * * * * * * * * * * * *\n");
