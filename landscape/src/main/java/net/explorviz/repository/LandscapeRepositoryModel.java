@@ -14,6 +14,7 @@ import explorviz.live_trace_processing.reader.IPeriodicTimeSignalReceiver;
 import explorviz.live_trace_processing.reader.TimeSignalReader;
 import explorviz.live_trace_processing.record.IRecord;
 import net.explorviz.model.landscape.Landscape;
+import net.explorviz.model.store.Timestamp;
 import net.explorviz.server.helper.BroadcastService;
 import net.explorviz.server.main.Configuration;
 import net.explorviz.shared.annotations.Config;
@@ -107,11 +108,12 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
 
 				if (useDummyMode) {
 					final Landscape dummyLandscape = LandscapeDummyCreator.createDummyLandscape();
-					dummyLandscape.setTimestamp(milliseconds);
+					dummyLandscape.getTimestamp().setTimestamp(milliseconds);
+					dummyLandscape.getTimestamp().updateID();
 					RepositoryStorage.writeToFile(dummyLandscape, milliseconds, Configuration.LANDSCAPE_REPOSITORY);
 					lastPeriodLandscape = dummyLandscape;
 				} else {
-					internalLandscape.updateTimestamp(milliseconds);
+					internalLandscape.updateTimestamp(new Timestamp(milliseconds, 0));
 					RepositoryStorage.writeToFile(internalLandscape, milliseconds, Configuration.LANDSCAPE_REPOSITORY);
 					final Landscape l = fstConf.deepCopy(internalLandscape);
 					lastPeriodLandscape = LandscapePreparer.prepareLandscape(l);

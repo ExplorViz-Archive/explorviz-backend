@@ -11,19 +11,17 @@ import com.github.jasminb.jsonapi.annotations.Type;
 import net.explorviz.model.application.Application;
 import net.explorviz.model.application.ApplicationCommunication;
 import net.explorviz.model.helper.BaseEntity;
+import net.explorviz.model.store.Timestamp;
 
 /**
  * Model representing a software landscape
- *
- * @author Christian Zirkelbach (czi@informatik.uni-kiel.de)
- *
  */
 @SuppressWarnings("serial")
 @Type("landscape")
 public class Landscape extends BaseEntity {
 
-	private long timestamp;
-	private long overallCalls;
+	@Relationship("timestamp")
+	private Timestamp timestamp;
 
 	@Relationship("systems")
 	private final List<System> systems = new ArrayList<System>();
@@ -34,20 +32,16 @@ public class Landscape extends BaseEntity {
 	@Relationship("outgoingApplicationCommunications")
 	private List<ApplicationCommunication> outgoingApplicationCommunications = new ArrayList<ApplicationCommunication>();
 
-	public long getTimestamp() {
+	public Landscape() {
+		this.timestamp = new Timestamp();
+	}
+
+	public Timestamp getTimestamp() {
 		return timestamp;
 	}
 
-	public void setTimestamp(final long timestamp) {
+	public void setTimestamp(final Timestamp timestamp) {
 		this.timestamp = timestamp;
-	}
-
-	public long getOverallCalls() {
-		return overallCalls;
-	}
-
-	public void setOverallCalls(final long activities) {
-		this.overallCalls = activities;
 	}
 
 	public List<System> getSystems() {
@@ -62,7 +56,7 @@ public class Landscape extends BaseEntity {
 		return exceptions;
 	}
 
-	public void updateTimestamp(final long timestamp) {
+	public void updateTimestamp(final Timestamp timestamp) {
 		setTimestamp(timestamp);
 	}
 
@@ -102,7 +96,6 @@ public class Landscape extends BaseEntity {
 	public void reset() {
 		this.getExceptions().clear();
 		this.getEvents().clear();
-		this.setOverallCalls(0L);
 		this.clearCommunication();
 	}
 

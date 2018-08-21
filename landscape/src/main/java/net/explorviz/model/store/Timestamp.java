@@ -7,7 +7,7 @@ import net.explorviz.model.helper.BaseEntity;
 /**
  * Model representing timestamps (a single software landscape for a specific
  * UNIX timestamp)
- * 
+ *
  * @author Christian Zirkelbach (czi@informatik.uni-kiel.de)
  *
  */
@@ -21,6 +21,9 @@ public class Timestamp extends BaseEntity {
 	public Timestamp(final long timestamp, final long calls) {
 		this.setTimestamp(timestamp);
 		this.setCalls(calls);
+	}
+
+	public Timestamp() {
 	}
 
 	public long getTimestamp() {

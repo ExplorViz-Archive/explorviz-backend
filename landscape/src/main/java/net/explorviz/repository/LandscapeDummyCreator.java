@@ -32,13 +32,13 @@ class LandscapeDummyCreator {
 	public static Landscape createDummyLandscape() {
 
 		if (dummyLandscape != null) {
-			dummyLandscape.setOverallCalls(new Random().nextInt(300000));
+			dummyLandscape.getTimestamp().setCalls(new Random().nextInt(300000));
 			return dummyLandscape;
 		}
 
 		final Landscape landscape = new Landscape();
 		landscape.initializeID();
-		landscape.setOverallCalls(new Random().nextInt(300000));
+		landscape.getTimestamp().setCalls(new Random().nextInt(300000));
 
 		final System requestSystem = new System();
 		requestSystem.initializeID();

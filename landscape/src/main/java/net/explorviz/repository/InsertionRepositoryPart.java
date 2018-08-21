@@ -28,8 +28,8 @@ import net.explorviz.model.application.Application;
 import net.explorviz.model.application.Clazz;
 import net.explorviz.model.application.Component;
 import net.explorviz.model.application.DatabaseQuery;
-import net.explorviz.model.helper.ModelHelper;
 import net.explorviz.model.helper.EProgrammingLanguage;
+import net.explorviz.model.helper.ModelHelper;
 import net.explorviz.model.landscape.Landscape;
 import net.explorviz.model.landscape.Node;
 import net.explorviz.model.landscape.NodeGroup;
@@ -111,7 +111,7 @@ public class InsertionRepositoryPart {
 			for (final Node node : nodeCache.values()) {
 				if (node.getName().equalsIgnoreCase(systemMonitoringRecord.getHostApplicationMetadata().getHostname())
 						&& node.getIpAddress()
-								.equalsIgnoreCase(systemMonitoringRecord.getHostApplicationMetadata().getIpaddress())) {
+						.equalsIgnoreCase(systemMonitoringRecord.getHostApplicationMetadata().getIpaddress())) {
 
 					node.setCpuUtilization(systemMonitoringRecord.getCpuUtilization());
 					node.setFreeRAM(systemMonitoringRecord.getAbsoluteRAM() - systemMonitoringRecord.getUsedRAM());
@@ -326,9 +326,9 @@ public class InsertionRepositoryPart {
 					if (!isAbstractConstructor) {
 						createOrUpdateCall(callerClazz, currentClazz, currentApplication,
 								abstractBeforeEventRecord.getRuntimeStatisticInformationList().get(runtimeIndex)
-										.getCount(),
+								.getCount(),
 								abstractBeforeEventRecord.getRuntimeStatisticInformationList().get(runtimeIndex)
-										.getAverage(),
+								.getAverage(),
 								overallTraceDuration, abstractBeforeEventRecord.getTraceId(), orderIndex, methodName,
 								landscape);
 						orderIndex++;
@@ -356,7 +356,7 @@ public class InsertionRepositoryPart {
 								+ "\n" + splitCause[4] + "\n" + splitCause[5] + "\n" + "\t ...";
 					}
 					addToErrors(landscape, "Exception thrown in application '" + currentApplication.getName()
-							+ "' by class '" + callerClazz.getFullQualifiedName() + "':\n " + cause);
+					+ "' by class '" + callerClazz.getFullQualifiedName() + "':\n " + cause);
 				}
 
 				final List<DatabaseQuery> databaseQueries = currentApplication.getDatabaseQueries();
@@ -435,7 +435,7 @@ public class InsertionRepositoryPart {
 			final int requests, final double average, final double overallTraceDuration, final long traceId,
 			final int orderIndex, final String operationName, final Landscape landscape) {
 
-		landscape.setOverallCalls(landscape.getOverallCalls() + requests);
+		landscape.getTimestamp().setCalls(landscape.getTimestamp().getCalls() + requests);
 
 		// add clazzCommunication to clazz and aggregatedClazzCommunication to
 		// application

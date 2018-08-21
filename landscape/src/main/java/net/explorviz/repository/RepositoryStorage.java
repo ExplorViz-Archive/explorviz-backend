@@ -92,7 +92,7 @@ public class RepositoryStorage {
 	public static void writeToFile(final Landscape landscape, final long timestamp, final String folderName) {
 		final String specificFolder = folder + folderName;
 		writeToFileGeneric(landscape, specificFolder,
-				timestamp + "-" + landscape.getOverallCalls() + Configuration.MODEL_EXTENSION);
+				timestamp + "-" + landscape.getTimestamp().getCalls() + Configuration.MODEL_EXTENSION);
 	}
 
 	public static Landscape bytesToLandscape(final byte[] byteLandscape) {
