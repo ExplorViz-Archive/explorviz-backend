@@ -4,6 +4,7 @@ apply plugin: 'pmd'
 apply plugin: 'checkstyle'
 apply plugin: 'findbugs'
 apply plugin: 'org.sonarqube'
+apply plugin: 'com.github.johnrengelman.shadow'
 
 def loadProperties = {
     def properties = new Properties()
@@ -14,7 +15,8 @@ def loadProperties = {
 }
 
 buildscript {
-	repositories {  		
+	repositories {
+		jcenter()	
     	maven {
     		url 'https://plugins.gradle.org/m2/'
     	}
@@ -22,6 +24,7 @@ buildscript {
 
     dependencies {
 		classpath 'org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.6.1'
+		classpath 'com.github.jengelman.gradle.plugins:shadow:2.0.4'
     }
 }
 
@@ -57,21 +60,29 @@ dependencies {
 
 // ##### BEGIN Jitpack section #####
 
-// War plugin typically disables jar build
-assemble.dependsOn jar
+assemble.dependsOn shadowJar
 
 // https://discuss.gradle.org/t/deploying-multiple-artifacts-war-jar-sources-to-artifactory/4239
 artifacts {
   	archives file: file('libs/explorviz-common-1.0.jar'), name: 'explorviz-common', type: 'jar'
   	archives file: file('libs/explorviz-worker-1.0.jar'), name: 'explorviz-worker', type: 'jar'
-  	archives jar
-  	archives war {
-        classifier = 'deployment'
-    }
+  	archives war
+}
+
+war {
+	archiveName = "explorviz-${project.name}.${extension}"
 }
 
 jar {
-  baseName = project.name 
+  manifest {
+    attributes(
+      'Main-Class': 'net.explorviz.server.main.Main'
+    )
+  }
+}
+
+shadowJar {
+	archiveName = "explorviz-${project.name}.${extension}"
 }
 
 install {
@@ -97,21 +108,21 @@ install {
 pmd {	
 	// Clear the rule set first. Otherwise we would have a lot of additional rules in our rule set.
 	ruleSets = []
-	ruleSetFiles = files("conf/pmd.xml")
+	ruleSetFiles = files("../conf/pmd.xml")
 	consoleOutput = false
 	ignoreFailures = true
 }
     
 checkstyle {
 	showViolations = false
-	configFile = file("conf/checkstyle.xml")
+	configFile = file("../conf/checkstyle.xml")
 	ignoreFailures = true
 }
 
 findbugs {
 	reportLevel = "low"
 	effort = "max"
-	excludeFilter = file("conf/findbugs-exclude.xml")
+	excludeFilter = file("../conf/findbugs-exclude.xml")
 	ignoreFailures = true
 }
 

@@ -1,49 +1,61 @@
 apply plugin: 'pmd'
 apply plugin: 'checkstyle'
 apply plugin: 'findbugs'
+apply plugin: 'com.github.johnrengelman.shadow'
 
-configurations {
-	provided
-	compile.extendsFrom(provided)
+
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.github.jengelman.gradle.plugins:shadow:2.0.4'
+    }
 }
 
 dependencies {
 	implementation project(':shared')
 }
 
-// Don't build war when tests fail
-war.dependsOn check
+assemble.dependsOn shadowJar
 
+war {
+	archiveName = "explorviz-${project.name}.${extension}"
+}
 
-// War plugin typically disables jar build
-assemble.dependsOn jar
-
-// Build .jar file with your "provided" dependencies only
 jar {
-  baseName = project.name 
-  from configurations.provided.asFileTree.files.collect { zipTree(it) }
+  manifest {
+    attributes(
+      'Main-Class': 'net.explorviz.security.server.main.Main'
+    )
+  }
+}
+
+shadowJar {
+	archiveName = "explorviz-${project.name}.${extension}"
 }
 
 
 // Tooling
 pmd {
-	ignoreFailures = false
 	// Clear the rule set first. Otherwise we would have a lot of additional rules in our rule set.
 	ruleSets = []
-	ruleSetFiles = files("conf/pmd.xml")
+	ruleSetFiles = files("../conf/pmd.xml")
+	consoleOutput = false
+	ignoreFailures = true
 }
 
     
 checkstyle {
-	ignoreFailures = false
 	showViolations = false
-	configFile = file("conf/checkstyle.xml")
+	configFile = file("../conf/checkstyle.xml")
+	ignoreFailures = true
 }
 
 findbugs {
 	reportLevel = "low"
-	ignoreFailures = false
 	effort = "max"
+	ignoreFailures = true
 }
 
 // Embedded Webserver
