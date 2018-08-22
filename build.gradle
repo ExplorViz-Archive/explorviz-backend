@@ -35,7 +35,7 @@ subprojects {
 		    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version:'2.9.6'
 		    
 		    // Jetty servlet-container
-  			compile group: 'org.glassfish.jersey.containers', name: 'jersey-container-jetty-servlet', version: '2.27'
+  			implementation group: 'org.glassfish.jersey.containers', name: 'jersey-container-jetty-servlet', version: '2.27'
     	}
     	
     	testImplementation 'junit:junit:4.12'
