@@ -1,7 +1,5 @@
 package net.explorviz.security.server.main;
 
-import javax.ws.rs.ApplicationPath;
-
 import org.glassfish.jersey.server.ResourceConfig;
 
 import net.explorviz.security.server.filter.AuthenticationFilter;
@@ -9,7 +7,6 @@ import net.explorviz.shared.exceptions.mapper.GeneralExceptionMapper;
 import net.explorviz.shared.exceptions.mapper.WebApplicationExceptionMapper;
 import net.explorviz.shared.security.filters.CORSResponseFilter;
 
-@ApplicationPath("")
 public class Application extends ResourceConfig {
 
 	public Application() {

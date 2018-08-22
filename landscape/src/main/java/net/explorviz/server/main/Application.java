@@ -1,7 +1,5 @@
 package net.explorviz.server.main;
 
-import javax.ws.rs.ApplicationPath;
-
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.glassfish.jersey.server.ResourceConfig;
 
@@ -18,7 +16,6 @@ import net.explorviz.shared.security.filters.CORSResponseFilter;
  * Starting configuration for the backend - includes registring models,
  * resources, exception handers, providers, and embedds extensions
  */
-@ApplicationPath("")
 class Application extends ResourceConfig {
 	public Application() {
 

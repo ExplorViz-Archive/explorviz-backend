@@ -34,8 +34,8 @@ subprojects {
 		    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version:'2.9.6'
 		    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version:'2.9.6'
 		    
-		    // Grizzly servlet-container
-  			implementation group: 'org.glassfish.jersey.containers', name: 'jersey-container-grizzly2-http', version: '2.27'
+		    // Jetty servlet-container
+  			compile group: 'org.glassfish.jersey.containers', name: 'jersey-container-jetty-servlet', version: '2.27'
     	}
     	
     	testImplementation 'junit:junit:4.12'
