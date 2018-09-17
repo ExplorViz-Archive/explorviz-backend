@@ -12,7 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.explorviz.repository.LandscapeExchangeService;
-import net.explorviz.shared.server.helper.PropertyService;
+import net.explorviz.shared.annotations.Config;
 
 /**
  * Primary starting class - executed, when the servlet context is started
@@ -24,6 +24,9 @@ public class SetupApplicationListener implements ApplicationEventListener {
 
 	@Inject
 	LandscapeExchangeService exchangeService;
+
+	@Config("repository.useDummyMode")
+	private boolean useDummyMode;
 
 	@Override
 	public void onEvent(final ApplicationEvent event) {
@@ -57,16 +60,14 @@ public class SetupApplicationListener implements ApplicationEventListener {
 		// Start ExplorViz Listener
 		exchangeService.startRepository();
 
-		final boolean dummyModeEnabled = PropertyService.getBooleanProperty("repository.useDummyMode");
-
 		LOGGER.info("\n");
 		LOGGER.info("* * * * * * * * * * * * * * * * * * *\n");
-		LOGGER.info("Server (ExplorViz Backend) sucessfully started. Traces can now be processed.\n");
+		LOGGER.info("Server (ExplorViz Backend) sucessfully started.\n");
 
-		if (dummyModeEnabled) {
+		if (this.useDummyMode) {
 			LOGGER.info("Dummy monitoring data is generated now!\n");
 		} else {
-			LOGGER.info("Please start kiekerSampleApplication now!\n");
+			LOGGER.info("Traces can now be processed.!\n");
 		}
 		LOGGER.info("* * * * * * * * * * * * * * * * * * *\n");
 	}

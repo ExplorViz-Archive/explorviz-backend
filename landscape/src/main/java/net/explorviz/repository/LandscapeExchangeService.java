@@ -20,12 +20,10 @@ import net.explorviz.model.landscape.Landscape;
 import net.explorviz.model.store.Timestamp;
 import net.explorviz.server.helper.FileSystemHelper;
 import net.explorviz.server.main.Configuration;
+import net.explorviz.shared.annotations.Config;
 
 /**
  * Exchange Service for timestamps and landscapes - used by resources (REST)
- *
- * @author Christian Zirkelbach (czi@informatik.uni-kiel.de)
- *
  */
 @Service
 @Singleton
@@ -45,6 +43,9 @@ public class LandscapeExchangeService {
 
 	private final LandscapeRepositoryModel model;
 	private final KiekerAdapter adapter;
+
+	@Config("repository.useDummyMode")
+	private boolean useDummyMode;
 
 	@Inject
 	public LandscapeExchangeService(final LandscapeRepositoryModel model) {
@@ -156,8 +157,9 @@ public class LandscapeExchangeService {
 			}
 		}).start();
 
+
 		// Start Kieker monitoring adapter
-		if (Configuration.ENABLE_KIEKER_ADAPTER) {
+		if (!useDummyMode && Configuration.ENABLE_KIEKER_ADAPTER) {
 			new Thread(new Runnable() {
 
 				@Override
