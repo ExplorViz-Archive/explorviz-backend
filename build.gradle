@@ -4,7 +4,7 @@ allprojects {
 
 subprojects {
 
-	if (project.name != 'kiekeradapter' && project.name != 'shared') {
+	if (project.name != 'kiekeradapter' && project.name != 'shared' && project.name != 'analysis') {
 		apply plugin: 'war'
 		apply from: 'https://raw.github.com/gretty-gradle-plugin/gretty/master/pluginScripts/gretty.plugin'		
 	}
@@ -20,7 +20,7 @@ subprojects {
     	// SL4J
 		implementation group: 'org.slf4j', name: 'slf4j-simple', version: '1.6.1'
         
-        if (project.name != 'kiekeradapter') {
+        if (project.name != 'kiekeradapter' && project.name != 'analysis') {
         	// exclude subprojects, which are not supposed to be a JAX-RS-based microservice        
         
         	// Jersey and Servlet
