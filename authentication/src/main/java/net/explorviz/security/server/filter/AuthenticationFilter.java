@@ -2,7 +2,6 @@ package net.explorviz.security.server.filter;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
-
 import javax.annotation.Priority;
 import javax.annotation.security.PermitAll;
 import javax.inject.Inject;
@@ -15,7 +14,6 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.ext.Provider;
-
 import net.explorviz.security.services.TokenService;
 import net.explorviz.shared.annotations.Secured;
 import net.explorviz.shared.security.AuthenticatedUserDetails;
@@ -27,69 +25,71 @@ import net.explorviz.shared.security.User;
 @Priority(Priorities.AUTHENTICATION)
 public class AuthenticationFilter implements ContainerRequestFilter {
 
-	@Context
-	private ResourceInfo resourceInfo;
+  private static final String FAILED_AUTH_MESSAGE = "Could not be authenticated";
 
-	// @Inject
-	// private UserService userService;
+  @Context
+  private ResourceInfo resourceInfo;
 
-	@Inject
-	private TokenService tokenService;
+  // @Inject
+  // private UserService userService;
 
-	@Override
-	public void filter(final ContainerRequestContext requestContext) throws IOException {
+  @Inject
+  private TokenService tokenService;
 
-		final Method method = resourceInfo.getResourceMethod();
+  @Override
+  public void filter(final ContainerRequestContext requestContext) throws IOException {
 
-		if (method.getName().equals("apply")) {
-			// TODO where does the apply message come from?
-			// It is only called, if the request is not issued with curl but the frontend
-			return;
-		}
+    final Method method = resourceInfo.getResourceMethod();
 
-		if (method.isAnnotationPresent(PermitAll.class)) {
-			// nothing to do
-			return;
-		}
+    if (method.getName().equals("apply")) {
+      // TODO where does the apply message come from?
+      // It is only called, if the request is not issued with curl but the frontend
+      return;
+    }
 
-		if (method.isAnnotationPresent(Secured.class)) {
-			final String authorizationHeader = requestContext.getHeaderString(HttpHeaders.AUTHORIZATION);
-			if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-				final String authenticationToken = authorizationHeader.substring(7);
-				handleTokenBasedAuthentication(authenticationToken, requestContext);
-				return;
-			}
-		}
+    if (method.isAnnotationPresent(PermitAll.class)) {
+      // nothing to do
+      return;
+    }
 
-		// non-annotated classes cannot be accessed
-		throw new ForbiddenException("Could not be authenticated");
+    if (method.isAnnotationPresent(Secured.class)) {
+      final String authorizationHeader = requestContext.getHeaderString(HttpHeaders.AUTHORIZATION);
+      if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+        final String authenticationToken = authorizationHeader.substring(7);
+        handleTokenBasedAuthentication(authenticationToken, requestContext);
+        return;
+      }
+    }
 
-	}
+    // non-annotated classes cannot be accessed
+    throw new ForbiddenException(FAILED_AUTH_MESSAGE);
 
-	private void handleTokenBasedAuthentication(final String authenticationToken,
-			final ContainerRequestContext requestContext) {
+  }
 
-		// prepare securityContext for usage in resource
+  private void handleTokenBasedAuthentication(final String authenticationToken,
+      final ContainerRequestContext requestContext) {
 
-		final TokenDetails tokenDetails = this.tokenService.parseToken(authenticationToken);
+    // prepare securityContext for usage in resource
 
-		// TODO find user in DB
-		if (tokenDetails.getUsername().equals("admin")) {
+    final TokenDetails tokenDetails = this.tokenService.parseToken(authenticationToken);
 
-			final User user = new User(tokenDetails.getUsername());
+    // TODO find user in DB
+    if (tokenDetails.getUsername().equals("admin")) {
 
-			final AuthenticatedUserDetails authenticatedUserDetails = new AuthenticatedUserDetails(user.getUsername(),
-					user.getRoles());
+      final User user = new User(tokenDetails.getUsername());
 
-			final boolean isSecure = requestContext.getSecurityContext().isSecure();
-			final SecurityContext securityContext = new TokenBasedSecurityContext(authenticatedUserDetails,
-					tokenDetails, isSecure);
+      final AuthenticatedUserDetails authenticatedUserDetails =
+          new AuthenticatedUserDetails(user.getUsername(), user.getRoles());
 
-			requestContext.setSecurityContext(securityContext);
+      final boolean isSecure = requestContext.getSecurityContext().isSecure();
+      final SecurityContext securityContext =
+          new TokenBasedSecurityContext(authenticatedUserDetails, tokenDetails, isSecure);
 
-			return;
-		}
+      requestContext.setSecurityContext(securityContext);
 
-		throw new ForbiddenException("Could not be authenticated");
-	}
+      return;
+    }
+
+    throw new ForbiddenException(FAILED_AUTH_MESSAGE);
+  }
 }

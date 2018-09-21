@@ -1,89 +1,113 @@
 package net.explorviz.security.services;
 
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.UUID;
-
 import javax.inject.Inject;
 import javax.ws.rs.ForbiddenException;
-
-import org.jvnet.hk2.annotations.Service;
-
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import net.explorviz.shared.annotations.Config;
 import net.explorviz.shared.security.TokenDetails;
 import net.explorviz.shared.security.TokenParserService;
 import net.explorviz.shared.security.User;
+import org.jvnet.hk2.annotations.Service;
 
 @Service
 public class TokenService {
 
-	@Config("jwt.secret")
-	private String secret;
+  private static final String ROLES_CLAIM_IDENTIFIER = "roles";
+  private static final String REFRESH_COUNT_CLAIM_IDENTIFIER = "refreshCount";
+  private static final String REFRESH_LIMITCLAIM_IDENTIFIER = "refreshLimit";
 
-	@Config("jwt.audience")
-	private String audience;
 
-	@Config("jwt.issuer")
-	private String issuer;
+  @Config("jwt.secret")
+  private String secret;
 
-	@Config("jwt.validFor")
-	private int validFor;
+  @Config("jwt.audience")
+  private String audience;
 
-	@Config("jwt.refreshLimit")
-	private int refreshLimit;
+  @Config("jwt.issuer")
+  private String issuer;
 
-	@Inject
-	private TokenParserService tokenParser;
+  @Config("jwt.validFor")
+  private int validFor;
 
-	public String issueNewToken(final User user) {
-		final String id = UUID.randomUUID().toString();
+  @Config("jwt.refreshLimit")
+  private int refreshLimit;
 
-		final ZonedDateTime issuedDate = ZonedDateTime.now();
-		final ZonedDateTime expirationDate = issuedDate.plusSeconds(validFor);
+  @Inject
+  private TokenParserService tokenParser;
 
-		final String authenticationToken = Jwts.builder().setId(id).setIssuer(issuer).setAudience(audience)
-				.setSubject(user.getUsername()).setIssuedAt(Date.from(issuedDate.toInstant()))
-				.setExpiration(Date.from(expirationDate.toInstant())).claim("roles", user.getRoles())
-				.claim("refreshCount", 0).claim("refreshLimit", refreshLimit).signWith(SignatureAlgorithm.HS256, secret)
-				.compact();
+  /**
+   * This method issues a JSON Web Token (JWT) for a passed user. The token can be refreshed once,
+   * via {@link TokenService#refreshToken(TokenDetails)}.
+   *
+   * @param user - Container for username and password
+   * @return Stringified JWT for the passed user with refresh count = 0
+   */
+  public String issueNewToken(final User user) {
+    final String id = UUID.randomUUID().toString();
 
-		return authenticationToken;
-	}
+    final ZonedDateTime issuedDate = ZonedDateTime.now();
+    final ZonedDateTime expirationDate = issuedDate.plusSeconds(validFor);
 
-	private String issueRefreshmentToken(final TokenDetails newTokenDetails) {
-		final String id = UUID.randomUUID().toString();
+    final String authenticationToken =
+        Jwts.builder().setId(id).setIssuer(issuer).setAudience(audience)
+            .setSubject(user.getUsername()).setIssuedAt(Date.from(issuedDate.toInstant()))
+            .setExpiration(Date.from(expirationDate.toInstant()))
+            .claim(ROLES_CLAIM_IDENTIFIER, user.getRoles()).claim(REFRESH_COUNT_CLAIM_IDENTIFIER, 0)
+            .claim(REFRESH_LIMITCLAIM_IDENTIFIER, refreshLimit)
+            .signWith(SignatureAlgorithm.HS256, secret).compact();
 
-		final String authenticationToken = Jwts.builder().setId(id).setIssuer(issuer).setAudience(audience)
-				.setSubject(newTokenDetails.getUsername())
-				.setIssuedAt(Date.from(newTokenDetails.getIssuedDate().toInstant()))
-				.setExpiration(Date.from(newTokenDetails.getExpirationDate().toInstant()))
-				.claim("roles", newTokenDetails.getRoles()).claim("refreshCount", newTokenDetails.getRefreshCount())
-				.claim("refreshLimit", refreshLimit).signWith(SignatureAlgorithm.HS256, secret).compact();
+    return authenticationToken;
+  }
 
-		return authenticationToken;
-	}
+  /**
+   * This method issues a JSON Web Token (JWT) for a passed user. The token can be refreshed once,
+   * via {@link TokenService#refreshToken(TokenDetails)}.
+   *
+   * @param currentTokenDetails - {@link TokenDetails} of the to-be refreshed token
+   * @return Stringified and refreshed JWT for the passed token with an incremented refresh count
+   */
+  public String refreshToken(final TokenDetails currentTokenDetails) {
 
-	public TokenDetails parseToken(final String token) {
-		return this.tokenParser.parseToken(token);
-	}
+    if (!currentTokenDetails.isEligibleForRefreshment()) {
+      throw new ForbiddenException("This token cannot be refreshed");
+    }
 
-	public String refreshToken(final TokenDetails currentTokenDetails) {
+    final ZonedDateTime issuedDate = ZonedDateTime.now();
+    final ZonedDateTime expirationDate = issuedDate.plusSeconds(validFor);
 
-		if (!currentTokenDetails.isEligibleForRefreshment()) {
-			throw new ForbiddenException("This token cannot be refreshed");
-		}
+    final TokenDetails newTokenDetails = new TokenDetails.Builder()
+        .withId(currentTokenDetails.getId()).withUsername(currentTokenDetails.getUsername())
+        .withAuthorities(currentTokenDetails.getRoles()).withIssuedDate(issuedDate)
+        .withExpirationDate(expirationDate)
+        .withRefreshCount(currentTokenDetails.getRefreshCount() + 1).withRefreshLimit(refreshLimit)
+        .build();
 
-		final ZonedDateTime issuedDate = ZonedDateTime.now();
-		final ZonedDateTime expirationDate = issuedDate.plusSeconds(validFor);
+    return issueRefreshmentToken(newTokenDetails);
+  }
 
-		final TokenDetails newTokenDetails = new TokenDetails.Builder().withId(currentTokenDetails.getId())
-				.withUsername(currentTokenDetails.getUsername()).withAuthorities(currentTokenDetails.getRoles())
-				.withIssuedDate(issuedDate).withExpirationDate(expirationDate)
-				.withRefreshCount(currentTokenDetails.getRefreshCount() + 1).withRefreshLimit(refreshLimit).build();
+  public TokenDetails parseToken(final String token) {
+    return this.tokenParser.parseToken(token);
+  }
 
-		return issueRefreshmentToken(newTokenDetails);
-	}
+
+
+  private String issueRefreshmentToken(final TokenDetails newTokenDetails) {
+    final String id = UUID.randomUUID().toString();
+
+    final String authenticationToken = Jwts.builder().setId(id).setIssuer(issuer)
+        .setAudience(audience).setSubject(newTokenDetails.getUsername())
+        .setIssuedAt(Date.from(newTokenDetails.getIssuedDate().toInstant()))
+        .setExpiration(Date.from(newTokenDetails.getExpirationDate().toInstant()))
+        .claim(ROLES_CLAIM_IDENTIFIER, newTokenDetails.getRoles())
+        .claim(REFRESH_COUNT_CLAIM_IDENTIFIER, newTokenDetails.getRefreshCount())
+        .claim(REFRESH_LIMITCLAIM_IDENTIFIER, refreshLimit)
+        .signWith(SignatureAlgorithm.HS256, secret).compact();
+
+    return authenticationToken;
+  }
 
 }

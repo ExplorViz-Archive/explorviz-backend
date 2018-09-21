@@ -9,8 +9,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-
 import net.explorviz.security.model.Token;
 import net.explorviz.security.model.UserCredentials;
 import net.explorviz.security.services.TokenService;
@@ -23,50 +21,63 @@ import net.explorviz.shared.security.User;
 @Path("v1/tokens")
 public class TokenResource {
 
-	@Inject
-	private UserService userService;
+  @Inject
+  private UserService userService;
 
-	@Inject
-	private TokenService tokenService;
+  @Inject
+  private TokenService tokenService;
 
-	@POST
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
-	@PermitAll
-	public Token issueToken(final UserCredentials credentials) {
+  /**
+   * This method issues a Json Web Token (JWT) for passed user credentials. The token expires after
+   * 1 hour and can be refreshed once. After that, users must issue a new token.
+   *
+   * @param credentials - Username and password for authentication
+   * @return JWT that contains user information
+   */
+  @POST
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Produces(MediaType.APPLICATION_JSON)
+  @PermitAll
+  public Token issueToken(final UserCredentials credentials) {
 
-		// curl -X POST
-		// 'http://localhost:8082/v1/tokens/'
-		// -H 'Content-Type: application/json'
-		// -d '{ "username": "admin", "password": "password" }'
+    // curl -X POST
+    // 'http://localhost:8082/v1/tokens/'
+    // -H 'Content-Type: application/json'
+    // -d '{ "username": "admin", "password": "password" }'
 
-		final User user = this.userService.validateUserCredentials(credentials);
+    final User user = this.userService.validateUserCredentials(credentials);
 
-		final Token t = new Token();
-		t.setToken(this.tokenService.issueNewToken(user));
+    final Token t = new Token();
+    t.setToken(this.tokenService.issueNewToken(user));
 
-		return t;
-	}
+    return t;
+  }
 
-	@POST
-	@Path("refresh")
-	@Produces(MediaType.APPLICATION_JSON)
-	@Secured
-	public Response refresh(@Context final ContainerRequestContext context) {
+  /**
+   * This method refreshes a Json Web Token (JWT). The HTTP POST body must not contain data and the
+   * to-be refreshed token inside of the ' Authorization: Bearer' header.
+   *
+   * @return Refreshed JWT with an incremented refresh counter.
+   */
+  @POST
+  @Path("refresh")
+  @Produces(MediaType.APPLICATION_JSON)
+  @Secured
+  public Token refresh(@Context final ContainerRequestContext context) {
 
-		// curl -X POST
-		// 'http://localhost:8082/v1/tokens/refresh/'
-		// -H 'Accept: application/json'
-		// -H 'Authorization: Bearer <authentication-token>'
+    // curl -X POST
+    // 'http://localhost:8082/v1/tokens/refresh/'
+    // -H 'Accept: application/json'
+    // -H 'Authorization: Bearer <authentication-token>'
 
-		final TokenBasedSecurityContext sec = (TokenBasedSecurityContext) context.getSecurityContext();
+    final TokenBasedSecurityContext sec = (TokenBasedSecurityContext) context.getSecurityContext();
 
-		final TokenDetails tokenDetails = sec.getTokenDetails();
-		final String token = this.tokenService.refreshToken(tokenDetails);
+    final TokenDetails tokenDetails = sec.getTokenDetails();
+    final String token = this.tokenService.refreshToken(tokenDetails);
 
-		final Token authenticationToken = new Token();
-		authenticationToken.setToken(token);
-		return Response.ok(authenticationToken).build();
-	}
+    final Token authenticationToken = new Token();
+    authenticationToken.setToken(token);
+    return authenticationToken;
+  }
 
 }

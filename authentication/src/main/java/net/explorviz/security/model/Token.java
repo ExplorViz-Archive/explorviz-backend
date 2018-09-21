@@ -2,13 +2,13 @@ package net.explorviz.security.model;
 
 public class Token {
 
-	private String token;
+  private String stringifiedToken;
 
-	public String getToken() {
-		return token;
-	}
+  public String getToken() {
+    return stringifiedToken;
+  }
 
-	public void setToken(final String token) {
-		this.token = token;
-	}
+  public void setToken(final String token) {
+    this.stringifiedToken = token;
+  }
 }
