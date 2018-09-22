@@ -1,5 +1,8 @@
 package net.explorviz.security.model;
 
+/**
+ * Model for user credentials, i.e., password and username.
+ */
 public class UserCredentials {
 
   private String username;

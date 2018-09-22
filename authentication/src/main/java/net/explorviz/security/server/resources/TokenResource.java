@@ -18,6 +18,9 @@ import net.explorviz.shared.security.TokenBasedSecurityContext;
 import net.explorviz.shared.security.TokenDetails;
 import net.explorviz.shared.security.User;
 
+/**
+ * The token resource class provides endpoints for token obtainment and refreshment.
+ */
 @Path("v1/tokens")
 public class TokenResource {
 

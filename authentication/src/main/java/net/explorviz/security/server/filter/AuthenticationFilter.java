@@ -21,6 +21,11 @@ import net.explorviz.shared.security.TokenBasedSecurityContext;
 import net.explorviz.shared.security.TokenDetails;
 import net.explorviz.shared.security.User;
 
+/**
+ * This filter is responsible for the authentication of the authentication web service. Depending on
+ * the annotated resource class method, it checks if the requests contains a Authorization Header,
+ * therefore requires authentication and validates the used token, e.g., for refreshment.
+ */
 @Provider
 @Priority(Priorities.AUTHENTICATION)
 public class AuthenticationFilter implements ContainerRequestFilter {
@@ -48,7 +53,7 @@ public class AuthenticationFilter implements ContainerRequestFilter {
     }
 
     if (method.isAnnotationPresent(PermitAll.class)) {
-      // nothing to do
+      // nothing to do, resource class method requires no authentication
       return;
     }
 
@@ -73,7 +78,7 @@ public class AuthenticationFilter implements ContainerRequestFilter {
 
     final TokenDetails tokenDetails = this.tokenService.parseToken(authenticationToken);
 
-    // TODO find user in DB
+    // TODO real authentication with DB requests
     if (tokenDetails.getUsername().equals("admin")) {
 
       final User user = new User(tokenDetails.getUsername());

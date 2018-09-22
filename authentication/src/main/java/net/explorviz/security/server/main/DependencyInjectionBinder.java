@@ -11,6 +11,10 @@ import org.glassfish.hk2.api.InjectionResolver;
 import org.glassfish.hk2.api.TypeLiteral;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
 
+/**
+ * The DependencyInjectionBinder is used to register Contexts and Dependency Injection (CDI) aspects
+ * for this application.
+ */
 public class DependencyInjectionBinder extends AbstractBinder {
 
   @Override

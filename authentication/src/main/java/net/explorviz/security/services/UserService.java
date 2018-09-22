@@ -5,6 +5,9 @@ import net.explorviz.security.model.UserCredentials;
 import net.explorviz.shared.security.User;
 import org.jvnet.hk2.annotations.Service;
 
+/**
+ * Injectable service that contains utility methods for {@link UserCredentials} validation.
+ */
 @Service
 public class UserService {
 
@@ -37,12 +40,8 @@ public class UserService {
   }
 
   private boolean checkIfDataIsNotNull(final UserCredentials credentials) {
-    if (credentials != null && credentials.getUsername() != null
-        && credentials.getPassword() != null) {
-      return true;
-    }
-
-    return false;
+    return credentials != null && credentials.getUsername() != null
+        && credentials.getPassword() != null;
   }
 
 }

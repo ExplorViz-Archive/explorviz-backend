@@ -13,13 +13,15 @@ import net.explorviz.shared.security.TokenParserService;
 import net.explorviz.shared.security.User;
 import org.jvnet.hk2.annotations.Service;
 
+/**
+ * Injectable service that contains utility methods for token creation and refreshment.
+ */
 @Service
 public class TokenService {
 
   private static final String ROLES_CLAIM_IDENTIFIER = "roles";
   private static final String REFRESH_COUNT_CLAIM_IDENTIFIER = "refreshCount";
   private static final String REFRESH_LIMITCLAIM_IDENTIFIER = "refreshLimit";
-
 
   @Config("jwt.secret")
   private String secret;
@@ -52,15 +54,12 @@ public class TokenService {
     final ZonedDateTime issuedDate = ZonedDateTime.now();
     final ZonedDateTime expirationDate = issuedDate.plusSeconds(validFor);
 
-    final String authenticationToken =
-        Jwts.builder().setId(id).setIssuer(issuer).setAudience(audience)
-            .setSubject(user.getUsername()).setIssuedAt(Date.from(issuedDate.toInstant()))
-            .setExpiration(Date.from(expirationDate.toInstant()))
-            .claim(ROLES_CLAIM_IDENTIFIER, user.getRoles()).claim(REFRESH_COUNT_CLAIM_IDENTIFIER, 0)
-            .claim(REFRESH_LIMITCLAIM_IDENTIFIER, refreshLimit)
-            .signWith(SignatureAlgorithm.HS256, secret).compact();
-
-    return authenticationToken;
+    return Jwts.builder().setId(id).setIssuer(issuer).setAudience(audience)
+        .setSubject(user.getUsername()).setIssuedAt(Date.from(issuedDate.toInstant()))
+        .setExpiration(Date.from(expirationDate.toInstant()))
+        .claim(ROLES_CLAIM_IDENTIFIER, user.getRoles()).claim(REFRESH_COUNT_CLAIM_IDENTIFIER, 0)
+        .claim(REFRESH_LIMITCLAIM_IDENTIFIER, refreshLimit)
+        .signWith(SignatureAlgorithm.HS256, secret).compact();
   }
 
   /**

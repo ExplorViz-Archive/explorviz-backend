@@ -9,10 +9,18 @@ import org.glassfish.jersey.servlet.ServletContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class Main {
+/**
+ * Entry point for the web service. This main method will start a web server based on the
+ * configuration properties inside of the explorviz.properties file
+ */
+public final class Main {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(Main.class);
   private static final int DEFAULT_PORT = 8081;
+
+  private Main() {
+    // utility class
+  }
 
   /**
    * Entry point for the web service. This main method will start a web server based on the
@@ -30,14 +38,14 @@ public class Main {
 
     try {
       server.start();
-    } catch (final Exception e) {
+    } catch (final Exception e) { // NOPMD
       LOGGER.error("Server start failed", e);
     }
 
     Runtime.getRuntime().addShutdownHook(new Thread(() -> {
       try {
         server.stop();
-      } catch (final Exception e) {
+      } catch (final Exception e) { // NOPMD
         LOGGER.error("Server stop failed", e);
       }
     }));

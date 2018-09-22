@@ -1,5 +1,10 @@
 package net.explorviz.security.model;
 
+/**
+ * Model for a JSON Web Token.
+ *
+ *
+ */
 public class Token {
 
   private String stringifiedToken;

@@ -6,13 +6,17 @@ import net.explorviz.shared.exceptions.mapper.WebApplicationExceptionMapper;
 import net.explorviz.shared.security.filters.CORSResponseFilter;
 import org.glassfish.jersey.server.ResourceConfig;
 
+/**
+ * JAX-RS application. This class is responsible for registering all types of classes, e.g.,
+ * resource classes or exception mappers
+ */
 public class Application extends ResourceConfig {
 
   /**
    * JAX-RS application. This class is responsible for registering all types of classes, e.g.,
    * resource classes or exception mappers
    */
-  public Application() {
+  public Application() { // NOPMD
 
     // register CDI
     register(new DependencyInjectionBinder());
