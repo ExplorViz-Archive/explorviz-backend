@@ -19,7 +19,7 @@ import net.explorviz.shared.security.TokenBasedSecurityContext;
  * Custom {@link ContainerRequestFilter} that is used for JWT-based authentication and
  * authorization. If used in a web service, every request will be first processed by the
  * {@link AuthenticationFilter} and afterwards this filter.
- * 
+ *
  * <p>
  * The AuthorizationFilter uses the prepared {@link TokenBasedSecurityContext} and the resource
  * class method annotations (e.g. {@link RolesAllowed} to determine if the user is authenticated and
@@ -42,7 +42,7 @@ public class AuthorizationFilter implements ContainerRequestFilter {
   private ResourceInfo resourceInfo;
 
   @Override
-  public void filter(final ContainerRequestContext requestContext) throws IOException {
+  public void filter(final ContainerRequestContext requestContext) throws IOException { // NOPMD
 
     final Method method = resourceInfo.getResourceMethod();
 

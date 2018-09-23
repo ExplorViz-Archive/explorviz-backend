@@ -1,9 +1,10 @@
 package net.explorviz.shared.server.helper;
 
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,15 +13,15 @@ import org.slf4j.LoggerFactory;
 /**
  * Utility class to read configuration properties. Use the {@link Config} instead.
  */
-public final class PropertyService {
+public final class PropertyHelper {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(PropertyService.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(PropertyHelper.class);
   private static final String PROPERTIES_FILENAME = "explorviz.properties";
   private static final String PROPERTIES_PATH;
 
   private static final Properties PROP = new Properties();
 
-  private PropertyService() {
+  private PropertyHelper() {
     // don't instantiate
   }
 
@@ -51,7 +52,7 @@ public final class PropertyService {
 
   /**
    * Set a boolean property inside the explorviz.properties file.
-   * 
+   *
    * @param propName - Property key
    * @param value - Property value. String or string-castable object.
    * @throws FileNotFoundException - Thrown if explorviz.properties was not found.
@@ -61,8 +62,9 @@ public final class PropertyService {
       throws FileNotFoundException, IOException {
     PROP.setProperty(propName, String.valueOf(value));
 
-    final OutputStream out = new FileOutputStream(PROPERTIES_PATH);
-    PROP.store(out, null);
+    try (OutputStream out = Files.newOutputStream(Paths.get(PROPERTIES_PATH))) {
+      PROP.store(out, null);
+    }
   }
 
 }

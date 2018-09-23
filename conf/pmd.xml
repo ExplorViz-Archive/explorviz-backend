@@ -55,4 +55,11 @@
       <property name="minimum" value="30" />
     </properties>
   </rule>
+
+  <rule ref="category/java/errorprone.xml/DataflowAnomalyAnalysis">
+    <properties>
+      <property name="violationSuppressRegex"
+        value="^Found 'UR'-anomaly.*" />
+    </properties>
+  </rule>
 </ruleset>

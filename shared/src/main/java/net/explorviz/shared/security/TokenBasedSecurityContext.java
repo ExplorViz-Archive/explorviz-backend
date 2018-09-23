@@ -2,7 +2,6 @@ package net.explorviz.shared.security;
 
 import java.security.Principal;
 import javax.ws.rs.core.SecurityContext;
-import net.explorviz.shared.security.TokenDetails;
 import net.explorviz.shared.security.filters.AuthenticationFilter;
 import net.explorviz.shared.security.filters.AuthorizationFilter;
 
@@ -18,7 +17,7 @@ public class TokenBasedSecurityContext implements SecurityContext {
 
   /**
    * Constructor for this custom {@link SecurityContext}.
-   * 
+   *
    * @param authenticatedUserDetails - Contains details of an authenticated user, e.g., the roles
    * @param authenticationTokenDetails - Java model of the JSON web token for this user
    * @param secure - A boolean indicating whether this request was made using a secure channel, such

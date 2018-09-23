@@ -8,7 +8,7 @@ import org.glassfish.jersey.servlet.ServletContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.explorviz.shared.server.helper.PropertyService;
+import net.explorviz.shared.server.helper.PropertyHelper;
 
 public class Main {
 
@@ -39,7 +39,7 @@ public class Main {
 
 	private static int getPort() {
 		try {
-			return PropertyService.getIntegerProperty("server.port");
+			return PropertyHelper.getIntegerProperty("server.port");
 		} catch (final NumberFormatException e) {
 			LOGGER.info(
 					"ATTENTION: Using default port 8081 for server. Maybe your stated server.port property cannot be casted to int",
@@ -49,7 +49,7 @@ public class Main {
 	}
 
 	private static String getContextPath() {
-		final String statedContextPath = PropertyService.getStringProperty("server.contextPath");
+		final String statedContextPath = PropertyHelper.getStringProperty("server.contextPath");
 
 		if (statedContextPath == null) {
 			LOGGER.info(

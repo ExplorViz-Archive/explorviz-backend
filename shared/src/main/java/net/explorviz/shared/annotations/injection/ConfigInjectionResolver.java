@@ -15,11 +15,12 @@ import org.slf4j.LoggerFactory;
 /**
  * InjectionResolver for {@code @Config} annotation. You must bind it in your implemented
  * {@link org.glassfish.hk2.utilities.binding.AbstractBinder}}, e.g.:
- * 
+ *
  * <pre>
- * {@code this.bind(new ConfigInjectionResolver()).to(new TypeLiteral<InjectionResolver<Config>>() {});} // NOCS
+ * {@code this.bind(new ConfigInjectionResolver())
+ * .to(new TypeLiteral<InjectionResolver<Config>>() {});}
  * </pre>
- * 
+ *
  * @see net.explorviz.shared.annotations.Config
  */
 
@@ -61,9 +62,9 @@ public class ConfigInjectionResolver implements InjectionResolver<Config> {
   }
 
   @Override
-  public Object resolve(Injectee injectee, ServiceHandle<?> root) {
+  public Object resolve(final Injectee injectee, final ServiceHandle<?> root) {
 
-    Type t = injectee.getRequiredType();
+    final Type t = injectee.getRequiredType();
 
     if (String.class == t) {
       return handlePropertyLoading(injectee);
@@ -71,29 +72,30 @@ public class ConfigInjectionResolver implements InjectionResolver<Config> {
 
     if ("int".equals(t.toString())) {
       try {
-        return Integer.valueOf(handlePropertyLoading(injectee)).intValue();
-      } catch (NumberFormatException e) {
+        return Integer.valueOf(handlePropertyLoading(injectee));
+      } catch (final NumberFormatException e) {
         LOGGER.error("Property injection for type 'int' failed. Stacktrace:", e);
         throw exception;
       }
     }
 
     if ("boolean".equals(t.toString())) {
-      return Boolean.valueOf(handlePropertyLoading(injectee)).booleanValue();
+      return Boolean.valueOf(handlePropertyLoading(injectee));
     }
 
-    LOGGER.error("Property injection failed: {}",
-        "Type '" + t + "' for property injection is not valid. Use String, int or boolean.");
-
+    if (LOGGER.isErrorEnabled()) {
+      LOGGER.error("Property injection failed: {}",
+          "Type '" + t + "' for property injection is not valid. Use String, int or boolean.");
+    }
     throw exception;
 
   }
 
-  private String handlePropertyLoading(Injectee injectee) {
-    Config annotation = injectee.getParent().getAnnotation(Config.class);
+  private String handlePropertyLoading(final Injectee injectee) {
+    final Config annotation = injectee.getParent().getAnnotation(Config.class);
 
     if (annotation != null) {
-      String propName = annotation.value();
+      final String propName = annotation.value();
       return String.valueOf(PROP.get(propName));
     }
 

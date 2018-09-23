@@ -115,8 +115,8 @@ public final class TokenDetails {
     }
 
     public TokenDetails build() {
-      return new TokenDetails(id, username, roles, issuedDate, expirationDate, refreshCount,
-          refreshLimit);
+      return new TokenDetails(id, username, roles, issuedDate, expirationDate, // NOPMD
+          refreshCount, refreshLimit);
     }
   }
 }

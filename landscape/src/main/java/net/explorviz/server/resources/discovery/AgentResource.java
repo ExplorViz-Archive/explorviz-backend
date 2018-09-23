@@ -24,7 +24,7 @@ import net.explorviz.discovery.model.Agent;
 import net.explorviz.discovery.services.ClientService;
 import net.explorviz.repository.discovery.AgentRepository;
 import net.explorviz.server.providers.JSONAPIProvider;
-import net.explorviz.shared.server.helper.PropertyService;
+import net.explorviz.shared.server.helper.PropertyHelper;
 
 @Path("discovery")
 public class AgentResource {
@@ -61,8 +61,8 @@ public class AgentResource {
 	@Consumes(MEDIA_TYPE)
 	public Agent patchAgent(final Agent agent) throws AgentInternalErrorException, AgentNoConnectionException {
 
-		final String urlPath = PropertyService.getStringProperty("agentBaseURL")
-				+ PropertyService.getStringProperty("agentAgentPath");
+		final String urlPath = PropertyHelper.getStringProperty("agentBaseURL")
+				+ PropertyHelper.getStringProperty("agentAgentPath");
 
 		final String ipAndPort = agent.getIP() + ":" + agent.getPort();
 		final String url = "http://" + ipAndPort + urlPath;
@@ -81,8 +81,8 @@ public class AgentResource {
 
 		final List<Agent> agentList = this.agentRepository.getAgents();
 
-		final String urlPath = PropertyService.getStringProperty("agentBaseURL")
-				+ PropertyService.getStringProperty("agentAgentPath");
+		final String urlPath = PropertyHelper.getStringProperty("agentBaseURL")
+				+ PropertyHelper.getStringProperty("agentAgentPath");
 
 		for (final Agent agent : agentList) {
 

@@ -36,7 +36,7 @@ public class TokenParserService {
 
   /**
    * Parses a stringified JSON web token and extracts its details into a Java model.
-   * 
+   *
    * @param token - Stringified JWT.
    * @return TokenDetails that contain all JWT details
    */
@@ -62,7 +62,7 @@ public class TokenParserService {
       throw new ForbiddenException("Expired token", e);
     } catch (final InvalidClaimException e) {
       throw new ForbiddenException("Invalid value for claim \"" + e.getClaimName() + "\"", e);
-    } catch (final Exception e) {
+    } catch (final Exception e) { // NOPMD
       throw new ForbiddenException(INVALID_TOKEN_MSG, e);
     }
   }

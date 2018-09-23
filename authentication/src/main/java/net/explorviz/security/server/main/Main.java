@@ -1,6 +1,6 @@
 package net.explorviz.security.server.main;
 
-import net.explorviz.shared.server.helper.PropertyService;
+import net.explorviz.shared.server.helper.PropertyHelper;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
@@ -53,7 +53,7 @@ public final class Main {
 
   private static int getPort() {
     try {
-      return PropertyService.getIntegerProperty("server.port");
+      return PropertyHelper.getIntegerProperty("server.port");
     } catch (final NumberFormatException e) {
       LOGGER.info("ATTENTION: Using default port 8081. Check explorviz.properties file.", e);
     }
@@ -61,7 +61,7 @@ public final class Main {
   }
 
   private static String getContextPath() {
-    final String statedContextPath = PropertyService.getStringProperty("server.contextPath");
+    final String statedContextPath = PropertyHelper.getStringProperty("server.contextPath");
 
     if (statedContextPath == null) {
       LOGGER.info("ATTENTION: Using default contextPath '/'. Check explorviz.properties file.");

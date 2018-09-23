@@ -21,7 +21,7 @@ import net.explorviz.repository.RepositoryStorage;
 import net.explorviz.server.main.Configuration;
 import net.explorviz.server.providers.CoreModelHandler;
 import net.explorviz.server.providers.GenericTypeFinder;
-import net.explorviz.shared.server.helper.PropertyService;
+import net.explorviz.shared.server.helper.PropertyHelper;
 
 /**
  * Interface implementation of the extension API - Offers version information
@@ -180,7 +180,7 @@ public final class ExtensionAPIImpl implements IExtensionAPI {
 	 */
 	@Override
 	public void setDummyMode(final boolean value) throws FileNotFoundException, IOException {
-		PropertyService.setBooleanProperty("useDummyMode", value);
+		PropertyHelper.setBooleanProperty("useDummyMode", value);
 	}
 
 	@Override
