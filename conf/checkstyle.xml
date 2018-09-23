@@ -195,7 +195,8 @@
     <module name="AbbreviationAsWordInName">
       <property name="ignoreFinal" value="false" />
       <property name="allowedAbbreviationLength" value="1" />
-      <property name="allowedAbbreviations" value="XML,URL,CORS"/>
+      <property name="allowedAbbreviations"
+        value="XML,URL,CORS,API,ID,RAM,SQL,FST,FQ,JSON,JSONAPI" />
     </module>
     <module name="OverloadMethodsDeclarationOrder" />
     <module name="VariableDeclarationUsageDistance" />
@@ -315,9 +316,27 @@
       <property name="commentFormat" value="NOCS" />
     </module>
 
+    <module name="SuppressionCommentFilter">
+      <property name="offCommentFormat"
+        value="CHECKSTYLE.OFF\: ([\w\|]+)" />
+      <property name="onCommentFormat"
+        value="CHECKSTYLE.ON\: ([\w\|]+)" />
+      <property name="checkFormat" value="$1" />
+    </module>
+
     <!-- TODO - we require a rule to enforce only fqn for @link (afterwards, 
       UnusedImports->processJavadoc can be removed) - we require a rule to enforce 
       declaring type arguments for generic types/methods -->
 
   </module>
+
+  <module name="RegexpSingleline">
+    <property name="format" value="^\s*\*\s*@author" />
+    <property name="minimum" value="0" />
+    <property name="maximum" value="0" />
+    <property name="message"
+      value="Javadoc has illegal ''author'' tag." />
+    <property name="fileExtensions" value="java" />
+  </module>
+
 </module>

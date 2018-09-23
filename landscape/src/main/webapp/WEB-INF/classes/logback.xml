@@ -1,17 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE project>
 <configuration>
-	<statusListener class="ch.qos.logback.core.status.OnConsoleStatusListener" />
+  <statusListener
+    class="ch.qos.logback.core.status.OnConsoleStatusListener" />
 
-	<appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
-		<encoder>
-			<!-- <pattern>%d{HH:mm:ss.SSS} %level %logger - %msg%n</pattern> -->
-			<pattern>%d{HH:mm:ss.SSS} %level %thread %logger{0}.%M %L - %msg%n
-			</pattern>
-		</encoder>
-	</appender>
+  <appender name="CONSOLE"
+    class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <!-- <pattern>%d{HH:mm:ss.SSS} %level %logger - %msg%n</pattern> -->
+      <pattern>%d{HH:mm:ss.SSS} %level %thread %logger{0}.%M %L - %msg%n
+      </pattern>
+    </encoder>
+  </appender>
 
-	<root level="TRACE">
-		<appender-ref ref="CONSOLE" />
-	</root>
+  <root level="TRACE">
+    <appender-ref ref="CONSOLE" />
+  </root>
 </configuration>

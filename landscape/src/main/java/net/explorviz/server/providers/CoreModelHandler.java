@@ -18,34 +18,34 @@ import net.explorviz.model.store.Timestamp;
 import net.explorviz.shared.security.User;
 
 /**
- * Handles the registration of (core) model types for the JSONAPI provideer
- *
- * @author Christian Zirkelbach (czi@informatik.uni-kiel.de)
- *
+ * Handles the registration of (core) model types for the JSONAPI provideer.
  */
 public final class CoreModelHandler {
 
-	/**
-	 * Registers all model types (below the package model) for the JSONAPI provider
-	 */
-	public static void registerAllCoreModels() {
-		GenericTypeFinder.typeMap.putIfAbsent("Timestamp", Timestamp.class);
-		GenericTypeFinder.typeMap.putIfAbsent("Landscape", Landscape.class);
-		GenericTypeFinder.typeMap.putIfAbsent("System", System.class);
-		GenericTypeFinder.typeMap.putIfAbsent("NodeGroup", NodeGroup.class);
-		GenericTypeFinder.typeMap.putIfAbsent("Node", Node.class);
-		GenericTypeFinder.typeMap.putIfAbsent("Application", Application.class);
-		GenericTypeFinder.typeMap.putIfAbsent("Component", Component.class);
-		GenericTypeFinder.typeMap.putIfAbsent("Clazz", Clazz.class);
-		GenericTypeFinder.typeMap.putIfAbsent("ClazzCommunication", ClazzCommunication.class);
-		GenericTypeFinder.typeMap.putIfAbsent("AggregatedClazzCommunication", AggregatedClazzCommunication.class);
-		GenericTypeFinder.typeMap.putIfAbsent("CumulatedClazzCommunication", CumulatedClazzCommunication.class);
-		GenericTypeFinder.typeMap.putIfAbsent("ApplicationCommunication", ApplicationCommunication.class);
-		GenericTypeFinder.typeMap.putIfAbsent("RuntimeInformation", RuntimeInformation.class);
-		GenericTypeFinder.typeMap.putIfAbsent("DatabaseQuery", DatabaseQuery.class);
-		GenericTypeFinder.typeMap.putIfAbsent("User", User.class);
+  /**
+   * Registers all model types (below the package model) for the JSONAPI provider.
+   */
+  public static void registerAllCoreModels() {
+    GenericTypeFinder.getTypeMap().putIfAbsent("Timestamp", Timestamp.class);
+    GenericTypeFinder.getTypeMap().putIfAbsent("Landscape", Landscape.class);
+    GenericTypeFinder.getTypeMap().putIfAbsent("System", System.class);
+    GenericTypeFinder.getTypeMap().putIfAbsent("NodeGroup", NodeGroup.class);
+    GenericTypeFinder.getTypeMap().putIfAbsent("Node", Node.class);
+    GenericTypeFinder.getTypeMap().putIfAbsent("Application", Application.class);
+    GenericTypeFinder.getTypeMap().putIfAbsent("Component", Component.class);
+    GenericTypeFinder.getTypeMap().putIfAbsent("Clazz", Clazz.class);
+    GenericTypeFinder.getTypeMap().putIfAbsent("ClazzCommunication", ClazzCommunication.class);
+    GenericTypeFinder.getTypeMap().putIfAbsent("AggregatedClazzCommunication",
+        AggregatedClazzCommunication.class);
+    GenericTypeFinder.getTypeMap().putIfAbsent("CumulatedClazzCommunication",
+        CumulatedClazzCommunication.class);
+    GenericTypeFinder.getTypeMap().putIfAbsent("ApplicationCommunication",
+        ApplicationCommunication.class);
+    GenericTypeFinder.getTypeMap().putIfAbsent("RuntimeInformation", RuntimeInformation.class);
+    GenericTypeFinder.getTypeMap().putIfAbsent("DatabaseQuery", DatabaseQuery.class);
+    GenericTypeFinder.getTypeMap().putIfAbsent("User", User.class);
 
-		GenericTypeFinder.typeMap.putIfAbsent("Agent", Agent.class);
-		GenericTypeFinder.typeMap.putIfAbsent("Procezz", Procezz.class);
-	}
+    GenericTypeFinder.getTypeMap().putIfAbsent("Agent", Agent.class);
+    GenericTypeFinder.getTypeMap().putIfAbsent("Procezz", Procezz.class);
+  }
 }

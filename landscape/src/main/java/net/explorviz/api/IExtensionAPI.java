@@ -4,43 +4,41 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
-
 import net.explorviz.model.landscape.Landscape;
 import net.explorviz.model.store.Timestamp;
 
 /**
- * Interface for providing necessary information for the extension API
- *
- * @author Christian Zirkelbach (czi@informatik.uni-kiel.de)
- *
+ * Interface for providing necessary information for the extension API.
  */
 interface IExtensionAPI {
-	// Generic
-	String getAPIVersion();
+  // Generic
+  String getAPIVersion();
 
-	// Landscape related
-	Landscape getLatestLandscape();
+  // Landscape related
+  Landscape getLatestLandscape();
 
-	Landscape getLandscape(long timestamp, String folderName);
+  Landscape getLandscape(long timestamp, String folderName);
 
-	// Timestamp related
-	List<Timestamp> getNewestTimestamps(int intervalSize);
+  // Timestamp related
+  List<Timestamp> getNewestTimestamps(int intervalSize);
 
-	List<Timestamp> getOldestTimestamps(int intervalSize);
+  List<Timestamp> getOldestTimestamps(int intervalSize);
 
-	List<Timestamp> getPreviousTimestamps(long timestamp, int intervalSize);
+  List<Timestamp> getPreviousTimestamps(long timestamp, int intervalSize);
 
-	List<Timestamp> getSubsequentTimestamps(long timestamp, int intervalSize);
+  List<Timestamp> getSubsequentTimestamps(long timestamp, int intervalSize);
 
-	// Extension related
-	void registerAllCoreModels();
+  // Extension related
+  void registerAllCoreModels();
 
-	void registerSpecificCoreModels(Map<String, Class<?>> typeMap);
+  void registerSpecificCoreModels(Map<String, Class<?>> typeMap);
 
-	void registerSpecificModel(String typeName, Class<?> type);
+  void registerSpecificModel(String typeName, Class<?> type);
 
-	void setDummyMode(boolean value) throws FileNotFoundException, IOException;
+  void setDummyMode(boolean value) throws FileNotFoundException, IOException;
 
-	void saveLandscapeToFile(Landscape landscape, String folderName);
+  void saveLandscapeToFile(Landscape landscape, String folderName);
+
+  List<Timestamp> getUploadedTimestamps();
 
 }

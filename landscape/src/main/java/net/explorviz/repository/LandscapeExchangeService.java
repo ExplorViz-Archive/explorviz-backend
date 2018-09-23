@@ -7,166 +7,169 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-
 import javax.inject.Inject;
 import javax.inject.Singleton;
-
-import org.jvnet.hk2.annotations.Service;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import net.explorviz.kiekeradapter.main.KiekerAdapter;
 import net.explorviz.model.landscape.Landscape;
 import net.explorviz.model.store.Timestamp;
 import net.explorviz.server.helper.FileSystemHelper;
 import net.explorviz.server.main.Configuration;
 import net.explorviz.shared.annotations.Config;
+import org.jvnet.hk2.annotations.Service;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * Exchange Service for timestamps and landscapes - used by resources (REST)
+ * Exchange Service for timestamps and landscapes - used by resources (REST).
  */
 @Service
 @Singleton
 public class LandscapeExchangeService {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(LandscapeExchangeService.class.getName());
+  private static final Logger LOGGER =
+      LoggerFactory.getLogger(LandscapeExchangeService.class.getName());
 
-	private static Map<String, Timestamp> timestampCache = new HashMap<String, Timestamp>();
+  private static final String EXPLORVIZ_FILE_ENDING = ".expl";
 
-	@SuppressWarnings("unused")
-	private static Long timestamp;
-	@SuppressWarnings("unused")
-	private static Long activity;
+  private static Map<String, Timestamp> timestampCache = new HashMap<String, Timestamp>();
 
-	private static final String REPLAY_FOLDER = FileSystemHelper.getExplorVizDirectory() + File.separator + "replay";
-	private static final String REPOSITORY_FOLDER = FileSystemHelper.getExplorVizDirectory() + File.separator;
+  @SuppressWarnings("unused")
+  private static Long timestamp;
+  @SuppressWarnings("unused")
+  private static Long activity;
 
-	private final LandscapeRepositoryModel model;
-	private final KiekerAdapter adapter;
+  private static final String REPLAY_FOLDER =
+      FileSystemHelper.getExplorVizDirectory() + File.separator + "replay";
+  private static final String REPOSITORY_FOLDER =
+      FileSystemHelper.getExplorVizDirectory() + File.separator;
 
-	@Config("repository.useDummyMode")
-	private boolean useDummyMode;
+  private final LandscapeRepositoryModel model;
+  private final KiekerAdapter adapter;
 
-	@Inject
-	public LandscapeExchangeService(final LandscapeRepositoryModel model) {
-		this.model = model;
-		this.adapter = KiekerAdapter.getInstance();
-	}
+  @Config("repository.useDummyMode")
+  private boolean useDummyMode;
 
-	public Landscape getLandscapeByTimestampAndActivity(final long timestamp, final long activity) {
-		LandscapeExchangeService.timestamp = timestamp;
-		LandscapeExchangeService.activity = activity;
-		return getCurrentLandscape();
-	}
+  @Inject
+  public LandscapeExchangeService(final LandscapeRepositoryModel model) {
+    this.model = model;
+    this.adapter = KiekerAdapter.getInstance();
+  }
 
-	public LandscapeRepositoryModel getModel() {
-		return model;
-	}
+  public Landscape getLandscapeByTimestampAndActivity(final long timestamp, final long activity) {
+    LandscapeExchangeService.timestamp = timestamp;
+    LandscapeExchangeService.activity = activity;
+    return getCurrentLandscape();
+  }
 
-	public Landscape getCurrentLandscape() {
-		return model.getLastPeriodLandscape();
-	}
+  public LandscapeRepositoryModel getModel() {
+    return model;
+  }
 
-	public List<String> getReplayNames() {
-		final List<String> names = new ArrayList<String>();
-		final File directory = new File(REPLAY_FOLDER);
-		final File[] fList = directory.listFiles();
+  public Landscape getCurrentLandscape() {
+    return model.getLastPeriodLandscape();
+  }
 
-		if (fList != null) {
-			for (final File f : fList) {
-				final String filename = f.getName();
+  public List<String> getReplayNames() {
+    final List<String> names = new ArrayList<String>();
+    final File directory = new File(REPLAY_FOLDER);
+    final File[] fList = directory.listFiles();
 
-				if (filename.endsWith(".expl")) {
-					// first validation check -> filename
-					long timestamp;
+    if (fList != null) {
+      for (final File f : fList) {
+        final String filename = f.getName();
 
-					try {
-						timestamp = Long.parseLong(filename.split("-")[0]);
-					} catch (final NumberFormatException e) {
-						LOGGER.warn(e.getMessage());
-						continue;
-					}
+        if (filename.endsWith(EXPLORVIZ_FILE_ENDING)) {
+          // first validation check -> filename
+          long timestamp;
 
-					// second validation check -> deserialization
-					try {
-						this.getLandscape(timestamp, Configuration.REPLAY_REPOSITORY);
-					} catch (final FileNotFoundException e) {
-						LOGGER.warn(e.getMessage());
-						continue;
-					}
-					names.add(filename);
-				}
-			}
-		}
-		return names;
-	}
+          try {
+            timestamp = Long.parseLong(filename.split("-")[0]);
+          } catch (final NumberFormatException e) {
+            LOGGER.warn(e.getMessage());
+            continue;
+          }
 
-	public List<Timestamp> getTimestampObjectsInRepo(final String folderName) {
-		final File directory = new File(REPOSITORY_FOLDER + folderName);
-		final File[] fList = directory.listFiles();
-		final List<Timestamp> timestamps = new LinkedList<Timestamp>();
+          // second validation check -> deserialization
+          try {
+            this.getLandscape(timestamp, Configuration.REPLAY_REPOSITORY);
+          } catch (final FileNotFoundException e) {
+            LOGGER.warn(e.getMessage());
+            continue;
+          }
+          names.add(filename);
+        }
+      }
+    }
+    return names;
+  }
 
-		if (fList != null) {
-			for (final File f : fList) {
-				final String filename = f.getName();
+  public List<Timestamp> getTimestampObjectsInRepo(final String folderName) {
+    final File directory = new File(REPOSITORY_FOLDER + folderName);
+    final File[] fList = directory.listFiles();
+    final List<Timestamp> timestamps = new LinkedList<Timestamp>();
 
-				if (filename.endsWith(".expl")) {
-					// first validation check -> filename
+    if (fList != null) {
+      for (final File f : fList) {
+        final String filename = f.getName();
 
-					final String timestampAsString = filename.split("-")[0];
-					final String activityAsString = filename.split("-")[1].split(".expl")[0];
+        if (filename.endsWith(EXPLORVIZ_FILE_ENDING)) {
+          // first validation check -> filename
 
-					Timestamp possibleTimestamp = timestampCache.get(timestampAsString + activityAsString);
+          final String timestampAsString = filename.split("-")[0];
+          final String activityAsString = filename.split("-")[1].split(EXPLORVIZ_FILE_ENDING)[0];
 
-					if (possibleTimestamp == null) {
+          Timestamp possibleTimestamp = timestampCache.get(timestampAsString + activityAsString);
 
-						// new timestamp -> add to cache
-						// and initialize ID of entity
-						long timestamp;
-						long activity;
+          if (possibleTimestamp == null) {
 
-						try {
-							timestamp = Long.parseLong(timestampAsString);
-							activity = Long.parseLong(activityAsString);
-						} catch (final NumberFormatException e) {
-							continue;
-						}
+            // new timestamp -> add to cache
+            // and initialize ID of entity
+            long timestamp;
+            long activity;
 
-						possibleTimestamp = new Timestamp(timestamp, activity);
-						possibleTimestamp.initializeID();
-						timestampCache.put(timestampAsString + activityAsString, possibleTimestamp);
-					}
+            try {
+              timestamp = Long.parseLong(timestampAsString);
+              activity = Long.parseLong(activityAsString);
+            } catch (final NumberFormatException e) {
+              continue;
+            }
 
-					timestamps.add(possibleTimestamp);
-				}
-			}
-		}
-		return timestamps;
-	}
+            possibleTimestamp = new Timestamp(timestamp, activity);
+            possibleTimestamp.initializeID();
+            timestampCache.put(timestampAsString + activityAsString, possibleTimestamp);
+          }
 
-	public Landscape getLandscape(final long timestamp, final String folderName) throws FileNotFoundException {
-		return model.getLandscape(timestamp, folderName);
-	}
+          timestamps.add(possibleTimestamp);
+        }
+      }
+    }
+    return timestamps;
+  }
 
-	public void startRepository() {
-		new Thread(new Runnable() {
+  public Landscape getLandscape(final long timestamp, final String folderName)
+      throws FileNotFoundException {
+    return model.getLandscape(timestamp, folderName);
+  }
 
-			@Override
-			public void run() {
-				new RepositoryStarter().start(model);
-			}
-		}).start();
+  public void startRepository() {
+    new Thread(new Runnable() {
+
+      @Override
+      public void run() {
+        new RepositoryStarter().start(model);
+      }
+    }).start();
 
 
-		// Start Kieker monitoring adapter
-		if (!useDummyMode && Configuration.ENABLE_KIEKER_ADAPTER) {
-			new Thread(new Runnable() {
+    // Start Kieker monitoring adapter
+    if (!useDummyMode && Configuration.ENABLE_KIEKER_ADAPTER) {
+      new Thread(new Runnable() {
 
-				@Override
-				public void run() {
-					adapter.startReader();
-				}
-			}).start();
-		}
-	}
+        @Override
+        public void run() {
+          adapter.startReader();
+        }
+      }).start();
+    }
+  }
 }
