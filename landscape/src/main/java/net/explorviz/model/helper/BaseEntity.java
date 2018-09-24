@@ -36,11 +36,11 @@ public class BaseEntity implements Serializable {
     return this.id;
   }
 
-  public void initializeID() {
+  public void initializeId() {
     // this.id = Long.valueOf(BaseEntity.ID_GENERATOR.incrementAndGet());
   }
 
-  public void updateID() {
+  public void updateId() {
     this.id = Long.valueOf(BaseEntity.ID_GENERATOR.incrementAndGet());
   }
 

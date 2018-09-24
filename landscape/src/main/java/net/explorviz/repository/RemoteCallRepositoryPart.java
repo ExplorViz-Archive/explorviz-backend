@@ -77,7 +77,7 @@ public class RemoteCallRepositoryPart {
       final Clazz firstReceiverClazz, final Landscape landscape,
       final InsertionRepositoryPart inserter, final int runtimeIndex) {
     final BeforeSentRemoteCallRecord sentRecord =
-        seekSentRemoteTraceIDandOrderID(receivedRemoteCallRecord);
+        seekSentRemoteTraceIdandOrderId(receivedRemoteCallRecord);
 
     if (sentRecord == null) {
       final RemoteRecordBuffer remoteRecordBuffer = new RemoteRecordBuffer();
@@ -106,7 +106,7 @@ public class RemoteCallRepositoryPart {
     return null;
   }
 
-  private BeforeSentRemoteCallRecord seekSentRemoteTraceIDandOrderID(
+  private BeforeSentRemoteCallRecord seekSentRemoteTraceIdandOrderId(
       final BeforeReceivedRemoteCallRecord remoteRecord) {
     for (final BeforeSentRemoteCallRecord sentRemoteRecord : sentRemoteCallRecordCache.keySet()) {
       if (sentRemoteRecord.getTraceId() == remoteRecord.getCallerTraceId()

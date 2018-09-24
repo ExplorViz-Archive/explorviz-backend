@@ -135,7 +135,7 @@ public class LandscapeExchangeService {
             }
 
             possibleTimestamp = new Timestamp(timestamp, activity);
-            possibleTimestamp.initializeID();
+            possibleTimestamp.initializeId();
             timestampCache.put(timestampAsString + activityAsString, possibleTimestamp);
           }
 

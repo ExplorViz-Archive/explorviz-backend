@@ -37,11 +37,11 @@ class LandscapeDummyCreator {
     }
 
     final Landscape landscape = new Landscape();
-    landscape.initializeID();
+    landscape.initializeId();
     landscape.getTimestamp().setCalls(new Random().nextInt(CALLS_GENERATOR_BOUND));
 
     final System requestSystem = new System();
-    requestSystem.initializeID();
+    requestSystem.initializeId();
     requestSystem.setName("Requests");
     requestSystem.setParent(landscape);
     landscape.getSystems().add(requestSystem);
@@ -55,7 +55,7 @@ class LandscapeDummyCreator {
     requestSystem.getNodeGroups().add(requestsNodeGroup);
 
     final System ocnEditor = new System();
-    ocnEditor.initializeID();
+    ocnEditor.initializeId();
     ocnEditor.setName("OCN Editor");
     ocnEditor.setParent(landscape);
     landscape.getSystems().add(ocnEditor);
@@ -74,7 +74,7 @@ class LandscapeDummyCreator {
     ocnEditor.getNodeGroups().add(ocnEditorNodeGroup2);
 
     final System ocnDatabase = new System();
-    ocnDatabase.initializeID();
+    ocnDatabase.initializeId();
     ocnDatabase.setName("OCN Database");
     ocnDatabase.setParent(landscape);
     landscape.getSystems().add(ocnDatabase);
@@ -93,7 +93,7 @@ class LandscapeDummyCreator {
     ocnDatabase.getNodeGroups().add(ocnDatabaseNodeGroup2);
 
     final System kielprints = new System();
-    kielprints.initializeID();
+    kielprints.initializeId();
 
     kielprints.setName("OceanRep");
     kielprints.setParent(landscape);
@@ -114,7 +114,7 @@ class LandscapeDummyCreator {
     kielprints.getNodeGroups().add(kielprintsNodeGroup2);
 
     final System portal = new System();
-    portal.initializeID();
+    portal.initializeId();
     portal.setName("OSIS-Kiel");
     portal.setParent(landscape);
     landscape.getSystems().add(portal);
@@ -133,7 +133,7 @@ class LandscapeDummyCreator {
     portal.getNodeGroups().add(portalNodeGroup2);
 
     final System pangea = new System();
-    pangea.initializeID();
+    pangea.initializeId();
     pangea.setName("WDC-Mare");
     pangea.setParent(landscape);
     landscape.getSystems().add(pangea);
@@ -153,7 +153,7 @@ class LandscapeDummyCreator {
     pangea.getNodeGroups().add(pangeaNodeGroup2);
 
     final System pubflow = new System();
-    pubflow.initializeID();
+    pubflow.initializeId();
     pubflow.setName("PubFlow");
     pubflow.setParent(landscape);
     landscape.getSystems().add(pubflow);
@@ -170,13 +170,13 @@ class LandscapeDummyCreator {
     jiraNodeGroup.getNodes().add(jira2Node);
     pubflow.getNodeGroups().add(jiraNodeGroup);
 
-    final NodeGroup postgreSQLNodeGroup = createNodeGroup("10.0.0.3", landscape, pubflow);
-    final Node postgreSQLNode = createNode("10.0.0.3", postgreSQLNodeGroup);
+    final NodeGroup postgreSqlNodeGroup = createNodeGroup("10.0.0.3", landscape, pubflow);
+    final Node postgreSqlNode = createNode("10.0.0.3", postgreSqlNodeGroup);
 
-    final Application postgreSQL = createApplication("PostgreSQL", postgreSQLNode);
+    final Application postgreSql = createApplication("PostgreSQL", postgreSqlNode);
 
-    postgreSQLNodeGroup.getNodes().add(postgreSQLNode);
-    pubflow.getNodeGroups().add(postgreSQLNodeGroup);
+    postgreSqlNodeGroup.getNodes().add(postgreSqlNode);
+    pubflow.getNodeGroups().add(postgreSqlNodeGroup);
 
     final NodeGroup workflowNodeGroup = createNodeGroup("10.0.0.4 - 10.0.0.7", landscape, pubflow);
 
@@ -239,8 +239,8 @@ class LandscapeDummyCreator {
     createApplicationCommunication(workflow1, portalApp, landscape, 100);
     createApplicationCommunication(portalApp, portalApp2, landscape, 100);
 
-    createApplicationCommunication(jira1, postgreSQL, landscape, 100);
-    createApplicationCommunication(jira2, postgreSQL, landscape, 200);
+    createApplicationCommunication(jira1, postgreSql, landscape, 100);
+    createApplicationCommunication(jira2, postgreSql, landscape, 200);
 
     createApplicationCommunication(jira1, workflow1, landscape, 100);
     createApplicationCommunication(jira1, workflow2, landscape, 500);
@@ -275,7 +275,7 @@ class LandscapeDummyCreator {
   private static NodeGroup createNodeGroup(final String name, final Landscape parent,
       final System system) {
     final NodeGroup nodeGroup = new NodeGroup();
-    nodeGroup.initializeID();
+    nodeGroup.initializeId();
     nodeGroup.setName(name);
     nodeGroup.setParent(system);
     return nodeGroup;
@@ -283,21 +283,21 @@ class LandscapeDummyCreator {
 
   private static Node createNode(final String ipAddress, final NodeGroup parent) {
     final Node node = new Node();
-    node.initializeID();
+    node.initializeId();
     node.setIpAddress(ipAddress);
     node.setParent(parent);
 
     // set random usage
     node.setCpuUtilization(((double) DummyLandscapeHelper.getRandomNum(10, 100)) / 100);
-    node.setFreeRAM(((long) DummyLandscapeHelper.getRandomNum(1, 4)) * formatFactor);
-    node.setUsedRAM(((long) DummyLandscapeHelper.getRandomNum(1, 4)) * formatFactor);
+    node.setFreeRam(((long) DummyLandscapeHelper.getRandomNum(1, 4)) * formatFactor);
+    node.setUsedRam(((long) DummyLandscapeHelper.getRandomNum(1, 4)) * formatFactor);
 
     return node;
   }
 
   private static Application createApplication(final String name, final Node parent) {
     final Application application = new Application();
-    application.initializeID();
+    application.initializeId();
 
     applicationId = applicationId + 1;
     application.setParent(parent);
@@ -318,7 +318,7 @@ class LandscapeDummyCreator {
   private static ApplicationCommunication createApplicationCommunication(final Application source,
       final Application target, final Landscape landscape, final int requests) {
     final ApplicationCommunication communication = new ApplicationCommunication();
-    communication.initializeID();
+    communication.initializeId();
     communication.setSourceApplication(source);
     communication.setTargetApplication(target);
     communication.setRequests(requests);
@@ -331,7 +331,7 @@ class LandscapeDummyCreator {
   private static Component createComponent(final String name, final Component parent,
       final Application app) {
     final Component component = new Component();
-    component.initializeID();
+    component.initializeId();
     component.setName(name);
     component.setParentComponent(parent);
     component.setBelongingApplication(app);
@@ -347,7 +347,7 @@ class LandscapeDummyCreator {
   private static Clazz createClazz(final String name, final Component component,
       final int instanceCount) {
     final Clazz clazz = new Clazz();
-    clazz.initializeID();
+    clazz.initializeId();
     clazz.setName(name);
     clazz.setFullQualifiedName(component.getFullQualifiedName() + "." + name);
     clazz.setInstanceCount(instanceCount);
@@ -461,7 +461,7 @@ class LandscapeDummyCreator {
     final int maxIterations = 25;
     for (int i = 0; i < maxIterations; i++) {
       DatabaseQuery dbQueryTmp = new DatabaseQuery();
-      dbQueryTmp.initializeID();
+      dbQueryTmp.initializeId();
       dbQueryTmp.setSqlStatement(
           "CREATE TABLE IF NOT EXISTS `order` (oid integer PRIMARY KEY, name text NOT NULL, "
               + "email text NOT NULL, odate text NOT NULL, itemid integer NOT NULL);");
@@ -471,7 +471,7 @@ class LandscapeDummyCreator {
       dbQueryList.add(dbQueryTmp);
 
       dbQueryTmp = new DatabaseQuery();
-      dbQueryTmp.initializeID();
+      dbQueryTmp.initializeId();
       dbQueryTmp.setSqlStatement("INSERT INTO `order` (oid, name, email, odate, itemid) "
           + "VALUES('" + DummyLandscapeHelper.getNextSequenceId()
           + "'Tom B. Erichsen', 'erichsen@uni-kiel.de', '2017-11-16', '1');");
@@ -481,7 +481,7 @@ class LandscapeDummyCreator {
       dbQueryList.add(dbQueryTmp);
 
       dbQueryTmp = new DatabaseQuery();
-      dbQueryTmp.initializeID();
+      dbQueryTmp.initializeId();
       dbQueryTmp.setSqlStatement("INSERT INTO `order` (oid, name, email, odate, itemid) "
           + "VALUES('" + DummyLandscapeHelper.getNextSequenceId()
           + "'Tom B. Erichsen', 'erichsen@uni-kiel.de', '2017-11-16', '1');");
@@ -491,7 +491,7 @@ class LandscapeDummyCreator {
       dbQueryList.add(dbQueryTmp);
 
       dbQueryTmp = new DatabaseQuery();
-      dbQueryTmp.initializeID();
+      dbQueryTmp.initializeId();
       dbQueryTmp.setSqlStatement("INSERT INTO `order` (oid, name, email, odate, itemid) "
           + "VALUES('" + DummyLandscapeHelper.getNextSequenceId()
           + "', 'Carol K. Durham', 'durham@uni-kiel.de', '2017-10-08', '1');");
@@ -501,7 +501,7 @@ class LandscapeDummyCreator {
       dbQueryList.add(dbQueryTmp);
 
       dbQueryTmp = new DatabaseQuery();
-      dbQueryTmp.initializeID();
+      dbQueryTmp.initializeId();
       dbQueryTmp.setSqlStatement("SELECT * FROM `order` WHERE name = Carol K. Durham");
       dbQueryTmp.setReturnValue(String.valueOf(DummyLandscapeHelper.getRandomNum(5, 100)));
       dbQueryTmp.setResponseTime(DummyLandscapeHelper.getRandomNum(10, 1000));
@@ -509,7 +509,7 @@ class LandscapeDummyCreator {
       dbQueryList.add(dbQueryTmp);
 
       dbQueryTmp = new DatabaseQuery();
-      dbQueryTmp.initializeID();
+      dbQueryTmp.initializeId();
       dbQueryTmp.setSqlStatement("SELECT * FROM `order` WHERE name = Tom B. Erichsen");
       dbQueryTmp.setReturnValue(String.valueOf(DummyLandscapeHelper.getRandomNum(5, 100)));
       dbQueryTmp.setResponseTime(DummyLandscapeHelper.getRandomNum(10, 1000));

@@ -7,7 +7,7 @@ import net.explorviz.shared.exceptions.mapper.GeneralExceptionMapper;
 import net.explorviz.shared.exceptions.mapper.WebApplicationExceptionMapper;
 import net.explorviz.shared.security.filters.AuthenticationFilter;
 import net.explorviz.shared.security.filters.AuthorizationFilter;
-import net.explorviz.shared.security.filters.CORSResponseFilter;
+import net.explorviz.shared.security.filters.CorsResponseFilter;
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.glassfish.jersey.server.ResourceConfig;
 
@@ -31,7 +31,7 @@ class Application extends ResourceConfig {
     // register filters, e.g., authentication
     register(AuthenticationFilter.class);
     register(AuthorizationFilter.class);
-    register(CORSResponseFilter.class);
+    register(CorsResponseFilter.class);
 
     // resources
     packages("net.explorviz.server.resources");

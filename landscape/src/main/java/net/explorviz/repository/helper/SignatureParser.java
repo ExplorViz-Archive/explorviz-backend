@@ -10,7 +10,7 @@ public class SignatureParser {
 
     final String restOfOperationSignatureStr = parseParameterList(operationSignatureStr, result);
     parseModifiersAndReturnAndName(restOfOperationSignatureStr, javaConstructor, result);
-    parseFQClassnameAndOperationName(javaConstructor, result);
+    parseFqClassnameAndOperationName(javaConstructor, result);
 
     return result;
   }
@@ -73,11 +73,11 @@ public class SignatureParser {
   /**
    * Parses the full-qualified class- and operation name.
    *
-   * @param javaConstructor
-   * @param result
+   * @param javaConstructor - TODOa
+   * @param result - Todoa
    * @return
    */
-  private static String parseFQClassnameAndOperationName(final boolean javaConstructor,
+  private static String parseFqClassnameAndOperationName(final boolean javaConstructor,
       final Signature result) {
     final int opNameIdx = result.getName().lastIndexOf('.');
     if (opNameIdx != -1) {

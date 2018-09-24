@@ -2,7 +2,7 @@ package net.explorviz.server.main;
 
 import com.github.jasminb.jsonapi.ResourceConverter;
 import javax.inject.Singleton;
-import net.explorviz.api.ExtensionAPIImpl;
+import net.explorviz.api.ExtensionApiImpl;
 import net.explorviz.discovery.services.ClientService;
 import net.explorviz.repository.LandscapeExchangeService;
 import net.explorviz.repository.LandscapeRepositoryModel;
@@ -33,7 +33,7 @@ public class DependencyInjectionBinder extends AbstractBinder {
     this.bindFactory(ResourceConverterFactory.class).to(ResourceConverter.class)
     .in(Singleton.class);
 
-    this.bind(ExtensionAPIImpl.class).to(ExtensionAPIImpl.class).in(Singleton.class);
+    this.bind(ExtensionApiImpl.class).to(ExtensionApiImpl.class).in(Singleton.class);
 
     this.bind(TokenParserService.class).to(TokenParserService.class).in(Singleton.class);
 

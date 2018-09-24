@@ -26,15 +26,15 @@ import org.slf4j.LoggerFactory;
  */
 @Service
 @Singleton
-public final class ExtensionAPIImpl implements IExtensionAPI {
+public final class ExtensionApiImpl implements IExtensionApi {
 
-  static final Logger LOGGER = LoggerFactory.getLogger(ExtensionAPIImpl.class.getName());
+  static final Logger LOGGER = LoggerFactory.getLogger(ExtensionApiImpl.class.getName());
 
   private final String versionNumber = "1.2.0a";
   private final LandscapeExchangeService service;
 
   @Inject
-  public ExtensionAPIImpl(final LandscapeExchangeService service) {
+  public ExtensionApiImpl(final LandscapeExchangeService service) {
     this.service = service;
   }
 
@@ -42,7 +42,7 @@ public final class ExtensionAPIImpl implements IExtensionAPI {
    * Reveals the currently provides API version.
    */
   @Override
-  public String getAPIVersion() {
+  public String getApiVersion() {
     return "ExplorViz Extension API version: " + versionNumber;
   }
 

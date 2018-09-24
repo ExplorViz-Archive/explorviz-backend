@@ -11,7 +11,7 @@ import javax.ws.rs.ext.Provider;
  * ResponseFilter for CORS support.
  */
 @Provider
-public class CORSResponseFilter implements ContainerResponseFilter {
+public class CorsResponseFilter implements ContainerResponseFilter {
 
   @Override
   public void filter(final ContainerRequestContext requestContext,

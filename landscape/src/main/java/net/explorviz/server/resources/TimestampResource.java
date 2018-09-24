@@ -6,7 +6,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
-import net.explorviz.api.ExtensionAPIImpl;
+import net.explorviz.api.ExtensionApiImpl;
 import net.explorviz.model.store.Timestamp;
 
 /**
@@ -16,10 +16,10 @@ import net.explorviz.model.store.Timestamp;
 @Path("v1/timestamps")
 public class TimestampResource {
 
-  private final ExtensionAPIImpl api;
+  private final ExtensionApiImpl api;
 
   @Inject
-  public TimestampResource(final ExtensionAPIImpl api) {
+  public TimestampResource(final ExtensionApiImpl api) {
     this.api = api;
   }
 

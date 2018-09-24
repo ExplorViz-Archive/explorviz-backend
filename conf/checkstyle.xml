@@ -21,7 +21,7 @@
   <module name="FileTabCharacter">
     <property name="eachLine" value="true" />
   </module>
-
+          
   <module name="SuppressionFilter">
     <property name="file"
       value="${config_loc}/checkstyle-suppression.xml" />
@@ -195,8 +195,6 @@
     <module name="AbbreviationAsWordInName">
       <property name="ignoreFinal" value="false" />
       <property name="allowedAbbreviationLength" value="1" />
-      <property name="allowedAbbreviations"
-        value="XML,URL,CORS,API,ID,RAM,SQL,FST,FQ,JSON,JSONAPI" />
     </module>
     <module name="OverloadMethodsDeclarationOrder" />
     <module name="VariableDeclarationUsageDistance" />
@@ -315,7 +313,7 @@
     <module name="SuppressWithNearbyCommentFilter">
       <property name="commentFormat" value="NOCS" />
     </module>
-
+            
     <module name="SuppressionCommentFilter">
       <property name="offCommentFormat"
         value="CHECKSTYLE.OFF\: ([\w\|]+)" />
@@ -329,8 +327,8 @@
       declaring type arguments for generic types/methods -->
 
   </module>
-
-  <module name="RegexpSingleline">
+          
+   <module name="RegexpSingleline">
     <property name="format" value="^\s*\*\s*@author" />
     <property name="minimum" value="0" />
     <property name="maximum" value="0" />
@@ -338,5 +336,5 @@
       value="Javadoc has illegal ''author'' tag." />
     <property name="fileExtensions" value="java" />
   </module>
-
+          
 </module>

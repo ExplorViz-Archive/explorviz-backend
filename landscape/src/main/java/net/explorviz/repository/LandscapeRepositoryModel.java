@@ -37,7 +37,7 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
 
     this.broadcastService = broadcastService;
 
-    fstConf = initFSTConf();
+    fstConf = initFstConf();
 
     if (LOAD_LAST_LANDSCAPE_ON_LOAD) {
 
@@ -47,7 +47,7 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
       internalLandscape = readLandscape;
     } else {
       internalLandscape = new Landscape();
-      internalLandscape.initializeID();
+      internalLandscape.initializeId();
     }
 
     insertionRepositoryPart = new InsertionRepositoryPart();
@@ -87,8 +87,8 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
     Configuration.DATABASE_NAMES.add("hypersql");
   }
 
-  public FSTConfiguration initFSTConf() {
-    return RepositoryStorage.createFSTConfiguration();
+  public FSTConfiguration initFstConf() {
+    return RepositoryStorage.createFstConfiguration();
   }
 
   public void reset() {
@@ -109,7 +109,7 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
         if (useDummyMode) {
           final Landscape dummyLandscape = LandscapeDummyCreator.createDummyLandscape();
           dummyLandscape.getTimestamp().setTimestamp(milliseconds);
-          dummyLandscape.getTimestamp().updateID();
+          dummyLandscape.getTimestamp().updateId();
           RepositoryStorage.writeToFile(dummyLandscape, milliseconds,
               Configuration.LANDSCAPE_REPOSITORY);
           lastPeriodLandscape = dummyLandscape;

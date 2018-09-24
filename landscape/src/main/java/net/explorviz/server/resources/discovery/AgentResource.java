@@ -20,7 +20,7 @@ import net.explorviz.discovery.exceptions.mapper.ResponseUtil;
 import net.explorviz.discovery.model.Agent;
 import net.explorviz.discovery.services.ClientService;
 import net.explorviz.repository.discovery.AgentRepository;
-import net.explorviz.server.providers.JSONAPIProvider;
+import net.explorviz.server.providers.JsonApiProvider;
 import net.explorviz.shared.server.helper.PropertyHelper;
 
 @Path("discovery")
@@ -42,8 +42,8 @@ public class AgentResource {
     this.converter = converter;
     this.clientService = clientService;
 
-    this.clientService.registerProviderReader(new JSONAPIProvider<>(converter));
-    this.clientService.registerProviderWriter(new JSONAPIProvider<>(converter));
+    this.clientService.registerProviderReader(new JsonApiProvider<>(converter));
+    this.clientService.registerProviderWriter(new JsonApiProvider<>(converter));
   }
 
   @POST

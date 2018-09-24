@@ -43,7 +43,7 @@ public class RepositoryStorage {
   private static final String LANDSCAPE_REPOSITORY = Configuration.LANDSCAPE_REPOSITORY;
 
   static {
-    FST_CONF = createFSTConfiguration();
+    FST_CONF = createFstConfiguration();
 
     folder = FileSystemHelper.getExplorVizDirectory() + File.separator;
     folderForTargetModel = FileSystemHelper.getExplorVizDirectory();
@@ -59,7 +59,7 @@ public class RepositoryStorage {
     new File(landscapeFolder).mkdir();
   }
 
-  public static FSTConfiguration createFSTConfiguration() {
+  public static FSTConfiguration createFstConfiguration() {
     final FSTConfiguration result = FSTConfiguration.createDefaultConfiguration();
     result.registerClass(Landscape.class);
     result.registerClass(System.class);

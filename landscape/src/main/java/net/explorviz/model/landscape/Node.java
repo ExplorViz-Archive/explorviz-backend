@@ -18,8 +18,8 @@ public class Node extends BaseEntity {
   private String name;
   private String ipAddress;
   private double cpuUtilization = 0;
-  private long freeRAM = 0;
-  private long usedRAM = 0;
+  private long freeRam = 0;
+  private long usedRam = 0;
 
   @Relationship("applications")
   private final List<Application> applications = new ArrayList<Application>();
@@ -59,20 +59,20 @@ public class Node extends BaseEntity {
     return cpuUtilization;
   }
 
-  public void setFreeRAM(final long freeRAM) {
-    this.freeRAM = freeRAM;
+  public void setFreeRam(final long freeRam) {
+    this.freeRam = freeRam;
   }
 
-  public long getFreeRAM() {
-    return freeRAM;
+  public long getFreeRam() {
+    return freeRam;
   }
 
-  public void setUsedRAM(final long usedRAM) {
-    this.usedRAM = usedRAM;
+  public void setUsedRam(final long usedRam) {
+    this.usedRam = usedRam;
   }
 
-  public long getUsedRAM() {
-    return usedRAM;
+  public long getUsedRam() {
+    return usedRam;
   }
 
   public List<Application> getApplications() {

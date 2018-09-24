@@ -24,14 +24,14 @@ import org.slf4j.LoggerFactory;
 @Provider
 @Produces("application/vnd.api+json")
 @Consumes("application/vnd.api+json")
-public class JSONAPIListProvider implements MessageBodyReader<List<?>>, MessageBodyWriter<List<?>> {
+public class JsonApiListProvider implements MessageBodyReader<List<?>>, MessageBodyWriter<List<?>> {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(JSONAPIListProvider.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(JsonApiListProvider.class);
 
   private final ResourceConverter converter;
 
   @Inject
-  public JSONAPIListProvider(final ResourceConverter converter) {
+  public JsonApiListProvider(final ResourceConverter converter) {
     this.converter = converter;
   }
 

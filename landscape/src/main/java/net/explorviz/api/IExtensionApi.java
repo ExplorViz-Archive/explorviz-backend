@@ -10,9 +10,9 @@ import net.explorviz.model.store.Timestamp;
 /**
  * Interface for providing necessary information for the extension API.
  */
-interface IExtensionAPI {
+interface IExtensionApi {
   // Generic
-  String getAPIVersion();
+  String getApiVersion();
 
   // Landscape related
   Landscape getLatestLandscape();

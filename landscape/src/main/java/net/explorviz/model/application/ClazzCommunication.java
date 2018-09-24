@@ -74,7 +74,7 @@ public class ClazzCommunication extends BaseEntity {
 
     if (runtime == null) {
       runtime = new RuntimeInformation();
-      runtime.initializeID();
+      runtime.initializeId();
       runtime.setTraceId(traceId);
       runtime.getOrderIndexes().add(orderIndex);
       runtime.setRequests(requests);

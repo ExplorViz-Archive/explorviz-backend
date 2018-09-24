@@ -3,7 +3,7 @@ package net.explorviz.security.server.main;
 import net.explorviz.security.server.filter.AuthenticationFilter;
 import net.explorviz.shared.exceptions.mapper.GeneralExceptionMapper;
 import net.explorviz.shared.exceptions.mapper.WebApplicationExceptionMapper;
-import net.explorviz.shared.security.filters.CORSResponseFilter;
+import net.explorviz.shared.security.filters.CorsResponseFilter;
 import org.glassfish.jersey.server.ResourceConfig;
 
 /**
@@ -22,7 +22,7 @@ public class Application extends ResourceConfig {
     register(new DependencyInjectionBinder());
 
     register(AuthenticationFilter.class);
-    register(CORSResponseFilter.class);
+    register(CorsResponseFilter.class);
 
     // exception handling (mind the order !)
     register(WebApplicationExceptionMapper.class);

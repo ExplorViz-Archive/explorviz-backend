@@ -19,7 +19,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.sse.Sse;
-import net.explorviz.api.ExtensionAPIImpl;
+import net.explorviz.api.ExtensionApiImpl;
 import net.explorviz.model.landscape.Landscape;
 import net.explorviz.repository.RepositoryStorage;
 import net.explorviz.server.helper.FileSystemHelper;
@@ -39,10 +39,10 @@ public class LandscapeResource {
   private static final Logger LOGGER = LoggerFactory.getLogger(LandscapeResource.class);
   private static final String APPLICATION_JSON_API_TYPE_STRING = "application/vnd.api+json";
 
-  private final ExtensionAPIImpl api;
+  private final ExtensionApiImpl api;
 
   @Inject
-  public LandscapeResource(final ExtensionAPIImpl api) {
+  public LandscapeResource(final ExtensionApiImpl api) {
     this.api = api;
   }
 

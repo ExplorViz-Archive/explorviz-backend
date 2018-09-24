@@ -45,7 +45,7 @@ public final class ModelHelper {
 
     // create new clazzCommunication
     final ClazzCommunication commu = new ClazzCommunication();
-    commu.initializeID();
+    commu.initializeId();
     commu.setSourceClazz(caller);
     commu.setTargetClazz(callee);
     commu.setOperationName(operationName);
@@ -141,7 +141,7 @@ public final class ModelHelper {
 
     // creates a new aggregatedClazzCommunication
     final AggregatedClazzCommunication aggCommu = new AggregatedClazzCommunication();
-    aggCommu.initializeID();
+    aggCommu.initializeId();
     aggCommu.setSourceClazz(newCommunication.getSourceClazz());
     aggCommu.setTargetClazz(newCommunication.getTargetClazz());
     aggCommu.setRequests(newCommunication.getRequests());
@@ -178,7 +178,7 @@ public final class ModelHelper {
 
     // creates a new aggregatedClazzCommunication
     final CumulatedClazzCommunication aggCommu = new CumulatedClazzCommunication();
-    aggCommu.initializeID();
+    aggCommu.initializeId();
     aggCommu.setSourceClazz(newCommunication.getSourceClazz());
     aggCommu.setTargetClazz(newCommunication.getTargetClazz());
     aggCommu.setRequests(newCommunication.getRequests());

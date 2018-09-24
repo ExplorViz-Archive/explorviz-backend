@@ -13,7 +13,7 @@ public final class LandscapePreparer {
   public static Landscape prepareLandscape(final Landscape landscape) {
     if (landscape == null) {
       final Landscape emptyLandscape = new Landscape();
-      emptyLandscape.initializeID();
+      emptyLandscape.initializeId();
       return emptyLandscape;
     }
 
