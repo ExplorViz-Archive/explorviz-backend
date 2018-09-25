@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE project>
+
+<FindBugsFilter>
+
+  <!-- exclude messages with a rank lower than 15. Ranks range from 1 to 
+    20, where 1 is top and 20 is lowest. -->
+  <Match>
+    <Rank value="16" />
+  </Match>
+
+</FindBugsFilter>
