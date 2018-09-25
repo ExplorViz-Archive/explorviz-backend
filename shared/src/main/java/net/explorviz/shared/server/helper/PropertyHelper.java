@@ -39,7 +39,7 @@ public final class PropertyHelper {
   }
 
   public static int getIntegerProperty(final String propName) {
-    return Integer.valueOf(getStringProperty(propName));
+    return Integer.parseInt(getStringProperty(propName));
   }
 
   public static String getStringProperty(final String propName) {
@@ -47,7 +47,7 @@ public final class PropertyHelper {
   }
 
   public static boolean getBooleanProperty(final String propName) {
-    return Boolean.valueOf(getStringProperty(propName));
+    return Boolean.parseBoolean(getStringProperty(propName));
   }
 
   /**
