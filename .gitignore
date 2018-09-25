@@ -12,12 +12,7 @@ bin
 
 .gitmodules
 
-.settings/*
-!.settings/edu.umd.cs.findbugs.core.prefs
-!.settings/qa.eclipse.plugin.checkstyle.prefs
-!.settings/qa.eclipse.plugin.pmd.prefs
-!.settings/org.eclipse.jdt.ui.prefs
-!.settings/org.eclipse.jdt.core.prefs
+.settings
 
 */.settings/*
 !*/.settings/edu.umd.cs.findbugs.core.prefs
