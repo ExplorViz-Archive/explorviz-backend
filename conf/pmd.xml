@@ -7,6 +7,10 @@
 
   <description>CAU-SE PMD ruleset</description>
 
+  <exclude-pattern>.*</exclude-pattern>
+  <include-pattern>.*/src/main/java/.*</include-pattern>
+  <include-pattern>.*/src/test/java/.*</include-pattern>
+
   <rule ref="category/java/bestpractices.xml" />
 
   <rule ref="category/java/codestyle.xml">
