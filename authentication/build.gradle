@@ -50,10 +50,12 @@ pmd {
   ignoreFailures = true
   toolVersion = "6.7.0"
 }
-
     
 checkstyle {
   configFile = file("../conf/checkstyle.xml")
+  configProperties = [
+    'config_loc': file('../conf')
+  ]
   ignoreFailures = false
   maxWarnings = 0
   toolVersion = "8.12"
