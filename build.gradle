@@ -1,44 +1,92 @@
 allprojects {
-    apply plugin: 'java-library'
+  apply plugin: 'java-library'
 }
 
 subprojects {
 
-	if (project.name != 'kiekeradapter' && project.name != 'shared' && project.name != 'analysis') {
-		apply plugin: 'war'
-		apply from: 'https://raw.github.com/gretty-gradle-plugin/gretty/master/pluginScripts/gretty.plugin'		
-	}
-
-	repositories {
-		// Order of declaration determines how Gradle will check for dependencies at runtime. 
+  // BEGIN QA Tooling for subprojects
+  
+  buildscript {
+    repositories {
         jcenter()
-        mavenCentral()
+        maven {
+          url "https://plugins.gradle.org/m2/"
+        }
     }
-    
     dependencies {
-    
-    	// SL4J
-		implementation group: 'org.slf4j', name: 'slf4j-simple', version: '1.6.1'
-        
-        if (project.name != 'kiekeradapter' && project.name != 'analysis') {
-        	// exclude subprojects, which are not supposed to be a JAX-RS-based microservice        
-        
-        	// Jersey and Servlet
-			implementation group: 'org.glassfish.jersey.containers', name: 'jersey-container-servlet', version:'2.27'
-			implementation group: 'javax.servlet', name: 'javax.servlet-api', version:'3.0.1'
-			implementation group: 'org.glassfish.jersey.inject', name: 'jersey-hk2', version:'2.27'
-		  
-		    // JSON + Parsing
-		    implementation group: 'org.glassfish.jersey.media', name: 'jersey-media-json-jackson', version:'2.27'
-		    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-core', version:'2.9.6'
-		    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version:'2.9.6'
-		    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version:'2.9.6'
-		    
-		    // Jetty servlet-container
-  			implementation group: 'org.glassfish.jersey.containers', name: 'jersey-container-jetty-servlet', version: '2.27'
-    	}
-    	
-    	testImplementation 'junit:junit:4.12'
+        classpath "gradle.plugin.com.github.spotbugs:spotbugs-gradle-plugin:1.6.3"
     }
+  }
+  
+  apply plugin: 'pmd'
+  apply plugin: 'checkstyle'	
+	
+  pmd {
+    ruleSetFiles = files("../conf/pmd.xml")
+    ignoreFailures = true
+    toolVersion = "6.7.0"
+  }
+	
+  checkstyle {
+    configDir = file("../conf")
+    configFile = file("../conf/checkstyle.xml")
+    maxWarnings = 0
+    ignoreFailures = true
+    toolVersion = "8.12"
+  }	
+	
+  task checkstyle {
+    group 'Quality Assurance'
+    description 'Run Checkstyle'
+    
+    dependsOn 'checkstyleMain'
+    dependsOn 'checkstyleTest'
+  }
+	
+  task pmd {
+    group 'Quality Assurance'
+    description 'Run PMD'
+    
+    dependsOn 'pmdMain'
+    dependsOn 'pmdTest'
+  }
+	
+  // END QA Tooling for subprojects
+
+  if (project.name == 'authentication' || project.name == 'landscape') {
+    apply plugin: 'war'
+  }
+
+  repositories {
+    // Order of declaration determines how Gradle will check for dependencies at runtime. 
+    jcenter()
+    mavenCentral()
+  }
+    
+  dependencies {
+
+	// SL4J
+	implementation group: 'org.slf4j', name: 'slf4j-simple', version: '1.6.1'
+    
+    if (project.name == 'authentication' || project.name == 'landscape' || project.name == 'shared') {
+    	// subprojects, which are supposed to be a JAX-RS-based microservice        
+    
+    	// Jersey and Servlet
+		implementation group: 'org.glassfish.jersey.containers', name: 'jersey-container-servlet', version:'2.27'
+		implementation group: 'javax.servlet', name: 'javax.servlet-api', version:'3.0.1'
+		implementation group: 'org.glassfish.jersey.inject', name: 'jersey-hk2', version:'2.27'
+	  
+	    // JSON + Parsing
+	    implementation group: 'org.glassfish.jersey.media', name: 'jersey-media-json-jackson', version:'2.27'
+	    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-core', version:'2.9.6'
+	    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version:'2.9.6'
+	    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version:'2.9.6'
+	    
+	    // Jetty servlet-container
+		implementation group: 'org.glassfish.jersey.containers', name: 'jersey-container-jetty-servlet', version: '2.27'
+	}
+	
+	testImplementation 'junit:junit:4.12'
+  }
     
 }

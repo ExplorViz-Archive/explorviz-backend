@@ -1,10 +1,8 @@
 apply plugin: 'eclipse'
 apply plugin: 'maven'
-apply plugin: 'pmd'
-apply plugin: 'checkstyle'
-apply plugin: 'findbugs'
 apply plugin: 'org.sonarqube'
 apply plugin: 'com.github.johnrengelman.shadow'
+apply plugin: 'com.github.spotbugs'
 
 def loadProperties = {
     def properties = new Properties()
@@ -103,50 +101,6 @@ install {
 
 // ##### END Jitpack section #####
 
-// QS Tooling
-// will pass until fixing is done
-pmd {	
-	// Clear the rule set first. Otherwise we would have a lot of additional rules in our rule set.
-	ruleSets = []
-	ruleSetFiles = files("../conf/pmd.xml")
-	consoleOutput = false
-	ignoreFailures = true
-}
-    
-checkstyle {
-	showViolations = false
-	configFile = file("../conf/checkstyle.xml")
-	ignoreFailures = true
-}
-
-findbugs {
-	reportLevel = "low"
-	effort = "max"
-	excludeFilter = file("../conf/findbugs-exclude.xml")
-	ignoreFailures = true
-}
-
-tasks.withType(Pmd) {
-	reports {
-    	xml.enabled = true
-        html.enabled = false
-    }
-}
-
-tasks.withType(FindBugs) {
-	reports {
-    	xml.enabled = true
-        html.enabled = false
-    }
-}
-
-tasks.withType(Checkstyle) {
-  	reports {
-    	xml.enabled = true
-        html.enabled = false
-  }
-}
-
 // Javadoc settings
 javadoc {
 	source = sourceSets.main.allJava
@@ -154,15 +108,28 @@ javadoc {
 	  failOnError false
 }
 
-// Embedded Webserver
-gretty {
-	httpPort = loadProperties().httpPort.toInteger()
-	servletContainer = loadProperties().servletContainer
-	contextPath = loadProperties().contextPath
-	recompileOnSourceChange = false
-  	reloadOnClassChange = false
-  	reloadOnConfigChange = false
-  	reloadOnLibChange = false
-	// debugging JVM GC - for http://gceasy.io/
-	// jvmArgs = [ '-XX:+PrintGCDetails', '-XX:+PrintGCDateStamps', '-Xloggc:gc_jvm.log' ]
+spotbugs {
+  excludeFilter = file("../conf/spotbugs-exclude-filter.xml")
+  reportLevel = "low"
+  effort = "max"
+  ignoreFailures = true
+  toolVersion = '3.1.7'
+}
+
+// Per default XML reports for SpotBugs are generated
+// Include this to generate HTML reports
+tasks.withType(com.github.spotbugs.SpotBugsTask) {
+  reports {
+    // Either HTML or XML reports can be activated
+    html.enabled true
+    xml.enabled false
+  }
+}
+
+task spotbugs {
+  group 'Quality Assurance'
+  description 'Run SpotBugs'
+  
+  dependsOn 'spotbugsMain'
+  dependsOn 'spotbugsTest'
 }

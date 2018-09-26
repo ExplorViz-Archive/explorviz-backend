@@ -1,8 +1,5 @@
-apply plugin: 'pmd'
-apply plugin: 'checkstyle'
-apply plugin: 'com.github.spotbugs'
 apply plugin: 'com.github.johnrengelman.shadow'
-
+apply plugin: 'com.github.spotbugs'
 
 buildscript {
     repositories {
@@ -13,7 +10,6 @@ buildscript {
     }
     dependencies {
         classpath 'com.github.jengelman.gradle.plugins:shadow:2.0.4'
-        classpath "gradle.plugin.com.github.spotbugs:spotbugs-gradle-plugin:1.6.3"
     }
 }
 
@@ -39,35 +35,14 @@ shadowJar {
   archiveName = "explorviz-${project.name}.${extension}"
 }
 
-
-// Tooling
-pmd {
-  // Clear the rule set first. 
-  // Otherwise we would have a lot of additional rules in our rule set.
-  ruleSets = []
-  ruleSetFiles = files("../conf/pmd.xml")
-  consoleOutput = false
-  ignoreFailures = true
-  toolVersion = "6.7.0"
-}
-    
-checkstyle {
-  configFile = file("../conf/checkstyle.xml")
-  configProperties = [
-    'config_loc': file('../conf')
-  ]
-  ignoreFailures = false
-  maxWarnings = 0
-  toolVersion = "8.12"
-}
-
 spotbugs {
+  excludeFilter = file("../conf/spotbugs-exclude-filter.xml")
   reportLevel = "low"
   effort = "max"
-  ignoreFailures = false
+  ignoreFailures = true
   toolVersion = '3.1.7'
-  excludeFilter = file('../conf/spotbugs-exclude-filter.xml')
 }
+
 // Per default XML reports for SpotBugs are generated
 // Include this to generate HTML reports
 tasks.withType(com.github.spotbugs.SpotBugsTask) {
@@ -78,13 +53,10 @@ tasks.withType(com.github.spotbugs.SpotBugsTask) {
   }
 }
 
-// Embedded Webserver
-gretty {
-  httpPort = 8082
-  servletContainer = 'jetty9'
-  contextPath = '/'
-  recompileOnSourceChange = false
-  reloadOnClassChange = false
-  reloadOnConfigChange = false
-  reloadOnLibChange = false
+task spotbugs {
+  group 'Quality Assurance'
+  description 'Run SpotBugs'
+  
+  dependsOn 'spotbugsMain'
+  dependsOn 'spotbugsTest'
 }
