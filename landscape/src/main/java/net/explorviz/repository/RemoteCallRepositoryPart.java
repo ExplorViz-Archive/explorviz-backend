@@ -21,32 +21,32 @@ public class RemoteCallRepositoryPart {
   private static final int THIRTY_SECONDS = 30;
 
   private final Map<BeforeSentRemoteCallRecord, RemoteRecordBuffer> sentRemoteCallRecordCache =
-      new HashMap<BeforeSentRemoteCallRecord, RemoteRecordBuffer>();
+      new HashMap<>();
   private final Map<BeforeReceivedRemoteCallRecord, RemoteRecordBuffer> receivedRemoteCallRecordCache =
-      new HashMap<BeforeReceivedRemoteCallRecord, RemoteRecordBuffer>();
+      new HashMap<>();
 
   protected void checkForTimedoutRemoteCalls() {
-    final long currentTime = java.lang.System.nanoTime();
+    final long currentTime = System.nanoTime();
 
     final Iterator<Entry<BeforeReceivedRemoteCallRecord, RemoteRecordBuffer>> receivedIterator =
-        receivedRemoteCallRecordCache.entrySet().iterator();
+        this.receivedRemoteCallRecordCache.entrySet().iterator();
     while (receivedIterator.hasNext()) {
       final Entry<BeforeReceivedRemoteCallRecord, RemoteRecordBuffer> entry =
           receivedIterator.next();
 
-      if ((currentTime - TimeUnit.SECONDS.toNanos(THIRTY_SECONDS)) > entry.getValue()
+      if (currentTime - TimeUnit.SECONDS.toNanos(THIRTY_SECONDS) > entry.getValue()
           .getTimestampPutIntoBuffer()) {
         receivedIterator.remove();
       }
     }
 
     final Iterator<Entry<BeforeSentRemoteCallRecord, RemoteRecordBuffer>> sentIterator =
-        sentRemoteCallRecordCache.entrySet().iterator();
+        this.sentRemoteCallRecordCache.entrySet().iterator();
 
     while (sentIterator.hasNext()) {
       final Entry<BeforeSentRemoteCallRecord, RemoteRecordBuffer> entry = sentIterator.next();
 
-      if ((currentTime - TimeUnit.SECONDS.toNanos(THIRTY_SECONDS)) > entry.getValue()
+      if (currentTime - TimeUnit.SECONDS.toNanos(THIRTY_SECONDS) > entry.getValue()
           .getTimestampPutIntoBuffer()) {
         sentIterator.remove();
       }
@@ -57,19 +57,19 @@ public class RemoteCallRepositoryPart {
       final BeforeSentRemoteCallRecord sentRemoteCallRecord, final Landscape landscape,
       final InsertionRepositoryPart inserter, final int runtimeIndex) {
     final BeforeReceivedRemoteCallRecord receivedRecord =
-        seekMatchingReceivedRemoteRecord(sentRemoteCallRecord);
+        this.seekMatchingReceivedRemoteRecord(sentRemoteCallRecord);
 
     if (receivedRecord == null) {
       final RemoteRecordBuffer remoteRecordBuffer = new RemoteRecordBuffer();
       remoteRecordBuffer.setBelongingClazz(callerClazz);
 
-      sentRemoteCallRecordCache.put(sentRemoteCallRecord, remoteRecordBuffer);
+      this.sentRemoteCallRecordCache.put(sentRemoteCallRecord, remoteRecordBuffer);
     } else {
-      seekOrCreateCommunication(sentRemoteCallRecord, receivedRecord, callerClazz,
-          receivedRemoteCallRecordCache.get(receivedRecord).getBelongingClazz(), landscape,
+      this.seekOrCreateCommunication(sentRemoteCallRecord, receivedRecord, callerClazz,
+          this.receivedRemoteCallRecordCache.get(receivedRecord).getBelongingClazz(), landscape,
           inserter, runtimeIndex);
 
-      receivedRemoteCallRecordCache.remove(receivedRecord);
+      this.receivedRemoteCallRecordCache.remove(receivedRecord);
     }
   }
 
@@ -77,25 +77,25 @@ public class RemoteCallRepositoryPart {
       final Clazz firstReceiverClazz, final Landscape landscape,
       final InsertionRepositoryPart inserter, final int runtimeIndex) {
     final BeforeSentRemoteCallRecord sentRecord =
-        seekSentRemoteTraceIdandOrderId(receivedRemoteCallRecord);
+        this.seekSentRemoteTraceIdandOrderId(receivedRemoteCallRecord);
 
     if (sentRecord == null) {
       final RemoteRecordBuffer remoteRecordBuffer = new RemoteRecordBuffer();
       remoteRecordBuffer.setBelongingClazz(firstReceiverClazz);
 
-      receivedRemoteCallRecordCache.put(receivedRemoteCallRecord, remoteRecordBuffer);
+      this.receivedRemoteCallRecordCache.put(receivedRemoteCallRecord, remoteRecordBuffer);
     } else {
-      seekOrCreateCommunication(sentRecord, receivedRemoteCallRecord,
-          sentRemoteCallRecordCache.get(sentRecord).getBelongingClazz(), firstReceiverClazz,
+      this.seekOrCreateCommunication(sentRecord, receivedRemoteCallRecord,
+          this.sentRemoteCallRecordCache.get(sentRecord).getBelongingClazz(), firstReceiverClazz,
           landscape, inserter, runtimeIndex);
 
-      sentRemoteCallRecordCache.remove(sentRecord);
+      this.sentRemoteCallRecordCache.remove(sentRecord);
     }
   }
 
   private BeforeReceivedRemoteCallRecord seekMatchingReceivedRemoteRecord(
       final BeforeSentRemoteCallRecord sentRecord) {
-    for (final BeforeReceivedRemoteCallRecord receivedRemoteRecord : receivedRemoteCallRecordCache
+    for (final BeforeReceivedRemoteCallRecord receivedRemoteRecord : this.receivedRemoteCallRecordCache
         .keySet()) {
       if (receivedRemoteRecord.getCallerTraceId() == sentRecord.getTraceId()
           && receivedRemoteRecord.getCallerOrderIndex() == sentRecord.getOrderIndex()) {
@@ -108,7 +108,8 @@ public class RemoteCallRepositoryPart {
 
   private BeforeSentRemoteCallRecord seekSentRemoteTraceIdandOrderId(
       final BeforeReceivedRemoteCallRecord remoteRecord) {
-    for (final BeforeSentRemoteCallRecord sentRemoteRecord : sentRemoteCallRecordCache.keySet()) {
+    for (final BeforeSentRemoteCallRecord sentRemoteRecord : this.sentRemoteCallRecordCache
+        .keySet()) {
       if (sentRemoteRecord.getTraceId() == remoteRecord.getCallerTraceId()
           && sentRemoteRecord.getOrderIndex() == remoteRecord.getCallerOrderIndex()) {
         return sentRemoteRecord;
@@ -125,15 +126,15 @@ public class RemoteCallRepositoryPart {
       final InsertionRepositoryPart inserter, final int runtimeIndex) {
 
     final Application callerApplication =
-        getHostApplication(sentRemoteCallRecord, inserter, landscape);
+        this.getHostApplication(sentRemoteCallRecord, inserter, landscape);
     final Application currentApplication =
-        getHostApplication(receivedRemoteCallRecord, inserter, landscape);
+        this.getHostApplication(receivedRemoteCallRecord, inserter, landscape);
 
     for (final ApplicationCommunication commu : landscape.getOutgoingApplicationCommunications()) {
       if (commu.getSourceApplication() == callerApplication
           && commu.getTargetApplication() == currentApplication
           || commu.getSourceApplication() == currentApplication
-          && commu.getTargetApplication() == callerApplication) {
+              && commu.getTargetApplication() == callerApplication) {
         commu.setRequests(commu.getRequests() + sentRemoteCallRecord
             .getRuntimeStatisticInformationList().get(runtimeIndex).getCount());
 

@@ -30,7 +30,7 @@ public class TimestampResource {
       @QueryParam("intervalSize") final int intervalSize) {
 
     // return api.getPreviousTimestamps(beforeTimestamp, intervalSize);
-    return api.getSubsequentTimestamps(afterTimestamp, intervalSize);
+    return this.api.getSubsequentTimestamps(afterTimestamp, intervalSize);
   }
 
   /*

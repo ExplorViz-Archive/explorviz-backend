@@ -1,10 +1,12 @@
-package net.explorviz.repository;
+package net.explorviz.repository; // NOPMD
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
@@ -28,19 +30,27 @@ import net.explorviz.server.main.Configuration;
 import org.nustaq.serialization.FSTConfiguration;
 import org.nustaq.serialization.FSTObjectInput;
 import org.nustaq.serialization.FSTObjectOutput;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class RepositoryStorage {
-  private static String folder;
-  private static String landscapeFolder;
-  private static String replayFolder;
-  private static String folderForTargetModel;
-  private static String filenameForTargetModel = "targetModel" + Configuration.MODEL_EXTENSION;
+public final class RepositoryStorage {
+  private static final Logger LOGGER = LoggerFactory.getLogger(RepositoryStorage.class);
 
   private static final FSTConfiguration FST_CONF;
 
   private static final int HISTORY_INTERVAL_IN_MINUTES = Configuration.HISTORY_INTERVAL_IN_MINUTES;
   private static final String REPLAY_REPOSITORY = Configuration.REPLAY_REPOSITORY;
   private static final String LANDSCAPE_REPOSITORY = Configuration.LANDSCAPE_REPOSITORY;
+
+  private static String folder;
+  private static String landscapeFolder;
+  private static String replayFolder;
+  private static String folderForTargetModel;
+  private static String filenameForTargetModel = "targetModel" + Configuration.MODEL_EXTENSION;
+
+  private RepositoryStorage() {
+    // Utility Class
+  }
 
   static {
     FST_CONF = createFstConfiguration();
@@ -50,9 +60,9 @@ public class RepositoryStorage {
     replayFolder = folder + REPLAY_REPOSITORY;
     landscapeFolder = folder + LANDSCAPE_REPOSITORY;
 
-    java.lang.System.out.println("writing to base folder " + folder);
-    java.lang.System.out.println("writing to replay folder " + replayFolder);
-    java.lang.System.out.println("writing to landscape folder " + landscapeFolder);
+    LOGGER.debug("writing to base folder: {}", folder);
+    LOGGER.debug("writing to replay folder: {}", replayFolder);
+    LOGGER.debug("writing to landscape folder: {}", landscapeFolder);
 
     new File(folder).mkdir();
     new File(replayFolder).mkdir();
@@ -103,23 +113,15 @@ public class RepositoryStorage {
 
   private static void writeToFileGeneric(final Landscape landscape, final String destFolder,
       final String destFilename) {
-    FSTObjectOutput output = null;
-    try {
-      output = FST_CONF.getObjectOutput(new FileOutputStream(destFolder + "/" + destFilename));
-      output.writeObject(landscape, Landscape.class);
-      output.close();
-    } catch (final FileNotFoundException e) {
-      e.printStackTrace();
-    } catch (final IOException e) {
-      e.printStackTrace();
-    } finally {
-      if (output != null) {
-        try {
-          output.close();
-        } catch (final IOException e) {
-          e.printStackTrace();
-        }
+
+    try (OutputStream stream = Files.newOutputStream(Paths.get(destFolder + "/" + destFilename))) {
+      try (FSTObjectOutput output = FST_CONF.getObjectOutput(stream)) {
+        output.writeObject(landscape, Landscape.class);
+        output.close();
       }
+
+    } catch (final IOException e) {
+      LOGGER.error("Error when writing to file", e);
     }
   }
 
@@ -147,25 +149,20 @@ public class RepositoryStorage {
   public static Landscape readFromFileGeneric(final String sourceFolder,
       final String sourceFilename) {
 
-    FileInputStream stream;
-    try {
-      stream = new FileInputStream(sourceFolder + "/" + sourceFilename);
-    } catch (final FileNotFoundException e) {
+    FSTObjectInput input;
+    final Path path = Paths.get(sourceFolder + "/" + sourceFilename);
+
+    try (InputStream stream = Files.newInputStream(path)) {
+      input = FST_CONF.getObjectInput(stream);
+    } catch (final IOException e) {
       throw new ClientErrorException("Model not found", 404, e);
     }
 
-    final FSTObjectInput input = FST_CONF.getObjectInput(stream);
     Landscape landscape = null;
     try {
       landscape = (Landscape) input.readObject(Landscape.class);
-    } catch (final Exception e) {
-      e.printStackTrace();
-    }
-    try {
-      stream.close();
-    } catch (final IOException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
+    } catch (final Exception e) { // NOPMD
+      LOGGER.error("Error when reading Landscape from file.", e);
     }
 
     return landscape;
@@ -178,7 +175,7 @@ public class RepositoryStorage {
 
   private static Map<Long, Long> getAvailableModels(final int minutesBackwards,
       final String specificFolder) {
-    final Map<Long, Long> result = new TreeMap<Long, Long>();
+    final Map<Long, Long> result = new TreeMap<>();
 
     if (specificFolder == null) {
       return result;
@@ -196,8 +193,8 @@ public class RepositoryStorage {
             final long activities = Long.parseLong(split[1].split("\\.")[0]);
             result.put(timestamp, activities);
           } else if (specificFolder.endsWith(LANDSCAPE_REPOSITORY)) {
-            if ((java.lang.System.currentTimeMillis()
-                - TimeUnit.MINUTES.toMillis(minutesBackwards)) < timestamp) {
+            if (java.lang.System.currentTimeMillis()
+                - TimeUnit.MINUTES.toMillis(minutesBackwards) < timestamp) {
               final long activities = Long.parseLong(split[1].split("\\.")[0]);
               result.put(timestamp, activities);
             }

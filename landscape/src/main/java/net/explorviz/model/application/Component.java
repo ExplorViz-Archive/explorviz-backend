@@ -19,10 +19,10 @@ public class Component extends BaseEntity {
   private String fullQualifiedName;
 
   @Relationship("children")
-  private List<Component> children = new ArrayList<Component>();
+  private List<Component> children = new ArrayList<>();
 
   @Relationship("clazzes")
-  private List<Clazz> clazzes = new ArrayList<Clazz>();
+  private List<Clazz> clazzes = new ArrayList<>();
 
   @Relationship("parentComponent")
   private Component parentComponent;
@@ -33,7 +33,7 @@ public class Component extends BaseEntity {
   private Application belongingApplication;
 
   public String getName() {
-    return name;
+    return this.name;
   }
 
   public void setName(final String name) {
@@ -41,7 +41,7 @@ public class Component extends BaseEntity {
   }
 
   public String getFullQualifiedName() {
-    return fullQualifiedName;
+    return this.fullQualifiedName;
   }
 
   public void setFullQualifiedName(final String fullQualifiedName) {
@@ -49,7 +49,7 @@ public class Component extends BaseEntity {
   }
 
   public Component getParentComponent() {
-    return parentComponent;
+    return this.parentComponent;
   }
 
   public void setParentComponent(final Component parentComponent) {
@@ -57,7 +57,7 @@ public class Component extends BaseEntity {
   }
 
   public Application getBelongingApplication() {
-    return belongingApplication;
+    return this.belongingApplication;
   }
 
   public void setBelongingApplication(final Application belongingApplication) {
@@ -65,7 +65,7 @@ public class Component extends BaseEntity {
   }
 
   public List<Component> getChildren() {
-    return children;
+    return this.children;
   }
 
   public void setChildren(final List<Component> children) {
@@ -73,7 +73,7 @@ public class Component extends BaseEntity {
   }
 
   public List<Clazz> getClazzes() {
-    return clazzes;
+    return this.clazzes;
   }
 
   public void setClazzes(final List<Clazz> clazzes) {

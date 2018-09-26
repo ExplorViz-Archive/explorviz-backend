@@ -8,15 +8,15 @@ import java.util.List;
  */
 public class Signature {
 
-  private final List<String> modifierList = new ArrayList<String>();
-  private String returnType = null;
+  private final List<String> modifierList = new ArrayList<>();
+  private String returnType;
   private String fullQualifiedName;
   private String name;
   private String operationName;
-  private final List<String> paramTypeList = new ArrayList<String>();
+  private final List<String> paramTypeList = new ArrayList<>();
 
   public String getFullQualifiedName() {
-    return fullQualifiedName;
+    return this.fullQualifiedName;
   }
 
   public void setFullQualifiedName(final String fullQualifiedName) {
@@ -24,7 +24,7 @@ public class Signature {
   }
 
   public String getName() {
-    return name;
+    return this.name;
   }
 
   public void setName(final String name) {
@@ -32,7 +32,7 @@ public class Signature {
   }
 
   public String getOperationName() {
-    return operationName;
+    return this.operationName;
   }
 
   public void setOperationName(final String operationName) {
@@ -40,11 +40,11 @@ public class Signature {
   }
 
   public List<String> getModifierList() {
-    return modifierList;
+    return this.modifierList;
   }
 
   public String getReturnType() {
-    return returnType;
+    return this.returnType;
   }
 
   public void setReturnType(final String returnType) {
@@ -52,6 +52,6 @@ public class Signature {
   }
 
   public List<String> getParamTypeList() {
-    return paramTypeList;
+    return this.paramTypeList;
   }
 }

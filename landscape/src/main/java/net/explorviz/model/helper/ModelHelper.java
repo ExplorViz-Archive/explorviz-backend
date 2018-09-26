@@ -14,6 +14,10 @@ import net.explorviz.model.application.CumulatedClazzCommunication;
  */
 public final class ModelHelper {
 
+  private ModelHelper() {
+    // Utility Class
+  }
+
   /**
    * Adds a clazz communication or runtime information to a specific clazz within an application.
    *
@@ -34,8 +38,8 @@ public final class ModelHelper {
 
     // clazzCommunication already exists
     for (final ClazzCommunication commu : caller.getOutgoingClazzCommunications()) {
-      if (((commu.getSourceClazz() == caller) && (commu.getTargetClazz() == callee)
-          && (commu.getOperationName().equalsIgnoreCase(operationName)))) {
+      if (commu.getSourceClazz() == caller && commu.getTargetClazz() == callee
+          && commu.getOperationName().equalsIgnoreCase(operationName)) {
 
         commu.addRuntimeInformation(traceId, orderIndex, requests, (float) average,
             (float) overallTraceDuration);
@@ -68,29 +72,28 @@ public final class ModelHelper {
   public static List<ClazzCommunication> getChildrenComponentClazzCommunications(
       final Component component) {
 
-    final List<ClazzCommunication> outgoingClazzCommunicationPartialList =
-        new ArrayList<ClazzCommunication>();
+    final List<ClazzCommunication> outgoingClazzCommuPartialList = new ArrayList<>();
     // get children components -> recursive
     for (final Component child : component.getChildren()) {
       if (!child.getChildren().isEmpty()) {
-        outgoingClazzCommunicationPartialList
-        .addAll(getChildrenComponentClazzCommunications(child));
+        outgoingClazzCommuPartialList
+            .addAll(getChildrenComponentClazzCommunications(child));
       }
 
       for (final Clazz clazz : child.getClazzes()) {
         for (final ClazzCommunication clazzCommunication : clazz.getOutgoingClazzCommunications()) {
-          outgoingClazzCommunicationPartialList.add(clazzCommunication);
+          outgoingClazzCommuPartialList.add(clazzCommunication);
         }
       }
     }
     // get clazz communications
     for (final Clazz clazz : component.getClazzes()) {
       for (final ClazzCommunication clazzCommunication : clazz.getOutgoingClazzCommunications()) {
-        outgoingClazzCommunicationPartialList.add(clazzCommunication);
+        outgoingClazzCommuPartialList.add(clazzCommunication);
       }
     }
 
-    return outgoingClazzCommunicationPartialList;
+    return outgoingClazzCommuPartialList;
   }
 
   /**
@@ -101,7 +104,7 @@ public final class ModelHelper {
    */
   public static List<Clazz> getChildrenComponentClazzes(final Component component) {
 
-    final List<Clazz> retrievedClazzes = new ArrayList<Clazz>();
+    final List<Clazz> retrievedClazzes = new ArrayList<>();
     // get children components -> recursive
     for (final Component child : component.getChildren()) {
       if (!child.getChildren().isEmpty()) {
@@ -127,11 +130,11 @@ public final class ModelHelper {
    */
   public static void updateAggregatedClazzCommunication(final Application application,
       final ClazzCommunication newCommunication) {
-    final List<AggregatedClazzCommunication> aggregatedOutgoingClazzCommunications =
+    final List<AggregatedClazzCommunication> aggregatedOutgoingClazzCommu =
         application.getAggregatedOutgoingClazzCommunications();
 
     // matching aggregatedClazzCommunication already exists
-    for (final AggregatedClazzCommunication aggClazzCommu : aggregatedOutgoingClazzCommunications) {
+    for (final AggregatedClazzCommunication aggClazzCommu : aggregatedOutgoingClazzCommu) {
       if (aggClazzCommu.getSourceClazz().equals(newCommunication.getSourceClazz())
           && aggClazzCommu.getTargetClazz().equals(newCommunication.getTargetClazz())) {
         aggClazzCommu.addClazzCommunication(newCommunication);
@@ -148,7 +151,7 @@ public final class ModelHelper {
 
     // adds a clazzCommunication if sourceClazz and targetClazz matches
     if (aggCommu.addClazzCommunication(newCommunication)) {
-      aggregatedOutgoingClazzCommunications.add(aggCommu);
+      aggregatedOutgoingClazzCommu.add(aggCommu);
       updateCumulatedClazzCommunication(application, aggCommu);
     }
   }
@@ -167,10 +170,10 @@ public final class ModelHelper {
 
     // matching aggregatedClazzCommunication already exists
     for (final CumulatedClazzCommunication aggClazzCommu : cumulatedClazzCommunications) {
-      if ((aggClazzCommu.getSourceClazz().equals(newCommunication.getSourceClazz())
-          && aggClazzCommu.getTargetClazz().equals(newCommunication.getTargetClazz()))
-          || (aggClazzCommu.getTargetClazz().equals(newCommunication.getSourceClazz())
-              && aggClazzCommu.getSourceClazz().equals(newCommunication.getTargetClazz()))) {
+      if (aggClazzCommu.getSourceClazz().equals(newCommunication.getSourceClazz())
+          && aggClazzCommu.getTargetClazz().equals(newCommunication.getTargetClazz())
+          || aggClazzCommu.getTargetClazz().equals(newCommunication.getSourceClazz())
+              && aggClazzCommu.getSourceClazz().equals(newCommunication.getTargetClazz())) {
         aggClazzCommu.addAggregatedClazzCommunication(newCommunication);
         return;
       }

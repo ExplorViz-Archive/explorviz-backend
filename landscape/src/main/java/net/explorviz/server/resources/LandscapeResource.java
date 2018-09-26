@@ -2,10 +2,11 @@ package net.explorviz.server.resources;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Base64;
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
@@ -37,7 +38,7 @@ import org.slf4j.LoggerFactory;
 public class LandscapeResource {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(LandscapeResource.class);
-  private static final String APPLICATION_JSON_API_TYPE_STRING = "application/vnd.api+json";
+  private static final String MEDIA_TYPE = "application/vnd.api+json";
 
   private final ExtensionApiImpl api;
 
@@ -48,7 +49,7 @@ public class LandscapeResource {
 
   @GET
   @Path("{id}")
-  @Produces(APPLICATION_JSON_API_TYPE_STRING)
+  @Produces(MEDIA_TYPE)
   public Landscape getLandscapeById(@PathParam("id") final String id) {
 
     // curl -X GET 'http://localhost:8081/v1/landscapes/1/' -H 'Accept:
@@ -59,9 +60,9 @@ public class LandscapeResource {
   }
 
   @GET
-  @Produces(APPLICATION_JSON_API_TYPE_STRING)
+  @Produces(MEDIA_TYPE)
   public Landscape getLandscapeByTimestamp(@QueryParam("timestamp") final long timestamp) {
-    return api.getLandscape(timestamp, "landscapeRepository");
+    return this.api.getLandscape(timestamp, "landscapeRepository");
   }
 
   @Path("/broadcast")
@@ -99,10 +100,10 @@ public class LandscapeResource {
 
   @GET
   @Path("/by-uploaded-timestamp/{timestamp}")
-  @Produces(APPLICATION_JSON_API_TYPE_STRING)
+  @Produces(MEDIA_TYPE)
   public Landscape getReplayLandscape(@PathParam("timestamp") final long timestamp)
       throws FileNotFoundException {
-    return api.getLandscape(timestamp, Configuration.REPLAY_REPOSITORY);
+    return this.api.getLandscape(timestamp, Configuration.REPLAY_REPOSITORY);
   }
 
   /**
@@ -125,7 +126,7 @@ public class LandscapeResource {
 
     }
 
-    saveToFile(uploadedInputStream, replayFilePath + fileInfo.getFileName());
+    this.saveToFile(uploadedInputStream, replayFilePath + fileInfo.getFileName());
 
     return Response.ok().build();
   }
@@ -135,14 +136,12 @@ public class LandscapeResource {
     // decode and save landscape
     try (InputStream base64is = Base64.getDecoder().wrap(uploadedInputStream)) {
       int len = 0;
-      OutputStream out = null;
       final byte[] bytes = new byte[1024];
-      out = new FileOutputStream(new File(uploadedFileLocation));
-      while ((len = base64is.read(bytes)) != -1) {
-        out.write(bytes, 0, len);
+      try (OutputStream out = Files.newOutputStream(Paths.get(uploadedFileLocation))) {
+        while ((len = base64is.read(bytes)) != -1) { // NOPMD
+          out.write(bytes, 0, len);
+        }
       }
-      out.flush();
-      out.close();
     } catch (final IOException e1) {
       LOGGER.error(
           "Replay landscape could not be saved to replay repository. Error {} occured. With stacktrace {}",

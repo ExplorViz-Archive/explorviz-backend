@@ -7,7 +7,26 @@ import java.util.Base64;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 
-public class PasswordStorage {
+public final class PasswordStorage {
+
+  public static final String PBKDF2_ALGORITHM = "PBKDF2WithHmacSHA1";
+
+  // These constants may be changed without breaking existing hashes.
+  public static final int SALT_BYTE_SIZE = 24;
+  public static final int HASH_BYTE_SIZE = 18;
+  public static final int PBKDF2_ITERATIONS = 64000;
+
+  // These constants define the encoding and may not be changed.
+  public static final int HASH_SECTIONS = 5;
+  public static final int HASH_ALGORITHM_INDEX = 0;
+  public static final int ITERATION_INDEX = 1;
+  public static final int HASH_SIZE_INDEX = 2;
+  public static final int SALT_INDEX = 3;
+  public static final int PBKDF2_INDEX = 4;
+
+  private PasswordStorage() {
+    // Utility Class
+  }
 
   /*
    * Copied from https://github.com/defuse/password-hashing
@@ -36,21 +55,6 @@ public class PasswordStorage {
     }
   }
 
-  public static final String PBKDF2_ALGORITHM = "PBKDF2WithHmacSHA1";
-
-  // These constants may be changed without breaking existing hashes.
-  public static final int SALT_BYTE_SIZE = 24;
-  public static final int HASH_BYTE_SIZE = 18;
-  public static final int PBKDF2_ITERATIONS = 64000;
-
-  // These constants define the encoding and may not be changed.
-  public static final int HASH_SECTIONS = 5;
-  public static final int HASH_ALGORITHM_INDEX = 0;
-  public static final int ITERATION_INDEX = 1;
-  public static final int HASH_SIZE_INDEX = 2;
-  public static final int SALT_INDEX = 3;
-  public static final int PBKDF2_INDEX = 4;
-
   public static String createHash(final String password) throws CannotPerformOperationException {
     return createHash(password.toCharArray());
   }
@@ -66,9 +70,8 @@ public class PasswordStorage {
     final int hashSize = hash.length;
 
     // format: algorithm:iterations:hashSize:salt:hash
-    final String parts =
-        "sha1:" + PBKDF2_ITERATIONS + ":" + hashSize + ":" + toBase64(salt) + ":" + toBase64(hash);
-    return parts;
+    return "sha1:" + PBKDF2_ITERATIONS + ":" + hashSize + ":" + toBase64(salt) + ":"
+        + toBase64(hash);
   }
 
   public static boolean verifyPassword(final String password, final String correctHash)
@@ -96,7 +99,7 @@ public class PasswordStorage {
       throw new InvalidHashException("Could not parse the iteration count as an integer.", ex);
     }
 
-    if (iterations < 1) {
+    if (iterations < 1) { // NOPMD
       throw new InvalidHashException("Invalid number of iterations. Must be >= 1.");
     }
 
@@ -135,8 +138,9 @@ public class PasswordStorage {
 
   private static boolean slowEquals(final byte[] a, final byte[] b) {
     int diff = a.length ^ b.length;
-    for (int i = 0; i < a.length && i < b.length; i++)
+    for (int i = 0; i < a.length && i < b.length; i++) {
       diff |= a[i] ^ b[i];
+    }
     return diff == 0;
   }
 

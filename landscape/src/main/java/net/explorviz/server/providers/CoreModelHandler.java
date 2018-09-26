@@ -22,6 +22,10 @@ import net.explorviz.shared.security.User;
  */
 public final class CoreModelHandler {
 
+  private CoreModelHandler() {
+    // Utility Class
+  }
+
   /**
    * Registers all model types (below the package model) for the JSONAPI provider.
    */

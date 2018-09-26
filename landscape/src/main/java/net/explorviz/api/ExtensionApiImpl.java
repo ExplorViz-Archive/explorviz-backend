@@ -28,9 +28,9 @@ import org.slf4j.LoggerFactory;
 @Singleton
 public final class ExtensionApiImpl implements IExtensionApi {
 
-  static final Logger LOGGER = LoggerFactory.getLogger(ExtensionApiImpl.class.getName());
+  private static final Logger LOGGER = LoggerFactory.getLogger(ExtensionApiImpl.class);
 
-  private final String versionNumber = "1.2.0a";
+  private static final String VERSION_NUMBER = "1.2.0a";
   private final LandscapeExchangeService service;
 
   @Inject
@@ -43,7 +43,7 @@ public final class ExtensionApiImpl implements IExtensionApi {
    */
   @Override
   public String getApiVersion() {
-    return "ExplorViz Extension API version: " + versionNumber;
+    return "ExplorViz Extension API version: " + ExtensionApiImpl.VERSION_NUMBER;
   }
 
   /**
@@ -53,7 +53,7 @@ public final class ExtensionApiImpl implements IExtensionApi {
    */
   @Override
   public Landscape getLatestLandscape() {
-    return service.getCurrentLandscape();
+    return this.service.getCurrentLandscape();
   }
 
   /**
@@ -64,10 +64,10 @@ public final class ExtensionApiImpl implements IExtensionApi {
   @Override
   public Landscape getLandscape(final long timestamp, final String folderName) {
     try {
-      return service.getLandscape(timestamp, folderName);
+      return this.service.getLandscape(timestamp, folderName);
     } catch (final FileNotFoundException e) {
       LOGGER.debug("Specific landscape not found!", e.getMessage());
-      throw new NoSuchElementException("The requested landscape could not be found");
+      throw new NoSuchElementException("The requested landscape could not be found"); // NOPMD
     }
   }
 
@@ -131,9 +131,7 @@ public final class ExtensionApiImpl implements IExtensionApi {
 
   @Override
   public List<Timestamp> getUploadedTimestamps() {
-    final List<Timestamp> allTimestamps =
-        this.service.getTimestampObjectsInRepo(Configuration.REPLAY_REPOSITORY);
-    return allTimestamps;
+    return this.service.getTimestampObjectsInRepo(Configuration.REPLAY_REPOSITORY);
   }
 
   /**
@@ -181,7 +179,7 @@ public final class ExtensionApiImpl implements IExtensionApi {
 
   @Override
   public void saveLandscapeToFile(final Landscape landscape, final String folderName) {
-    RepositoryStorage.writeToFile(landscape, landscape.getTimestamp().getTimestamp(), folderName);
+    RepositoryStorage.writeToFile(landscape, landscape.getTimestamp().getTimestampValue(), folderName);
   }
 
 }

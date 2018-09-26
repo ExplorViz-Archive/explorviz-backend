@@ -5,7 +5,11 @@ import java.io.File;
 /**
  * Helper class for generic server purposes.
  */
-public class FileSystemHelper {
+public final class FileSystemHelper {
+
+  private FileSystemHelper() {
+    // Utility Class
+  }
 
   /**
    * Retrieves the current ExplorViz directory for the running system user.

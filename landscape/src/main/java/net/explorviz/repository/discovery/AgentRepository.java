@@ -16,7 +16,7 @@ public class AgentRepository {
 
   private static final AtomicLong ID_GENERATOR = new AtomicLong(0);
 
-  private static final List<Agent> AGENTS = new ArrayList<Agent>();
+  private static final List<Agent> AGENTS = new ArrayList<>();
 
   public String getUniqueIdString() {
     return String.valueOf(ID_GENERATOR.incrementAndGet());
@@ -35,10 +35,10 @@ public class AgentRepository {
 
   public Agent registerAgent(final Agent agent) {
     synchronized (AGENTS) {
-      final Agent possibleOldAgent = lookupAgent(agent);
+      final Agent possibleOldAgent = this.lookupAgent(agent);
 
       if (possibleOldAgent == null) {
-        agent.setId(getUniqueIdString());
+        agent.setId(this.getUniqueIdString());
       } else {
         // re-registration
         // take old agent ID for new agent, since
@@ -46,12 +46,12 @@ public class AgentRepository {
         // an old remaining agent
         agent.setName(possibleOldAgent.getName());
         agent.setId(possibleOldAgent.getId());
-        getAgents().remove(possibleOldAgent);
+        this.getAgents().remove(possibleOldAgent);
       }
 
       agent.setLastDiscoveryTime(System.currentTimeMillis());
       agent.setProcezzes(new ArrayList<Procezz>());
-      getAgents().add(agent);
+      this.getAgents().add(agent);
     }
 
     return agent;
@@ -60,7 +60,7 @@ public class AgentRepository {
   public List<Procezz> insertIdsInProcezzList(final List<Procezz> procezzList) {
 
     for (final Procezz p : procezzList) {
-      p.setId(getUniqueIdString());
+      p.setId(this.getUniqueIdString());
     }
 
     return procezzList;

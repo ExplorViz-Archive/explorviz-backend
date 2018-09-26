@@ -18,7 +18,7 @@ import net.explorviz.repository.helper.DummyLandscapeHelper;
 /**
  * Creates a dummy landscape for developing or demo purposes.
  */
-class LandscapeDummyCreator {
+final class LandscapeDummyCreator {
 
   private static final int CALLS_GENERATOR_BOUND = 300000;
 
@@ -28,6 +28,10 @@ class LandscapeDummyCreator {
   private static int applicationId = 0;
   private static Landscape dummyLandscape = null;
   private static int formatFactor = 1024 * 1024 * 1024;
+
+  private LandscapeDummyCreator() {
+    // Utility class
+  }
 
   public static Landscape createDummyLandscape() {
 
@@ -288,9 +292,9 @@ class LandscapeDummyCreator {
     node.setParent(parent);
 
     // set random usage
-    node.setCpuUtilization(((double) DummyLandscapeHelper.getRandomNum(10, 100)) / 100);
-    node.setFreeRam(((long) DummyLandscapeHelper.getRandomNum(1, 4)) * formatFactor);
-    node.setUsedRam(((long) DummyLandscapeHelper.getRandomNum(1, 4)) * formatFactor);
+    node.setCpuUtilization((double) DummyLandscapeHelper.getRandomNum(10, 100) / 100);
+    node.setFreeRam((long) DummyLandscapeHelper.getRandomNum(1, 4) * formatFactor);
+    node.setUsedRam((long) DummyLandscapeHelper.getRandomNum(1, 4) * formatFactor);
 
     return node;
   }
@@ -335,11 +339,11 @@ class LandscapeDummyCreator {
     component.setName(name);
     component.setParentComponent(parent);
     component.setBelongingApplication(app);
-    if (parent != null) {
+    if (parent == null) {
+      component.setFullQualifiedName(name);
+    } else {
       component.setFullQualifiedName(parent.getFullQualifiedName() + "." + name);
       parent.getChildren().add(component);
-    } else {
-      component.setFullQualifiedName(name);
     }
     return component;
   }
@@ -360,8 +364,8 @@ class LandscapeDummyCreator {
   private static void createClazzCommunication(final int requests, final Clazz sourceClazz,
       final Clazz targetClazz, final Application application) {
     ModelHelper.addClazzCommunication(sourceClazz, targetClazz, application, requests,
-        (0L + DummyLandscapeHelper.getRandomNum(10, 1000)),
-        (0L + DummyLandscapeHelper.getRandomNum(1000, 10000)), 0L, 1,
+        0L + DummyLandscapeHelper.getRandomNum(10, 1000),
+        0L + DummyLandscapeHelper.getRandomNum(1000, 10000), 0L, 1,
         "getMethod" + DummyLandscapeHelper.getRandomNum(1, 50) + "()");
   }
 
@@ -456,7 +460,7 @@ class LandscapeDummyCreator {
     final Component database = createComponent("connector", mapleLeaf, application);
     createClazz("Connection", database, 80);
 
-    final LinkedList<DatabaseQuery> dbQueryList = new LinkedList<DatabaseQuery>();
+    final LinkedList<DatabaseQuery> dbQueryList = new LinkedList<>();
 
     final int maxIterations = 25;
     for (int i = 0; i < maxIterations; i++) {

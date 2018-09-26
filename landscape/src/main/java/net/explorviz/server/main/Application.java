@@ -18,36 +18,39 @@ import org.glassfish.jersey.server.ResourceConfig;
 class Application extends ResourceConfig {
   public Application() {
 
+    super();
+
     // register model types for JSONAPI provider
     CoreModelHandler.registerAllCoreModels();
 
-    // https://stackoverflow.com/questions/30653012/multipart-form-data-no-injection-source-found-for-a-parameter-of-type-public-ja/30656345
+    // https://stackoverflow.com/questions/30653012/
+    // multipart-form-data-no-injection-source-found-for-a-parameter-of-type-public-ja/30656345
     // register for uploading landscapes
-    register(MultiPartFeature.class);
+    this.register(MultiPartFeature.class);
 
-    register(new DependencyInjectionBinder());
+    this.register(new DependencyInjectionBinder());
     // register(JacksonFeature)
 
     // register filters, e.g., authentication
-    register(AuthenticationFilter.class);
-    register(AuthorizationFilter.class);
-    register(CorsResponseFilter.class);
+    this.register(AuthenticationFilter.class);
+    this.register(AuthorizationFilter.class);
+    this.register(CorsResponseFilter.class);
 
     // resources
-    packages("net.explorviz.server.resources");
+    this.packages("net.explorviz.server.resources");
 
     // exception handling (mind the order !)
-    register(WebApplicationExceptionMapper.class);
-    register(QueryParamExceptionMapper.class);
-    register(PathParamExceptionMapper.class);
-    register(GeneralExceptionMapper.class);
+    this.register(WebApplicationExceptionMapper.class);
+    this.register(QueryParamExceptionMapper.class);
+    this.register(PathParamExceptionMapper.class);
+    this.register(GeneralExceptionMapper.class);
 
-    register(SetupApplicationListener.class);
+    this.register(SetupApplicationListener.class);
 
     // easy (de-)serializing models for HTTP Requests
-    packages("net.explorviz.server.providers");
+    this.packages("net.explorviz.server.providers");
 
     // register extensions (For development: read plugin structure at github docs)
-    packages("net.explorviz.extension");
+    this.packages("net.explorviz.extension");
   }
 }

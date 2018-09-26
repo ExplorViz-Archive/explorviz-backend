@@ -17,18 +17,18 @@ public class Node extends BaseEntity {
 
   private String name;
   private String ipAddress;
-  private double cpuUtilization = 0;
-  private long freeRam = 0;
-  private long usedRam = 0;
+  private double cpuUtilization;
+  private long freeRam;
+  private long usedRam;
 
   @Relationship("applications")
-  private final List<Application> applications = new ArrayList<Application>();
+  private final List<Application> applications = new ArrayList<>();
 
   @Relationship("parent")
   private NodeGroup parent;
 
   public String getName() {
-    return name;
+    return this.name;
   }
 
   public void setName(final String name) {
@@ -36,7 +36,7 @@ public class Node extends BaseEntity {
   }
 
   public String getIpAddress() {
-    return ipAddress;
+    return this.ipAddress;
   }
 
   public void setIpAddress(final String ipAddress) {
@@ -44,7 +44,7 @@ public class Node extends BaseEntity {
   }
 
   public NodeGroup getParent() {
-    return parent;
+    return this.parent;
   }
 
   public void setParent(final NodeGroup parent) {
@@ -56,7 +56,7 @@ public class Node extends BaseEntity {
   }
 
   public double getCpuUtilization() {
-    return cpuUtilization;
+    return this.cpuUtilization;
   }
 
   public void setFreeRam(final long freeRam) {
@@ -64,7 +64,7 @@ public class Node extends BaseEntity {
   }
 
   public long getFreeRam() {
-    return freeRam;
+    return this.freeRam;
   }
 
   public void setUsedRam(final long usedRam) {
@@ -72,11 +72,11 @@ public class Node extends BaseEntity {
   }
 
   public long getUsedRam() {
-    return usedRam;
+    return this.usedRam;
   }
 
   public List<Application> getApplications() {
-    return applications;
+    return this.applications;
   }
 
   @JsonIgnore

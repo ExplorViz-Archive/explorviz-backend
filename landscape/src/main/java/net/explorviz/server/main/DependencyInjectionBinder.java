@@ -26,12 +26,12 @@ public class DependencyInjectionBinder extends AbstractBinder {
   @Override
   public void configure() {
     this.bind(LandscapeRepositoryModel.class).to(LandscapeRepositoryModel.class)
-    .in(Singleton.class);
+        .in(Singleton.class);
     this.bind(LandscapeExchangeService.class).to(LandscapeExchangeService.class)
-    .in(Singleton.class);
+        .in(Singleton.class);
 
     this.bindFactory(ResourceConverterFactory.class).to(ResourceConverter.class)
-    .in(Singleton.class);
+        .in(Singleton.class);
 
     this.bind(ExtensionApiImpl.class).to(ExtensionApiImpl.class).in(Singleton.class);
 

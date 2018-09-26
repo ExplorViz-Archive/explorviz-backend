@@ -23,7 +23,7 @@ public class BaseEntity implements Serializable {
    * Non primitive types (your custom model class) must be annotated with type annotations, e.g., as
    * shown in any model entity
    */
-  private final Map<String, Object> extensionAttributes = new HashMap<String, Object>();
+  private final Map<String, Object> extensionAttributes = new HashMap<>();
 
   @Id(LongIdHandler.class)
   private Long id;
@@ -49,7 +49,7 @@ public class BaseEntity implements Serializable {
   }
 
   public Map<String, Object> getExtensionAttributes() {
-    return extensionAttributes;
+    return this.extensionAttributes;
   }
 
 }

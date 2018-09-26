@@ -22,21 +22,21 @@ public class Landscape extends BaseEntity {
   private Timestamp timestamp;
 
   @Relationship("systems")
-  private final List<System> systems = new ArrayList<System>();
+  private final List<System> systems = new ArrayList<>();
 
-  private final Map<Long, String> events = new TreeMap<Long, String>();
-  private final Map<Long, String> exceptions = new TreeMap<Long, String>();
+  private final Map<Long, String> events = new TreeMap<>();
+  private final Map<Long, String> exceptions = new TreeMap<>();
 
   @Relationship("outgoingApplicationCommunications")
-  private List<ApplicationCommunication> outgoingApplicationCommunications =
-  new ArrayList<ApplicationCommunication>();
+  private List<ApplicationCommunication> outgoingApplicationCommu = new ArrayList<>();
 
   public Landscape() {
+    super();
     this.timestamp = new Timestamp();
   }
 
   public Timestamp getTimestamp() {
-    return timestamp;
+    return this.timestamp;
   }
 
   public void setTimestamp(final Timestamp timestamp) {
@@ -44,28 +44,28 @@ public class Landscape extends BaseEntity {
   }
 
   public List<System> getSystems() {
-    return systems;
+    return this.systems;
   }
 
   public Map<Long, String> getEvents() {
-    return events;
+    return this.events;
   }
 
   public Map<Long, String> getExceptions() {
-    return exceptions;
+    return this.exceptions;
   }
 
   public void updateTimestamp(final Timestamp timestamp) {
-    setTimestamp(timestamp);
+    this.setTimestamp(timestamp);
   }
 
   public List<ApplicationCommunication> getOutgoingApplicationCommunications() {
-    return outgoingApplicationCommunications;
+    return this.outgoingApplicationCommu;
   }
 
   public void setOutgoingApplicationCommunications(
-      final List<ApplicationCommunication> outgoingApplicationCommunication) {
-    this.outgoingApplicationCommunications = outgoingApplicationCommunication;
+      final List<ApplicationCommunication> outgoingApplicationCommu) {
+    this.outgoingApplicationCommu = outgoingApplicationCommu;
   }
 
   /**

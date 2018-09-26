@@ -15,7 +15,7 @@ import net.explorviz.model.helper.BaseEntity;
 @Type("cumulatedclazzcommunication")
 public class CumulatedClazzCommunication extends BaseEntity {
 
-  private int requests = 0;
+  private int requests;
 
   @Relationship("sourceClazz")
   private Clazz sourceClazz;
@@ -24,11 +24,10 @@ public class CumulatedClazzCommunication extends BaseEntity {
   private Clazz targetClazz;
 
   @Relationship("aggregatedClazzCommunications")
-  private List<AggregatedClazzCommunication> aggregatedClazzCommunications =
-      new ArrayList<AggregatedClazzCommunication>();
+  private List<AggregatedClazzCommunication> aggregatedClazzCommunications = new ArrayList<>();
 
   public int getRequests() {
-    return requests;
+    return this.requests;
   }
 
   public void setRequests(final int requests) {
@@ -36,7 +35,7 @@ public class CumulatedClazzCommunication extends BaseEntity {
   }
 
   public Clazz getSourceClazz() {
-    return sourceClazz;
+    return this.sourceClazz;
   }
 
   public void setSourceClazz(final Clazz sourceClazz) {
@@ -44,7 +43,7 @@ public class CumulatedClazzCommunication extends BaseEntity {
   }
 
   public Clazz getTargetClazz() {
-    return targetClazz;
+    return this.targetClazz;
   }
 
   public void setTargetClazz(final Clazz targetClazz) {
@@ -52,7 +51,7 @@ public class CumulatedClazzCommunication extends BaseEntity {
   }
 
   public List<AggregatedClazzCommunication> getAggregatedClazzCommunications() {
-    return aggregatedClazzCommunications;
+    return this.aggregatedClazzCommunications;
   }
 
   public void setAggregatedClazzCommunications(
@@ -76,8 +75,8 @@ public class CumulatedClazzCommunication extends BaseEntity {
   }
 
   public void reset() {
-    requests = 0;
-    aggregatedClazzCommunications.clear();
+    this.requests = 0;
+    this.aggregatedClazzCommunications.clear();
   }
 
 }

@@ -11,11 +11,11 @@ public class RemoteRecordBuffer {
   private Clazz belongingClazz;
 
   public long getTimestampPutIntoBuffer() {
-    return timestampPutIntoBuffer;
+    return this.timestampPutIntoBuffer;
   }
 
   public Clazz getBelongingClazz() {
-    return belongingClazz;
+    return this.belongingClazz;
   }
 
   public void setBelongingClazz(final Clazz belongingClazz) {

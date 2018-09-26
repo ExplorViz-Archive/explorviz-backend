@@ -37,33 +37,33 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
 
     this.broadcastService = broadcastService;
 
-    fstConf = initFstConf();
+    this.fstConf = this.initFstConf();
 
     if (LOAD_LAST_LANDSCAPE_ON_LOAD) {
 
-      final Landscape readLandscape = RepositoryStorage
-          .readFromFile(java.lang.System.currentTimeMillis(), Configuration.LANDSCAPE_REPOSITORY);
+      final Landscape readLandscape = RepositoryStorage.readFromFile(System.currentTimeMillis(),
+          Configuration.LANDSCAPE_REPOSITORY);
 
-      internalLandscape = readLandscape;
+      this.internalLandscape = readLandscape;
     } else {
-      internalLandscape = new Landscape();
-      internalLandscape.initializeId();
+      this.internalLandscape = new Landscape();
+      this.internalLandscape.initializeId();
     }
 
-    insertionRepositoryPart = new InsertionRepositoryPart();
-    remoteCallRepositoryPart = new RemoteCallRepositoryPart();
+    this.insertionRepositoryPart = new InsertionRepositoryPart();
+    this.remoteCallRepositoryPart = new RemoteCallRepositoryPart();
 
-    final Landscape l = fstConf.deepCopy(internalLandscape);
+    final Landscape l = this.fstConf.deepCopy(this.internalLandscape);
 
-    lastPeriodLandscape = LandscapePreparer.prepareLandscape(l);
+    this.lastPeriodLandscape = LandscapePreparer.prepareLandscape(l);
 
     new TimeSignalReader(TimeUnit.SECONDS.toMillis(Configuration.outputIntervalSeconds), this)
         .start();
   }
 
   public Landscape getLastPeriodLandscape() {
-    synchronized (lastPeriodLandscape) {
-      return lastPeriodLandscape;
+    synchronized (this.lastPeriodLandscape) {
+      return this.lastPeriodLandscape;
     }
   }
 
@@ -92,8 +92,8 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
   }
 
   public void reset() {
-    synchronized (internalLandscape) {
-      internalLandscape.reset();
+    synchronized (this.internalLandscape) {
+      this.internalLandscape.reset();
     }
   }
 
@@ -101,45 +101,45 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
   public void periodicTimeSignal(final long timestamp) {
     // called every tenth second
     // passed timestamp is nanosecond
-    synchronized (internalLandscape) {
-      synchronized (lastPeriodLandscape) {
+    synchronized (this.internalLandscape) {
+      synchronized (this.lastPeriodLandscape) {
 
-        final long milliseconds = java.lang.System.currentTimeMillis();
+        final long milliseconds = System.currentTimeMillis();
 
-        if (useDummyMode) {
+        if (this.useDummyMode) {
           final Landscape dummyLandscape = LandscapeDummyCreator.createDummyLandscape();
-          dummyLandscape.getTimestamp().setTimestamp(milliseconds);
+          dummyLandscape.getTimestamp().setTimestampValue(milliseconds);
           dummyLandscape.getTimestamp().updateId();
           RepositoryStorage.writeToFile(dummyLandscape, milliseconds,
               Configuration.LANDSCAPE_REPOSITORY);
-          lastPeriodLandscape = dummyLandscape;
+          this.lastPeriodLandscape = dummyLandscape;
         } else {
-          internalLandscape.updateTimestamp(new Timestamp(milliseconds, 0));
-          RepositoryStorage.writeToFile(internalLandscape, milliseconds,
+          this.internalLandscape.updateTimestamp(new Timestamp(milliseconds, 0));
+          RepositoryStorage.writeToFile(this.internalLandscape, milliseconds,
               Configuration.LANDSCAPE_REPOSITORY);
-          final Landscape l = fstConf.deepCopy(internalLandscape);
-          lastPeriodLandscape = LandscapePreparer.prepareLandscape(l);
+          final Landscape l = this.fstConf.deepCopy(this.internalLandscape);
+          this.lastPeriodLandscape = LandscapePreparer.prepareLandscape(l);
         }
 
         // broadcast to registered clients
-        broadcastService.broadcastMessage(lastPeriodLandscape);
+        this.broadcastService.broadcastMessage(this.lastPeriodLandscape);
 
-        remoteCallRepositoryPart.checkForTimedoutRemoteCalls();
-        resetCommunication();
+        this.remoteCallRepositoryPart.checkForTimedoutRemoteCalls();
+        this.resetCommunication();
       }
     }
 
-    RepositoryStorage.cleanUpTooOldFiles(java.lang.System.currentTimeMillis(),
+    RepositoryStorage.cleanUpTooOldFiles(System.currentTimeMillis(),
         Configuration.LANDSCAPE_REPOSITORY);
   }
 
   private void resetCommunication() {
-    internalLandscape.reset();
+    this.internalLandscape.reset();
   }
 
   public void insertIntoModel(final IRecord inputIRecord) {
     // called every second
-    insertionRepositoryPart.insertIntoModel(inputIRecord, internalLandscape,
-        remoteCallRepositoryPart);
+    this.insertionRepositoryPart.insertIntoModel(inputIRecord, this.internalLandscape,
+        this.remoteCallRepositoryPart);
   }
 }

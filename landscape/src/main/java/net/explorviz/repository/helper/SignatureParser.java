@@ -3,7 +3,11 @@ package net.explorviz.repository.helper;
 /**
  * Parses a class signature for the full-qualified-name and operation name.
  */
-public class SignatureParser {
+public final class SignatureParser {
+
+  private SignatureParser() {
+    // Utility Class
+  }
 
   public static Signature parse(final String operationSignatureStr, final boolean javaConstructor) {
     final Signature result = new Signature();
@@ -25,15 +29,15 @@ public class SignatureParser {
   private static String parseParameterList(final String operationSignatureStr,
       final Signature sig) {
     final int openParenIdx = operationSignatureStr.indexOf('(');
-    if (openParenIdx != -1) {
+    if (openParenIdx == -1) {
+      return operationSignatureStr;
+    } else {
       final String[] splitParams = operationSignatureStr
           .substring(openParenIdx + 1, operationSignatureStr.length() - 1).split(",");
       for (final String splitParam : splitParams) {
         sig.getParamTypeList().add(splitParam.trim());
       }
       return operationSignatureStr.substring(0, openParenIdx);
-    } else {
-      return operationSignatureStr;
     }
   }
 
@@ -80,10 +84,10 @@ public class SignatureParser {
   private static String parseFqClassnameAndOperationName(final boolean javaConstructor,
       final Signature result) {
     final int opNameIdx = result.getName().lastIndexOf('.');
-    if (opNameIdx != -1) {
-      result.setFullQualifiedName(result.getName().substring(0, opNameIdx));
-    } else {
+    if (opNameIdx == -1) {
       result.setFullQualifiedName("");
+    } else {
+      result.setFullQualifiedName(result.getName().substring(0, opNameIdx));
     }
 
     if (javaConstructor) {

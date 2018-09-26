@@ -18,17 +18,17 @@ public class Clazz extends BaseEntity {
   private String name;
   private String fullQualifiedName;
   private int instanceCount;
-  private transient Set<Integer> objectIds = new HashSet<Integer>();
+  private transient Set<Integer> objectIds = new HashSet<>();
 
   @Relationship("parent")
   private Component parent;
 
   @Relationship("outgoingClazzCommunications")
   private List<ClazzCommunication> outgoingClazzCommunications =
-  new ArrayList<ClazzCommunication>();
+      new ArrayList<>();
 
   public String getName() {
-    return name;
+    return this.name;
   }
 
   public void setName(final String name) {
@@ -36,7 +36,7 @@ public class Clazz extends BaseEntity {
   }
 
   public String getFullQualifiedName() {
-    return fullQualifiedName;
+    return this.fullQualifiedName;
   }
 
   public void setFullQualifiedName(final String name) {
@@ -44,7 +44,7 @@ public class Clazz extends BaseEntity {
   }
 
   public Set<Integer> getObjectIds() {
-    return objectIds;
+    return this.objectIds;
   }
 
   public void setObjectIds(final Set<Integer> objectIds) {
@@ -52,7 +52,7 @@ public class Clazz extends BaseEntity {
   }
 
   public Component getParent() {
-    return parent;
+    return this.parent;
   }
 
   public void setParent(final Component parent) {
@@ -60,7 +60,7 @@ public class Clazz extends BaseEntity {
   }
 
   public List<ClazzCommunication> getOutgoingClazzCommunications() {
-    return outgoingClazzCommunications;
+    return this.outgoingClazzCommunications;
   }
 
   public void setOutgoingClazzCommunications(
@@ -73,7 +73,7 @@ public class Clazz extends BaseEntity {
   }
 
   public int getInstanceCount() {
-    return instanceCount;
+    return this.instanceCount;
   }
 
   /**

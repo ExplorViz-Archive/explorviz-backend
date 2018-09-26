@@ -14,7 +14,7 @@ import net.explorviz.model.helper.BaseEntity;
 @Type("aggregatedclazzcommunication")
 public class AggregatedClazzCommunication extends BaseEntity {
 
-  private int requests = 0;
+  private int requests;
 
   @Relationship("sourceClazz")
   private Clazz sourceClazz;
@@ -23,11 +23,10 @@ public class AggregatedClazzCommunication extends BaseEntity {
   private Clazz targetClazz;
 
   @Relationship("outgoingClazzCommunications")
-  private List<ClazzCommunication> outgoingClazzCommunications =
-      new ArrayList<ClazzCommunication>();
+  private List<ClazzCommunication> outgoingClazzCommunications = new ArrayList<>();
 
   public int getRequests() {
-    return requests;
+    return this.requests;
   }
 
   public void setRequests(final int requests) {
@@ -35,7 +34,7 @@ public class AggregatedClazzCommunication extends BaseEntity {
   }
 
   public Clazz getSourceClazz() {
-    return sourceClazz;
+    return this.sourceClazz;
   }
 
   public void setSourceClazz(final Clazz sourceClazz) {
@@ -43,7 +42,7 @@ public class AggregatedClazzCommunication extends BaseEntity {
   }
 
   public Clazz getTargetClazz() {
-    return targetClazz;
+    return this.targetClazz;
   }
 
   public void setTargetClazz(final Clazz targetClazz) {
@@ -51,7 +50,7 @@ public class AggregatedClazzCommunication extends BaseEntity {
   }
 
   public List<ClazzCommunication> getOutgoingClazzCommunications() {
-    return outgoingClazzCommunications;
+    return this.outgoingClazzCommunications;
   }
 
   public void setOutgoingClazzCommunications(final List<ClazzCommunication> clazzCommunications) {
@@ -71,8 +70,8 @@ public class AggregatedClazzCommunication extends BaseEntity {
   }
 
   public void reset() {
-    requests = 0;
-    outgoingClazzCommunications.clear();
+    this.requests = 0;
+    this.outgoingClazzCommunications.clear();
   }
 
 }

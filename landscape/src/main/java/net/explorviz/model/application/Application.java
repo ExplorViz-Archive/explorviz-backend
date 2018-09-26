@@ -24,25 +24,22 @@ public class Application extends BaseEntity {
   private Node parent;
 
   @Relationship("components")
-  private List<Component> components = new ArrayList<Component>();
+  private List<Component> components = new ArrayList<>();
 
   @Relationship("databaseQueries")
-  private List<DatabaseQuery> databaseQueries = new ArrayList<DatabaseQuery>();
+  private List<DatabaseQuery> databaseQueries = new ArrayList<>();
 
   @Relationship("outgoingApplicationCommunications")
-  private List<ApplicationCommunication> outgoingApplicationCommunications =
-  new ArrayList<ApplicationCommunication>();
+  private List<ApplicationCommunication> outgoingAppCommu = new ArrayList<>();
 
   @Relationship("aggregatedOutgoingClazzCommunications")
-  private List<AggregatedClazzCommunication> aggregatedOutgoingClazzCommunications =
-  new ArrayList<AggregatedClazzCommunication>();
+  private List<AggregatedClazzCommunication> aggregatedOutgoingClazzCommu = new ArrayList<>();
 
   @Relationship("cumulatedClazzCommunications")
-  private List<CumulatedClazzCommunication> cumulatedClazzCommunications =
-  new ArrayList<CumulatedClazzCommunication>();
+  private List<CumulatedClazzCommunication> cumulatedClazzCommunications = new ArrayList<>();
 
   public String getName() {
-    return name;
+    return this.name;
   }
 
   public void setName(final String name) {
@@ -50,7 +47,7 @@ public class Application extends BaseEntity {
   }
 
   public EProgrammingLanguage getProgrammingLanguage() {
-    return programmingLanguage;
+    return this.programmingLanguage;
   }
 
   public void setProgrammingLanguage(final EProgrammingLanguage programmingLanguage) {
@@ -58,7 +55,7 @@ public class Application extends BaseEntity {
   }
 
   public long getLastUsage() {
-    return lastUsage;
+    return this.lastUsage;
   }
 
   public void setLastUsage(final long lastUsage) {
@@ -66,7 +63,7 @@ public class Application extends BaseEntity {
   }
 
   public Node getParent() {
-    return parent;
+    return this.parent;
   }
 
   public void setParent(final Node parent) {
@@ -74,7 +71,7 @@ public class Application extends BaseEntity {
   }
 
   public List<Component> getComponents() {
-    return components;
+    return this.components;
   }
 
   public void setComponents(final List<Component> components) {
@@ -86,29 +83,29 @@ public class Application extends BaseEntity {
   }
 
   public List<DatabaseQuery> getDatabaseQueries() {
-    return databaseQueries;
+    return this.databaseQueries;
   }
 
   public List<ApplicationCommunication> getOutgoingApplicationCommunications() {
-    return outgoingApplicationCommunications;
+    return this.outgoingAppCommu;
   }
 
   public void setOutgoingApplicationCommunications(
       final List<ApplicationCommunication> outgoingCommunications) {
-    this.outgoingApplicationCommunications = outgoingCommunications;
+    this.outgoingAppCommu = outgoingCommunications;
   }
 
   public List<AggregatedClazzCommunication> getAggregatedOutgoingClazzCommunications() {
-    return aggregatedOutgoingClazzCommunications;
+    return this.aggregatedOutgoingClazzCommu;
   }
 
   public void setAggregatedOutgoingClazzCommunications(
-      final List<AggregatedClazzCommunication> aggregatedOutgoingClazzCommunications) {
-    this.aggregatedOutgoingClazzCommunications = aggregatedOutgoingClazzCommunications;
+      final List<AggregatedClazzCommunication> aggregatedOutgoingClazzCommu) {
+    this.aggregatedOutgoingClazzCommu = aggregatedOutgoingClazzCommu;
   }
 
   public List<CumulatedClazzCommunication> getCumulatedClazzCommunications() {
-    return cumulatedClazzCommunications;
+    return this.cumulatedClazzCommunications;
   }
 
   public void setCumulatedClazzCommunications(

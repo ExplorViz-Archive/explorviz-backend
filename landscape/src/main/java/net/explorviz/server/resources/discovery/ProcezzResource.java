@@ -45,7 +45,7 @@ public class ProcezzResource {
     final String urlPath = PropertyService.getStringProperty("agentBaseURL")
         + PropertyService.getStringProperty("agentProcezzPath");
 
-    return forwardPatchRequest(procezz, urlPath);
+    return this.forwardPatchRequest(procezz, urlPath);
   }
 
   @POST

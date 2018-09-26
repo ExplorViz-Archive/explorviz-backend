@@ -7,7 +7,12 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
  * Helper class providing methods for creating a dummy landscape.
  */
-public class DummyLandscapeHelper {
+public final class DummyLandscapeHelper {
+
+  private DummyLandscapeHelper() {
+    // Utility Class
+  }
+
   /**
    * Returns the current timestamp for dummy queries.
    *

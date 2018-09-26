@@ -8,7 +8,11 @@ import net.explorviz.model.store.Timestamp;
 /**
  * Helper class providing methods for filtering lists of timestamps.
  */
-public class TimestampHelper {
+public final class TimestampHelper {
+
+  private TimestampHelper() {
+    // Utility Class
+  }
 
   /**
    * Retrieves timestamps BEFORE a passed timestamp.
@@ -33,15 +37,15 @@ public class TimestampHelper {
         position = allTimestamps.indexOf(element);
 
         try {
-          if (intervalSize != 0) {
+          if (intervalSize == 0) {
+            // all timestamps starting at position
+            return allTimestamps.subList(0, position);
+          } else {
             if (position - intervalSize < 0) {
               return allTimestamps.subList(0, position);
             } else {
               return allTimestamps.subList(position - intervalSize, position);
             }
-          } else {
-            // all timestamps starting at position
-            return allTimestamps.subList(0, position);
           }
 
         } catch (final IllegalArgumentException e) {
@@ -50,7 +54,7 @@ public class TimestampHelper {
 
       }
     }
-    return new LinkedList<Timestamp>();
+    return new LinkedList<>();
   }
 
   /**
@@ -76,15 +80,15 @@ public class TimestampHelper {
         position = allTimestamps.indexOf(element);
 
         try {
-          if (intervalSize != 0) {
+          if (intervalSize == 0) {
+            // all timestamps starting at position
+            return allTimestamps.subList(position, length);
+          } else {
             if (position + intervalSize > length) {
               return allTimestamps.subList(position, length);
             } else {
               return allTimestamps.subList(position, position + intervalSize);
             }
-          } else {
-            // all timestamps starting at position
-            return allTimestamps.subList(position, length);
           }
 
         } catch (final IllegalArgumentException e) {
@@ -92,7 +96,7 @@ public class TimestampHelper {
         }
       }
     }
-    return new LinkedList<Timestamp>();
+    return new LinkedList<>();
   }
 
   /**
@@ -106,21 +110,20 @@ public class TimestampHelper {
       final int intervalSize) {
 
     if (allTimestamps.isEmpty()) {
-      return new LinkedList<Timestamp>();
+      return new LinkedList<>();
     }
 
     final int length = allTimestamps.size();
 
     try {
-      if (intervalSize != 0) {
+      if (intervalSize == 0) {
+        return allTimestamps;
+      } else {
         if (intervalSize >= length) {
           return allTimestamps.subList(0, length);
         } else {
           return allTimestamps.subList(0, intervalSize);
         }
-
-      } else {
-        return allTimestamps;
       }
 
     } catch (final IllegalArgumentException e) {
@@ -139,22 +142,21 @@ public class TimestampHelper {
       final int intervalSize) {
 
     if (allTimestamps.isEmpty()) {
-      return new LinkedList<Timestamp>();
+      return new LinkedList<>();
     }
 
     final int length = allTimestamps.size();
 
     try {
-      if (intervalSize != 0) {
+      if (intervalSize == 0) {
+        return allTimestamps;
+      } else {
         if (intervalSize >= length) {
           return allTimestamps.subList(0, length);
         } else {
           return allTimestamps.subList(length - intervalSize, length);
         }
-      } else {
-        return allTimestamps;
       }
-
     } catch (final IllegalArgumentException e) {
       throw new WebApplicationException(e);
     }

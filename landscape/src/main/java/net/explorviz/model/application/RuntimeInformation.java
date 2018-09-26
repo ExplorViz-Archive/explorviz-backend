@@ -13,16 +13,16 @@ import net.explorviz.model.helper.BaseEntity;
 @Type("runtimeinformation")
 public class RuntimeInformation extends BaseEntity {
 
-  private long traceId = 0L;
+  private long traceId;
   // in ns
   private float overallTraceDuration;
   private int requests;
   // in ns
   private float averageResponseTime;
-  private final Set<Integer> orderIndexes = new HashSet<Integer>();
+  private final Set<Integer> orderIndexes = new HashSet<>();
 
   public long getTraceId() {
-    return traceId;
+    return this.traceId;
   }
 
   public void setTraceId(final long traceId) {
@@ -30,7 +30,7 @@ public class RuntimeInformation extends BaseEntity {
   }
 
   public float getOverallTraceDuration() {
-    return overallTraceDuration;
+    return this.overallTraceDuration;
   }
 
   public void setOverallTraceDuration(final float overallTraceDuration) {
@@ -38,7 +38,7 @@ public class RuntimeInformation extends BaseEntity {
   }
 
   public int getRequests() {
-    return requests;
+    return this.requests;
   }
 
   public void setRequests(final int requests) {
@@ -46,11 +46,11 @@ public class RuntimeInformation extends BaseEntity {
   }
 
   public float getAverageResponseTimeInNanoSec() {
-    return averageResponseTime;
+    return this.averageResponseTime;
   }
 
   public float getAverageResponseTime() {
-    return averageResponseTime;
+    return this.averageResponseTime;
   }
 
   public void setAverageResponseTime(final float averageResponseTime) {
@@ -58,7 +58,7 @@ public class RuntimeInformation extends BaseEntity {
   }
 
   public Set<Integer> getOrderIndexes() {
-    return orderIndexes;
+    return this.orderIndexes;
   }
 
 }

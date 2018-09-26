@@ -17,13 +17,13 @@ public class NodeGroup extends BaseEntity {
 
   private String name;
   @Relationship("parent")
-  private final List<Node> nodes = new ArrayList<Node>();
+  private final List<Node> nodes = new ArrayList<>();
 
   @Relationship("parent")
   private System parent;
 
   public String getName() {
-    return name;
+    return this.name;
   }
 
   public void setName(final String name) {
@@ -31,7 +31,7 @@ public class NodeGroup extends BaseEntity {
   }
 
   public System getParent() {
-    return parent;
+    return this.parent;
   }
 
   public void setParent(final System parent) {
@@ -39,29 +39,29 @@ public class NodeGroup extends BaseEntity {
   }
 
   public List<Node> getNodes() {
-    return nodes;
+    return this.nodes;
   }
 
   public void updateName() {
-    final List<String> allNames = getNodeNames();
+    final List<String> allNames = this.getNodeNames();
     Collections.sort(allNames, new NameComperator());
 
-    if (allNames.size() >= 2) {
+    if (allNames.size() >= 2) { // NOPMD
       final String first = allNames.get(0);
       final String last = allNames.get(allNames.size() - 1);
 
-      setName(first + " - " + last);
-    } else if (allNames.size() == 1) {
-      setName(allNames.get(0));
+      this.setName(first + " - " + last);
+    } else if (allNames.size() == 1) { // NOPMD
+      this.setName(allNames.get(0));
     } else {
-      setName("<NO-NAME>");
+      this.setName("<NO-NAME>");
     }
   }
 
   private List<String> getNodeNames() {
-    final List<String> allNames = new ArrayList<String>();
-    for (final Node node : nodes) {
-      if (node.getName() != null && !node.getName().isEmpty() && !node.getName().startsWith("<")) {
+    final List<String> allNames = new ArrayList<>();
+    for (final Node node : this.nodes) {
+      if (node.getName() != null && !node.getName().isEmpty() && !node.getName().startsWith("<")) { // NOPMD
         allNames.add(node.getName());
       } else {
         allNames.add(node.getIpAddress());

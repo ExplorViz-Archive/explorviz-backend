@@ -9,9 +9,13 @@ import org.glassfish.jersey.servlet.ServletContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class Main {
+public final class Main {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(Main.class);
+
+  private Main() {
+    // Utility Class
+  }
 
   public static void main(final String[] args) {
 
@@ -23,14 +27,14 @@ public class Main {
 
     try {
       server.start();
-    } catch (final Exception e) {
+    } catch (final Exception e) { // NOPMD
       LOGGER.error("Server start failed", e);
     }
 
     Runtime.getRuntime().addShutdownHook(new Thread(() -> {
       try {
         server.stop();
-      } catch (final Exception e) {
+      } catch (final Exception e) { // NOPMD
         LOGGER.error("Server stop failed", e);
       }
     }));

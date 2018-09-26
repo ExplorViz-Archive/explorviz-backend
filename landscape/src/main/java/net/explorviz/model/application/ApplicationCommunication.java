@@ -30,7 +30,7 @@ public class ApplicationCommunication extends BaseEntity {
   private Clazz targetClazz;
 
   public int getRequests() {
-    return requests;
+    return this.requests;
   }
 
   public void setRequests(final int requests) {
@@ -38,7 +38,7 @@ public class ApplicationCommunication extends BaseEntity {
   }
 
   public String getTechnology() {
-    return technology;
+    return this.technology;
   }
 
   public void setTechnology(final String technology) {
@@ -46,7 +46,7 @@ public class ApplicationCommunication extends BaseEntity {
   }
 
   public float getAverageResponseTime() {
-    return averageResponseTime;
+    return this.averageResponseTime;
   }
 
   public void setAverageResponseTime(final float averageResponseTime) {
@@ -54,7 +54,7 @@ public class ApplicationCommunication extends BaseEntity {
   }
 
   public Application getSourceApplication() {
-    return sourceApplication;
+    return this.sourceApplication;
   }
 
   public void setSourceApplication(final Application sourceApplication) {
@@ -62,7 +62,7 @@ public class ApplicationCommunication extends BaseEntity {
   }
 
   public Application getTargetApplication() {
-    return targetApplication;
+    return this.targetApplication;
   }
 
   public void setTargetApplication(final Application targetApplication) {
@@ -70,7 +70,7 @@ public class ApplicationCommunication extends BaseEntity {
   }
 
   public Clazz getSourceClazz() {
-    return sourceClazz;
+    return this.sourceClazz;
   }
 
   public void setSourceClazz(final Clazz sourceClazz) {
@@ -78,7 +78,7 @@ public class ApplicationCommunication extends BaseEntity {
   }
 
   public Clazz getTargetClazz() {
-    return targetClazz;
+    return this.targetClazz;
   }
 
   public void setTargetClazz(final Clazz targetClazz) {
@@ -86,8 +86,8 @@ public class ApplicationCommunication extends BaseEntity {
   }
 
   public void reset() {
-    requests = 0;
-    averageResponseTime = 0;
+    this.requests = 0;
+    this.averageResponseTime = 0;
   }
 
 }

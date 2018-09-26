@@ -18,11 +18,11 @@ public final class LandscapeRepositorySink extends AbstractSink implements ITrac
 
   @Override
   public void run() {
-    modelConnector.process(this);
+    this.modelConnector.process(this);
   }
 
   @Override
   public void processRecord(final IRecord record) {
-    model.insertIntoModel(record);
+    this.model.insertIntoModel(record);
   }
 }

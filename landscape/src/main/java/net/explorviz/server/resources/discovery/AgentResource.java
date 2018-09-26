@@ -92,7 +92,7 @@ public class AgentResource {
       final String url = "http://" + ipAndPort + urlPath;
 
       try {
-        final Agent agentObject = clientService.doGETRequest(Agent.class, url, null);
+        final Agent agentObject = this.clientService.doGETRequest(Agent.class, url, null);
 
         if (agentObject != null) {
           listToBeReturned.add(agentObject);
@@ -107,7 +107,7 @@ public class AgentResource {
 
     return Response
         .ok(this.converter
-            .writeDocumentCollection(new JSONAPIDocument<List<Agent>>(listToBeReturned)))
+            .writeDocumentCollection(new JSONAPIDocument<>(listToBeReturned)))
         .type(MEDIA_TYPE).build();
 
   }

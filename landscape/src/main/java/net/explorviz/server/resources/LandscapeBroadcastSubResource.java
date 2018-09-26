@@ -33,6 +33,6 @@ public class LandscapeBroadcastSubResource {
     response.addHeader("Cache-Control", "no-cache");
     response.addHeader("X-Accel-Buffering", "no");
 
-    broadcastService.register(eventSink);
+    this.broadcastService.register(eventSink);
   }
 }

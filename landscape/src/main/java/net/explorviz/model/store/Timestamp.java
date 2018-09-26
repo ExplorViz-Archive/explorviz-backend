@@ -10,26 +10,30 @@ import net.explorviz.model.helper.BaseEntity;
 @Type("timestamp")
 public class Timestamp extends BaseEntity {
 
-  private long timestamp;
+  private long timestampValue;
   private long calls;
 
-  public Timestamp(final long timestamp, final long calls) {
-    this.setTimestamp(timestamp);
+  public Timestamp(final long timestampValue, final long calls) {
+    super();
+    this.setTimestampValue(timestampValue);
     this.setCalls(calls);
   }
 
-  public Timestamp() {}
-
-  public long getTimestamp() {
-    return timestamp;
+  public Timestamp() {
+    super();
+    // explicit default constructor
   }
 
-  public void setTimestamp(final long timestamp) {
-    this.timestamp = timestamp;
+  public long getTimestampValue() {
+    return this.timestampValue;
+  }
+
+  public void setTimestampValue(final long timestampValue) {
+    this.timestampValue = timestampValue;
   }
 
   public long getCalls() {
-    return calls;
+    return this.calls;
   }
 
   public void setCalls(final long calls) {

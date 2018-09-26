@@ -17,13 +17,13 @@ public class System extends BaseEntity {
   private String name;
 
   @Relationship("nodegroups")
-  private final List<NodeGroup> nodeGroups = new ArrayList<NodeGroup>();
+  private final List<NodeGroup> nodeGroups = new ArrayList<>();
 
   @Relationship("parent")
   private Landscape parent;
 
   public String getName() {
-    return name;
+    return this.name;
   }
 
   public void setName(final String name) {
@@ -31,7 +31,7 @@ public class System extends BaseEntity {
   }
 
   public Landscape getParent() {
-    return parent;
+    return this.parent;
   }
 
   public void setParent(final Landscape parent) {
@@ -39,7 +39,7 @@ public class System extends BaseEntity {
   }
 
   public List<NodeGroup> getNodeGroups() {
-    return nodeGroups;
+    return this.nodeGroups;
   }
 
 }

@@ -9,7 +9,7 @@ import java.util.Queue;
 
 public class RepositoryStarter {
   public void start(final LandscapeRepositoryModel model) {
-    final SinglePipeConnector<IRecord> modelConnector = new SinglePipeConnector<IRecord>(64);
+    final SinglePipeConnector<IRecord> modelConnector = new SinglePipeConnector<>(64);
 
     new LandscapeRepositorySink(modelConnector, model).start();
 

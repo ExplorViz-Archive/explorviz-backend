@@ -13,11 +13,11 @@ import net.explorviz.model.helper.BaseEntity;
 @Type("clazzcommunication")
 public class ClazzCommunication extends BaseEntity {
 
-  private int requests = 0;
+  private int requests;
   private String operationName = "<unknown>";
 
   @Relationship("runtimeInformations")
-  private final List<RuntimeInformation> runtimeInformations = new ArrayList<RuntimeInformation>();
+  private final List<RuntimeInformation> runtimeInformations = new ArrayList<>();
 
   @Relationship("sourceClazz")
   private Clazz sourceClazz;
@@ -26,7 +26,7 @@ public class ClazzCommunication extends BaseEntity {
   private Clazz targetClazz;
 
   public int getRequests() {
-    return requests;
+    return this.requests;
   }
 
   public void setRequests(final int requests) {
@@ -34,7 +34,7 @@ public class ClazzCommunication extends BaseEntity {
   }
 
   public String getOperationName() {
-    return operationName;
+    return this.operationName;
   }
 
   public void setOperationName(final String methodName) {
@@ -42,7 +42,7 @@ public class ClazzCommunication extends BaseEntity {
   }
 
   public Clazz getSourceClazz() {
-    return sourceClazz;
+    return this.sourceClazz;
   }
 
   public void setSourceClazz(final Clazz sourceClazz) {
@@ -50,7 +50,7 @@ public class ClazzCommunication extends BaseEntity {
   }
 
   public Clazz getTargetClazz() {
-    return targetClazz;
+    return this.targetClazz;
   }
 
   public void setTargetClazz(final Clazz targetClazz) {
@@ -58,17 +58,17 @@ public class ClazzCommunication extends BaseEntity {
   }
 
   public List<RuntimeInformation> getRuntimeInformations() {
-    return runtimeInformations;
+    return this.runtimeInformations;
   }
 
   public void addRuntimeInformation(final Long traceId, final int orderIndex, final int requests,
       final float averageResponseTime, final float overallTraceDuration) {
 
-    RuntimeInformation runtime = null;
+    RuntimeInformation runtime = null; // NOPMD
 
-    for (final RuntimeInformation runtimeInformation : runtimeInformations) {
+    for (final RuntimeInformation runtimeInformation : this.runtimeInformations) {
       if (runtimeInformation.getTraceId() == traceId) {
-        runtime = runtimeInformation;
+        runtime = runtimeInformation; // NOPMD
       }
     }
 
@@ -81,7 +81,7 @@ public class ClazzCommunication extends BaseEntity {
       runtime.setOverallTraceDuration(overallTraceDuration);
       runtime.setAverageResponseTime(averageResponseTime);
 
-      runtimeInformations.add(runtime);
+      this.runtimeInformations.add(runtime);
       this.setRequests(this.getRequests() + requests);
       return;
     }
@@ -92,14 +92,14 @@ public class ClazzCommunication extends BaseEntity {
     runtime.setAverageResponseTime((beforeSum + currentSum) / (runtime.getRequests() + requests));
     runtime.setRequests(runtime.getRequests() + requests);
     runtime
-    .setOverallTraceDuration((overallTraceDuration + runtime.getOverallTraceDuration()) / 2f);
+        .setOverallTraceDuration((overallTraceDuration + runtime.getOverallTraceDuration()) / 2f);
     runtime.getOrderIndexes().add(orderIndex);
     this.setRequests(this.getRequests() + requests);
   }
 
   public void reset() {
-    requests = 0;
-    runtimeInformations.clear();
+    this.requests = 0;
+    this.runtimeInformations.clear();
   }
 
 }

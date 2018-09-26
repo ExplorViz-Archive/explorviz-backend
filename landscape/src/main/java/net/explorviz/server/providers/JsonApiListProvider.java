@@ -54,7 +54,7 @@ public class JsonApiListProvider implements MessageBodyReader<List<?>>, MessageB
       final Annotation[] annotations, final MediaType mediaType,
       final MultivaluedMap<String, Object> httpHeaders, final OutputStream entityStream)
       throws IOException, WebApplicationException {
-    final JSONAPIDocument<List<?>> document = new JSONAPIDocument<List<?>>(t);
+    final JSONAPIDocument<List<?>> document = new JSONAPIDocument<>(t);
 
     try {
       entityStream.write(this.converter.writeDocumentCollection(document));

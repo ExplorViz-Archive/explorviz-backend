@@ -34,8 +34,8 @@ public class SetupApplicationListener implements ApplicationEventListener {
     final Type t = Type.INITIALIZATION_FINISHED;
 
     if (event.getType().equals(t)) {
-      startExplorVizBackend();
-      startDatabase();
+      this.startExplorVizBackend();
+      this.startDatabase();
     }
   }
 
@@ -56,7 +56,7 @@ public class SetupApplicationListener implements ApplicationEventListener {
 
   private void startExplorVizBackend() {
     // Start ExplorViz Listener
-    exchangeService.startRepository();
+    this.exchangeService.startRepository();
 
     LOGGER.info("\n");
     LOGGER.info("* * * * * * * * * * * * * * * * * * *\n"); // NOCS

@@ -16,7 +16,7 @@ public class DatabaseQuery extends BaseEntity {
   private long responseTime;
 
   public long getTimestamp() {
-    return timestamp;
+    return this.timestamp;
   }
 
   public void setTimestamp(final long timestamp) {
@@ -24,7 +24,7 @@ public class DatabaseQuery extends BaseEntity {
   }
 
   public String getSqlStatement() {
-    return sqlStatement;
+    return this.sqlStatement;
   }
 
   public void setSqlStatement(final String sqlStatement) {
@@ -32,7 +32,7 @@ public class DatabaseQuery extends BaseEntity {
   }
 
   public String getReturnValue() {
-    return returnValue;
+    return this.returnValue;
   }
 
   public void setReturnValue(final String returnValue) {
@@ -40,7 +40,7 @@ public class DatabaseQuery extends BaseEntity {
   }
 
   public long getResponseTime() {
-    return responseTime;
+    return this.responseTime;
   }
 
   public void setResponseTime(final long responseTime) {

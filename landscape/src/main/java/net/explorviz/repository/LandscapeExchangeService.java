@@ -26,12 +26,11 @@ import org.slf4j.LoggerFactory;
 @Singleton
 public class LandscapeExchangeService {
 
-  private static final Logger LOGGER =
-      LoggerFactory.getLogger(LandscapeExchangeService.class.getName());
+  private static final Logger LOGGER = LoggerFactory.getLogger(LandscapeExchangeService.class);
 
   private static final String EXPLORVIZ_FILE_ENDING = ".expl";
 
-  private static Map<String, Timestamp> timestampCache = new HashMap<String, Timestamp>();
+  private static Map<String, Timestamp> timestampCache = new HashMap<>();
 
   @SuppressWarnings("unused")
   private static Long timestamp;
@@ -58,19 +57,19 @@ public class LandscapeExchangeService {
   public Landscape getLandscapeByTimestampAndActivity(final long timestamp, final long activity) {
     LandscapeExchangeService.timestamp = timestamp;
     LandscapeExchangeService.activity = activity;
-    return getCurrentLandscape();
+    return this.getCurrentLandscape();
   }
 
   public LandscapeRepositoryModel getModel() {
-    return model;
+    return this.model;
   }
 
   public Landscape getCurrentLandscape() {
-    return model.getLastPeriodLandscape();
+    return this.model.getLastPeriodLandscape();
   }
 
   public List<String> getReplayNames() {
-    final List<String> names = new ArrayList<String>();
+    final List<String> names = new ArrayList<>();
     final File directory = new File(REPLAY_FOLDER);
     final File[] fList = directory.listFiles();
 
@@ -106,7 +105,7 @@ public class LandscapeExchangeService {
   public List<Timestamp> getTimestampObjectsInRepo(final String folderName) {
     final File directory = new File(REPOSITORY_FOLDER + folderName);
     final File[] fList = directory.listFiles();
-    final List<Timestamp> timestamps = new LinkedList<Timestamp>();
+    final List<Timestamp> timestamps = new LinkedList<>();
 
     if (fList != null) {
       for (final File f : fList) {
@@ -134,7 +133,7 @@ public class LandscapeExchangeService {
               continue;
             }
 
-            possibleTimestamp = new Timestamp(timestamp, activity);
+            possibleTimestamp = new Timestamp(timestamp, activity); // NOPMD
             possibleTimestamp.initializeId();
             timestampCache.put(timestampAsString + activityAsString, possibleTimestamp);
           }
@@ -148,7 +147,7 @@ public class LandscapeExchangeService {
 
   public Landscape getLandscape(final long timestamp, final String folderName)
       throws FileNotFoundException {
-    return model.getLandscape(timestamp, folderName);
+    return this.model.getLandscape(timestamp, folderName);
   }
 
   public void startRepository() {
@@ -156,18 +155,18 @@ public class LandscapeExchangeService {
 
       @Override
       public void run() {
-        new RepositoryStarter().start(model);
+        new RepositoryStarter().start(LandscapeExchangeService.this.model); // NOPMD
       }
     }).start();
 
 
     // Start Kieker monitoring adapter
-    if (!useDummyMode && Configuration.ENABLE_KIEKER_ADAPTER) {
+    if (!this.useDummyMode && Configuration.ENABLE_KIEKER_ADAPTER) {
       new Thread(new Runnable() {
 
         @Override
         public void run() {
-          adapter.startReader();
+          LandscapeExchangeService.this.adapter.startReader(); // NOPMD
         }
       }).start();
     }
