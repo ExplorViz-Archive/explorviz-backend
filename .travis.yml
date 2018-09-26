@@ -9,6 +9,7 @@ matrix:
   fast_finish: true
   allow_failures:
   - jdk: oraclejdk9
+  - jdk: oraclejdk8
 
 before_script:
   - chmod +x .travis/push.sh
