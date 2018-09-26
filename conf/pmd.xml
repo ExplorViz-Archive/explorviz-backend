@@ -32,6 +32,7 @@
 
   <rule ref="category/java/errorprone.xml">
     <exclude name="BeanMembersShouldSerialize" />
+    <exclude name="DataflowAnomalyAnalysis" />
   </rule>
 
   <rule ref="category/java/multithreading.xml">
@@ -58,13 +59,6 @@
   <rule ref="category/java/codestyle.xml/LongVariable">
     <properties>
       <property name="minimum" value="30" />
-    </properties>
-  </rule>
-
-  <rule ref="category/java/errorprone.xml/DataflowAnomalyAnalysis">
-    <properties>
-      <property name="violationSuppressRegex"
-        value="^Found 'UR'-anomaly.*" />
     </properties>
   </rule>
   
