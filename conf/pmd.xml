@@ -7,9 +7,7 @@
 
   <description>CAU-SE PMD ruleset</description>
 
-  <exclude-pattern>.*</exclude-pattern>
-  <include-pattern>.*/src/main/java/.*</include-pattern>
-  <include-pattern>.*/src/test/java/.*</include-pattern>
+  <exclude-pattern>.*/src/main/java/net/explorviz/repository/LandscapeDummyCreator.java</exclude-pattern>
 
   <rule ref="category/java/bestpractices.xml" />
 
@@ -61,11 +59,12 @@
       <property name="minimum" value="30" />
     </properties>
   </rule>
-  
+
   <rule ref="category/java/codestyle.xml/ClassNamingConventions">
     <properties>
-      <property name="utilityClassPattern" value="[A-Z][a-zA-Z0-9]+"/>
+      <property name="utilityClassPattern"
+        value="[A-Z][a-zA-Z0-9]+" />
     </properties>
   </rule>
-  
+
 </ruleset>
