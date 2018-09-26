@@ -10,5 +10,5 @@ Eclipse:
 Tooling:
 - checkstyle-suppression.xml : 975e0d8089a2ce11a24613273d264d80de22c6ab
 - checkstyle.xml : 975e0d8089a2ce11a24613273d264d80de22c6ab
-- pmd.xml : d9dd16cadc4085d6967bbf5e55166400605af9f6
+- pmd.xml : b8d31edc2200a29e247f99b179952ac7de65b73f
 - spotbugs-exclude-filter.xml : 6cc511bb5ca97912c6963756e5844a515fe3efb1
