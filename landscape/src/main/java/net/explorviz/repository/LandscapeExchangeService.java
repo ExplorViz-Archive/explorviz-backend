@@ -155,7 +155,7 @@ public class LandscapeExchangeService {
 
       @Override
       public void run() {
-        new RepositoryStarter().start(LandscapeExchangeService.this.model); // NOPMD
+        new RepositoryStarter().start(LandscapeExchangeService.this.model);
       }
     }).start();
 
@@ -166,7 +166,7 @@ public class LandscapeExchangeService {
 
         @Override
         public void run() {
-          LandscapeExchangeService.this.adapter.startReader(); // NOPMD
+          LandscapeExchangeService.this.adapter.startReader();
         }
       }).start();
     }

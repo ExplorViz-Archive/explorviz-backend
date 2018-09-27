@@ -168,7 +168,7 @@ public class InsertionRepositoryPart {
     landscape.getExceptions().put(currentMillis, cause);
   }
 
-  Node seekOrCreateNode(final HostApplicationMetaDataRecord hostApplicationRecord,
+  protected Node seekOrCreateNode(final HostApplicationMetaDataRecord hostApplicationRecord,
       final Landscape landscape) {
     final String nodeName =
         hostApplicationRecord.getHostname() + "_" + hostApplicationRecord.getIpaddress();
@@ -193,11 +193,10 @@ public class InsertionRepositoryPart {
 
   private NodeGroup seekOrCreateNodeGroup(final System system, final Node node) {
     for (final NodeGroup existingNodeGroup : system.getNodeGroups()) {
-      if (!existingNodeGroup.getNodes().isEmpty()) {
-        if (this.nodeMatchesNodeType(node, existingNodeGroup.getNodes().get(0))) {
-          // familiar NodeGroup
-          return existingNodeGroup;
-        }
+      if (!existingNodeGroup.getNodes().isEmpty()
+          && this.nodeMatchesNodeType(node, existingNodeGroup.getNodes().get(0))) {
+        // familiar NodeGroup
+        return existingNodeGroup;
       }
     }
 
@@ -502,16 +501,18 @@ public class InsertionRepositoryPart {
   }
 
   private Clazz seekrOrCreateClazzHelper(final String fullQName, final String[] splittedName,
-      final Application application, Component parent, final int index) {
+      final Application application, final Component parent, final int index) {
     final String currentPart = splittedName[index];
+
+    Component potentialParent = parent;
 
     if (index < splittedName.length - 1) {
       List<Component> list = null;
 
-      if (parent == null) {
+      if (potentialParent == null) {
         list = application.getComponents();
       } else {
-        list = parent.getChildren();
+        list = potentialParent.getChildren();
       }
 
       for (final Component component : list) {
@@ -530,21 +531,21 @@ public class InsertionRepositoryPart {
       fullQNameComponent = fullQNameComponent.substring(0, fullQNameComponent.length() - 1);
       component.setFullQualifiedName(fullQNameComponent);
       component.setName(currentPart);
-      component.setParentComponent(parent);
+      component.setParentComponent(potentialParent);
       component.setBelongingApplication(application);
       list.add(component);
       return this.seekrOrCreateClazzHelper(fullQName, splittedName, application, component,
           index + 1);
     } else {
-      if (parent == null) {
+      if (potentialParent == null) {
         for (final Component component : application.getComponents()) {
           if (component.getFullQualifiedName().equals(DEFAULT_COMPONENT_NAME)) {
-            parent = component;
+            potentialParent = component;
             break;
           }
         }
 
-        if (parent == null) {
+        if (potentialParent == null) {
           final Component component = new Component();
           component.initializeId();
 
@@ -553,11 +554,11 @@ public class InsertionRepositoryPart {
           component.setParentComponent(null);
           component.setBelongingApplication(application);
           application.getComponents().add(component);
-          parent = component;
+          potentialParent = component;
         }
       }
 
-      for (final Clazz clazz : parent.getClazzes()) {
+      for (final Clazz clazz : potentialParent.getClazzes()) {
         if (clazz.getName().equalsIgnoreCase(currentPart)) {
           // familiar clazz
           return clazz;
@@ -570,8 +571,8 @@ public class InsertionRepositoryPart {
 
       clazz.setName(currentPart);
       clazz.setFullQualifiedName(fullQName);
-      clazz.setParent(parent);
-      parent.getClazzes().add(clazz);
+      clazz.setParent(potentialParent);
+      potentialParent.getClazzes().add(clazz);
       return clazz;
     }
   }
