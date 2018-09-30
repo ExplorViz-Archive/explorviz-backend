@@ -12,7 +12,7 @@ bin
 
 .gitmodules
 
-.settings
+.settings/*
 
 */.settings/*
 !*/.settings/edu.umd.cs.findbugs.core.prefs
