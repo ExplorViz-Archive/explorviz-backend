@@ -1,28 +1,31 @@
 apply plugin: 'com.github.spotbugs'
 
 buildscript {
-    repositories {
-        jcenter()
-        maven {
-          url "https://plugins.gradle.org/m2/"
-        }
+  repositories {
+    jcenter()
+    maven {
+      url "https://plugins.gradle.org/m2/"
     }
-    dependencies {
-        classpath "gradle.plugin.com.github.spotbugs:spotbugs-gradle-plugin:1.6.3"
-    }
+  }
+  dependencies {
+    classpath "gradle.plugin.com.github.spotbugs:spotbugs-gradle-plugin:1.6.3"
+  }
 }
 
 repositories {
-  	maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
+  maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
 }
 
 dependencies {
-	// Teetime Pipe and Filter Framework
-	implementation group: 'net.sourceforge.teetime', name: 'teetime', version: '3.0-SNAPSHOT'	
-	implementation group: 'net.sourceforge.teetime-stages', name: 'teetime-stages', version: '3.0-SNAPSHOT'
+  // explorviz-kieker-adapter
+  implementation project(':kiekeradapter')
+
+  // Teetime Pipe and Filter Framework
+  implementation group: 'net.sourceforge.teetime', name: 'teetime', version: '3.0-SNAPSHOT'	
+  implementation group: 'net.sourceforge.teetime-stages', name: 'teetime-stages', version: '3.0-SNAPSHOT'
 	
-	// Kieker Monitoring Framework
-	implementation group: 'net.kieker-monitoring', name: 'kieker', version: '1.14-SNAPSHOT'
+  // Kieker Monitoring Framework
+  implementation group: 'net.kieker-monitoring', name: 'kieker', version: '1.14-SNAPSHOT'
 }
 
 spotbugs {

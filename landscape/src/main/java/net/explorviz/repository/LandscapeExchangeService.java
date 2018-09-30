@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import net.explorviz.kiekeradapter.main.KiekerAdapter;
 import net.explorviz.model.landscape.Landscape;
 import net.explorviz.model.store.Timestamp;
 import net.explorviz.server.helper.FileSystemHelper;
@@ -43,7 +42,6 @@ public class LandscapeExchangeService {
       FileSystemHelper.getExplorVizDirectory() + File.separator;
 
   private final LandscapeRepositoryModel model;
-  private final KiekerAdapter adapter;
 
   @Config("repository.useDummyMode")
   private boolean useDummyMode;
@@ -51,7 +49,6 @@ public class LandscapeExchangeService {
   @Inject
   public LandscapeExchangeService(final LandscapeRepositoryModel model) {
     this.model = model;
-    this.adapter = KiekerAdapter.getInstance();
   }
 
   public Landscape getLandscapeByTimestampAndActivity(final long timestamp, final long activity) {
@@ -158,17 +155,5 @@ public class LandscapeExchangeService {
         new RepositoryStarter().start(LandscapeExchangeService.this.model);
       }
     }).start();
-
-
-    // Start Kieker monitoring adapter
-    if (!this.useDummyMode && Configuration.ENABLE_KIEKER_ADAPTER) {
-      new Thread(new Runnable() {
-
-        @Override
-        public void run() {
-          LandscapeExchangeService.this.adapter.startReader();
-        }
-      }).start();
-    }
   }
 }

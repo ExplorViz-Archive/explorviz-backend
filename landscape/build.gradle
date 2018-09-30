@@ -35,9 +35,6 @@ dependencies {
   // Any .jar in libs
   implementation fileTree(dir: 'libs', include: '*.jar')
   
-  // explorviz-kieker-adapter
-  implementation project(':kiekeradapter')
-  
   implementation project(':shared')
   
   // SSE context for injection
