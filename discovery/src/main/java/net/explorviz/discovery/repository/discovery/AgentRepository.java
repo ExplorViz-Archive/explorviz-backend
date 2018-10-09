@@ -1,11 +1,10 @@
-package net.explorviz.repository.discovery;
+package net.explorviz.discovery.repository.discovery;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicLong;
-import net.explorviz.discovery.exceptions.agent.AgentNotFoundException;
-import net.explorviz.discovery.exceptions.mapper.ResponseUtil;
 import net.explorviz.discovery.model.Agent;
 import net.explorviz.discovery.model.Procezz;
 
@@ -67,17 +66,16 @@ public class AgentRepository {
 
   }
 
-  public Agent lookupAgentById(final String id) throws AgentNotFoundException {
+  public Optional<Agent> lookupAgentById(final String id) {
     synchronized (AGENTS) {
       for (final Agent agent : AGENTS) {
         if (agent.getId().equals(id)) {
-          return agent;
+          return Optional.of(agent);
         }
       }
     }
 
-    throw new AgentNotFoundException(ResponseUtil.ERROR_NO_AGENT_DETAIL, new Exception());
-
+    return Optional.empty();
   }
 
 }
