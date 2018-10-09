@@ -16,7 +16,7 @@ import org.slf4j.LoggerFactory;
 public final class Main {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(Main.class);
-  private static final int DEFAULT_PORT = 8081;
+  private static final int DEFAULT_PORT = 8082;
 
   private Main() {
     // utility class
@@ -55,7 +55,11 @@ public final class Main {
     try {
       return PropertyHelper.getIntegerProperty("server.port");
     } catch (final NumberFormatException e) {
-      LOGGER.info("ATTENTION: Using default port 8081. Check explorviz.properties file.", e);
+      if (LOGGER.isInfoEnabled()) {
+        LOGGER.info(
+            "ATTENTION: Using default port " + DEFAULT_PORT + ". Check explorviz.properties file.",
+            e);
+      }
     }
     return DEFAULT_PORT;
   }
