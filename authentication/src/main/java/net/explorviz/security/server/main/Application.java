@@ -1,6 +1,8 @@
 package net.explorviz.security.server.main;
 
 import net.explorviz.security.server.filter.AuthenticationFilter;
+import net.explorviz.security.server.providers.JsonApiListProvider;
+import net.explorviz.security.server.providers.JsonApiProvider;
 import net.explorviz.shared.exceptions.mapper.GeneralExceptionMapper;
 import net.explorviz.shared.exceptions.mapper.WebApplicationExceptionMapper;
 import net.explorviz.shared.security.filters.CorsResponseFilter;
@@ -19,16 +21,21 @@ public class Application extends ResourceConfig {
   public Application() { // NOPMD
 
     // register CDI
-    register(new DependencyInjectionBinder());
+    this.register(new DependencyInjectionBinder());
 
-    register(AuthenticationFilter.class);
-    register(CorsResponseFilter.class);
+    this.register(AuthenticationFilter.class);
+    this.register(CorsResponseFilter.class);
 
     // exception handling (mind the order !)
-    register(WebApplicationExceptionMapper.class);
-    register(GeneralExceptionMapper.class);
+    this.register(WebApplicationExceptionMapper.class);
+    this.register(GeneralExceptionMapper.class);
+
+    // (un-)marshaling
+    this.register(JsonApiListProvider.class);
+    this.register(JsonApiProvider.class);
+
 
     // register all resources in the given package
-    packages("net.explorviz.security.server.resources");
+    this.packages("net.explorviz.security.server.resources");
   }
 }
