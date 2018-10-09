@@ -1,15 +1,22 @@
 package net.explorviz.shared.security;
 
+import com.github.jasminb.jsonapi.LongIdHandler;
+import com.github.jasminb.jsonapi.annotations.Id;
+import com.github.jasminb.jsonapi.annotations.Type;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Model class (container) for the pair of username and password.
  */
+@Type("user")
 public class User {
 
   private String username;
   private String password;
+
+  @Id(LongIdHandler.class)
+  private Long id;
 
   private List<String> roles = new ArrayList<>();
 
@@ -18,7 +25,7 @@ public class User {
   }
 
   public String getUsername() {
-    return username;
+    return this.username;
   }
 
   public void setUsername(final String username) {
@@ -26,7 +33,7 @@ public class User {
   }
 
   public String getPassword() {
-    return password;
+    return this.password;
   }
 
   public void setPassword(final String password) {
@@ -34,7 +41,7 @@ public class User {
   }
 
   public List<String> getRoles() {
-    return roles;
+    return this.roles;
   }
 
   public void setRoles(final List<String> roles) {

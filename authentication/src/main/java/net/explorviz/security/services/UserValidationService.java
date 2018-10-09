@@ -9,7 +9,7 @@ import org.jvnet.hk2.annotations.Service;
  * Injectable service that contains utility methods for {@link UserCredentials} validation.
  */
 @Service
-public class UserService {
+public class UserValidationService {
 
   /**
    * This method validates the passed {@link UserCredentials}, therefore enables overall

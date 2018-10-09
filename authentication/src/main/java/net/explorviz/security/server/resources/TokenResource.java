@@ -12,7 +12,7 @@ import javax.ws.rs.core.MediaType;
 import net.explorviz.security.model.Token;
 import net.explorviz.security.model.UserCredentials;
 import net.explorviz.security.services.TokenService;
-import net.explorviz.security.services.UserService;
+import net.explorviz.security.services.UserValidationService;
 import net.explorviz.shared.annotations.Secured;
 import net.explorviz.shared.security.TokenBasedSecurityContext;
 import net.explorviz.shared.security.TokenDetails;
@@ -25,7 +25,7 @@ import net.explorviz.shared.security.User;
 public class TokenResource {
 
   @Inject
-  private UserService userService;
+  private UserValidationService userService;
 
   @Inject
   private TokenService tokenService;
