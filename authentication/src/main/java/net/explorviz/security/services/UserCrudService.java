@@ -19,10 +19,22 @@ public class UserCrudService {
    *
    * @param user the user to persist
    */
-  public void saveNewUser(final User user) {
+  public User saveNewUser(final User user) {
     // todo: Auto-Generate id
+
+    return null;
   }
 
+
+  /**
+   * Updates values of an existing user.
+   *
+   * @param user the user to update
+   */
+  public void updateUser(final User user) {
+
+    return;
+  }
 
   /**
    * Retrieves a user by its id.

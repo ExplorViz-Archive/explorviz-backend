@@ -28,7 +28,7 @@ import net.explorviz.shared.security.User;
 public class UserResource {
 
   @Inject
-  private UserCrudService userService;
+  private UserCrudService userCrudService;
 
 
   /**

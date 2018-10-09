@@ -24,6 +24,21 @@ public class User {
     this.username = username;
   }
 
+  public User(final Long id, final String username, final String password) {
+    this.username = username;
+    this.id = id;
+    this.password = password;
+  }
+
+  public Long getId() {
+    return this.id;
+  }
+
+
+  public void setId(final Long id) {
+    this.id = id;
+  }
+
   public String getUsername() {
     return this.username;
   }
@@ -47,4 +62,5 @@ public class User {
   public void setRoles(final List<String> roles) {
     this.roles = roles;
   }
+
 }
