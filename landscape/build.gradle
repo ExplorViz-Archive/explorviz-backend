@@ -28,7 +28,6 @@ buildscript {
 
 repositories {
 	maven {url 'https://oss.sonatype.org/content/repositories/snapshots'}
-	maven {url 'https://jitpack.io'}
 }
 
 dependencies {
@@ -39,15 +38,9 @@ dependencies {
   
   // SSE context for injection
   implementation group: 'org.glassfish.jersey.media', name: 'jersey-media-sse', version: '2.27'
-  
-  // ExplorViz Discovery Classes
-  implementation 'com.github.ExplorViz:explorviz-discovery-common:master-SNAPSHOT'
     
   // Serialization
-  implementation group: 'de.ruedigermoeller', name: 'fst', version:'2.47'
-  
-  // JSON-API parsing
-  implementation group: 'com.github.jasminb', name: 'jsonapi-converter', version:'0.8'
+  implementation group: 'de.ruedigermoeller', name: 'fst', version:'2.47'  
   
   // multipart/form-data type
   implementation group: 'org.glassfish.jersey.media', name:'jersey-media-multipart', version:'2.26'
