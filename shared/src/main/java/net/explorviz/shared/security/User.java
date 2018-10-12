@@ -1,5 +1,7 @@
 package net.explorviz.shared.security;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty.Access;
 import com.github.jasminb.jsonapi.LongIdHandler;
 import com.github.jasminb.jsonapi.annotations.Id;
 import com.github.jasminb.jsonapi.annotations.Type;
@@ -13,6 +15,8 @@ import java.util.List;
 public class User {
 
   private String username;
+
+  @JsonProperty(access = Access.WRITE_ONLY)
   private String password;
 
   @Id(LongIdHandler.class)
