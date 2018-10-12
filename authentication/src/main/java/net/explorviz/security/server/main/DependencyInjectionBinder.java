@@ -1,7 +1,9 @@
 package net.explorviz.security.server.main;
 
 import javax.inject.Singleton;
+import net.explorviz.security.services.InMemoryUserCrudService;
 import net.explorviz.security.services.TokenService;
+import net.explorviz.security.services.UserCrudService;
 import net.explorviz.security.services.UserValidationService;
 import net.explorviz.shared.annotations.Config;
 import net.explorviz.shared.annotations.injection.ConfigInjectionResolver;
@@ -26,8 +28,11 @@ public class DependencyInjectionBinder extends AbstractBinder {
     this.bind(TokenService.class).to(TokenService.class).in(Singleton.class);
     this.bind(UserValidationService.class).to(UserValidationService.class).in(Singleton.class);
     this.bind(TokenParserService.class).to(TokenParserService.class).in(Singleton.class);
+    this.bind(UserCrudService.class).to(InMemoryUserCrudService.class).in(Singleton.class);
 
     // ErrorObject Handler
     this.bind(ErrorObjectHelper.class).to(ErrorObjectHelper.class).in(Singleton.class);
+
+
   }
 }

@@ -8,22 +8,16 @@ import org.jvnet.hk2.annotations.Service;
  * Injectable service that manages create, read, update and delete operations for {@link User}
  * objects.
  *
- * @author lotzk
- *
  */
 @Service
-public class UserCrudService {
+public interface UserCrudService {
 
   /**
    * Persists a new user object.
    *
    * @param user the user to persist
    */
-  public User saveNewUser(final User user) {
-    // Todo: Auto-Generate id
-
-    return null;
-  }
+  User saveNewUser(final User user);
 
 
   /**
@@ -31,10 +25,7 @@ public class UserCrudService {
    *
    * @param user the user to update
    */
-  public void updateUser(final User user) {
-
-    return;
-  }
+  void updateUser(final User user);
 
   /**
    * Retrieves a user by its id.
@@ -43,10 +34,7 @@ public class UserCrudService {
    * @return as {@link User} object of the user with the given id or {@code null}, if no such user
    *         exists
    */
-  public User getUserById(final Long id) {
-
-    return null;
-  }
+  User getUserById(final Long id);
 
   /**
    * Retrieves a list of all users, that have a specific role assigned.
@@ -54,10 +42,7 @@ public class UserCrudService {
    * @param role role to search for
    * @return a list of all users, that have the given role assigned
    */
-  public List<User> getUsersByRole(final String role) {
-
-    return null;
-  }
+  List<User> getUsersByRole(final String role);
 
 
   /**
@@ -65,10 +50,7 @@ public class UserCrudService {
    *
    * @param id the id of the user to delete
    */
-  public void deleteUserById(final Long id) {
-
-  }
-
+  void deleteUserById(final Long id);
 
 
 }
