@@ -1,16 +1,20 @@
 package net.explorviz.security.server.resources;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.when;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import net.explorviz.security.services.UserCrudService;
 import net.explorviz.shared.security.User;
+import org.hamcrest.CoreMatchers;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -29,7 +33,7 @@ public class UserResourceTest {
   private Long lastId = 0L;
 
   @Before
-  public void setup() {
+  public void setUp() {
 
     when(this.userCrudService.saveNewUser(any())).thenAnswer(inv -> {
       final User u = (User) inv.getArgument(0);
@@ -58,7 +62,7 @@ public class UserResourceTest {
   }
 
   @After
-  public void teadown() {
+  public void tearDown() {
     this.users.clear();
   }
 
@@ -68,36 +72,76 @@ public class UserResourceTest {
     final User u = new User("testuser");
     u.setPassword("testPassword");
 
-    this.userResource.newUser(u);
+    final User newUser = this.userResource.newUser(u);
 
-    assertNotNull(u.getId());
-    assertTrue(u.getId() > 0);
+    assertNotNull(newUser.getId());
+    assertTrue(newUser.getId() > 0);
 
   }
 
   @Test
   public void testUserByRole() {
-    fail("Not yet implemented");
+    final User u1 = new User("testuser");
+    u1.setPassword("password");
+    u1.setRoles(Arrays.asList("role1", "role2"));
+
+    final User u2 = new User("testuser2");
+    u2.setPassword("password");
+    u2.setRoles(Arrays.asList("role1"));
+
+    this.userResource.newUser(u1);
+    this.userResource.newUser(u2);
+
+    final List<User> role1Users = this.userResource.userByRole("role1");
+    assertEquals(2, role1Users.size());
+
+    final List<User> role2Users = this.userResource.userByRole("role2");
+    assertEquals(1, role2Users.size());
+
+    final List<User> role3Users = this.userResource.userByRole("role3");
+    assertEquals(0, role3Users.size());
+
   }
 
   @Test
   public void testRemoveUser() {
-    fail("Not yet implemented");
+    final User u1 = new User("testuser");
+    u1.setPassword("password");
+    final User newUser = this.userResource.newUser(u1);
+
+    this.userResource.removeUser(newUser.getId());
   }
 
   @Test
   public void testChangePassword() {
-    fail("Not yet implemented");
+
+    // Will always fail if passwords are hashed
+
+    final User u1 = new User("testuser");
+    u1.setPassword("password");
+    final User newUser = this.userResource.newUser(u1);
+
+    this.userResource.changePassword(newUser.getId(), "newpassword");
+
+    final User changePwUser = this.userResource.userById(newUser.getId());
+    assertEquals("newpassword", changePwUser.getPassword());
   }
 
   @Test
   public void testUserRoles() {
-    fail("Not yet implemented");
+    final User u1 = new User("testuser");
+    u1.setPassword("password");
+    u1.setRoles(Arrays.asList("role1", "role2"));
+    final User newUser = this.userResource.newUser(u1);
+
+    final List<String> roles = this.userResource.userRoles(newUser.getId());
+
+    assertThat(roles, CoreMatchers.hasItems("role1", "role2"));
   }
 
   @Test
   public void testChangeRoles() {
-    fail("Not yet implemented");
+    // todo
   }
 
 }
