@@ -20,6 +20,8 @@ public class User {
 
   private List<String> roles = new ArrayList<>();
 
+  private User() {}
+
   public User(final String username) {
     this.username = username;
   }

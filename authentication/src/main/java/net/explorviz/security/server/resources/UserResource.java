@@ -18,6 +18,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import net.explorviz.security.model.Password;
 import net.explorviz.security.services.UserCrudService;
 import net.explorviz.shared.annotations.Secured;
 import net.explorviz.shared.security.User;
@@ -128,7 +129,7 @@ public class UserResource {
   @Path("{id}/password")
   @Consumes(MediaType.APPLICATION_JSON)
   @Secured
-  public Response changePassword(@PathParam("id") final Long id, final String password) {
+  public Response changePassword(@PathParam("id") final Long id, final Password password) {
     final User foundUser = this.userCrudService.getUserById(id);
 
     if (foundUser == null) {
@@ -136,10 +137,10 @@ public class UserResource {
       throw new ForbiddenException();
     }
 
-    foundUser.setPassword(password);
+    foundUser.setPassword(password.getPassword());
     this.userCrudService.updateUser(foundUser);
 
-    return Response.status(403).build();
+    return Response.status(204).build();
 
   }
 
@@ -153,6 +154,7 @@ public class UserResource {
   @GET
   @Path("{id}/roles")
   @Produces(MediaType.APPLICATION_JSON)
+  @Secured
   public List<String> userRoles(@PathParam("id") final Long id) {
     final User foundUser = this.userCrudService.getUserById(id);
 

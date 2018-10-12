@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import net.explorviz.security.model.Password;
 import net.explorviz.security.services.UserCrudService;
 import net.explorviz.shared.security.User;
 import org.hamcrest.CoreMatchers;
@@ -124,7 +125,7 @@ public class UserResourceTest {
     u1.setPassword("password");
     final User newUser = this.userResource.newUser(u1);
 
-    this.userResource.changePassword(newUser.getId(), "newpassword");
+    this.userResource.changePassword(newUser.getId(), new Password("newpassword"));
 
     final User changePwUser = this.userResource.userById(newUser.getId());
     assertEquals("newpassword", changePwUser.getPassword());
