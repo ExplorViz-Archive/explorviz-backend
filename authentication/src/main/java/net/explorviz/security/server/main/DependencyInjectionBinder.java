@@ -28,7 +28,8 @@ public class DependencyInjectionBinder extends AbstractBinder {
     this.bind(TokenService.class).to(TokenService.class).in(Singleton.class);
     this.bind(UserValidationService.class).to(UserValidationService.class).in(Singleton.class);
     this.bind(TokenParserService.class).to(TokenParserService.class).in(Singleton.class);
-    this.bind(UserCrudService.class).to(InMemoryUserCrudService.class).in(Singleton.class);
+    this.bind(InMemoryUserCrudService.class).to(UserCrudService.class).in(Singleton.class);
+
 
     // ErrorObject Handler
     this.bind(ErrorObjectHelper.class).to(ErrorObjectHelper.class).in(Singleton.class);

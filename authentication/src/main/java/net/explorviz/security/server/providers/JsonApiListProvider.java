@@ -24,7 +24,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * This provider enables the automatic serialization and deserialization for list objects of types
- * {@link net.explorviz.discovery.model.Agent} and {@link net.explorviz.discovery.model.Procezz}.
+ * {@link User}.
  */
 @Provider
 @Produces("application/vnd.api+json")

@@ -8,10 +8,12 @@ import java.util.stream.Collectors;
 import net.explorviz.security.util.CountingIdGenerator;
 import net.explorviz.security.util.IdGenerator;
 import net.explorviz.shared.security.User;
+import org.jvnet.hk2.annotations.Service;
 
 /**
  * Helper class, that stores user object within a map.
  */
+@Service
 public class InMemoryUserCrudService implements UserCrudService {
 
   private final Map<Long, User> userDb;

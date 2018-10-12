@@ -87,6 +87,7 @@ public class UserResource {
    * @return the {@link User} object with the given id
    */
   @GET
+  @Path("{id}")
   @Secured
   @Produces(MediaType.APPLICATION_JSON)
   public User userById(@PathParam("id") final Long id) {
