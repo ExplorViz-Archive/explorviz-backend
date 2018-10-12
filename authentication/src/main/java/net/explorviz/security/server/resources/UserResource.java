@@ -25,7 +25,7 @@ import net.explorviz.shared.security.User;
 /**
  * Provides endpoints for user management.
  *
- * @author Kevin Lotz
+ * @author lotzk
  *
  */
 @Path("v1/users")
@@ -59,7 +59,12 @@ public class UserResource {
       throw new BadRequestException("Can't create user with existing id");
     }
 
-    return this.userCrudService.saveNewUser(user);
+
+    final User persistedUser = this.userCrudService.saveNewUser(user);
+
+    // Don't return the password
+    persistedUser.setPassword(null);
+    return persistedUser;
   }
 
   /**
