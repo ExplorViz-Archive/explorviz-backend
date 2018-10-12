@@ -24,10 +24,12 @@ public class User {
     this.username = username;
   }
 
-  public User(final Long id, final String username, final String password) {
+  public User(final Long id, final String username, final String password,
+      final List<String> roles) {
     this.username = username;
     this.id = id;
     this.password = password;
+    this.roles = roles;
   }
 
   public Long getId() {

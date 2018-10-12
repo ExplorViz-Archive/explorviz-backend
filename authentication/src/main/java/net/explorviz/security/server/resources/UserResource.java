@@ -3,9 +3,12 @@ package net.explorviz.security.server.resources;
 import java.util.List;
 import javax.annotation.security.PermitAll;
 import javax.inject.Inject;
+import javax.ws.rs.BadRequestException;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
+import javax.ws.rs.ForbiddenException;
 import javax.ws.rs.GET;
+import javax.ws.rs.NotFoundException;
 import javax.ws.rs.PATCH;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -14,6 +17,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import net.explorviz.security.services.UserCrudService;
 import net.explorviz.shared.annotations.Secured;
 import net.explorviz.shared.security.User;
@@ -43,24 +47,56 @@ public class UserResource {
   @PermitAll
   public User newUser(final User user) {
 
-    return null;
+    if (user.getUsername() == null || user.getUsername().equals("")) {
+      throw new BadRequestException("Invalid username");
+    }
+
+    if (user.getPassword() == null || user.getPassword().equals("")) {
+      throw new BadRequestException("Invalid password");
+    }
+
+    if (user.getId() != null && user.getId() >= 0) {
+      throw new BadRequestException("Can't create user with existing id");
+    }
+
+    return this.userCrudService.saveNewUser(user);
   }
 
   /**
-   * Retrieves all users that have a specific role.
+   * Retrieves all users that have a specific role. Used for testing purposes only, not exposed.
    *
    * @param role the role to be searched for
-   * @return all users with the given role
+   * @return a list of all users with the given role
+   */
+  // @GET
+  // @Secured
+  // @Produces(MediaType.APPLICATION_JSON)
+  public List<User> usersByRole(@QueryParam("role") final String role) {
+    return this.userCrudService.getUsersByRole(role);
+  }
+
+  /**
+   * Retrieves a single user identified by its id.
+   *
+   * @param id the id of the user to return
+   * @return the {@link User} object with the given id
    */
   @GET
   @Secured
   @Produces(MediaType.APPLICATION_JSON)
-  public List<User> userByRole(@QueryParam("role") final String role) {
+  public User userById(@PathParam("id") final Long id) {
+    if (id == null || id <= 0) {
+      throw new BadRequestException("Id must be positive integer");
+    }
+    final User foundUser = this.userCrudService.getUserById(id);
 
+    if (foundUser == null) {
+      throw new NotFoundException();
+    }
 
-    return null;
+    return foundUser;
+
   }
-
 
   /**
    * Removes the user with the given id.
@@ -70,10 +106,10 @@ public class UserResource {
   @DELETE
   @Path("{id}")
   @Secured
-  public void removeUser(@PathParam("id") final Long id) {
+  public Response removeUser(@PathParam("id") final Long id) {
+    this.userCrudService.deleteUserById(id);
 
-
-
+    return Response.status(204).build();
   }
 
   /**
@@ -86,8 +122,18 @@ public class UserResource {
   @Path("{id}/password")
   @Consumes(MediaType.APPLICATION_JSON)
   @Secured
-  public void changePassword(@PathParam("id") final Long id, final String password) {
+  public Response changePassword(@PathParam("id") final Long id, final String password) {
+    final User foundUser = this.userCrudService.getUserById(id);
 
+    if (foundUser == null) {
+      // Return 403 instead of 400 to not expose existing user ids
+      throw new ForbiddenException();
+    }
+
+    foundUser.setPassword(password);
+    this.userCrudService.updateUser(foundUser);
+
+    return Response.status(403).build();
 
   }
 
@@ -102,8 +148,14 @@ public class UserResource {
   @Path("{id}/roles")
   @Produces(MediaType.APPLICATION_JSON)
   public List<String> userRoles(@PathParam("id") final Long id) {
+    final User foundUser = this.userCrudService.getUserById(id);
 
-    return null;
+    if (foundUser == null) {
+      // Return 403 instead of 400 to not expose existing user ids
+      throw new ForbiddenException();
+    }
+
+    return foundUser.getRoles();
   }
 
 

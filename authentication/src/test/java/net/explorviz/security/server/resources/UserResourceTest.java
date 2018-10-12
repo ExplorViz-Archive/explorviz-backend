@@ -18,9 +18,12 @@ import org.hamcrest.CoreMatchers;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
 
+@RunWith(MockitoJUnitRunner.class)
 public class UserResourceTest {
 
   @InjectMocks
@@ -37,8 +40,8 @@ public class UserResourceTest {
 
     when(this.userCrudService.saveNewUser(any())).thenAnswer(inv -> {
       final User u = (User) inv.getArgument(0);
-      final long id = this.lastId++;
-      final User newUser = new User(id, u.getUsername(), u.getPassword());
+      final long id = ++this.lastId;
+      final User newUser = new User(id, u.getUsername(), u.getPassword(), u.getRoles());
       this.users.put(id, newUser);
       return newUser;
     });
@@ -92,13 +95,13 @@ public class UserResourceTest {
     this.userResource.newUser(u1);
     this.userResource.newUser(u2);
 
-    final List<User> role1Users = this.userResource.userByRole("role1");
+    final List<User> role1Users = this.userResource.usersByRole("role1");
     assertEquals(2, role1Users.size());
 
-    final List<User> role2Users = this.userResource.userByRole("role2");
+    final List<User> role2Users = this.userResource.usersByRole("role2");
     assertEquals(1, role2Users.size());
 
-    final List<User> role3Users = this.userResource.userByRole("role3");
+    final List<User> role3Users = this.userResource.usersByRole("role3");
     assertEquals(0, role3Users.size());
 
   }
