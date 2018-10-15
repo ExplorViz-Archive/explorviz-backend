@@ -17,7 +17,7 @@ public final class PropertyHelper {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(PropertyHelper.class);
   private static final String PROPERTIES_FILENAME = "explorviz.properties";
-  private static final String PROPERTIES_PATH;
+  private static String propertiesPath;
 
   private static final Properties PROP = new Properties();
 
@@ -29,7 +29,7 @@ public final class PropertyHelper {
     final ClassLoader loader = Thread.currentThread().getContextClassLoader();
 
     try {
-      PROPERTIES_PATH = loader.getResource(PROPERTIES_FILENAME).getFile();
+      propertiesPath = loader.getResource(PROPERTIES_FILENAME).getFile();
       PROP.load(loader.getResourceAsStream(PROPERTIES_FILENAME));
     } catch (final IOException e) {
       LOGGER.error(
@@ -62,7 +62,7 @@ public final class PropertyHelper {
       throws FileNotFoundException, IOException {
     PROP.setProperty(propName, String.valueOf(value));
 
-    try (OutputStream out = Files.newOutputStream(Paths.get(PROPERTIES_PATH))) {
+    try (OutputStream out = Files.newOutputStream(Paths.get(propertiesPath))) {
       PROP.store(out, null);
     }
   }
