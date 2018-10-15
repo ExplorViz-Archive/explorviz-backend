@@ -8,8 +8,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Properties;
 import javax.ws.rs.InternalServerErrorException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 
 /**
@@ -17,7 +15,6 @@ import org.slf4j.LoggerFactory;
  */
 public final class PropertyHelper {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(PropertyHelper.class);
   private static final String PROPERTIES_FILENAME = "explorviz.properties";
   private static final String PROPERTIES_PATH;
 
