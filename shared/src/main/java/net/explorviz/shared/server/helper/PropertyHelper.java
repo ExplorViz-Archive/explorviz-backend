@@ -27,9 +27,9 @@ public final class PropertyHelper {
 
   static {
     final ClassLoader loader = Thread.currentThread().getContextClassLoader();
-    PROPERTIES_PATH = loader.getResource(PROPERTIES_FILENAME).getFile();
 
     try {
+      PROPERTIES_PATH = loader.getResource(PROPERTIES_FILENAME).getFile();
       PROP.load(loader.getResourceAsStream(PROPERTIES_FILENAME));
     } catch (final IOException e) {
       LOGGER.error(
