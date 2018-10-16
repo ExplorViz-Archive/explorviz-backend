@@ -1,4 +1,6 @@
 apply plugin: 'com.github.spotbugs'
+// Maven plugin for Jitpack subproject publishing
+apply plugin: 'maven'
 
 dependencies {  
   // JSON Web Token (JWT)

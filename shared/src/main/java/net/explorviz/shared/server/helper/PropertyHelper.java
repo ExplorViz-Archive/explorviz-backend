@@ -3,11 +3,11 @@ package net.explorviz.shared.server.helper;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Properties;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import javax.ws.rs.InternalServerErrorException;
 
 
 /**
@@ -15,11 +15,13 @@ import org.slf4j.LoggerFactory;
  */
 public final class PropertyHelper {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(PropertyHelper.class);
   private static final String PROPERTIES_FILENAME = "explorviz.properties";
   private static final String PROPERTIES_PATH;
 
   private static final Properties PROP = new Properties();
+
+  private static final String ERROR_MESSAGE =
+      "Couldn't load properties file. Is WEB-INF/explorviz.properties a valid file?";
 
   private PropertyHelper() {
     // don't instantiate
@@ -27,14 +29,19 @@ public final class PropertyHelper {
 
   static {
     final ClassLoader loader = Thread.currentThread().getContextClassLoader();
+
+    final URL urlToProperties = loader.getResource(PROPERTIES_FILENAME);
+
+    if (urlToProperties == null) {
+      throw new InternalServerErrorException(ERROR_MESSAGE);
+    }
+
     PROPERTIES_PATH = loader.getResource(PROPERTIES_FILENAME).getFile();
 
     try {
       PROP.load(loader.getResourceAsStream(PROPERTIES_FILENAME));
     } catch (final IOException e) {
-      LOGGER.error(
-          "Couldn't load properties file. Is WEB-INF/explorviz.properties a valid file?. Exception: {}", // NOCS
-          e.getMessage());
+      throw new InternalServerErrorException(ERROR_MESSAGE, e);
     }
   }
 

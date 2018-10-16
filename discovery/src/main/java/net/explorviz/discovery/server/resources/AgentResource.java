@@ -27,7 +27,7 @@ import net.explorviz.discovery.server.providers.JsonApiProvider;
 import net.explorviz.discovery.services.ClientService;
 import net.explorviz.shared.server.helper.PropertyHelper;
 
-@Path("discovery")
+@Path("v1/agents")
 public class AgentResource {
 
   // private static final Logger LOGGER =
@@ -67,17 +67,23 @@ public class AgentResource {
   }
 
   @POST
-  @Path("agent")
   @Consumes(MEDIA_TYPE)
   public Agent registerAgent(final Agent newAgent) throws DocumentSerializationException {
     return this.agentRepository.registerAgent(newAgent);
   }
 
   @PATCH
-  @Path("agent")
+  @Path("{id}")
   @Consumes(MEDIA_TYPE)
-  public Agent patchAgent(final Agent agent)
+  public Agent patchAgent(@PathParam("id") final String agentID, final Agent agent)
       throws AgentInternalErrorException, AgentNoConnectionException {
+
+    final Optional<Agent> agentOptional = this.agentRepository.lookupAgentById(agentID);
+
+    if (!agentOptional.isPresent()) {
+      throw new WebApplicationException("No agent for this process is registered.",
+          UNPROCESSABLE_ENTITY);
+    }
 
     final String urlPath = PropertyHelper.getStringProperty("agentBaseURL")
         + PropertyHelper.getStringProperty("agentAgentPath");
@@ -91,7 +97,6 @@ public class AgentResource {
   }
 
   @GET
-  @Path("agents")
   @Produces(MEDIA_TYPE)
   public Response forwardAgentListRequest() throws DocumentSerializationException {
 
