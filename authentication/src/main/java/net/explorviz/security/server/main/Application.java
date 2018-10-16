@@ -24,6 +24,8 @@ public class Application extends ResourceConfig {
     this.register(AuthenticationFilter.class);
     this.register(CorsResponseFilter.class);
 
+    this.register(net.explorviz.shared.security.filters.AuthenticationFilter.class);
+
     // exception handling (mind the order !)
     this.register(WebApplicationExceptionMapper.class);
     this.register(GeneralExceptionMapper.class);
