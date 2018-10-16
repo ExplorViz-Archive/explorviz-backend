@@ -1,5 +1,6 @@
 package net.explorviz.security.server.resources;
 
+import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
@@ -61,6 +62,38 @@ public class UserResource {
     return this.userCrudService.saveNewUser(user);
   }
 
+
+  /**
+   * Creates all users in a list
+   *
+   * @param users the list of users to create
+   * @return a list of users objects, that were saved
+   */
+  @POST
+  @Consumes(MEDIA_TYPE)
+  @Produces(MEDIA_TYPE)
+  @RolesAllowed({"admin"})
+  public List<User> createAll(final List<User> users) {
+    /*
+     * Currently, if a user object in the given list does not survive input validation, it will be
+     * ignored. No error will be given to the caller, since json api does not allow data and error
+     * in one response.
+     *
+     * I don't know if this is the preferred behavior.
+     */
+
+    final List<User> createdUsers = new ArrayList<>();
+    for (final User u : users) {
+      try {
+        createdUsers.add(this.newUser(u));
+      } catch (final BadRequestException ex) {
+        // Do nothing
+        continue;
+      }
+    }
+
+    return createdUsers;
+  }
 
   /**
    * Updates the details of a already existing user. The values of the targeted user will be

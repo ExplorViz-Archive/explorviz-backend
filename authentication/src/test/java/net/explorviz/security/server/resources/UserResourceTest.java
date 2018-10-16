@@ -6,11 +6,13 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.when;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import javax.ws.rs.BadRequestException;
 import net.explorviz.security.services.UserCrudService;
 import net.explorviz.shared.security.User;
 import org.junit.After;
@@ -77,7 +79,56 @@ public class UserResourceTest {
 
     assertNotNull(newUser.getId());
     assertTrue(newUser.getId() > 0);
+  }
 
+  @Test(expected = BadRequestException.class)
+  public void testInvalidUsername() {
+    final User u = new User("");
+    this.userResource.newUser(u);
+  }
+
+  @Test(expected = BadRequestException.class)
+  public void testInvalidPassword() {
+    final User u = new User("");
+    u.setPassword("");
+    this.userResource.newUser(u);
+  }
+
+  @Test(expected = BadRequestException.class)
+  public void testInvalidId() {
+    final User u = new User(12L, "name", "pw", new ArrayList<>());
+    this.userResource.newUser(u);
+  }
+
+
+  @Test
+  public void testListOfNewUsers() {
+    final List<String> roles = Arrays.asList("role");
+    final User u1 = new User(null, "u1", "pw", roles);
+    final User u2 = new User(null, "u2", "pw", roles);
+    final User u3 = new User(null, "u3", "pw", roles);
+
+    this.userResource.createAll(Arrays.asList(u1, u2, u3));
+
+    final List<User> created = this.userCrudService.getUsersByRole("role");
+
+    // Check if 3 users where created
+    assertEquals(3, created.size());
+  }
+
+  @Test
+  public void testListOfNewUsersWithInvalidUser() {
+    final List<String> roles = Arrays.asList("role");
+    final User u1 = new User(null, "u1", "", roles);
+    final User u2 = new User(null, "u2", "pw", roles);
+    final User u3 = new User(null, "u3", "pw", roles);
+
+    this.userResource.createAll(Arrays.asList(u1, u2, u3));
+
+    final List<User> created = this.userCrudService.getUsersByRole("role");
+
+    // Check if 3 users where created
+    assertEquals(2, created.size());
   }
 
   @Test
