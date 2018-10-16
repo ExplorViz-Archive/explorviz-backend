@@ -14,6 +14,9 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import javax.ws.rs.BadRequestException;
 import net.explorviz.security.services.UserCrudService;
+import net.explorviz.security.util.PasswordStorage;
+import net.explorviz.security.util.PasswordStorage.CannotPerformOperationException;
+import net.explorviz.security.util.PasswordStorage.InvalidHashException;
 import net.explorviz.shared.security.User;
 import org.junit.After;
 import org.junit.Before;
@@ -32,11 +35,15 @@ public class UserResourceTest {
   @Mock
   private UserCrudService userCrudService;
 
+  private PasswordStorage passwordStorage;
+
   private final Map<Long, User> users = new HashMap<>();
   private Long lastId = 0L;
 
   @Before
   public void setUp() {
+
+    this.passwordStorage = new PasswordStorage();
 
     when(this.userCrudService.saveNewUser(any())).thenAnswer(inv -> {
       final User u = (User) inv.getArgument(0);
@@ -165,7 +172,7 @@ public class UserResourceTest {
   }
 
   @Test
-  public void testChangePassword() {
+  public void testChangePassword() throws CannotPerformOperationException, InvalidHashException {
 
     // Will always fail if passwords are hashed
 
@@ -178,7 +185,7 @@ public class UserResourceTest {
 
     final User updatedUser = this.userResource.updateUser(uid, update);
 
-    assertEquals("newpw", updatedUser.getPassword());
+    assertTrue(PasswordStorage.verifyPassword("newpw", updatedUser.getPassword()));
     assertEquals(newUser.getId(), updatedUser.getId());
     assertEquals(u1.getUsername(), updatedUser.getUsername());
     assertEquals(u1.getRoles(), updatedUser.getRoles());
