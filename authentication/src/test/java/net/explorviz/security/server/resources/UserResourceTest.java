@@ -14,6 +14,9 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import javax.ws.rs.BadRequestException;
 import net.explorviz.security.services.UserCrudService;
+import net.explorviz.security.util.PasswordStorage;
+import net.explorviz.security.util.PasswordStorage.CannotPerformOperationException;
+import net.explorviz.security.util.PasswordStorage.InvalidHashException;
 import net.explorviz.shared.security.User;
 import org.junit.After;
 import org.junit.Before;
@@ -165,7 +168,7 @@ public class UserResourceTest {
   }
 
   @Test
-  public void testChangePassword() {
+  public void testChangePassword() throws CannotPerformOperationException, InvalidHashException {
 
     // Will always fail if passwords are hashed
 
@@ -178,7 +181,7 @@ public class UserResourceTest {
 
     final User updatedUser = this.userResource.updateUser(uid, update);
 
-    assertEquals("newpw", updatedUser.getPassword());
+    assertTrue(PasswordStorage.verifyPassword("newpw", updatedUser.getPassword()));
     assertEquals(newUser.getId(), updatedUser.getId());
     assertEquals(u1.getUsername(), updatedUser.getUsername());
     assertEquals(u1.getRoles(), updatedUser.getRoles());

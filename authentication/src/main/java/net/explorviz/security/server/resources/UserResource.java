@@ -8,6 +8,7 @@ import javax.ws.rs.BadRequestException;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.InternalServerErrorException;
 import javax.ws.rs.NotFoundException;
 import javax.ws.rs.PATCH;
 import javax.ws.rs.POST;
@@ -17,12 +18,14 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import net.explorviz.security.services.UserCrudService;
+import net.explorviz.security.util.PasswordStorage;
+import net.explorviz.security.util.PasswordStorage.CannotPerformOperationException;
 import net.explorviz.shared.security.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Provides endpoints for user management.
- *
- * @author lotzk
  *
  */
 @Path("v1/users")
@@ -31,7 +34,15 @@ public class UserResource {
   @Inject
   private UserCrudService userCrudService;
 
+  private final PasswordStorage passwordStorage;
+
   private static final String MEDIA_TYPE = "application/vnd.api+json";
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(UserResource.class);
+
+  public UserResource() {
+    this.passwordStorage = new PasswordStorage();
+  }
 
 
   /**
@@ -58,6 +69,12 @@ public class UserResource {
       throw new BadRequestException("Can't create user with existing id");
     }
 
+    try {
+      user.setPassword(PasswordStorage.createHash(user.getPassword()));
+    } catch (final CannotPerformOperationException e) {
+      LOGGER.warn("Could not create user due to password hashing failure: " + e.getMessage());
+      throw new InternalServerErrorException();
+    }
 
     return this.userCrudService.saveNewUser(user);
   }
@@ -72,6 +89,7 @@ public class UserResource {
   @POST
   @Consumes(MEDIA_TYPE)
   @Produces(MEDIA_TYPE)
+  @Path("batch") // Todo: Find better path
   @RolesAllowed({"admin"})
   public List<User> createAll(final List<User> users) {
     /*
@@ -125,7 +143,12 @@ public class UserResource {
       if (updatedUser.getPassword().equals("")) {
         throw new BadRequestException("Invalid password");
       }
-      targetUser.setPassword(updatedUser.getPassword());
+      try {
+        targetUser.setPassword(PasswordStorage.createHash(updatedUser.getPassword()));
+      } catch (final CannotPerformOperationException e) {
+        LOGGER.warn("Could not update user due to password hashing failure: " + e.getMessage());
+        throw new InternalServerErrorException();
+      }
     }
 
     if (updatedUser.getUsername() != null) {
