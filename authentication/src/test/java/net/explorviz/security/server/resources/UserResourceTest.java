@@ -2,7 +2,6 @@ package net.explorviz.security.server.resources;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doAnswer;
@@ -12,10 +11,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import net.explorviz.security.model.Password;
 import net.explorviz.security.services.UserCrudService;
 import net.explorviz.shared.security.User;
-import org.hamcrest.CoreMatchers;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -124,28 +121,53 @@ public class UserResourceTest {
     final User u1 = new User("testuser");
     u1.setPassword("password");
     final User newUser = this.userResource.newUser(u1);
+    final long uid = newUser.getId();
 
-    this.userResource.changePassword(newUser.getId(), new Password("newpassword"));
+    final User update = new User(null, null, "newpw", null);
 
-    final User changePwUser = this.userResource.userById(newUser.getId());
-    assertEquals("newpassword", changePwUser.getPassword());
+    final User updatedUser = this.userResource.updateUser(uid, update);
+
+    assertEquals("newpw", updatedUser.getPassword());
+    assertEquals(newUser.getId(), updatedUser.getId());
+    assertEquals(u1.getUsername(), updatedUser.getUsername());
+    assertEquals(u1.getRoles(), updatedUser.getRoles());
   }
+
 
   @Test
-  public void testUserRoles() {
+  public void testChangeUsername() {
     final User u1 = new User("testuser");
     u1.setPassword("password");
-    u1.setRoles(Arrays.asList("role1", "role2"));
     final User newUser = this.userResource.newUser(u1);
+    final long uid = newUser.getId();
 
-    final List<String> roles = this.userResource.userRoles(newUser.getId());
+    final User update = new User(null, "newname", null, null);
+    final User updatedUser = this.userResource.updateUser(uid, update);
 
-    assertThat(roles, CoreMatchers.hasItems("role1", "role2"));
+    assertEquals("newname", updatedUser.getUsername());
+    assertEquals(newUser.getId(), updatedUser.getId());
+    assertEquals(u1.getRoles(), updatedUser.getRoles());
+    assertEquals(u1.getPassword(), updatedUser.getPassword());
   }
+
 
   @Test
   public void testChangeRoles() {
-    // todo
+    final User u1 = new User("testuser");
+    u1.setPassword("password");
+    final User newUser = this.userResource.newUser(u1);
+
+    final long uid = newUser.getId();
+
+    final User update = new User(null, null, null, Arrays.asList("newrole"));
+    final User updatedUser = this.userResource.updateUser(uid, update);
+
+    assertTrue(updatedUser.getRoles().contains("newrole"));
+    assertEquals(newUser.getId(), updatedUser.getId());
+    assertEquals(u1.getUsername(), updatedUser.getUsername());
+    assertEquals(u1.getPassword(), updatedUser.getPassword());
   }
+
+
 
 }
