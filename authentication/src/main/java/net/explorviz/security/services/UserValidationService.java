@@ -20,7 +20,7 @@ public class UserValidationService {
    */
   public User validateUserCredentials(final UserCredentials userCredentials) {
 
-    if (!checkIfDataIsNotNull(userCredentials)) {
+    if (!this.checkIfDataIsNotNull(userCredentials)) {
       throw new ForbiddenException("Enter username and password");
     }
 
@@ -32,6 +32,13 @@ public class UserValidationService {
 
       // For Testing,
       user.getRoles().add("admin"); // NOCS
+
+      return user;
+    } else if (userCredentials.getUsername().equals("normie")
+        && userCredentials.getPassword().equals("password")) {
+
+      // Does not have admin role
+      final User user = new User("normie");
 
       return user;
     } else {
