@@ -19,6 +19,7 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import net.explorviz.discovery.exceptions.agent.AgentInternalErrorException;
 import net.explorviz.discovery.exceptions.agent.AgentNoConnectionException;
@@ -42,6 +43,7 @@ public class AgentResource {
   private static final Logger LOGGER = LoggerFactory.getLogger(AgentResource.class);
 
   private static final String MEDIA_TYPE = "application/vnd.api+json";
+  private static final MediaType JSON_API_TYPE = new MediaType("application", "vnd.api+json");
   private static final int UNPROCESSABLE_ENTITY = 422;
 
   private final AgentRepository agentRepository;
@@ -79,6 +81,7 @@ public class AgentResource {
   public Agent registerAgent(final Agent newAgent) throws DocumentSerializationException {
 
 
+    // Attention, registration of MessageBodyReader implementation (JsonApiProvier) is mandatory
     final Client client = ClientBuilder.newBuilder().register(SseFeature.class)
         .register(new JsonApiProvider<>(this.converter)).build();
     final WebTarget target = client.target("http://localhost:8084/broadcast/");
@@ -87,14 +90,14 @@ public class AgentResource {
     final EventListener listener = new EventListener() {
       @Override
       public void onEvent(final InboundEvent inboundEvent) {
+
         LOGGER.info(inboundEvent.getName());
-        // TODO cast does not work
-        final Agent a = inboundEvent.readData(Agent.class);
+        // Type notation is mandatory
+        final Agent a = inboundEvent.readData(Agent.class, JSON_API_TYPE);
         LOGGER.info("Test {}", a.getIPPortOrName());
-        // System.out.println(inboundEvent.getName() + "; " + inboundEvent.readData(String.class));
       }
     };
-    eventSource.register(listener);
+    eventSource.register(listener, "message");
     eventSource.open();
     // eventSource.close();
 
