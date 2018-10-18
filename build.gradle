@@ -88,6 +88,9 @@ subprojects {
 	    
 	    // Jetty servlet-container
 		implementation group: 'org.glassfish.jersey.containers', name: 'jersey-container-jetty-servlet', version: '2.27'
+		
+		// Database
+		compile 'org.mongodb:mongo-java-driver:2.12.3'
 	}
 	
 	testImplementation 'junit:junit:4.12'
