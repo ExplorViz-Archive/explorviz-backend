@@ -16,6 +16,10 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.ProcessingException;
 import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import net.explorviz.discovery.exceptions.agent.AgentInternalErrorException;
 import net.explorviz.discovery.exceptions.agent.AgentNoConnectionException;
@@ -26,19 +30,36 @@ import net.explorviz.discovery.repository.discovery.AgentRepository;
 import net.explorviz.discovery.server.providers.JsonApiProvider;
 import net.explorviz.discovery.services.ClientService;
 import net.explorviz.shared.server.helper.PropertyHelper;
+import org.glassfish.jersey.media.sse.EventListener;
+import org.glassfish.jersey.media.sse.EventSource;
+import org.glassfish.jersey.media.sse.InboundEvent;
+import org.glassfish.jersey.media.sse.SseFeature;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Path("v1/agents")
 public class AgentResource {
 
-  // private static final Logger LOGGER =
-  // LoggerFactory.getLogger(AgentResource.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(AgentResource.class);
 
   private static final String MEDIA_TYPE = "application/vnd.api+json";
+  private static final MediaType JSON_API_TYPE = new MediaType("application", "vnd.api+json");
   private static final int UNPROCESSABLE_ENTITY = 422;
 
   private final AgentRepository agentRepository;
   private final ResourceConverter converter;
   private final ClientService clientService;
+
+  @Inject
+  public AgentResource(final ResourceConverter converter, final AgentRepository agentRepository,
+      final ClientService clientService) {
+    this.agentRepository = agentRepository;
+    this.converter = converter;
+    this.clientService = clientService;
+
+    this.clientService.registerProviderReader(new JsonApiProvider<>(converter));
+    this.clientService.registerProviderWriter(new JsonApiProvider<>(converter));
+  }
 
   @Path("{id}/procezzes")
   public ProcezzResource getProcezzResource(@PathParam("id") final String agentID)
@@ -55,20 +76,32 @@ public class AgentResource {
 
   }
 
-  @Inject
-  public AgentResource(final ResourceConverter converter, final AgentRepository agentRepository,
-      final ClientService clientService) {
-    this.agentRepository = agentRepository;
-    this.converter = converter;
-    this.clientService = clientService;
-
-    this.clientService.registerProviderReader(new JsonApiProvider<>(converter));
-    this.clientService.registerProviderWriter(new JsonApiProvider<>(converter));
-  }
-
   @POST
   @Consumes(MEDIA_TYPE)
   public Agent registerAgent(final Agent newAgent) throws DocumentSerializationException {
+
+
+    // Attention, registration of MessageBodyReader implementation (JsonApiProvier) is mandatory
+    final Client client = ClientBuilder.newBuilder().register(SseFeature.class)
+        .register(new JsonApiProvider<>(this.converter)).build();
+    final WebTarget target = client.target("http://localhost:8084/broadcast/");
+    final EventSource eventSource = EventSource.target(target).build();
+
+    final EventListener listener = new EventListener() {
+      @Override
+      public void onEvent(final InboundEvent inboundEvent) {
+
+        LOGGER.info(inboundEvent.getName());
+        // Type notation is mandatory
+        final Agent a = inboundEvent.readData(Agent.class, JSON_API_TYPE);
+        LOGGER.info("Test {}", a.getIPPortOrName());
+      }
+    };
+    eventSource.register(listener, "message");
+    eventSource.open();
+    // eventSource.close();
+
+
     return this.agentRepository.registerAgent(newAgent);
   }
 
