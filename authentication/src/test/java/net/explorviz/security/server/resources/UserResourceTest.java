@@ -35,11 +35,15 @@ public class UserResourceTest {
   @Mock
   private UserCrudService userCrudService;
 
+  private PasswordStorage passwordStorage;
+
   private final Map<Long, User> users = new HashMap<>();
   private Long lastId = 0L;
 
   @Before
   public void setUp() {
+
+    this.passwordStorage = new PasswordStorage();
 
     when(this.userCrudService.saveNewUser(any())).thenAnswer(inv -> {
       final User u = (User) inv.getArgument(0);
