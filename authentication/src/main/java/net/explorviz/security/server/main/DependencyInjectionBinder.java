@@ -1,8 +1,12 @@
 package net.explorviz.security.server.main;
 
+import com.github.jasminb.jsonapi.ResourceConverter;
 import javax.inject.Singleton;
+import net.explorviz.security.server.providers.ResourceConverterFactory;
+import net.explorviz.security.services.InMemoryUserCrudService;
 import net.explorviz.security.services.TokenService;
-import net.explorviz.security.services.UserService;
+import net.explorviz.security.services.UserCrudService;
+import net.explorviz.security.services.UserValidationService;
 import net.explorviz.shared.annotations.Config;
 import net.explorviz.shared.annotations.injection.ConfigInjectionResolver;
 import net.explorviz.shared.exceptions.ErrorObjectHelper;
@@ -23,11 +27,19 @@ public class DependencyInjectionBinder extends AbstractBinder {
     // injectable config properties
     this.bind(new ConfigInjectionResolver()).to(new TypeLiteral<InjectionResolver<Config>>() {});
 
+    this.bindFactory(ResourceConverterFactory.class).to(ResourceConverter.class)
+        .in(Singleton.class);
+
     this.bind(TokenService.class).to(TokenService.class).in(Singleton.class);
-    this.bind(UserService.class).to(UserService.class).in(Singleton.class);
+    this.bind(UserValidationService.class).to(UserValidationService.class).in(Singleton.class);
     this.bind(TokenParserService.class).to(TokenParserService.class).in(Singleton.class);
+    this.bind(InMemoryUserCrudService.class).to(UserCrudService.class).in(Singleton.class);
+
+
 
     // ErrorObject Handler
     this.bind(ErrorObjectHelper.class).to(ErrorObjectHelper.class).in(Singleton.class);
+
+
   }
 }

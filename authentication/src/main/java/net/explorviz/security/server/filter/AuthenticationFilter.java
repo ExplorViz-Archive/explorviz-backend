@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.lang.reflect.Method;
 import javax.annotation.Priority;
 import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.ws.rs.ForbiddenException;
 import javax.ws.rs.Priorities;
@@ -44,7 +45,9 @@ public class AuthenticationFilter implements ContainerRequestFilter {
   @Override
   public void filter(final ContainerRequestContext requestContext) throws IOException {
 
-    final Method method = resourceInfo.getResourceMethod();
+    final Method method = this.resourceInfo.getResourceMethod();
+
+
 
     if (method.getName().equals("apply")) {
       // TODO where does the apply message come from?
@@ -57,11 +60,15 @@ public class AuthenticationFilter implements ContainerRequestFilter {
       return;
     }
 
+    if (method.isAnnotationPresent(RolesAllowed.class)) {
+      return;
+    }
+
     if (method.isAnnotationPresent(Secured.class)) {
       final String authorizationHeader = requestContext.getHeaderString(HttpHeaders.AUTHORIZATION);
       if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
         final String authenticationToken = authorizationHeader.substring(7);
-        handleTokenBasedAuthentication(authenticationToken, requestContext);
+        this.handleTokenBasedAuthentication(authenticationToken, requestContext);
         return;
       }
     }

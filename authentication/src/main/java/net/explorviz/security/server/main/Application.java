@@ -19,16 +19,24 @@ public class Application extends ResourceConfig {
   public Application() { // NOPMD
 
     // register CDI
-    register(new DependencyInjectionBinder());
+    this.register(new DependencyInjectionBinder());
 
-    register(AuthenticationFilter.class);
-    register(CorsResponseFilter.class);
+    this.register(AuthenticationFilter.class);
+    this.register(CorsResponseFilter.class);
+
+    this.register(net.explorviz.shared.security.filters.AuthenticationFilter.class);
+    this.register(net.explorviz.shared.security.filters.AuthorizationFilter.class);
 
     // exception handling (mind the order !)
-    register(WebApplicationExceptionMapper.class);
-    register(GeneralExceptionMapper.class);
+    this.register(WebApplicationExceptionMapper.class);
+    this.register(GeneralExceptionMapper.class);
+
+    // (un-)marshaling
+    this.packages("net.explorviz.security.server.providers");
+
+
 
     // register all resources in the given package
-    packages("net.explorviz.security.server.resources");
+    this.packages("net.explorviz.security.server.resources");
   }
 }

@@ -9,7 +9,7 @@ import org.jvnet.hk2.annotations.Service;
  * Injectable service that contains utility methods for {@link UserCredentials} validation.
  */
 @Service
-public class UserService {
+public class UserValidationService {
 
   /**
    * This method validates the passed {@link UserCredentials}, therefore enables overall
@@ -20,7 +20,7 @@ public class UserService {
    */
   public User validateUserCredentials(final UserCredentials userCredentials) {
 
-    if (!checkIfDataIsNotNull(userCredentials)) {
+    if (!this.checkIfDataIsNotNull(userCredentials)) {
       throw new ForbiddenException("Enter username and password");
     }
 
@@ -32,6 +32,13 @@ public class UserService {
 
       // For Testing,
       user.getRoles().add("admin"); // NOCS
+
+      return user;
+    } else if (userCredentials.getUsername().equals("normie")
+        && userCredentials.getPassword().equals("password")) {
+
+      // Does not have admin role
+      final User user = new User("normie");
 
       return user;
     } else {
