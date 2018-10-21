@@ -65,6 +65,8 @@ public class AgentRepository {
       this.getAgents().add(agent);
     }
 
+    // TODO send SSE to newly registered agent, no timer
+
     final Timer t = new Timer();
     // Set the schedule function and rate
     t.scheduleAtFixedRate(new TimerTask() {
@@ -107,7 +109,6 @@ public class AgentRepository {
       if (potentialAgent != null) {
         this.agents.remove(potentialAgent);
         this.agents.add(a);
-        System.out.println(a.getProcezzes().size());
         this.broadcastService.broadcastMessage(this.agents);
       }
     }
