@@ -1,7 +1,6 @@
 package net.explorviz.discovery.server.services;
 
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
 import javax.inject.Singleton;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
@@ -24,7 +23,6 @@ public class BroadcastService {
 
   private final Sse sse;
   private final SseBroadcaster broadcaster;
-  private final AtomicBoolean newRegistration = new AtomicBoolean(false);
 
   public BroadcastService(@Context final Sse sse) {
     this.sse = sse;
@@ -35,16 +33,21 @@ public class BroadcastService {
   }
 
   public void broadcastMessage(final List<Agent> agentList) {
-    LOGGER.info("Sending SSE");;
+    LOGGER.info("Broadcasting SSE");
     final OutboundSseEvent event = this.sse.newEventBuilder().name("message")
         .mediaType(APPLICATION_JSON_API_TYPE).data(agentList).build();
 
     this.broadcaster.broadcast(event);
   }
 
-  public void register(final SseEventSink eventSink) {
+  public void register(final SseEventSink eventSink, final List<Agent> agentList) {
     this.broadcaster.register(eventSink);
-    this.newRegistration.set(true);
+
+    final OutboundSseEvent event = this.sse.newEventBuilder().name("message")
+        .mediaType(APPLICATION_JSON_API_TYPE).data(agentList).build();
+
+    eventSink.send(event);
+    LOGGER.info("SseEventSink registered, sending current data to this sink.");
   }
 
   private void onCloseOperation(final SseEventSink sink) { // NOPMD
@@ -55,14 +58,6 @@ public class BroadcastService {
     LOGGER.error(
         "Broadcasting to a SseEventSink failed. This may not be a problem, since there is no way to unregister.",
         e);
-  }
-
-  public AtomicBoolean getNewRegistration() {
-    return this.newRegistration;
-  }
-
-  public void setNewRegistrationFlag(final boolean newValue) {
-    this.newRegistration.set(newValue);
   }
 
 }

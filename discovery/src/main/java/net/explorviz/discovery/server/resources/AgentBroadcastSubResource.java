@@ -8,20 +8,22 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.sse.SseEventSink;
+import net.explorviz.discovery.repository.discovery.AgentRepository;
 import net.explorviz.discovery.server.services.BroadcastService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @Singleton
 public class AgentBroadcastSubResource {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(AgentBroadcastSubResource.class);
+  // private static final Logger LOGGER = LoggerFactory.getLogger(AgentBroadcastSubResource.class);
 
   private final BroadcastService broadcastService;
+  private final AgentRepository agentRepository;
 
   @Inject
-  public AgentBroadcastSubResource(final BroadcastService broadcastService) {
+  public AgentBroadcastSubResource(final BroadcastService broadcastService,
+      final AgentRepository agentRepository) {
     this.broadcastService = broadcastService;
+    this.agentRepository = agentRepository;
   }
 
   // curl -v -X GET http://localhost:8081/v1/landscapes/broadcast/ -H
@@ -37,8 +39,6 @@ public class AgentBroadcastSubResource {
     response.addHeader("Cache-Control", "no-cache");
     response.addHeader("X-Accel-Buffering", "no");
 
-    this.broadcastService.register(eventSink);
-
-    LOGGER.info("Client registered");
+    this.broadcastService.register(eventSink, this.agentRepository.getAgents());
   }
 }

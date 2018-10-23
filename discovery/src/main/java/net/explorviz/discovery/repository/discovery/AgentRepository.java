@@ -4,21 +4,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicLong;
 import javax.inject.Inject;
 import net.explorviz.discovery.model.Agent;
 import net.explorviz.discovery.model.Procezz;
 import net.explorviz.discovery.server.services.BroadcastService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class AgentRepository {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(AgentRepository.class);
+  // private static final Logger LOGGER = LoggerFactory.getLogger(AgentRepository.class);
 
-  private final AtomicLong ID_GENERATOR = new AtomicLong(0);
+  private final AtomicLong idGenerator = new AtomicLong(0);
 
   private final List<Agent> agents = new ArrayList<>();
 
@@ -30,7 +26,7 @@ public class AgentRepository {
   }
 
   public String getUniqueIdString() {
-    return String.valueOf(this.ID_GENERATOR.incrementAndGet());
+    return String.valueOf(this.idGenerator.incrementAndGet());
   }
 
   public List<Agent> getAgents() {
@@ -64,18 +60,6 @@ public class AgentRepository {
       agent.setProcezzes(new ArrayList<Procezz>());
       this.getAgents().add(agent);
     }
-
-    // TODO send SSE to newly registered agent, no timer
-
-    final Timer t = new Timer();
-    // Set the schedule function and rate
-    t.scheduleAtFixedRate(new TimerTask() {
-
-      @Override
-      public void run() {
-        AgentRepository.this.broadcastService.broadcastMessage(AgentRepository.this.agents);
-      }
-    }, 5000, 5000);
 
     return agent;
   }

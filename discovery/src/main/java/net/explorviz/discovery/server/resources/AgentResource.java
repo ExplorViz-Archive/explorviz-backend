@@ -103,11 +103,10 @@ public class AgentResource {
       @Override
       public void onEvent(final InboundEvent inboundEvent) {
 
-        LOGGER.info(inboundEvent.getName());
+        LOGGER.info("Received SSE");
         // Type notation is mandatory
         final Agent a = inboundEvent.readData(Agent.class, JSON_API_TYPE);
         AgentResource.this.agentRepository.updateAgent(a);
-        LOGGER.info("Test {}", a.getIPPortOrName());
       }
     };
     eventSource.register(listener, "message");
