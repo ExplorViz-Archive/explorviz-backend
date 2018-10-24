@@ -7,6 +7,7 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.PATCH;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.ProcessingException;
 import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
@@ -20,11 +21,12 @@ import net.explorviz.discovery.model.Procezz;
 import net.explorviz.discovery.repository.discovery.AgentRepository;
 import net.explorviz.discovery.services.ClientService;
 import net.explorviz.discovery.services.PropertyService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ProcezzResource {
 
-  // private static final Logger LOGGER =
-  // LoggerFactory.getLogger(ProcezzResource.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(ProcezzResource.class);
 
   private static final String MEDIA_TYPE = "application/vnd.api+json";
   private static final int UNPROCESSABLE_ENTITY = 422;
@@ -41,11 +43,12 @@ public class ProcezzResource {
   @PATCH
   @Path("{id}")
   @Consumes(MEDIA_TYPE)
-  public Response updateProcess(final Procezz procezz)
+  public Response updateProcess(@PathParam("id") final String procezzId, final Procezz procezz)
       throws ProcezzGenericException, AgentNotFoundException, AgentNoConnectionException {
 
-    final String urlPath = PropertyService.getStringProperty("agentBaseURL")
-        + PropertyService.getStringProperty("agentProcezzPath");
+    final String urlPath =
+        PropertyService.getStringProperty("agentBaseURL") + "/" + procezz.getAgent().getId()
+            + PropertyService.getStringProperty("agentProcezzPath") + "/" + procezzId;
 
     return this.forwardPatchRequest(procezz, urlPath);
   }
@@ -69,6 +72,8 @@ public class ProcezzResource {
 
     final String ipAndPort = agentOptional.get().getIP() + ":" + agentOptional.get().getPort();
     final String url = "http://" + ipAndPort + urlPath;
+
+    LOGGER.info("Forwarding request to agent: {}", url);
 
     // See RFC5789 page 4 for appropriate status codes
     Response httpResponse;
