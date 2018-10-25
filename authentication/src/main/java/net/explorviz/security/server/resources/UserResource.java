@@ -71,6 +71,9 @@ public class UserResource {
 
     try {
       user.setPassword(PasswordStorage.createHash(user.getPassword()));
+
+      // Generate new id
+      user.setId(null);
     } catch (final CannotPerformOperationException e) {
       LOGGER.warn("Could not create user due to password hashing failure: " + e.getMessage());
       throw new InternalServerErrorException();

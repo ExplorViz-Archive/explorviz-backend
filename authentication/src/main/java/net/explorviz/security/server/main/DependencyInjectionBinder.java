@@ -3,8 +3,8 @@ package net.explorviz.security.server.main;
 import com.github.jasminb.jsonapi.ResourceConverter;
 import javax.inject.Singleton;
 import net.explorviz.security.server.providers.ResourceConverterFactory;
-import net.explorviz.security.services.InMemoryUserCrudService;
 import net.explorviz.security.services.TokenService;
+import net.explorviz.security.services.UserCrudMongoDb;
 import net.explorviz.security.services.UserCrudService;
 import net.explorviz.security.services.UserValidationService;
 import net.explorviz.shared.annotations.Config;
@@ -33,7 +33,7 @@ public class DependencyInjectionBinder extends AbstractBinder {
     this.bind(TokenService.class).to(TokenService.class).in(Singleton.class);
     this.bind(UserValidationService.class).to(UserValidationService.class).in(Singleton.class);
     this.bind(TokenParserService.class).to(TokenParserService.class).in(Singleton.class);
-    this.bind(InMemoryUserCrudService.class).to(UserCrudService.class).in(Singleton.class);
+    this.bind(UserCrudMongoDb.class).to(UserCrudService.class).in(Singleton.class);
 
 
 
