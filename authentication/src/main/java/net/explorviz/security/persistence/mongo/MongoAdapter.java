@@ -1,4 +1,4 @@
-package net.explorviz.shared.persistence.mongo.adapter;
+package net.explorviz.security.persistence.mongo;
 
 import com.mongodb.DBObject;
 

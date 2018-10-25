@@ -1,4 +1,4 @@
-package net.explorviz.shared.persistence.mongo;
+package net.explorviz.security.persistence.mongo;
 
 import com.mongodb.MongoClient;
 import java.net.UnknownHostException;

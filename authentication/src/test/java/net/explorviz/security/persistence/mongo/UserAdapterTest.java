@@ -1,10 +1,11 @@
-package net.explorviz.shared.persistence.mongo.adapter;
+package net.explorviz.security.persistence.mongo;
 
 import static org.junit.Assert.assertEquals;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import java.util.Arrays;
 import java.util.List;
+import net.explorviz.security.persistence.mongo.UserAdapter;
 import net.explorviz.shared.security.User;
 import org.junit.Test;
 
