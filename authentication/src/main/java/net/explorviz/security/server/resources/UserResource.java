@@ -42,13 +42,6 @@ public class UserResource {
 
 
 
-  @Produces(MEDIA_TYPE)
-  @RolesAllowed({"admin"})
-  public List<User> allUsers() {
-
-    return this.userCrudService.getAll();
-  }
-
   /**
    * Creates and persists a new user.
    *
@@ -76,8 +69,6 @@ public class UserResource {
     try {
       user.setPassword(PasswordStorage.createHash(user.getPassword()));
 
-      // Generate new id
-      user.setId(null);
     } catch (final CannotPerformOperationException e) {
       LOGGER.warn("Could not create user due to password hashing failure: " + e.getMessage());
       throw new InternalServerErrorException();
@@ -186,6 +177,9 @@ public class UserResource {
   @RolesAllowed({"admin"})
   @Produces(MEDIA_TYPE)
   public List<User> usersByRole(@QueryParam("role") final String role) {
+    if (role == null) {
+      return this.userCrudService.getAll();
+    }
     return this.userCrudService.getUsersByRole(role);
   }
 

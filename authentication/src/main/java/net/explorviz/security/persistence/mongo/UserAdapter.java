@@ -26,7 +26,7 @@ public class UserAdapter implements MongoAdapter<User> {
   public User fromDBObject(final DBObject entity) {
     final String name = (String) entity.get("username");
     final String password = (String) entity.get("password");
-    final Long id = ((Integer) entity.get("id")).longValue();
+    final Long id = (Long) entity.get("id");
     final List<String> roles = (List<String>) entity.get("roles");
 
     return new User(id, name, password, roles);

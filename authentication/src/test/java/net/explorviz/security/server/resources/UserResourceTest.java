@@ -90,7 +90,7 @@ public class UserResourceTest {
     u2.setPassword("testPassword");
     this.userResource.newUser(u2);
 
-    final List<User> usersFound = this.userResource.allUsers();
+    final List<User> usersFound = this.userResource.usersByRole(null);
     assertEquals(2, usersFound.size());
 
   }

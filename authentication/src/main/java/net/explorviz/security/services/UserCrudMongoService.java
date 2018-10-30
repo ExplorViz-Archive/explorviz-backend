@@ -46,17 +46,21 @@ public class UserCrudMongoService implements UserCrudService {
 
 
     // Create a new id generator, that will count from the max id upwards
+
+    // Find all ids
     final DBCursor maxCursor =
-        this.userCollection.find().sort(new BasicDBObject("id", -1)).limit(1);
-    final Long maxId;
+        this.userCollection.find(new BasicDBObject(), new BasicDBObject("id", 1))
+            .sort(new BasicDBObject("id", -1)).limit(1);;
+    Long maxId = 0L;
+
+    // If there are objects in the db, find the maximum id
     if (maxCursor.hasNext()) {
       final DBObject o = maxCursor.next();
-      maxId = (long) o.get("id");
-    } else {
-      maxId = 0L;
+      maxId = o.get("id") == null ? 0L : (Long) o.get("id");
     }
 
     this.idGen = new CountingIdGenerator(maxId);
+    LOGGER.info(this.idGen.toString());
   }
 
 
@@ -71,13 +75,27 @@ public class UserCrudMongoService implements UserCrudService {
 
   @Override
   public User saveNewUser(final User user) {
+
+
+
+    // Generate an id
+    user.setId(this.idGen.next());
     final MongoAdapter<User> userAdapter = new UserAdapter();
     final DBObject userDBObject = userAdapter.toDBObject(user);
+
+
 
     try {
       final WriteResult result = this.userCollection.insert(userDBObject);
 
-      final long id = Long.parseLong(userDBObject.get("id").toString(), 16);
+      final long id;
+      try {
+        id = (long) userDBObject.get("id");
+      } catch (final NullPointerException ex) {
+        System.out.println(userDBObject);
+        throw new InternalServerErrorException();
+      }
+
 
       LOGGER.info("Inserted new user with id " + id);
 
@@ -107,7 +125,7 @@ public class UserCrudMongoService implements UserCrudService {
   public User getUserById(final Long id) {
     final MongoAdapter<User> userAdapter = new UserAdapter();
     try {
-      final DBObject userObject = this.userCollection.findOne(id);
+      final DBObject userObject = this.userCollection.findOne(new BasicDBObject("id", id));
 
       if (userObject == null) {
         LOGGER.info("Could not find user with id " + id);
