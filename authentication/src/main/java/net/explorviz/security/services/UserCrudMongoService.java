@@ -9,8 +9,6 @@ import com.mongodb.MongoException;
 import com.mongodb.WriteResult;
 import java.util.List;
 import java.util.stream.Collectors;
-import javax.ws.rs.InternalServerErrorException;
-import javax.ws.rs.NotFoundException;
 import net.explorviz.security.persistence.mongo.MongoAdapter;
 import net.explorviz.security.persistence.mongo.MongoClientHelper;
 import net.explorviz.security.persistence.mongo.UserAdapter;
@@ -74,105 +72,64 @@ public class UserCrudMongoService implements UserCrudService {
   }
 
   @Override
-  public User saveNewUser(final User user) {
-
-
-
+  public User saveNewUser(final User user) throws MongoException {
     // Generate an id
     user.setId(this.idGen.next());
     final MongoAdapter<User> userAdapter = new UserAdapter();
     final DBObject userDBObject = userAdapter.toDBObject(user);
 
 
+    final WriteResult result = this.userCollection.insert(userDBObject);
 
-    try {
-      final WriteResult result = this.userCollection.insert(userDBObject);
+    final long id = (Long) userDBObject.get("id");
 
-      final long id;
-      try {
-        id = (long) userDBObject.get("id");
-      } catch (final NullPointerException ex) {
-        System.out.println(userDBObject);
-        throw new InternalServerErrorException();
-      }
+    LOGGER.info("Inserted new user with id " + id);
+    return new User(id, user.getUsername(), user.getPassword(), user.getRoles());
 
-
-      LOGGER.info("Inserted new user with id " + id);
-
-      return new User(id, user.getUsername(), user.getPassword(), user.getRoles());
-
-    } catch (final MongoException ex) {
-      LOGGER.error("Could not insert new user: " + ex.getMessage() + " (" + ex.getCode() + ")");
-      throw new InternalServerErrorException();
-    }
   }
 
   @Override
-  public void updateUser(final User user) {
+  public void updateUser(final User user) throws MongoException {
     final DBObject query = new BasicDBObject("id", user.getId());
     final MongoAdapter<User> userAdapter = new UserAdapter();
     final DBObject userDBObject = userAdapter.toDBObject(user);
 
-    try {
-      final WriteResult result = this.userCollection.update(query, userDBObject);
-    } catch (final MongoException ex) {
-      LOGGER.error("Could not update user: " + ex.getMessage() + " (" + ex.getCode() + ")");
-      throw new InternalServerErrorException();
-    }
+
+    this.userCollection.update(query, userDBObject);
+
   }
 
   @Override
-  public User getUserById(final Long id) {
+  public User getUserById(final Long id) throws MongoException {
     final MongoAdapter<User> userAdapter = new UserAdapter();
-    try {
-      final DBObject userObject = this.userCollection.findOne(new BasicDBObject("id", id));
 
-      if (userObject == null) {
-        LOGGER.info("Could not find user with id " + id);
-        throw new NotFoundException();
-      }
+    final DBObject userObject = this.userCollection.findOne(new BasicDBObject("id", id));
 
-      return userAdapter.fromDBObject(userObject);
 
-    } catch (final MongoException ex) {
-      LOGGER.error("Could not update user: " + ex.getMessage() + " (" + ex.getCode() + ")");
-      throw new InternalServerErrorException();
-    }
+    return userObject == null ? null : userAdapter.fromDBObject(userObject);
 
   }
 
   @Override
-  public List<User> getUsersByRole(final String role) {
+  public List<User> getUsersByRole(final String role) throws MongoException {
     final DBObject query = new BasicDBObject("roles", role);
     final MongoAdapter<User> userAdapter = new UserAdapter();
-    try {
-      final DBCursor userObjects = this.userCollection.find(query);
 
-      final List<User> users = userObjects.toArray().stream().map(o -> userAdapter.fromDBObject(o))
-          .collect(Collectors.toList());
+    final DBCursor userObjects = this.userCollection.find(query);
 
-      return users;
+    final List<User> users = userObjects.toArray().stream().map(o -> userAdapter.fromDBObject(o))
+        .collect(Collectors.toList());
 
-    } catch (final MongoException ex) {
-      LOGGER.error("Could not update user: " + ex.getMessage() + " (" + ex.getCode() + ")");
-      throw new InternalServerErrorException();
-    }
+    return users;
 
   }
 
   @Override
-  public void deleteUserById(final Long id) {
-    try {
-      final DBObject query = new BasicDBObject("id", id);
-      this.userCollection.remove(query);
+  public void deleteUserById(final Long id) throws MongoException {
+    final DBObject query = new BasicDBObject("id", id);
+    this.userCollection.remove(query);
 
-      LOGGER.info("Deleted user with id " + id);
-
-    } catch (final MongoException ex) {
-      LOGGER.error("Could not update user: " + ex.getMessage() + " (" + ex.getCode() + ")");
-      throw new InternalServerErrorException();
-    }
-
+    LOGGER.info("Deleted user with id " + id);
   }
 
 

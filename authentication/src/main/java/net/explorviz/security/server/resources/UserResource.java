@@ -1,5 +1,6 @@
 package net.explorviz.security.server.resources;
 
+import com.mongodb.MongoException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.security.RolesAllowed;
@@ -74,7 +75,12 @@ public class UserResource {
       throw new InternalServerErrorException();
     }
 
-    return this.userCrudService.saveNewUser(user);
+    try {
+      return this.userCrudService.saveNewUser(user);
+    } catch (final MongoException ex) {
+      LOGGER.error("Could not insert new user: " + ex.getMessage() + " (" + ex.getCode() + ")");
+      throw new InternalServerErrorException();
+    }
   }
 
 
@@ -127,7 +133,15 @@ public class UserResource {
   @Produces(MEDIA_TYPE)
   @Consumes(MEDIA_TYPE)
   public User updateUser(@PathParam("id") final Long id, final User updatedUser) {
-    final User targetUser = this.userCrudService.getUserById(id);
+
+    User targetUser = null;
+
+    try {
+      targetUser = this.userCrudService.getUserById(id);
+    } catch (final MongoException ex) {
+      LOGGER.error("Could not retrieve user: " + ex.getMessage() + " (" + ex.getCode() + ")");
+      throw new InternalServerErrorException();
+    }
 
     if (targetUser == null) {
       throw new NotFoundException();
@@ -161,7 +175,12 @@ public class UserResource {
       targetUser.setRoles(updatedUser.getRoles());
     }
 
-    this.userCrudService.updateUser(targetUser);
+    try {
+      this.userCrudService.updateUser(targetUser);
+    } catch (final MongoException ex) {
+      LOGGER.error("Could not update user: " + ex.getMessage() + " (" + ex.getCode() + ")");
+      throw new InternalServerErrorException();
+    }
 
     return targetUser;
 
@@ -177,10 +196,18 @@ public class UserResource {
   @RolesAllowed({"admin"})
   @Produces(MEDIA_TYPE)
   public List<User> usersByRole(@QueryParam("role") final String role) {
-    if (role == null) {
-      return this.userCrudService.getAll();
+    try {
+
+      // Return all users if role parameter is omitted
+      if (role == null) {
+        return this.userCrudService.getAll();
+      }
+      return this.userCrudService.getUsersByRole(role);
+
+    } catch (final MongoException ex) {
+      LOGGER.error("Could not update user: " + ex.getMessage() + " (" + ex.getCode() + ")");
+      throw new InternalServerErrorException();
     }
-    return this.userCrudService.getUsersByRole(role);
   }
 
   /**
@@ -197,7 +224,15 @@ public class UserResource {
     if (id == null || id <= 0) {
       throw new BadRequestException("Id must be positive integer");
     }
-    final User foundUser = this.userCrudService.getUserById(id);
+
+    User foundUser = null;
+
+    try {
+      foundUser = this.userCrudService.getUserById(id);
+    } catch (final MongoException ex) {
+      LOGGER.error("Could not retrieve user: " + ex.getMessage() + " (" + ex.getCode() + ")");
+      throw new InternalServerErrorException();
+    }
 
     if (foundUser == null) {
       throw new NotFoundException();
@@ -216,7 +251,12 @@ public class UserResource {
   @Path("{id}")
   @RolesAllowed({"admin"})
   public Response removeUser(@PathParam("id") final Long id) {
-    this.userCrudService.deleteUserById(id);
+    try {
+      this.userCrudService.deleteUserById(id);
+    } catch (final MongoException ex) {
+      LOGGER.error("Could not update user: " + ex.getMessage() + " (" + ex.getCode() + ")");
+      throw new InternalServerErrorException();
+    }
 
     return Response.status(204).build();
   }
