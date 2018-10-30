@@ -61,6 +61,15 @@ public class UserCrudMongoService implements UserCrudService {
 
 
   @Override
+  public List<User> getAll() {
+
+    final MongoAdapter<User> adapter = new UserAdapter();
+    return this.userCollection.find().toArray().stream().map(o -> adapter.fromDBObject(o))
+        .collect(Collectors.toList());
+
+  }
+
+  @Override
   public User saveNewUser(final User user) {
     final MongoAdapter<User> userAdapter = new UserAdapter();
     final DBObject userDBObject = userAdapter.toDBObject(user);
@@ -147,5 +156,7 @@ public class UserCrudMongoService implements UserCrudService {
     }
 
   }
+
+
 
 }

@@ -1,5 +1,6 @@
 package net.explorviz.security.services;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -59,6 +60,11 @@ public class InMemoryUserCrudService implements UserCrudService {
     if (id != null) {
       this.userDb.remove(id);
     }
+  }
+
+  @Override
+  public List<User> getAll() {
+    return new ArrayList<>(this.userDb.values());
   }
 
 }

@@ -35,7 +35,6 @@ public class UserResourceTest {
   @Mock
   private UserCrudService userCrudService;
 
-  private PasswordStorage passwordStorage;
 
   private final Map<Long, User> users = new HashMap<>();
   private Long lastId = 0L;
@@ -43,7 +42,6 @@ public class UserResourceTest {
   @Before
   public void setUp() {
 
-    this.passwordStorage = new PasswordStorage();
 
     when(this.userCrudService.saveNewUser(any())).thenAnswer(inv -> {
       final User u = (User) inv.getArgument(0);
@@ -69,6 +67,10 @@ public class UserResourceTest {
 
     });
 
+    when(this.userCrudService.getAll()).thenAnswer(inv -> {
+      return this.users.values().stream().collect(Collectors.toList());
+    });
+
   }
 
   @After
@@ -76,6 +78,22 @@ public class UserResourceTest {
     this.users.clear();
   }
 
+
+  @Test
+  public void testGetAll() {
+    final User u = new User("testuser");
+    u.setPassword("testPassword");
+
+    this.userResource.newUser(u);
+
+    final User u2 = new User("testuser");
+    u2.setPassword("testPassword");
+    this.userResource.newUser(u2);
+
+    final List<User> usersFound = this.userResource.allUsers();
+    assertEquals(2, usersFound.size());
+
+  }
 
   @Test
   public void testNewUser() {
@@ -87,6 +105,7 @@ public class UserResourceTest {
     assertNotNull(newUser.getId());
     assertTrue(newUser.getId() > 0);
   }
+
 
   @Test(expected = BadRequestException.class)
   public void testInvalidUsername() {

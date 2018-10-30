@@ -36,6 +36,14 @@ public interface UserCrudService {
    */
   User getUserById(final Long id);
 
+
+  /**
+   * Retrieves all users.
+   *
+   * @return a list of all known users
+   */
+  List<User> getAll();
+
   /**
    * Retrieves a list of all users, that have a specific role assigned.
    *

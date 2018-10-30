@@ -34,16 +34,20 @@ public class UserResource {
   @Inject
   private UserCrudService userCrudService;
 
-  private final PasswordStorage passwordStorage;
+
 
   private static final String MEDIA_TYPE = "application/vnd.api+json";
 
   private static final Logger LOGGER = LoggerFactory.getLogger(UserResource.class);
 
-  public UserResource() {
-    this.passwordStorage = new PasswordStorage();
-  }
 
+
+  @Produces(MEDIA_TYPE)
+  @RolesAllowed({"admin"})
+  public List<User> allUsers() {
+
+    return this.userCrudService.getAll();
+  }
 
   /**
    * Creates and persists a new user.
@@ -92,7 +96,7 @@ public class UserResource {
   @POST
   @Consumes(MEDIA_TYPE)
   @Produces(MEDIA_TYPE)
-  @Path("batch") // Todo: Find better path
+  @Path("batch") // Todo: Find more suitable path
   @RolesAllowed({"admin"})
   public List<User> createAll(final List<User> users) {
     /*
