@@ -63,6 +63,7 @@ public final class MongoClientHelper {
 
     try {
       this.client = new MongoClient(addr + ":" + port);
+      this.LOGGER.info("Connected to " + addr + ":" + port);
     } catch (final UnknownHostException e) {
       this.LOGGER.error("Target not reachable: " + addr + ":" + port);
       throw new InternalServerErrorException();
