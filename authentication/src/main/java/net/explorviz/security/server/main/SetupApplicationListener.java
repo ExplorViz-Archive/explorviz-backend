@@ -1,8 +1,12 @@
 package net.explorviz.security.server.main;
 
+import java.util.Arrays;
 import javax.inject.Inject;
 import javax.servlet.annotation.WebListener;
 import net.explorviz.security.services.UserCrudService;
+import net.explorviz.security.util.PasswordStorage;
+import net.explorviz.security.util.PasswordStorage.CannotPerformOperationException;
+import net.explorviz.shared.security.User;
 import org.glassfish.jersey.server.monitoring.ApplicationEvent;
 import org.glassfish.jersey.server.monitoring.ApplicationEvent.Type;
 import org.glassfish.jersey.server.monitoring.ApplicationEventListener;
@@ -20,7 +24,9 @@ public class SetupApplicationListener implements ApplicationEventListener {
   private static final Logger LOGGER = LoggerFactory.getLogger(SetupApplicationListener.class);
 
   @Inject
-  private UserCrudService mongoHelper;
+  private UserCrudService userCrudService;
+
+
 
   @Override
   public void onEvent(final ApplicationEvent event) {
@@ -31,7 +37,11 @@ public class SetupApplicationListener implements ApplicationEventListener {
 
 
     if (event.getType().equals(t)) {
-      this.mongoHelper.findUserByName("admin");
+      try {
+        this.initDefaultUser();
+      } catch (final CannotPerformOperationException e) {
+        LOGGER.warn("Unable to create default user: " + e.getMessage());
+      }
     }
 
   }
@@ -41,12 +51,16 @@ public class SetupApplicationListener implements ApplicationEventListener {
     return null;
   }
 
-  private void startDiscoveryBackend() {
 
-    LOGGER.info("\n");
-    LOGGER.info("* * * * * * * * * * * * * * * * * * *\n"); // NOCS
-    LOGGER.info("Server (ExplorViz Discovery) sucessfully started.\n");
-    LOGGER.info("* * * * * * * * * * * * * * * * * * *\n");
+  private void initDefaultUser() throws CannotPerformOperationException {
+
+    // Check whether the default user exists and if not, create it
+    if (!this.userCrudService.findUserByName("admin").isPresent()) {
+      final String pw = PasswordStorage.createHash("password");
+      final User admin = new User(null, "admin", pw, Arrays.asList("admin"));
+      this.userCrudService.saveNewUser(admin);
+    }
+
   }
 
 }

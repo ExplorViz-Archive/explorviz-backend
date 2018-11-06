@@ -51,10 +51,6 @@ public class UserCrudMongoService implements UserCrudService {
   public UserCrudMongoService(final MongoClientHelper mongoHelper) {
     final String dbname = PropertyHelper.getStringProperty("mongo.db");
 
-
-    // @Alex hier schl�gt es fehl, die injection scheint nicht zu funktionieren
-    System.out.println(mongoHelper); // null
-
     this.userCollection = mongoHelper.getMongoClient().getDB(dbname).getCollection("user");
 
 

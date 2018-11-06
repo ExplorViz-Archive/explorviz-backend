@@ -33,6 +33,7 @@ public class Application extends ResourceConfig {
 
     this.register(SetupApplicationListener.class);
 
+
     // (un-)marshaling
     this.packages("net.explorviz.security.server.providers");
 
@@ -41,4 +42,7 @@ public class Application extends ResourceConfig {
     // register all resources in the given package
     this.packages("net.explorviz.security.server.resources");
   }
+
+
+
 }

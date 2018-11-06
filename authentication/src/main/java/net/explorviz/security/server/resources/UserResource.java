@@ -1,5 +1,6 @@
 package net.explorviz.security.server.resources;
 
+import com.mongodb.DuplicateKeyException;
 import com.mongodb.MongoException;
 import java.util.ArrayList;
 import java.util.List;
@@ -78,6 +79,8 @@ public class UserResource {
     try {
       return this.userCrudService.saveNewUser(user)
           .orElseThrow(() -> new InternalServerErrorException());
+    } catch (final DuplicateKeyException ex) {
+      throw new BadRequestException("User already exists");
     } catch (final MongoException ex) {
       LOGGER.error("Could not insert new user: " + ex.getMessage() + " (" + ex.getCode() + ")");
       throw new InternalServerErrorException();
