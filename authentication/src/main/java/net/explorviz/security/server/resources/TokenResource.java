@@ -3,6 +3,7 @@ package net.explorviz.security.server.resources;
 import javax.annotation.security.PermitAll;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.InternalServerErrorException;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -13,10 +14,14 @@ import net.explorviz.security.model.Token;
 import net.explorviz.security.model.UserCredentials;
 import net.explorviz.security.services.TokenService;
 import net.explorviz.security.services.UserValidationService;
+import net.explorviz.security.util.PasswordStorage.CannotPerformOperationException;
+import net.explorviz.security.util.PasswordStorage.InvalidHashException;
 import net.explorviz.shared.annotations.Secured;
 import net.explorviz.shared.security.TokenBasedSecurityContext;
 import net.explorviz.shared.security.TokenDetails;
 import net.explorviz.shared.security.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The token resource class provides endpoints for token obtainment and refreshment.
@@ -29,6 +34,8 @@ public class TokenResource {
 
   @Inject
   private TokenService tokenService;
+
+  private final static Logger LOGGER = LoggerFactory.getLogger(TokenResource.class.getSimpleName());
 
   /**
    * This method issues a Json Web Token (JWT) for passed user credentials. The token expires after
@@ -48,7 +55,13 @@ public class TokenResource {
     // -H 'Content-Type: application/json'
     // -d '{ "username": "admin", "password": "password" }'
 
-    final User user = this.userService.validateUserCredentials(credentials);
+    User user;
+    try {
+      user = this.userService.validateUserCredentials(credentials);
+    } catch (CannotPerformOperationException | InvalidHashException e) {
+      LOGGER.error("Error verifying credentials: " + e.getMessage());
+      throw new InternalServerErrorException();
+    }
 
     final Token t = new Token();
     t.setToken(this.tokenService.issueNewToken(user));
