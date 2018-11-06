@@ -3,6 +3,11 @@ package net.explorviz.landscape.server.main;
 import net.explorviz.landscape.server.exceptions.mapper.PathParamExceptionMapper;
 import net.explorviz.landscape.server.exceptions.mapper.QueryParamExceptionMapper;
 import net.explorviz.landscape.server.providers.CoreModelHandler;
+import net.explorviz.landscape.server.providers.JsonApiListProvider;
+import net.explorviz.landscape.server.providers.JsonApiProvider;
+import net.explorviz.landscape.server.resources.LandscapeBroadcastSubResource;
+import net.explorviz.landscape.server.resources.LandscapeResource;
+import net.explorviz.landscape.server.resources.TimestampResource;
 import net.explorviz.shared.exceptions.mapper.GeneralExceptionMapper;
 import net.explorviz.shared.exceptions.mapper.WebApplicationExceptionMapper;
 import net.explorviz.shared.security.filters.AuthenticationFilter;
@@ -37,7 +42,9 @@ class Application extends ResourceConfig {
     this.register(CorsResponseFilter.class);
 
     // resources
-    this.packages("net.explorviz.server.resources");
+    this.register(LandscapeResource.class);
+    this.register(TimestampResource.class);
+    this.register(LandscapeBroadcastSubResource.class);
 
     // exception handling (mind the order !)
     this.register(WebApplicationExceptionMapper.class);
@@ -48,9 +55,7 @@ class Application extends ResourceConfig {
     this.register(SetupApplicationListener.class);
 
     // easy (de-)serializing models for HTTP Requests
-    this.packages("net.explorviz.server.providers");
-
-    // register extensions (For development: read plugin structure at github docs)
-    this.packages("net.explorviz.extension");
+    this.register(JsonApiProvider.class);
+    this.register(JsonApiListProvider.class);
   }
 }

@@ -19,8 +19,10 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.sse.Sse;
 import net.explorviz.discovery.exceptions.agent.AgentInternalErrorException;
 import net.explorviz.discovery.exceptions.agent.AgentNoConnectionException;
 import net.explorviz.discovery.exceptions.agent.AgentNotFoundException;
@@ -61,6 +63,16 @@ public class AgentResource {
     this.clientService.registerProviderWriter(new JsonApiProvider<>(converter));
   }
 
+  @Path("/broadcast")
+  public AgentBroadcastSubResource getAgentBroadcastResource(@Context final Sse sse,
+      @Context final AgentBroadcastSubResource agentBroadcastSubResource) {
+
+    // curl -v -X GET http://localhost:8084/v1/agents/broadcast/ -H
+    // "Content-Type: text/event-stream"'
+
+    return agentBroadcastSubResource;
+  }
+
   @Path("{id}/procezzes")
   public ProcezzResource getProcezzResource(@PathParam("id") final String agentID)
       throws AgentNotFoundException {
@@ -91,10 +103,10 @@ public class AgentResource {
       @Override
       public void onEvent(final InboundEvent inboundEvent) {
 
-        LOGGER.info(inboundEvent.getName());
+        LOGGER.info("Received SSE");
         // Type notation is mandatory
         final Agent a = inboundEvent.readData(Agent.class, JSON_API_TYPE);
-        LOGGER.info("Test {}", a.getIPPortOrName());
+        AgentResource.this.agentRepository.updateAgent(a);
       }
     };
     eventSource.register(listener, "message");

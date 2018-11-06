@@ -6,6 +6,8 @@ import javax.inject.Singleton;
 import net.explorviz.discovery.model.Agent;
 import net.explorviz.discovery.model.Procezz;
 import net.explorviz.discovery.repository.discovery.AgentRepository;
+import net.explorviz.discovery.server.resources.AgentBroadcastSubResource;
+import net.explorviz.discovery.server.services.BroadcastService;
 import net.explorviz.discovery.services.ClientService;
 import net.explorviz.shared.annotations.Config;
 import net.explorviz.shared.annotations.injection.ConfigInjectionResolver;
@@ -43,5 +45,9 @@ public class DependencyInjectionBinder extends AbstractBinder {
     // Discovery Mechanism
     this.bind(ClientService.class).to(ClientService.class).in(Singleton.class);
     this.bind(AgentRepository.class).to(AgentRepository.class).in(Singleton.class);
+
+    // Broadcast Mechanism
+    this.bind(BroadcastService.class).to(BroadcastService.class).in(Singleton.class);
+    this.bind(AgentBroadcastSubResource.class).to(AgentBroadcastSubResource.class);
   }
 }

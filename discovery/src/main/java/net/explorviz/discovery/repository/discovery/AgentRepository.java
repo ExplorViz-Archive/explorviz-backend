@@ -5,35 +5,43 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicLong;
+import javax.inject.Inject;
 import net.explorviz.discovery.model.Agent;
 import net.explorviz.discovery.model.Procezz;
+import net.explorviz.discovery.server.services.BroadcastService;
 
 public class AgentRepository {
 
-  // private static final Logger LOGGER =
-  // LoggerFactory.getLogger(AgentRepository.class);
+  // private static final Logger LOGGER = LoggerFactory.getLogger(AgentRepository.class);
 
-  private static final AtomicLong ID_GENERATOR = new AtomicLong(0);
+  private final AtomicLong idGenerator = new AtomicLong(0);
 
-  private static final List<Agent> AGENTS = new ArrayList<>();
+  private final List<Agent> agents = new ArrayList<>();
+
+  private final BroadcastService broadcastService;
+
+  @Inject
+  public AgentRepository(final BroadcastService broadcastService) {
+    this.broadcastService = broadcastService;
+  }
 
   public String getUniqueIdString() {
-    return String.valueOf(ID_GENERATOR.incrementAndGet());
+    return String.valueOf(this.idGenerator.incrementAndGet());
   }
 
   public List<Agent> getAgents() {
-    return AGENTS;
+    return this.agents;
   }
 
   public Agent lookupAgent(final Agent agent) {
-    synchronized (AGENTS) {
-      return AGENTS.stream().filter(Objects::nonNull).filter(a -> a.equals(agent)).findFirst()
+    synchronized (this.agents) {
+      return this.agents.stream().filter(Objects::nonNull).filter(a -> a.equals(agent)).findFirst()
           .orElse(null);
     }
   }
 
   public Agent registerAgent(final Agent agent) {
-    synchronized (AGENTS) {
+    synchronized (this.agents) {
       final Agent possibleOldAgent = this.lookupAgent(agent);
 
       if (possibleOldAgent == null) {
@@ -67,8 +75,8 @@ public class AgentRepository {
   }
 
   public Optional<Agent> lookupAgentById(final String id) {
-    synchronized (AGENTS) {
-      for (final Agent agent : AGENTS) {
+    synchronized (this.agents) {
+      for (final Agent agent : this.agents) {
         if (agent.getId().equals(id)) {
           return Optional.of(agent);
         }
@@ -76,6 +84,20 @@ public class AgentRepository {
     }
 
     return Optional.empty();
+  }
+
+  public void updateAgent(final Agent a) {
+    synchronized (this.agents) {
+      final Agent potentialAgent = this.lookupAgent(a);
+
+      if (potentialAgent != null) {
+        this.agents.remove(potentialAgent);
+        this.agents.add(a);
+        this.broadcastService.broadcastMessage(this.agents);
+      }
+    }
+
+
   }
 
 }

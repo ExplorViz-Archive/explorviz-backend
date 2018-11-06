@@ -64,7 +64,7 @@ war {
 jar {
   manifest {
     attributes(
-      'Main-Class': 'net.explorviz.server.main.Main'
+      'Main-Class': 'net.explorviz.landscape.server.main.Main'
     )
   }
 }
