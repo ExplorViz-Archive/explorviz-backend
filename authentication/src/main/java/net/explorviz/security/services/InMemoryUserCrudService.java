@@ -67,4 +67,10 @@ public class InMemoryUserCrudService implements UserCrudService {
     return new ArrayList<>(this.userDb.values());
   }
 
+  @Override
+  public User findUserByName(final String username) {
+    return this.userDb.values().stream().filter(u -> u.getUsername().equals(username)).findFirst()
+        .orElse(null);
+  }
+
 }

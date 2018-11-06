@@ -23,6 +23,14 @@ import org.slf4j.LoggerFactory;
  *
  * Offers CRUD operations on user objects, backed by a MongoDB instance as persistence layer.
  *
+ * Each user has the following fields:
+ * <ul>
+ * <li>id: the unique id of the user</li>
+ * <li>username: name of the user, unique</li>
+ * <li>password: hashed password</li>
+ * <li>roles: list of role that are assigned to the user</li>
+ * </ul>
+ *
  */
 public class UserCrudMongoService implements UserCrudService {
 
@@ -48,7 +56,7 @@ public class UserCrudMongoService implements UserCrudService {
     // Find all ids
     final DBCursor maxCursor =
         this.userCollection.find(new BasicDBObject(), new BasicDBObject("id", 1))
-            .sort(new BasicDBObject("id", -1)).limit(1);;
+            .sort(new BasicDBObject("id", -1)).limit(1);
     Long maxId = 0L;
 
     // If there are objects in the db, find the maximum id
@@ -59,6 +67,8 @@ public class UserCrudMongoService implements UserCrudService {
 
     this.idGen = new CountingIdGenerator(maxId);
     LOGGER.info(this.idGen.toString());
+
+
   }
 
 
@@ -130,6 +140,18 @@ public class UserCrudMongoService implements UserCrudService {
     this.userCollection.remove(query);
 
     LOGGER.info("Deleted user with id " + id);
+  }
+
+
+  @Override
+  public User findUserByName(final String username) {
+    final MongoAdapter<User> userAdapter = new UserAdapter();
+
+    final DBObject query = new BasicDBObject("username", username);
+    final DBObject foundUser = this.userCollection.findOne(query);
+
+    return foundUser == null ? null : userAdapter.fromDBObject(foundUser);
+
   }
 
 

@@ -61,4 +61,13 @@ public interface UserCrudService {
   void deleteUserById(final Long id);
 
 
+  /**
+   * Retrieves a user by its name.
+   *
+   * @param username the name of the user
+   * @return a {@link User} object with the given username or {@code null} if not
+   */
+  User findUserByName(String username);
+
+
 }
