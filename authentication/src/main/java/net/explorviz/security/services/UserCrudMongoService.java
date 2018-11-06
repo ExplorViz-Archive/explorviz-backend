@@ -155,6 +155,10 @@ public class UserCrudMongoService implements UserCrudService {
     final DBObject query = new BasicDBObject("username", username);
     final DBObject foundUser = this.userCollection.findOne(query);
 
+    if (foundUser == null) {
+      return Optional.empty();
+    }
+
     return Optional.ofNullable(userAdapter.fromDBObject(foundUser));
 
   }

@@ -8,6 +8,8 @@ import net.explorviz.security.util.PasswordStorage.CannotPerformOperationExcepti
 import net.explorviz.security.util.PasswordStorage.InvalidHashException;
 import net.explorviz.shared.security.User;
 import org.jvnet.hk2.annotations.Service;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Injectable service that contains utility methods for {@link UserCredentials} validation.
@@ -15,6 +17,8 @@ import org.jvnet.hk2.annotations.Service;
 @Service
 public class UserValidationService {
 
+  private static final Logger LOGGER =
+      LoggerFactory.getLogger(UserValidationService.class.getSimpleName());
 
 
   @Inject
@@ -38,6 +42,7 @@ public class UserValidationService {
 
     final User user = this.userCrudService.findUserByName(userCredentials.getUsername())
         .orElseThrow(() -> new ForbiddenException("Wrong username or password"));
+
 
 
     if (!PasswordStorage.verifyPassword(userCredentials.getPassword(), user.getPassword())) {
