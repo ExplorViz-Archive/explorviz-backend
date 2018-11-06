@@ -68,7 +68,10 @@ public class UserCrudMongoService implements UserCrudService {
     this.idGen = new CountingIdGenerator(maxId);
     LOGGER.info(this.idGen.toString());
 
-
+    // Create indices with unique constraints
+    this.userCollection.createIndex(new BasicDBObject("username", 1),
+        new BasicDBObject("unique", true));
+    this.userCollection.createIndex(new BasicDBObject("id", 1), new BasicDBObject("unique", true));
   }
 
 
