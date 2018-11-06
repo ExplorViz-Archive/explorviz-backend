@@ -1,6 +1,11 @@
 package net.explorviz.security.server.main;
 
 import net.explorviz.security.server.filter.AuthenticationFilter;
+import net.explorviz.security.server.providers.JsonApiListProvider;
+import net.explorviz.security.server.providers.JsonApiProvider;
+import net.explorviz.security.server.providers.ResourceConverterFactory;
+import net.explorviz.security.server.resources.TokenResource;
+import net.explorviz.security.server.resources.UserResource;
 import net.explorviz.shared.exceptions.mapper.GeneralExceptionMapper;
 import net.explorviz.shared.exceptions.mapper.WebApplicationExceptionMapper;
 import net.explorviz.shared.security.filters.CorsResponseFilter;
@@ -33,14 +38,15 @@ public class Application extends ResourceConfig {
 
     this.register(SetupApplicationListener.class);
 
+    this.register(JsonApiProvider.class);
+    this.register(JsonApiListProvider.class);
+    this.register(ResourceConverterFactory.class);
 
-    // (un-)marshaling
-    this.packages("net.explorviz.security.server.providers");
 
 
-
-    // register all resources in the given package
-    this.packages("net.explorviz.security.server.resources");
+    // register all resources
+    this.register(TokenResource.class);
+    this.register(UserResource.class);
   }
 
 

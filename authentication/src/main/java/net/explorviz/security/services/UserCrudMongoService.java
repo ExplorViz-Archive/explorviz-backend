@@ -16,7 +16,6 @@ import net.explorviz.security.persistence.mongo.UserAdapter;
 import net.explorviz.security.util.CountingIdGenerator;
 import net.explorviz.security.util.IdGenerator;
 import net.explorviz.shared.security.User;
-import net.explorviz.shared.server.helper.PropertyHelper;
 import org.jvnet.hk2.annotations.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,14 +43,15 @@ public class UserCrudMongoService implements UserCrudService {
 
   private final DBCollection userCollection;
 
+  private static final String DBNAME = "explorviz";
+
   /**
    * Creates a new {@code UserCrudMongoDb}
    */
   @Inject
   public UserCrudMongoService(final MongoClientHelper mongoHelper) {
-    final String dbname = PropertyHelper.getStringProperty("mongo.db");
 
-    this.userCollection = mongoHelper.getMongoClient().getDB(dbname).getCollection("user");
+    this.userCollection = mongoHelper.getMongoClient().getDB(DBNAME).getCollection("user");
 
 
     /* Create a new id generator, which will count upwards beginning from the max id */
