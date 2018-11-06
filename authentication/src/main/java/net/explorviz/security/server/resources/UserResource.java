@@ -76,7 +76,8 @@ public class UserResource {
     }
 
     try {
-      return this.userCrudService.saveNewUser(user);
+      return this.userCrudService.saveNewUser(user)
+          .orElseThrow(() -> new InternalServerErrorException());
     } catch (final MongoException ex) {
       LOGGER.error("Could not insert new user: " + ex.getMessage() + " (" + ex.getCode() + ")");
       throw new InternalServerErrorException();
@@ -137,15 +138,12 @@ public class UserResource {
     User targetUser = null;
 
     try {
-      targetUser = this.userCrudService.getUserById(id);
+      targetUser = this.userCrudService.getUserById(id).orElseThrow(() -> new NotFoundException());
     } catch (final MongoException ex) {
       LOGGER.error("Could not retrieve user: " + ex.getMessage() + " (" + ex.getCode() + ")");
       throw new InternalServerErrorException();
     }
 
-    if (targetUser == null) {
-      throw new NotFoundException();
-    }
 
     if (updatedUser.getId() != null) {
       throw new BadRequestException("Can't update id");
@@ -228,15 +226,12 @@ public class UserResource {
     User foundUser = null;
 
     try {
-      foundUser = this.userCrudService.getUserById(id);
+      foundUser = this.userCrudService.getUserById(id).orElseThrow(() -> new NotFoundException());
     } catch (final MongoException ex) {
       LOGGER.error("Could not retrieve user: " + ex.getMessage() + " (" + ex.getCode() + ")");
       throw new InternalServerErrorException();
     }
 
-    if (foundUser == null) {
-      throw new NotFoundException();
-    }
 
     return foundUser;
 

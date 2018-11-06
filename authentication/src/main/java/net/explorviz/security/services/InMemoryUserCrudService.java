@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 import net.explorviz.security.util.CountingIdGenerator;
@@ -30,11 +31,11 @@ public class InMemoryUserCrudService implements UserCrudService {
   }
 
   @Override
-  public User saveNewUser(final User user) {
+  public Optional<User> saveNewUser(final User user) {
     final User persistedUser =
         new User(this.idGen.next(), user.getUsername(), user.getPassword(), user.getRoles());
     this.userDb.put(persistedUser.getId(), persistedUser);
-    return persistedUser;
+    return Optional.ofNullable(persistedUser);
   }
 
   @Override
@@ -45,8 +46,8 @@ public class InMemoryUserCrudService implements UserCrudService {
   }
 
   @Override
-  public User getUserById(final Long id) {
-    return this.userDb.get(id);
+  public Optional<User> getUserById(final Long id) {
+    return Optional.ofNullable(this.userDb.get(id));
   }
 
   @Override
@@ -68,9 +69,8 @@ public class InMemoryUserCrudService implements UserCrudService {
   }
 
   @Override
-  public User findUserByName(final String username) {
-    return this.userDb.values().stream().filter(u -> u.getUsername().equals(username)).findFirst()
-        .orElse(null);
+  public Optional<User> findUserByName(final String username) {
+    return this.userDb.values().stream().filter(u -> u.getUsername().equals(username)).findFirst();
   }
 
 }

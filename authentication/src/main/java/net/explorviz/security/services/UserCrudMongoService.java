@@ -8,6 +8,7 @@ import com.mongodb.MongoClient;
 import com.mongodb.MongoException;
 import com.mongodb.WriteResult;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import net.explorviz.security.persistence.mongo.MongoAdapter;
 import net.explorviz.security.persistence.mongo.MongoClientHelper;
@@ -85,7 +86,7 @@ public class UserCrudMongoService implements UserCrudService {
   }
 
   @Override
-  public User saveNewUser(final User user) throws MongoException {
+  public Optional<User> saveNewUser(final User user) throws MongoException {
     // Generate an id
     user.setId(this.idGen.next());
     final MongoAdapter<User> userAdapter = new UserAdapter();
@@ -97,7 +98,8 @@ public class UserCrudMongoService implements UserCrudService {
     final long id = (Long) userDBObject.get("id");
 
     LOGGER.info("Inserted new user with id " + id);
-    return new User(id, user.getUsername(), user.getPassword(), user.getRoles());
+    return Optional
+        .ofNullable(new User(id, user.getUsername(), user.getPassword(), user.getRoles()));
 
   }
 
@@ -113,13 +115,13 @@ public class UserCrudMongoService implements UserCrudService {
   }
 
   @Override
-  public User getUserById(final Long id) throws MongoException {
+  public Optional<User> getUserById(final Long id) throws MongoException {
     final MongoAdapter<User> userAdapter = new UserAdapter();
 
     final DBObject userObject = this.userCollection.findOne(new BasicDBObject("id", id));
 
 
-    return userObject == null ? null : userAdapter.fromDBObject(userObject);
+    return Optional.ofNullable(userAdapter.fromDBObject(userObject));
 
   }
 
@@ -147,13 +149,13 @@ public class UserCrudMongoService implements UserCrudService {
 
 
   @Override
-  public User findUserByName(final String username) {
+  public Optional<User> findUserByName(final String username) {
     final MongoAdapter<User> userAdapter = new UserAdapter();
 
     final DBObject query = new BasicDBObject("username", username);
     final DBObject foundUser = this.userCollection.findOne(query);
 
-    return foundUser == null ? null : userAdapter.fromDBObject(foundUser);
+    return Optional.ofNullable(userAdapter.fromDBObject(foundUser));
 
   }
 
