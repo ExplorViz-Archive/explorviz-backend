@@ -17,6 +17,7 @@ import net.explorviz.security.util.CountingIdGenerator;
 import net.explorviz.security.util.IdGenerator;
 import net.explorviz.shared.security.User;
 import net.explorviz.shared.server.helper.PropertyHelper;
+import org.jvnet.hk2.annotations.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,10 +34,8 @@ import org.slf4j.LoggerFactory;
  * </ul>
  *
  */
+@Service
 public class UserCrudMongoService implements UserCrudService {
-
-  @Inject
-  private MongoClientHelper mongoHelper;
 
   private final IdGenerator<Long> idGen;
 
@@ -48,14 +47,15 @@ public class UserCrudMongoService implements UserCrudService {
   /**
    * Creates a new {@code UserCrudMongoDb}
    */
-  public UserCrudMongoService() {
+  @Inject
+  public UserCrudMongoService(final MongoClientHelper mongoHelper) {
     final String dbname = PropertyHelper.getStringProperty("mongo.db");
 
 
-    // @Alex hier schlägt es fehl, die injection scheint nicht zu funktionieren
-    System.out.println(this.mongoHelper); // null
+    // @Alex hier schlï¿½gt es fehl, die injection scheint nicht zu funktionieren
+    System.out.println(mongoHelper); // null
 
-    this.userCollection = this.mongoHelper.getMongoClient().getDB(dbname).getCollection("user");
+    this.userCollection = mongoHelper.getMongoClient().getDB(dbname).getCollection("user");
 
 
     /* Create a new id generator, which will count upwards beginning from the max id */

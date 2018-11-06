@@ -2,7 +2,7 @@ package net.explorviz.security.server.main;
 
 import javax.inject.Inject;
 import javax.servlet.annotation.WebListener;
-import net.explorviz.security.persistence.mongo.MongoClientHelper;
+import net.explorviz.security.services.UserCrudService;
 import org.glassfish.jersey.server.monitoring.ApplicationEvent;
 import org.glassfish.jersey.server.monitoring.ApplicationEvent.Type;
 import org.glassfish.jersey.server.monitoring.ApplicationEventListener;
@@ -20,7 +20,7 @@ public class SetupApplicationListener implements ApplicationEventListener {
   private static final Logger LOGGER = LoggerFactory.getLogger(SetupApplicationListener.class);
 
   @Inject
-  private MongoClientHelper mongoHelper;
+  private UserCrudService mongoHelper;
 
   @Override
   public void onEvent(final ApplicationEvent event) {
@@ -29,9 +29,11 @@ public class SetupApplicationListener implements ApplicationEventListener {
     // fullfilled
     final Type t = Type.INITIALIZATION_FINISHED;
 
-    /*
-     * if (event.getType().equals(t)) { this.mongoHelper. }
-     */
+
+    if (event.getType().equals(t)) {
+      this.mongoHelper.findUserByName("admin");
+    }
+
   }
 
   @Override
