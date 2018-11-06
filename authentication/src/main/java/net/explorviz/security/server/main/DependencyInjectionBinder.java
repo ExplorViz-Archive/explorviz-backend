@@ -2,6 +2,7 @@ package net.explorviz.security.server.main;
 
 import com.github.jasminb.jsonapi.ResourceConverter;
 import javax.inject.Singleton;
+import net.explorviz.security.persistence.mongo.MongoClientHelper;
 import net.explorviz.security.server.providers.ResourceConverterFactory;
 import net.explorviz.security.services.TokenService;
 import net.explorviz.security.services.UserCrudMongoService;
@@ -34,7 +35,7 @@ public class DependencyInjectionBinder extends AbstractBinder {
     this.bind(UserValidationService.class).to(UserValidationService.class).in(Singleton.class);
     this.bind(TokenParserService.class).to(TokenParserService.class).in(Singleton.class);
     this.bind(UserCrudMongoService.class).to(UserCrudService.class).in(Singleton.class);
-
+    this.bind(MongoClientHelper.class).to(MongoClientHelper.class).in(Singleton.class);
 
 
     // ErrorObject Handler

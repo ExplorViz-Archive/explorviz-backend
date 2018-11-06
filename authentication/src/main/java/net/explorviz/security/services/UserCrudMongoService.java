@@ -4,12 +4,12 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
-import com.mongodb.MongoClient;
 import com.mongodb.MongoException;
 import com.mongodb.WriteResult;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import javax.inject.Inject;
 import net.explorviz.security.persistence.mongo.MongoAdapter;
 import net.explorviz.security.persistence.mongo.MongoClientHelper;
 import net.explorviz.security.persistence.mongo.UserAdapter;
@@ -35,6 +35,8 @@ import org.slf4j.LoggerFactory;
  */
 public class UserCrudMongoService implements UserCrudService {
 
+  @Inject
+  private MongoClientHelper mongoHelper;
 
   private final IdGenerator<Long> idGen;
 
@@ -48,11 +50,15 @@ public class UserCrudMongoService implements UserCrudService {
    */
   public UserCrudMongoService() {
     final String dbname = PropertyHelper.getStringProperty("mongo.db");
-    final MongoClient client = MongoClientHelper.getInstance().getMongoClient();
-    this.userCollection = client.getDB(dbname).getCollection("user");
 
 
-    // Create a new id generator, that will count from the max id upwards
+    // @Alex hier schlägt es fehl, die injection scheint nicht zu funktionieren
+    System.out.println(this.mongoHelper); // null
+
+    this.userCollection = this.mongoHelper.getMongoClient().getDB(dbname).getCollection("user");
+
+
+    /* Create a new id generator, which will count upwards beginning from the max id */
 
     // Find all ids
     final DBCursor maxCursor =
@@ -69,7 +75,7 @@ public class UserCrudMongoService implements UserCrudService {
     this.idGen = new CountingIdGenerator(maxId);
     LOGGER.info(this.idGen.toString());
 
-    // Create indices with unique constraints
+    // Create indices with unique constraints (if not existing)
     this.userCollection.createIndex(new BasicDBObject("username", 1),
         new BasicDBObject("unique", true));
     this.userCollection.createIndex(new BasicDBObject("id", 1), new BasicDBObject("unique", true));

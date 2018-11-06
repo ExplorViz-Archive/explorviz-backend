@@ -31,6 +31,8 @@ public class Application extends ResourceConfig {
     this.register(WebApplicationExceptionMapper.class);
     this.register(GeneralExceptionMapper.class);
 
+    this.register(SetupApplicationListener.class);
+
     // (un-)marshaling
     this.packages("net.explorviz.security.server.providers");
 
