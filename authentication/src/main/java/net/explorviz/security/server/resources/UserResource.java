@@ -64,8 +64,8 @@ public class UserResource {
       throw new BadRequestException("Invalid password");
     }
 
-    if (user.getId() != null && user.getId() >= 0) {
-      throw new BadRequestException("Can't create user with existing id");
+    if (user.getId() != null) {
+      throw new BadRequestException("Can't create user with id. Payload must not have an id.");
     }
 
     try {
