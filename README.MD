@@ -28,7 +28,7 @@ The API documentation is available [here](https://explorviz.github.io/explorviz-
 
 ## Eclipse Setup
 1. Download the latest [Eclipse IDE for Java Developers](http://www.eclipse.org/downloads/eclipse-packages/) (ExplorViz requires JDK 8 compliance)
-2. Follow the [CAU-SE guidelines for quality assurance](https://github.com/cau-se/code-quality-configurations/tree/master/java)
+2. Follow the [CAU-SE guidelines for quality assurance](https://github.com/cau-se/code-quality-configurations/tree/master/java) (Only necessary if you contribute code)
 
 ## Setup Development
 1. Follow the previous [Eclipse Setup](#eclipse-setup)
