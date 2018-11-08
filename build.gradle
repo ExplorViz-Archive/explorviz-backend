@@ -76,6 +76,9 @@ subprojects {
 		implementation group: 'org.glassfish.jersey.containers', name: 'jersey-container-servlet', version:'2.27'
 		implementation group: 'javax.servlet', name: 'javax.servlet-api', version:'3.0.1'
 		implementation group: 'org.glassfish.jersey.inject', name: 'jersey-hk2', version:'2.27'
+		// compile group: 'org.glassfish.jersey.test-framework.providers', name: 'jersey-test-framework-provider-jdk-http', version: '2.27'
+		testCompile group: 'org.glassfish.jersey.test-framework.providers', name: 'jersey-test-framework-provider-jetty', version: '2.27'
+		
 	  
 	    // JSON + Parsing
 	    implementation group: 'org.glassfish.jersey.media', name: 'jersey-media-json-jackson', version:'2.27'
