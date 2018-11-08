@@ -5,7 +5,6 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import java.util.Arrays;
 import java.util.List;
-import net.explorviz.security.persistence.mongo.UserAdapter;
 import net.explorviz.shared.security.User;
 import org.junit.Test;
 
@@ -19,7 +18,7 @@ public class UserAdapterTest {
     final UserAdapter adapter = new UserAdapter();
     final DBObject userDBObject = adapter.toDBObject(u);
 
-    assertEquals(12L, userDBObject.get("_id"));
+    assertEquals(12L, userDBObject.get("id"));
     assertEquals("username", userDBObject.get("username"));
     assertEquals("password", userDBObject.get("password"));
     assertEquals(roles, userDBObject.get("roles"));
@@ -29,7 +28,7 @@ public class UserAdapterTest {
   public void testFromDBObject() {
     final BasicDBObject userDBObject = new BasicDBObject();
     final List<String> roles = Arrays.asList("admin", "tester");
-    userDBObject.append("_id", 17).append("username", "name").append("password", "pw")
+    userDBObject.append("id", 17L).append("username", "name").append("password", "pw")
         .append("roles", roles);
 
     final UserAdapter userAdapter = new UserAdapter();

@@ -11,6 +11,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.ws.rs.BadRequestException;
 import net.explorviz.security.services.UserCrudService;
@@ -48,11 +49,11 @@ public class UserResourceTest {
       final long id = ++this.lastId;
       final User newUser = new User(id, u.getUsername(), u.getPassword(), u.getRoles());
       this.users.put(id, newUser);
-      return newUser;
+      return Optional.ofNullable(newUser);
     });
 
     when(this.userCrudService.getUserById(any())).thenAnswer(inv -> {
-      return this.users.get(inv.getArgument(0));
+      return Optional.ofNullable(this.users.get(inv.getArgument(0)));
     });
 
     doAnswer(inv -> {
