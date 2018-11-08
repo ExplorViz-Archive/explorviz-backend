@@ -1,6 +1,7 @@
 package net.explorviz.security.persistence.mongo;
 
 import com.mongodb.MongoClient;
+import com.mongodb.MongoTimeoutException;
 import java.net.UnknownHostException;
 import javax.ws.rs.InternalServerErrorException;
 import net.explorviz.shared.annotations.Config;
@@ -41,12 +42,11 @@ public final class MongoClientHelper {
    */
   public MongoClient getMongoClient() {
     if (this.client == null) {
-      this.LOGGER.info("Connecting to " + this.host + ":" + this.port);
-
       try {
         this.client = new MongoClient(this.host + ":" + this.port);
+        this.client.getDatabaseNames();
         this.LOGGER.info("Connected to " + this.host + ":" + this.port);
-      } catch (final UnknownHostException e) {
+      } catch (final UnknownHostException | MongoTimeoutException e) {
         this.LOGGER.error("Target not reachable: " + this.host + ":" + this.port);
         throw new InternalServerErrorException();
       }
