@@ -22,6 +22,7 @@ import net.explorviz.security.services.TokenService;
 import net.explorviz.security.services.UserCrudService;
 import net.explorviz.shared.security.User;
 import org.eclipse.jetty.http.HttpHeader;
+import org.eclipse.jetty.http.HttpStatus;
 import org.glassfish.hk2.api.ServiceLocator;
 import org.glassfish.hk2.utilities.ServiceLocatorUtilities;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
@@ -33,7 +34,7 @@ import org.junit.Test;
  * This class contains tests for {@link UserResource} using actual http-requests and -responses.
  *
  */
-public class UserResourceHttpTest extends JerseyTest {
+public class UserResourceEndpointTest extends JerseyTest {
 
   private static final String MEDIA_TYPE = "application/vnd.api+json";
 
@@ -45,10 +46,9 @@ public class UserResourceHttpTest extends JerseyTest {
 
   private ResourceConverter jsonApiConverter;
 
+
   @Override
   public void setUp() throws Exception {
-
-
 
     // Inject dependencies
     final ServiceLocator locator = ServiceLocatorUtilities.bind(new DependencyInjectionBinder());
@@ -73,6 +73,7 @@ public class UserResourceHttpTest extends JerseyTest {
 
   @Override
   protected Application configure() {
+
     final ResourceConfig c =
         new ResourceConfig(new net.explorviz.security.server.main.Application());
 
@@ -81,7 +82,8 @@ public class UserResourceHttpTest extends JerseyTest {
     c.register(new AbstractBinder() {
       @Override
       protected void configure() {
-        this.bind(InMemoryUserCrudService.class).to(UserCrudService.class).in(Singleton.class);
+        this.bind(InMemoryUserCrudService.class).to(UserCrudService.class).in(Singleton.class)
+            .ranked(10);
 
       }
     });
@@ -89,7 +91,7 @@ public class UserResourceHttpTest extends JerseyTest {
   }
 
   @Test
-  public void newUserAsAdminTest() throws InterruptedException, DocumentSerializationException {
+  public void createUserAsAdminTest() throws InterruptedException, DocumentSerializationException {
     final UserInput u = new UserInput("newuser");
     u.setPassword("pw");
     u.setRoles(Arrays.asList("admin"));
@@ -105,7 +107,7 @@ public class UserResourceHttpTest extends JerseyTest {
         .header(HttpHeader.AUTHORIZATION.asString(), this.adminToken).post(userEntity);
 
 
-    assertEquals(200, response.getStatus());
+    assertEquals(HttpStatus.OK_200, response.getStatus());
 
     final UserInput respuser = this.jsonApiConverter
         .readDocument(response.readEntity(byte[].class), UserInput.class).get();
@@ -119,7 +121,7 @@ public class UserResourceHttpTest extends JerseyTest {
 
 
   @Test
-  public void newUserAsNormie() throws DocumentSerializationException {
+  public void createUserAsNormie() throws DocumentSerializationException {
     final UserInput u = new UserInput("newuser");
     u.setPassword("pw");
     u.setRoles(Arrays.asList("admin"));
@@ -134,11 +136,11 @@ public class UserResourceHttpTest extends JerseyTest {
     final Response response = this.target("v1/users").request()
         .header(HttpHeader.AUTHORIZATION.asString(), this.normieToken).post(userEntity);
 
-    assertEquals(403, response.getStatus());
+    assertEquals(HttpStatus.FORBIDDEN_403, response.getStatus());
   }
 
   @Test
-  public void newUserAsAnon() throws DocumentSerializationException {
+  public void createUserAsAnon() throws DocumentSerializationException {
     final UserInput u = new UserInput("newuser");
     u.setPassword("pw");
     u.setRoles(Arrays.asList("admin"));
@@ -149,11 +151,12 @@ public class UserResourceHttpTest extends JerseyTest {
     final byte[] converted = this.jsonApiConverter.writeDocument(userDoc);
 
     // Send request
-    final Entity<byte[]> userEntity = Entity.entity(converted, MEDIA_TYPE);
-    final Response response = this.target("v1/users").request().post(userEntity);
+    final Entity<byte[]> body = Entity.entity(converted, MEDIA_TYPE);
+    final Response response = this.target("v1/users").request().post(body);
 
-    assertEquals(403, response.getStatus());
+    assertEquals(HttpStatus.FORBIDDEN_403, response.getStatus());
   }
+
 
 
   /**
@@ -177,11 +180,14 @@ public class UserResourceHttpTest extends JerseyTest {
       this.username = username;
     }
 
+
+
     public UserInput(final Long id, final String username, final String password,
         final List<String> roles) {
+      super();
       this.username = username;
-      this.id = id;
       this.password = password;
+      this.id = id;
       this.roles = roles;
     }
 

@@ -25,7 +25,7 @@ public class DependencyInjectionBinder extends AbstractBinder {
   @Override
   public void configure() {
 
-    // injectable config properties
+    // Injectable config properties
     this.bind(new ConfigInjectionResolver()).to(new TypeLiteral<InjectionResolver<Config>>() {});
 
     this.bindFactory(ResourceConverterFactory.class).to(ResourceConverter.class)
@@ -36,6 +36,7 @@ public class DependencyInjectionBinder extends AbstractBinder {
     this.bind(TokenParserService.class).to(TokenParserService.class).in(Singleton.class);
     this.bind(UserCrudMongoService.class).to(UserCrudService.class).in(Singleton.class);
     this.bind(MongoClientHelper.class).to(MongoClientHelper.class).in(Singleton.class);
+
 
 
     // ErrorObject Handler
