@@ -158,6 +158,30 @@ public class UserResourceEndpointTest extends JerseyTest {
   }
 
 
+  @Test
+  public void createAll() throws DocumentSerializationException {
+    final UserInput u1 = new UserInput(-1L, "u1", "pw", null);
+    final UserInput u2 = new UserInput(-1L, "u2", "pw", null);
+
+    final byte[] document =
+        this.jsonApiConverter.writeDocumentCollection(new JSONAPIDocument<>(Arrays.asList(u1, u2)));
+
+    final Entity<byte[]> body = Entity.entity(document, MEDIA_TYPE);
+
+    final Response response = this.target("v1/users/batch").request()
+        .header(HttpHeader.AUTHORIZATION.asString(), this.adminToken).post(body);
+
+    assertEquals(HttpStatus.OK_200, response.getStatus());
+
+    final byte[] rawResponseBody = response.readEntity(byte[].class);
+
+    final List<UserInput> responseBody =
+        this.jsonApiConverter.readDocumentCollection(rawResponseBody, UserInput.class).get();
+
+    assertEquals(2, responseBody.size());
+    assertTrue(responseBody.get(0).id > 0 && responseBody.get(1).id > 0);
+  }
+
 
   /**
    * This class mimics the actual {@link User} class. The actual user class can't be used for
