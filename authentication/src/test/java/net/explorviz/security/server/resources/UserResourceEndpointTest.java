@@ -26,6 +26,8 @@ import org.eclipse.jetty.http.HttpStatus;
 import org.glassfish.hk2.api.ServiceLocator;
 import org.glassfish.hk2.utilities.ServiceLocatorUtilities;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
+import org.glassfish.jersey.client.ClientConfig;
+import org.glassfish.jersey.client.HttpUrlConnectorProvider;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
 import org.junit.Test;
@@ -47,12 +49,15 @@ public class UserResourceEndpointTest extends JerseyTest {
   private ResourceConverter jsonApiConverter;
 
 
+
   @Override
   public void setUp() throws Exception {
 
     // Inject dependencies
     final ServiceLocator locator = ServiceLocatorUtilities.bind(new DependencyInjectionBinder());
     locator.inject(this);
+
+
 
     // Create tokens for random users
     final User admin = new User("Admin");
@@ -70,6 +75,14 @@ public class UserResourceEndpointTest extends JerseyTest {
 
     super.setUp();
   }
+
+
+  @Override
+  protected void configureClient(final ClientConfig config) {
+    // Otherwise we can't send PATCH-Requests
+    config.property(HttpUrlConnectorProvider.SET_METHOD_WORKAROUND, true);
+  }
+
 
   @Override
   protected Application configure() {
@@ -180,6 +193,45 @@ public class UserResourceEndpointTest extends JerseyTest {
 
     assertEquals(2, responseBody.size());
     assertTrue(responseBody.get(0).id > 0 && responseBody.get(1).id > 0);
+  }
+
+
+  @Test
+  public void updateUser() throws DocumentSerializationException {
+
+    // Create user to update afterwards
+    final UserInput u = new UserInput(-1L, "u", "pw", null);
+    final JSONAPIDocument<UserInput> userDoc = new JSONAPIDocument<>(u);
+    final byte[] converted = this.jsonApiConverter.writeDocument(userDoc);
+    final Entity<byte[]> requetsBody = Entity.entity(converted, MEDIA_TYPE);
+    final byte[] rawResponse = this.target("v1/users").request()
+        .header(HttpHeader.AUTHORIZATION.asString(), this.adminToken)
+        .post(requetsBody, byte[].class);
+
+    final UserInput createdUser =
+        this.jsonApiConverter.readDocument(rawResponse, UserInput.class).get();
+
+    // Update the users properties
+    createdUser.setPassword("newpw");
+    createdUser.setUsername("newname");
+    createdUser.setRoles(Arrays.asList("admin"));
+
+    final byte[] body = this.jsonApiConverter.writeDocument(new JSONAPIDocument<>(createdUser));
+
+
+    final Response rawResponseBody = this.target("v1/users/" + createdUser.id).request()
+        .header(HttpHeader.AUTHORIZATION.asString(), this.adminToken)
+        .property(HttpUrlConnectorProvider.SET_METHOD_WORKAROUND, true)
+        .method("PATCH", Entity.entity(body, MEDIA_TYPE));
+
+
+    final UserInput responseBody = this.jsonApiConverter
+        .readDocument(rawResponseBody.readEntity(byte[].class), UserInput.class).get();
+
+    assertEquals(createdUser.id, responseBody.id);
+    assertEquals(createdUser.username, responseBody.username);
+    assertEquals(null, responseBody.password);
+    assertEquals(createdUser.roles, responseBody.roles);
   }
 
 

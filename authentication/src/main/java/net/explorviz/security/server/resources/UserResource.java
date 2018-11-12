@@ -105,7 +105,6 @@ public class UserResource {
      * ignored. No error will be given to the caller, since json api does not allow data and error
      * in one response.
      *
-     * I don't know if this is the preferred behavior.
      */
 
     final List<User> createdUsers = new ArrayList<>();
@@ -148,8 +147,8 @@ public class UserResource {
     }
 
 
-    if (updatedUser.getId() != null) {
-      throw new BadRequestException("Can't update id");
+    if (updatedUser.getId() != null || updatedUser.getId() != id) {
+      LOGGER.info("Won't update id");
     }
 
     if (updatedUser.getPassword() != null) {
