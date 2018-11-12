@@ -61,6 +61,8 @@ public class JsonApiProvider<T> implements MessageBodyReader<T>, MessageBodyWrit
       throws IOException, WebApplicationException {
     final JSONAPIDocument<T> document = new JSONAPIDocument<>(t);
 
+
+
     try {
       entityStream.write(this.converter.writeDocument(document));
     } catch (final DocumentSerializationException e) {

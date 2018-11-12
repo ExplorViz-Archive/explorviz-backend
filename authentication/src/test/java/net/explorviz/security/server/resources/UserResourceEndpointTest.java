@@ -2,6 +2,7 @@ package net.explorviz.security.server.resources;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import com.github.jasminb.jsonapi.DeserializationFeature;
 import com.github.jasminb.jsonapi.JSONAPIDocument;
 import com.github.jasminb.jsonapi.LongIdHandler;
 import com.github.jasminb.jsonapi.ResourceConverter;
@@ -71,7 +72,7 @@ public class UserResourceEndpointTest extends JerseyTest {
     // Setup json api converter
     this.jsonApiConverter = new ResourceConverter();
     this.jsonApiConverter.registerType(UserInput.class);
-
+    this.jsonApiConverter.disableDeserializationOption(DeserializationFeature.REQUIRE_RESOURCE_ID);
 
     super.setUp();
   }
@@ -105,10 +106,8 @@ public class UserResourceEndpointTest extends JerseyTest {
 
   @Test
   public void createUserAsAdminTest() throws InterruptedException, DocumentSerializationException {
-    final UserInput u = new UserInput("newuser");
-    u.setPassword("pw");
-    u.setRoles(Arrays.asList("admin"));
-    u.setId(-1L);
+    final UserInput u = new UserInput(null, "newuser", "pw", null);
+
 
     // Marshall to json api object
     final JSONAPIDocument<UserInput> userDoc = new JSONAPIDocument<>(u);
@@ -135,10 +134,7 @@ public class UserResourceEndpointTest extends JerseyTest {
 
   @Test
   public void createUserAsNormie() throws DocumentSerializationException {
-    final UserInput u = new UserInput("newuser");
-    u.setPassword("pw");
-    u.setRoles(Arrays.asList("admin"));
-    u.setId(-1L);
+    final UserInput u = new UserInput(null, "newuser", "pw", null);
 
     // Marshall to json api object
     final JSONAPIDocument<UserInput> userDoc = new JSONAPIDocument<>(u);
@@ -154,10 +150,7 @@ public class UserResourceEndpointTest extends JerseyTest {
 
   @Test
   public void createUserAsAnon() throws DocumentSerializationException {
-    final UserInput u = new UserInput("newuser");
-    u.setPassword("pw");
-    u.setRoles(Arrays.asList("admin"));
-    u.setId(-1L);
+    final UserInput u = new UserInput(null, "newuser", "pw", null);
 
     // Marshall to json api object
     final JSONAPIDocument<UserInput> userDoc = new JSONAPIDocument<>(u);
@@ -173,8 +166,8 @@ public class UserResourceEndpointTest extends JerseyTest {
 
   @Test
   public void createAll() throws DocumentSerializationException {
-    final UserInput u1 = new UserInput(-1L, "u1", "pw", null);
-    final UserInput u2 = new UserInput(-1L, "u2", "pw", null);
+    final UserInput u1 = new UserInput(null, "u1", "pw", null);
+    final UserInput u2 = new UserInput(null, "u2", "pw", null);
 
     final byte[] document =
         this.jsonApiConverter.writeDocumentCollection(new JSONAPIDocument<>(Arrays.asList(u1, u2)));
@@ -200,7 +193,7 @@ public class UserResourceEndpointTest extends JerseyTest {
   public void updateUser() throws DocumentSerializationException {
 
     // Create user to update afterwards
-    final UserInput u = new UserInput(-1L, "u", "pw", null);
+    final UserInput u = new UserInput(null, "u", "pw", null);
     final JSONAPIDocument<UserInput> userDoc = new JSONAPIDocument<>(u);
     final byte[] converted = this.jsonApiConverter.writeDocument(userDoc);
     final Entity<byte[]> requetsBody = Entity.entity(converted, MEDIA_TYPE);
@@ -221,7 +214,6 @@ public class UserResourceEndpointTest extends JerseyTest {
 
     final Response rawResponseBody = this.target("v1/users/" + createdUser.id).request()
         .header(HttpHeader.AUTHORIZATION.asString(), this.adminToken)
-        .property(HttpUrlConnectorProvider.SET_METHOD_WORKAROUND, true)
         .method("PATCH", Entity.entity(body, MEDIA_TYPE));
 
 
@@ -233,6 +225,7 @@ public class UserResourceEndpointTest extends JerseyTest {
     assertEquals(null, responseBody.password);
     assertEquals(createdUser.roles, responseBody.roles);
   }
+
 
 
   /**
@@ -252,10 +245,6 @@ public class UserResourceEndpointTest extends JerseyTest {
 
     private UserInput() {}
 
-    public UserInput(final String username) {
-      this.username = username;
-    }
-
 
 
     public UserInput(final Long id, final String username, final String password,
@@ -264,7 +253,7 @@ public class UserResourceEndpointTest extends JerseyTest {
       this.username = username;
       this.password = password;
       this.id = id;
-      this.roles = roles;
+      this.roles = roles == null ? new ArrayList<>() : roles;
     }
 
     public Long getId() {
