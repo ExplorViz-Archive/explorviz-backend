@@ -15,12 +15,7 @@ import org.slf4j.LoggerFactory;
  */
 public final class MongoClientHelper {
 
-  private final Logger LOGGER = LoggerFactory.getLogger(this.getClass().getSimpleName());
-
-
-  private static final String DEFAUL_ADDRESS = "192.168.99.100";
-  private static final String DEFAULT_PORT = "27017";
-
+  private final Logger logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
 
 
   @Config("mongo.ip")
@@ -45,9 +40,9 @@ public final class MongoClientHelper {
       try {
         this.client = new MongoClient(this.host + ":" + this.port);
         this.client.getDatabaseNames();
-        this.LOGGER.info("Connected to " + this.host + ":" + this.port);
+        this.logger.info("Connected to " + this.host + ":" + this.port);
       } catch (final UnknownHostException | MongoTimeoutException e) {
-        this.LOGGER.error("Target not reachable: " + this.host + ":" + this.port);
+        this.logger.error("Target not reachable: " + this.host + ":" + this.port);
         throw new InternalServerErrorException();
       }
     }

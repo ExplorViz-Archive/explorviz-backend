@@ -29,13 +29,15 @@ import org.slf4j.LoggerFactory;
 @Path("v1/tokens")
 public class TokenResource {
 
+  private static final Logger LOGGER = LoggerFactory.getLogger(TokenResource.class.getSimpleName());
+
   @Inject
   private UserValidationService userService;
 
   @Inject
   private TokenService tokenService;
 
-  private final static Logger LOGGER = LoggerFactory.getLogger(TokenResource.class.getSimpleName());
+
 
   /**
    * This method issues a Json Web Token (JWT) for passed user credentials. The token expires after

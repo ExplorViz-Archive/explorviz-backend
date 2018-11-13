@@ -27,6 +27,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
+/**
+ * Unit tests for {@link UserResource}. All tests are performed by just calling the methods of
+ * {@link UserResource}. See {@link UserResourceEndpointTest} for tests that use web requests.
+ *
+ */
 @RunWith(MockitoJUnitRunner.class)
 public class UserResourceTest {
 

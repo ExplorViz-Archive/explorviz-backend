@@ -23,6 +23,7 @@ import net.explorviz.security.services.UserCrudService;
 import net.explorviz.security.util.PasswordStorage;
 import net.explorviz.security.util.PasswordStorage.CannotPerformOperationException;
 import net.explorviz.shared.security.User;
+import org.eclipse.jetty.http.HttpStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,15 +34,13 @@ import org.slf4j.LoggerFactory;
 @Path("v1/users")
 public class UserResource {
 
-  @Inject
-  private UserCrudService userCrudService;
-
-
-
   private static final String MEDIA_TYPE = "application/vnd.api+json";
 
   private static final Logger LOGGER = LoggerFactory.getLogger(UserResource.class);
 
+
+  @Inject
+  private UserCrudService userCrudService;
 
 
   /**
@@ -89,7 +88,7 @@ public class UserResource {
 
 
   /**
-   * Creates all users in a list
+   * Creates all users in a list.
    *
    * @param users the list of users to create
    * @return a list of users objects, that were saved
@@ -255,7 +254,7 @@ public class UserResource {
       throw new InternalServerErrorException();
     }
 
-    return Response.status(204).build();
+    return Response.status(HttpStatus.NO_CONTENT_204).build();
   }
 
 }

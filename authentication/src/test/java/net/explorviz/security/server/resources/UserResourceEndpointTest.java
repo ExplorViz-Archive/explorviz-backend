@@ -42,6 +42,7 @@ import org.junit.Test;
 public class UserResourceEndpointTest extends JerseyTest {
 
   private static final String MEDIA_TYPE = "application/vnd.api+json";
+  private static final String BASE_URL = "v1/users/";
 
   @Inject
   private TokenService tokenService;
@@ -117,7 +118,7 @@ public class UserResourceEndpointTest extends JerseyTest {
 
     // Send request
     final Entity<byte[]> userEntity = Entity.entity(converted, MEDIA_TYPE);
-    final Response response = this.target("v1/users").request()
+    final Response response = this.target(BASE_URL).request()
         .header(HttpHeader.AUTHORIZATION.asString(), this.adminToken).post(userEntity);
 
 
@@ -144,7 +145,7 @@ public class UserResourceEndpointTest extends JerseyTest {
 
     // Send request
     final Entity<byte[]> userEntity = Entity.entity(converted, MEDIA_TYPE);
-    final Response response = this.target("v1/users").request()
+    final Response response = this.target(BASE_URL).request()
         .header(HttpHeader.AUTHORIZATION.asString(), this.normieToken).post(userEntity);
 
     assertEquals(HttpStatus.FORBIDDEN_403, response.getStatus());
@@ -160,7 +161,7 @@ public class UserResourceEndpointTest extends JerseyTest {
 
     // Send request
     final Entity<byte[]> body = Entity.entity(converted, MEDIA_TYPE);
-    final Response response = this.target("v1/users").request().post(body);
+    final Response response = this.target(BASE_URL).request().post(body);
 
     assertEquals(HttpStatus.FORBIDDEN_403, response.getStatus());
   }
@@ -245,7 +246,7 @@ public class UserResourceEndpointTest extends JerseyTest {
     final UserInput u2 = this.createUser("user2", "pw", Arrays.asList("admin"));
     final UserInput u3 = this.createUser("user3", "pw", Arrays.asList("guest"));
 
-    final byte[] rawResponseBody = this.target("v1/users").queryParam("role", "admin").request()
+    final byte[] rawResponseBody = this.target(BASE_URL).queryParam("role", "admin").request()
         .header(HttpHeader.AUTHORIZATION.asString(), this.adminToken).get(byte[].class);
 
     final List<UserInput> adminUsers =
@@ -294,9 +295,9 @@ public class UserResourceEndpointTest extends JerseyTest {
     final JSONAPIDocument<UserInput> userDoc = new JSONAPIDocument<>(u);
     final byte[] converted = this.jsonApiConverter.writeDocument(userDoc);
     final Entity<byte[]> requetsBody = Entity.entity(converted, MEDIA_TYPE);
-    final byte[] rawResponse = this.target("v1/users").request()
-        .header(HttpHeader.AUTHORIZATION.asString(), this.adminToken)
-        .post(requetsBody, byte[].class);
+    final byte[] rawResponse =
+        this.target(BASE_URL).request().header(HttpHeader.AUTHORIZATION.asString(), this.adminToken)
+            .post(requetsBody, byte[].class);
 
     return this.jsonApiConverter.readDocument(rawResponse, UserInput.class).get();
   }
@@ -318,7 +319,14 @@ public class UserResourceEndpointTest extends JerseyTest {
 
     private UserInput() {}
 
-
+    public UserInput(final Long id, final String username, final String password,
+        final List<String> roles) {
+      super();
+      this.username = username;
+      this.password = password;
+      this.id = id;
+      this.roles = roles == null ? new ArrayList<>() : roles;
+    }
 
     @Override
     public boolean equals(final Object obj) {
@@ -340,20 +348,9 @@ public class UserResourceEndpointTest extends JerseyTest {
       temp2.sort(null);
 
       return temp1.equals(temp2);
-
-
     }
 
 
-
-    public UserInput(final Long id, final String username, final String password,
-        final List<String> roles) {
-      super();
-      this.username = username;
-      this.password = password;
-      this.id = id;
-      this.roles = roles == null ? new ArrayList<>() : roles;
-    }
 
     public Long getId() {
       return this.id;

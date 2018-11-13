@@ -82,7 +82,7 @@ public class UserCrudMongoService implements UserCrudService {
   public List<User> getAll() {
 
     final MongoAdapter<User> adapter = new UserAdapter();
-    return this.userCollection.find().toArray().stream().map(o -> adapter.fromDBObject(o))
+    return this.userCollection.find().toArray().stream().map(o -> adapter.fromDbObject(o))
         .collect(Collectors.toList());
 
   }
@@ -92,7 +92,7 @@ public class UserCrudMongoService implements UserCrudService {
     // Generate an id
     user.setId(this.idGen.next());
     final MongoAdapter<User> userAdapter = new UserAdapter();
-    final DBObject userDBObject = userAdapter.toDBObject(user);
+    final DBObject userDBObject = userAdapter.toDbObject(user);
 
 
     final WriteResult result = this.userCollection.insert(userDBObject);
@@ -109,7 +109,7 @@ public class UserCrudMongoService implements UserCrudService {
   public void updateUser(final User user) throws MongoException {
     final DBObject query = new BasicDBObject("id", user.getId());
     final MongoAdapter<User> userAdapter = new UserAdapter();
-    final DBObject userDBObject = userAdapter.toDBObject(user);
+    final DBObject userDBObject = userAdapter.toDbObject(user);
 
 
     this.userCollection.update(query, userDBObject);
@@ -126,7 +126,7 @@ public class UserCrudMongoService implements UserCrudService {
       return Optional.empty();
     }
 
-    return Optional.ofNullable(userAdapter.fromDBObject(userObject));
+    return Optional.ofNullable(userAdapter.fromDbObject(userObject));
 
   }
 
@@ -137,7 +137,7 @@ public class UserCrudMongoService implements UserCrudService {
 
     final DBCursor userObjects = this.userCollection.find(query);
 
-    final List<User> users = userObjects.toArray().stream().map(o -> userAdapter.fromDBObject(o))
+    final List<User> users = userObjects.toArray().stream().map(o -> userAdapter.fromDbObject(o))
         .collect(Collectors.toList());
 
     return users;
@@ -164,7 +164,7 @@ public class UserCrudMongoService implements UserCrudService {
       return Optional.empty();
     }
 
-    return Optional.ofNullable(userAdapter.fromDBObject(foundUser));
+    return Optional.ofNullable(userAdapter.fromDbObject(foundUser));
 
   }
 
