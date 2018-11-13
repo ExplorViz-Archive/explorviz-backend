@@ -1,6 +1,7 @@
 package net.explorviz.security.server.resources;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import com.github.jasminb.jsonapi.DeserializationFeature;
 import com.github.jasminb.jsonapi.JSONAPIDocument;
@@ -34,7 +35,8 @@ import org.glassfish.jersey.test.JerseyTest;
 import org.junit.Test;
 
 /**
- * This class contains tests for {@link UserResource} using actual http-requests and -responses.
+ * This class contains tests for {@link UserResource} using actual http-requests and -responses. So
+ * far only the most basic cases are covered.
  *
  */
 public class UserResourceEndpointTest extends JerseyTest {
@@ -193,16 +195,7 @@ public class UserResourceEndpointTest extends JerseyTest {
   public void updateUser() throws DocumentSerializationException {
 
     // Create user to update afterwards
-    final UserInput u = new UserInput(null, "u", "pw", null);
-    final JSONAPIDocument<UserInput> userDoc = new JSONAPIDocument<>(u);
-    final byte[] converted = this.jsonApiConverter.writeDocument(userDoc);
-    final Entity<byte[]> requetsBody = Entity.entity(converted, MEDIA_TYPE);
-    final byte[] rawResponse = this.target("v1/users").request()
-        .header(HttpHeader.AUTHORIZATION.asString(), this.adminToken)
-        .post(requetsBody, byte[].class);
-
-    final UserInput createdUser =
-        this.jsonApiConverter.readDocument(rawResponse, UserInput.class).get();
+    final UserInput createdUser = this.createUser("u", "pw", null);
 
     // Update the users properties
     createdUser.setPassword("newpw");
@@ -228,6 +221,86 @@ public class UserResourceEndpointTest extends JerseyTest {
 
 
 
+  @Test
+  public void findById() throws DocumentSerializationException {
+
+    final long id = this.createUser("name", "pw", Arrays.asList("admin")).id;
+
+    final byte[] rawResponseBody = this.target("v1/users/" + id).request()
+        .header(HttpHeader.AUTHORIZATION.asString(), this.adminToken).get(byte[].class);
+
+    final UserInput foundUser =
+        this.jsonApiConverter.readDocument(rawResponseBody, UserInput.class).get();
+
+    assertEquals(id, (long) foundUser.id);
+    assertEquals("name", foundUser.username);
+    assertEquals(Arrays.asList("admin"), foundUser.roles);
+
+  }
+
+  // ByRole
+  @Test
+  public void findByRole() throws DocumentSerializationException {
+    final UserInput u1 = this.createUser("user1", "pw", Arrays.asList("admin"));
+    final UserInput u2 = this.createUser("user2", "pw", Arrays.asList("admin"));
+    final UserInput u3 = this.createUser("user3", "pw", Arrays.asList("guest"));
+
+    final byte[] rawResponseBody = this.target("v1/users").queryParam("role", "admin").request()
+        .header(HttpHeader.AUTHORIZATION.asString(), this.adminToken).get(byte[].class);
+
+    final List<UserInput> adminUsers =
+        this.jsonApiConverter.readDocumentCollection(rawResponseBody, UserInput.class).get();
+
+
+    assertTrue(adminUsers.contains(u1) && adminUsers.contains(u2));
+    assertFalse(adminUsers.contains(u3));
+
+
+  }
+
+
+  @Test
+  public void removeUser() throws DocumentSerializationException {
+    final UserInput u = this.createUser("user1", "pw", Arrays.asList("admin"));
+
+    final Response deleteResponse = this.target("v1/users/" + u.id).request()
+        .header(HttpHeader.AUTHORIZATION.asString(), this.adminToken).delete();
+    final Response getResponse = this.target("v1/users/" + u.id).request()
+        .header(HttpHeader.AUTHORIZATION.asString(), this.adminToken).get();
+
+    assertEquals(HttpStatus.NO_CONTENT_204, deleteResponse.getStatus());
+    assertEquals(HttpStatus.NOT_FOUND_404, getResponse.getStatus());
+
+
+
+  }
+
+
+  // Remove
+
+  /**
+   * Helper method to create a user by sending a post request.
+   *
+   * @param name the name
+   * @param pw the password
+   * @param roles the roles
+   * @return the user object the webservice created encapsulated in an {@link UserInput} object.
+   * @throws DocumentSerializationException
+   */
+  private UserInput createUser(final String name, final String pw, final List<String> roles)
+      throws DocumentSerializationException {
+    // Create user to update afterwards
+    final UserInput u = new UserInput(null, name, pw, roles);
+    final JSONAPIDocument<UserInput> userDoc = new JSONAPIDocument<>(u);
+    final byte[] converted = this.jsonApiConverter.writeDocument(userDoc);
+    final Entity<byte[]> requetsBody = Entity.entity(converted, MEDIA_TYPE);
+    final byte[] rawResponse = this.target("v1/users").request()
+        .header(HttpHeader.AUTHORIZATION.asString(), this.adminToken)
+        .post(requetsBody, byte[].class);
+
+    return this.jsonApiConverter.readDocument(rawResponse, UserInput.class).get();
+  }
+
   /**
    * This class mimics the actual {@link User} class. The actual user class can't be used for
    * testing purposes since passwords are ignored when serializing.
@@ -244,6 +317,32 @@ public class UserResourceEndpointTest extends JerseyTest {
     private List<String> roles = new ArrayList<>();
 
     private UserInput() {}
+
+
+
+    @Override
+    public boolean equals(final Object obj) {
+
+      if (obj == null) {
+        return false;
+      }
+
+      if (!(obj instanceof UserInput)) {
+        return false;
+      }
+
+      final UserInput other = (UserInput) obj;
+
+      final List<String> temp1 = new ArrayList(this.roles);
+      final List<String> temp2 = new ArrayList(other.roles);
+
+      temp1.sort(null);
+      temp2.sort(null);
+
+      return temp1.equals(temp2);
+
+
+    }
 
 
 
