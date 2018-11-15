@@ -38,10 +38,19 @@ public class UserResource {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(UserResource.class);
 
+  private static final String MSG_INVALID_PASSWORD = "Invalid password";
+  private static final String MSG_INVALID_USERNAME = "Invalid username";
+  private static final String MSG_USER_NOT_RETRIEVED = "Could not retrieve user ";
+  private static final String MSG_USER_NOT_UPDATED = "Could not update user ";
+
+
+  private static final String ADMIN_ROLE = "admin";
 
   @Inject
   private UserCrudService userCrudService;
 
+
+  // CHECKSTYLE.OFF: Cyclomatic
 
   /**
    * Creates and persists a new user.
@@ -52,15 +61,15 @@ public class UserResource {
   @POST
   @Consumes(MEDIA_TYPE)
   @Produces(MEDIA_TYPE)
-  @RolesAllowed({"admin"})
-  public User newUser(final User user) {
+  @RolesAllowed({ADMIN_ROLE})
+  public User newUser(final User user) { // NOPMD
 
     if (user.getUsername() == null || user.getUsername().equals("")) {
-      throw new BadRequestException("Invalid username");
+      throw new BadRequestException(MSG_INVALID_USERNAME);
     }
 
     if (user.getPassword() == null || user.getPassword().equals("")) {
-      throw new BadRequestException("Invalid password");
+      throw new BadRequestException(MSG_INVALID_PASSWORD);
     }
 
     if (user.getId() != null) {
@@ -71,18 +80,22 @@ public class UserResource {
       user.setPassword(PasswordStorage.createHash(user.getPassword()));
 
     } catch (final CannotPerformOperationException e) {
-      LOGGER.warn("Could not create user due to password hashing failure: " + e.getMessage());
-      throw new InternalServerErrorException();
+      if (LOGGER.isWarnEnabled()) {
+        LOGGER.warn("Could not create user due to password hashing failure: " + e.getMessage());
+      }
+      throw new InternalServerErrorException(e);
     }
 
     try {
       return this.userCrudService.saveNewUser(user)
           .orElseThrow(() -> new InternalServerErrorException());
     } catch (final DuplicateKeyException ex) {
-      throw new BadRequestException("User already exists");
+      throw new BadRequestException("User already exists", ex);
     } catch (final MongoException ex) {
-      LOGGER.error("Could not insert new user: " + ex.getMessage() + " (" + ex.getCode() + ")");
-      throw new InternalServerErrorException();
+      if (LOGGER.isErrorEnabled()) {
+        LOGGER.error(MSG_USER_NOT_RETRIEVED + ex.getMessage() + " (" + ex.getCode() + ")");
+      }
+      throw new InternalServerErrorException(ex);
     }
   }
 
@@ -97,7 +110,7 @@ public class UserResource {
   @Consumes(MEDIA_TYPE)
   @Produces(MEDIA_TYPE)
   @Path("batch") // Todo: Find more suitable path
-  @RolesAllowed({"admin"})
+  @RolesAllowed({ADMIN_ROLE})
   public List<User> createAll(final List<User> users) {
     /*
      * Currently, if a user object in the given list does not survive input validation, it will be
@@ -131,40 +144,43 @@ public class UserResource {
    */
   @PATCH
   @Path("{id}")
-  @RolesAllowed({"admin"})
+  @RolesAllowed({ADMIN_ROLE})
   @Produces(MEDIA_TYPE)
   @Consumes(MEDIA_TYPE)
-  public User updateUser(@PathParam("id") final Long id, final User updatedUser) {
+  public User updateUser(@PathParam("id") final Long id, final User updatedUser) { // NOPMD
 
     User targetUser = null;
-
     try {
       targetUser = this.userCrudService.getUserById(id).orElseThrow(() -> new NotFoundException());
     } catch (final MongoException ex) {
-      LOGGER.error("Could not retrieve user: " + ex.getMessage() + " (" + ex.getCode() + ")");
-      throw new InternalServerErrorException();
+      if (LOGGER.isErrorEnabled()) {
+        LOGGER.error(MSG_USER_NOT_RETRIEVED + ex.getMessage() + " (" + ex.getCode() + ")");
+      }
+      throw new InternalServerErrorException(ex);
     }
 
 
-    if (updatedUser.getId() != null || updatedUser.getId() != id) {
+    if (updatedUser.getId() != null || updatedUser.getId() != id) { // NOPMD
       LOGGER.info("Won't update id");
     }
 
     if (updatedUser.getPassword() != null) {
       if (updatedUser.getPassword().equals("")) {
-        throw new BadRequestException("Invalid password");
+        throw new BadRequestException(MSG_INVALID_PASSWORD);
       }
       try {
         targetUser.setPassword(PasswordStorage.createHash(updatedUser.getPassword()));
       } catch (final CannotPerformOperationException e) {
-        LOGGER.warn("Could not update user due to password hashing failure: " + e.getMessage());
-        throw new InternalServerErrorException();
+        if (LOGGER.isWarnEnabled()) {
+          LOGGER.warn("Could not update user due to password hashing failure: " + e.getMessage());
+        }
+        throw new InternalServerErrorException(e);
       }
     }
 
     if (updatedUser.getUsername() != null) {
       if (updatedUser.getUsername().equals("")) {
-        throw new BadRequestException("Invalid username");
+        throw new BadRequestException(MSG_INVALID_USERNAME);
       }
 
       targetUser.setUsername(updatedUser.getUsername());
@@ -177,8 +193,10 @@ public class UserResource {
     try {
       this.userCrudService.updateUser(targetUser);
     } catch (final MongoException ex) {
-      LOGGER.error("Could not update user: " + ex.getMessage() + " (" + ex.getCode() + ")");
-      throw new InternalServerErrorException();
+      if (LOGGER.isErrorEnabled()) {
+        LOGGER.error(MSG_USER_NOT_UPDATED + ex.getMessage() + " (" + ex.getCode() + ")");
+      }
+      throw new InternalServerErrorException(ex);
     }
 
     return targetUser;
@@ -192,7 +210,7 @@ public class UserResource {
    * @return a list of all users with the given role
    */
   @GET
-  @RolesAllowed({"admin"})
+  @RolesAllowed({ADMIN_ROLE})
   @Produces(MEDIA_TYPE)
   public List<User> usersByRole(@QueryParam("role") final String role) {
     try {
@@ -204,8 +222,10 @@ public class UserResource {
       return this.userCrudService.getUsersByRole(role);
 
     } catch (final MongoException ex) {
-      LOGGER.error("Could not update user: " + ex.getMessage() + " (" + ex.getCode() + ")");
-      throw new InternalServerErrorException();
+      if (LOGGER.isErrorEnabled()) {
+        LOGGER.error(MSG_USER_NOT_UPDATED + ex.getMessage() + " (" + ex.getCode() + ")");
+      }
+      throw new InternalServerErrorException(ex);
     }
   }
 
@@ -217,7 +237,7 @@ public class UserResource {
    */
   @GET
   @Path("{id}")
-  @RolesAllowed({"admin"})
+  @RolesAllowed({ADMIN_ROLE})
   @Produces(MEDIA_TYPE)
   public User userById(@PathParam("id") final Long id) {
     if (id == null || id <= 0) {
@@ -229,8 +249,10 @@ public class UserResource {
     try {
       foundUser = this.userCrudService.getUserById(id).orElseThrow(() -> new NotFoundException());
     } catch (final MongoException ex) {
-      LOGGER.error("Could not retrieve user: " + ex.getMessage() + " (" + ex.getCode() + ")");
-      throw new InternalServerErrorException();
+      if (LOGGER.isErrorEnabled()) {
+        LOGGER.error("Could not retrieve user: " + ex.getMessage() + " (" + ex.getCode() + ")");
+      }
+      throw new InternalServerErrorException(ex);
     }
 
 
@@ -245,13 +267,15 @@ public class UserResource {
    */
   @DELETE
   @Path("{id}")
-  @RolesAllowed({"admin"})
+  @RolesAllowed({ADMIN_ROLE})
   public Response removeUser(@PathParam("id") final Long id) {
     try {
       this.userCrudService.deleteUserById(id);
     } catch (final MongoException ex) {
-      LOGGER.error("Could not update user: " + ex.getMessage() + " (" + ex.getCode() + ")");
-      throw new InternalServerErrorException();
+      if (LOGGER.isErrorEnabled()) {
+        LOGGER.error("Could not update user: " + ex.getMessage() + " (" + ex.getCode() + ")");
+      }
+      throw new InternalServerErrorException(ex);
     }
 
     return Response.status(HttpStatus.NO_CONTENT_204).build();

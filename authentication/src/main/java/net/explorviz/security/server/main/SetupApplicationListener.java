@@ -23,6 +23,8 @@ public class SetupApplicationListener implements ApplicationEventListener {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(SetupApplicationListener.class);
 
+  private static final String ADMIN_NAME = "admin";
+
   @Inject
   private UserCrudService userCrudService;
 
@@ -40,7 +42,9 @@ public class SetupApplicationListener implements ApplicationEventListener {
       try {
         this.initDefaultUser();
       } catch (final CannotPerformOperationException e) {
-        LOGGER.warn("Unable to create default user: " + e.getMessage());
+        if (LOGGER.isWarnEnabled()) {
+          LOGGER.warn("Unable to create default user: " + e.getMessage());
+        }
       }
     }
 
@@ -55,9 +59,9 @@ public class SetupApplicationListener implements ApplicationEventListener {
   private void initDefaultUser() throws CannotPerformOperationException {
 
     // Check whether the default user exists and if not, create it
-    if (!this.userCrudService.findUserByName("admin").isPresent()) {
+    if (!this.userCrudService.findUserByName(ADMIN_NAME).isPresent()) {
       final String pw = PasswordStorage.createHash("password");
-      final User admin = new User(null, "admin", pw, Arrays.asList("admin"));
+      final User admin = new User(null, ADMIN_NAME, pw, Arrays.asList(ADMIN_NAME));
       this.userCrudService.saveNewUser(admin);
     }
 

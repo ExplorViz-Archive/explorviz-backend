@@ -12,6 +12,9 @@ import org.glassfish.hk2.api.Factory;
 public class ResourceConverterFactory implements Factory<ResourceConverter> {
   private final ResourceConverter converter;
 
+  /**
+   * Creates a new factory.
+   */
   public ResourceConverterFactory() {
     final ResourceConverter resourceConverter = new ResourceConverter();
 

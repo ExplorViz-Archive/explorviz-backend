@@ -39,6 +39,7 @@ import org.junit.Test;
  * far only the most basic cases are covered.
  *
  */
+@SuppressWarnings("PMD")
 public class UserResourceEndpointTest extends JerseyTest {
 
   private static final String MEDIA_TYPE = "application/vnd.api+json";

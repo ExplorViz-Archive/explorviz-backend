@@ -9,11 +9,12 @@ import net.explorviz.shared.security.User;
 import org.junit.Test;
 
 /**
- * Unit tests for {@link UserAdapter}
- *
+ * Unit tests for {@link UserAdapter}.
  *
  */
+@SuppressWarnings("PMD")
 public class UserAdapterTest {
+
 
   @Test
   public void testToDbObject() {

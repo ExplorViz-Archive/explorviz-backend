@@ -30,6 +30,14 @@ public class User {
     this.username = username;
   }
 
+  /**
+   * Creates a new {@link User} object.
+   *
+   * @param id id of the user. Should be managed by the persistence layer
+   * @param username the username
+   * @param password the password
+   * @param roles the roles
+   */
   public User(final Long id, final String username, final String password,
       final List<String> roles) {
     this.username = username;

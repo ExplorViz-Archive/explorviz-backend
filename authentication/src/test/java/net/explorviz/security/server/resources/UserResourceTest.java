@@ -33,6 +33,7 @@ import org.mockito.junit.MockitoJUnitRunner;
  *
  */
 @RunWith(MockitoJUnitRunner.class)
+@SuppressWarnings("PMD")
 public class UserResourceTest {
 
   @InjectMocks

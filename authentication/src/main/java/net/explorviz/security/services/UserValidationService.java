@@ -17,7 +17,9 @@ import org.slf4j.LoggerFactory;
 @Service
 public class UserValidationService {
 
-  private static final Logger LOGGER =
+  private static final String MSG_WRONGCRED = "Wrong username or password";
+
+  private static final Logger LOGGER = // NOPMD
       LoggerFactory.getLogger(UserValidationService.class.getSimpleName());
 
 
@@ -28,25 +30,26 @@ public class UserValidationService {
    * This method validates the passed {@link UserCredentials}, therefore enables overall
    * authentication for this web service and the token generation.
    *
-   * @param userCredentials -
-   * @return
-   * @throws InvalidHashException
-   * @throws CannotPerformOperationException
+   * @param userCredentials username and password
+   * @return the user, if the token credentials were valid
    */
-  public User validateUserCredentials(final UserCredentials userCredentials)
-      throws CannotPerformOperationException, InvalidHashException {
+  public User validateUserCredentials(final UserCredentials userCredentials) {
 
     if (!this.checkIfDataIsNotNull(userCredentials)) {
       throw new ForbiddenException("Enter username and password");
     }
 
     final User user = this.userCrudService.findUserByName(userCredentials.getUsername())
-        .orElseThrow(() -> new ForbiddenException("Wrong username or password"));
+        .orElseThrow(() -> new ForbiddenException(MSG_WRONGCRED));
 
 
 
-    if (!PasswordStorage.verifyPassword(userCredentials.getPassword(), user.getPassword())) {
-      throw new ForbiddenException("Wrong username or password");
+    try {
+      if (!PasswordStorage.verifyPassword(userCredentials.getPassword(), user.getPassword())) {
+        throw new ForbiddenException(MSG_WRONGCRED);
+      }
+    } catch (CannotPerformOperationException | InvalidHashException e) {
+      throw new ForbiddenException(MSG_WRONGCRED);
     }
 
 

@@ -5,7 +5,6 @@ import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 import com.mongodb.MongoException;
-import com.mongodb.WriteResult;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -21,10 +20,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- *
- * Offers CRUD operations on user objects, backed by a MongoDB instance as persistence layer.
- *
- * Each user has the following fields:
+ * Offers CRUD operations on user objects, backed by a MongoDB instance as persistence layer. Each
+ * user has the following fields:
  * <ul>
  * <li>id: the unique id of the user</li>
  * <li>username: name of the user, unique</li>
@@ -94,12 +91,11 @@ public class UserCrudMongoService implements UserCrudService {
     final MongoAdapter<User> userAdapter = new UserAdapter();
     final DBObject userDBObject = userAdapter.toDbObject(user);
 
-
-    final WriteResult result = this.userCollection.insert(userDBObject);
-
     final long id = (Long) userDBObject.get("id");
 
-    LOGGER.info("Inserted new user with id " + id);
+    if (LOGGER.isInfoEnabled()) {
+      LOGGER.info("Inserted new user with id " + id);
+    }
     return Optional
         .ofNullable(new User(id, user.getUsername(), user.getPassword(), user.getRoles()));
 
@@ -118,7 +114,6 @@ public class UserCrudMongoService implements UserCrudService {
 
   @Override
   public Optional<User> getUserById(final Long id) throws MongoException {
-    final MongoAdapter<User> userAdapter = new UserAdapter();
 
     final DBObject userObject = this.userCollection.findOne(new BasicDBObject("id", id));
 
@@ -126,6 +121,7 @@ public class UserCrudMongoService implements UserCrudService {
       return Optional.empty();
     }
 
+    final MongoAdapter<User> userAdapter = new UserAdapter();
     return Optional.ofNullable(userAdapter.fromDbObject(userObject));
 
   }
@@ -137,10 +133,8 @@ public class UserCrudMongoService implements UserCrudService {
 
     final DBCursor userObjects = this.userCollection.find(query);
 
-    final List<User> users = userObjects.toArray().stream().map(o -> userAdapter.fromDbObject(o))
+    return userObjects.toArray().stream().map(o -> userAdapter.fromDbObject(o))
         .collect(Collectors.toList());
-
-    return users;
 
   }
 
@@ -149,14 +143,14 @@ public class UserCrudMongoService implements UserCrudService {
     final DBObject query = new BasicDBObject("id", id);
     this.userCollection.remove(query);
 
-    LOGGER.info("Deleted user with id " + id);
+    if (LOGGER.isInfoEnabled()) {
+      LOGGER.info("Deleted user with id " + id);
+    }
   }
 
 
   @Override
   public Optional<User> findUserByName(final String username) {
-    final MongoAdapter<User> userAdapter = new UserAdapter();
-
     final DBObject query = new BasicDBObject("username", username);
     final DBObject foundUser = this.userCollection.findOne(query);
 
@@ -164,6 +158,7 @@ public class UserCrudMongoService implements UserCrudService {
       return Optional.empty();
     }
 
+    final MongoAdapter<User> userAdapter = new UserAdapter();
     return Optional.ofNullable(userAdapter.fromDbObject(foundUser));
 
   }

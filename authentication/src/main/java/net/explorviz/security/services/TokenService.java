@@ -97,8 +97,8 @@ public class TokenService {
   private String issueRefreshmentToken(final TokenDetails newTokenDetails) {
     final String id = UUID.randomUUID().toString();
 
-    final String authenticationToken = Jwts.builder().setId(id).setIssuer(this.issuer)
-        .setAudience(this.audience).setSubject(newTokenDetails.getUsername())
+    return Jwts.builder().setId(id).setIssuer(this.issuer).setAudience(this.audience)
+        .setSubject(newTokenDetails.getUsername())
         .setIssuedAt(Date.from(newTokenDetails.getIssuedDate().toInstant()))
         .setExpiration(Date.from(newTokenDetails.getExpirationDate().toInstant()))
         .claim(ROLES_CLAIM_IDENTIFIER, newTokenDetails.getRoles())
@@ -106,7 +106,7 @@ public class TokenService {
         .claim(REFRESH_LIMITCLAIM_IDENTIFIER, this.refreshLimit)
         .signWith(SignatureAlgorithm.HS256, this.secret).compact();
 
-    return authenticationToken;
+
   }
 
 }

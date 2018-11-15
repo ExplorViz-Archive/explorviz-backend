@@ -7,34 +7,23 @@ import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 import javax.xml.bind.DatatypeConverter;
 
+/**
+ * This repository contains peer-reviewed libraries for password storage. Passwords are "hashed"
+ * with PBKDF2 (64,000 iterations of SHA1 by default) using a cryptographically-random salt.
+ *
+ * @see <a href=
+ *      "https://github.com/defuse/password-hashing">https://github.com/defuse/password-hashing</a>
+ *
+ */
+@SuppressWarnings({"PMD"})
 public class PasswordStorage {
+
+  // CHECKSTYLE.OFF: javadoc
 
   /*
    * Copied from https://github.com/defuse/password-hashing
    *
    */
-
-  @SuppressWarnings("serial")
-  public static class InvalidHashException extends Exception {
-    public InvalidHashException(final String message) {
-      super(message);
-    }
-
-    public InvalidHashException(final String message, final Throwable source) {
-      super(message, source);
-    }
-  }
-
-  @SuppressWarnings("serial")
-  public static class CannotPerformOperationException extends Exception {
-    public CannotPerformOperationException(final String message) {
-      super(message);
-    }
-
-    public CannotPerformOperationException(final String message, final Throwable source) {
-      super(message, source);
-    }
-  }
 
   public static final String PBKDF2_ALGORITHM = "PBKDF2WithHmacSHA1";
 
@@ -50,6 +39,33 @@ public class PasswordStorage {
   public static final int HASH_SIZE_INDEX = 2;
   public static final int SALT_INDEX = 3;
   public static final int PBKDF2_INDEX = 4;
+
+  @SuppressWarnings("serial")
+  public static class InvalidHashException extends Exception { // no pmd
+    public InvalidHashException(final String message) {
+      super(message);
+    }
+
+    public InvalidHashException(final String message, final Throwable source) {
+      super(message, source);
+    }
+  }
+
+
+  @SuppressWarnings("serial")
+  public static class CannotPerformOperationException extends Exception {
+    public CannotPerformOperationException(final String message) {
+      super(message);
+    }
+
+    public CannotPerformOperationException(final String message, final Throwable source) {
+      super(message, source);
+    }
+  }
+
+  private PasswordStorage() {}
+
+
 
   public static String createHash(final String password) throws CannotPerformOperationException {
     return createHash(password.toCharArray());
@@ -75,6 +91,7 @@ public class PasswordStorage {
       throws CannotPerformOperationException, InvalidHashException {
     return verifyPassword(password.toCharArray(), correctHash);
   }
+
 
   public static boolean verifyPassword(final char[] password, final String correctHash)
       throws CannotPerformOperationException, InvalidHashException {
