@@ -61,8 +61,10 @@ public class TokenResource {
     try {
       user = this.userService.validateUserCredentials(credentials);
     } catch (CannotPerformOperationException | InvalidHashException e) {
-      LOGGER.error("Error verifying credentials: " + e.getMessage());
-      throw new InternalServerErrorException();
+      if (LOGGER.isErrorEnabled()) {
+        LOGGER.error("Error verifying credentials: " + e.getMessage());
+      }
+      throw new InternalServerErrorException(e);
     }
 
     final Token t = new Token();

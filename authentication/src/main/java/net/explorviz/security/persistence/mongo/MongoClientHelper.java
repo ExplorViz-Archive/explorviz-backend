@@ -15,7 +15,8 @@ import org.slf4j.LoggerFactory;
  */
 public final class MongoClientHelper {
 
-  private final Logger logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
+  private static final Logger LOGGER =
+      LoggerFactory.getLogger(MongoClientHelper.class.getSimpleName());
 
 
   @Config("mongo.ip")
@@ -26,7 +27,7 @@ public final class MongoClientHelper {
 
 
 
-  private MongoClient client = null;
+  private MongoClient client;
 
   /**
    * Retrieves the connection to the database (i.e. the {@link MongoClient}). If the client is
@@ -40,10 +41,14 @@ public final class MongoClientHelper {
       try {
         this.client = new MongoClient(this.host + ":" + this.port);
         this.client.getDatabaseNames();
-        this.logger.info("Connected to " + this.host + ":" + this.port);
+        if (LOGGER.isInfoEnabled()) {
+          LOGGER.info("Connected to " + this.host + ":" + this.port);
+        }
       } catch (final UnknownHostException | MongoTimeoutException e) {
-        this.logger.error("Target not reachable: " + this.host + ":" + this.port);
-        throw new InternalServerErrorException();
+        if (LOGGER.isErrorEnabled()) {
+          LOGGER.error("Target not reachable: " + this.host + ":" + this.port);
+        }
+        throw new InternalServerErrorException(e);
       }
     }
 
