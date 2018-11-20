@@ -32,14 +32,14 @@ public class UserAdapterTest {
 
   @Test
   public void testFromDbObject() {
-    final BasicDBObject userDBObject = new BasicDBObject();
+    final BasicDBObject userDbObject = new BasicDBObject();
     final List<String> roles = Arrays.asList("admin", "tester");
-    userDBObject.append("id", 17L).append("username", "name").append("password", "pw")
+    userDbObject.append("id", 17L).append("username", "name").append("password", "pw")
         .append("roles", roles);
 
     final UserAdapter userAdapter = new UserAdapter();
 
-    final User u = userAdapter.fromDbObject(userDBObject);
+    final User u = userAdapter.fromDbObject(userDbObject);
 
     assertEquals(17L, (long) u.getId());
     assertEquals("name", u.getUsername());

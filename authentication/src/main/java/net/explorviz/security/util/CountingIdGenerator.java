@@ -1,5 +1,7 @@
 package net.explorviz.security.util;
 
+import java.util.concurrent.atomic.AtomicLong;
+
 /**
  * Simple {@link IdGenerator}} that creates ids by counting.
  *
@@ -7,7 +9,7 @@ package net.explorviz.security.util;
 public class CountingIdGenerator implements IdGenerator<Long> {
 
 
-  private Long lastId;
+  private final AtomicLong lastId;
 
   /**
    * Creates a new {@link CountingIdGenerator} that will start generating ids from 1.
@@ -23,13 +25,15 @@ public class CountingIdGenerator implements IdGenerator<Long> {
    * @param skip the numbers to skip
    */
   public CountingIdGenerator(final Long skip) {
-    this.lastId = skip;
+    this.lastId = new AtomicLong(skip);
   }
 
 
   @Override
   public Long next() {
-    return ++this.lastId;
+    synchronized (this) {
+      return this.lastId.incrementAndGet();
+    }
   }
 
 

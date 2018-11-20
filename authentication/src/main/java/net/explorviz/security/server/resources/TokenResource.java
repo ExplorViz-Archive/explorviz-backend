@@ -26,7 +26,8 @@ import org.slf4j.LoggerFactory;
 @Path("v1/tokens")
 public class TokenResource {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(TokenResource.class.getSimpleName());
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(TokenResource.class.getSimpleName()); // NOPMD
 
   @Inject
   private UserValidationService userService;

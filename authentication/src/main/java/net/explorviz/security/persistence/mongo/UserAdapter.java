@@ -1,5 +1,11 @@
 package net.explorviz.security.persistence.mongo;
 
+// CHECKSTYLE.OFF: CustomImportOrderCheck
+
+import static net.explorviz.security.persistence.mongo.FieldHelper.FIELD_ID;
+import static net.explorviz.security.persistence.mongo.FieldHelper.FIELD_PASSWORD;
+import static net.explorviz.security.persistence.mongo.FieldHelper.FIELD_ROLES;
+import static net.explorviz.security.persistence.mongo.FieldHelper.FIELD_USERNAME;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import java.util.List;
@@ -11,10 +17,7 @@ import net.explorviz.shared.security.User;
  */
 public class UserAdapter implements MongoAdapter<User> {
 
-  private static final String FIELD_USERNAME = "username";
-  private static final String FIELD_PASSWORD = "password";
-  private static final String FIELD_ID = "id";
-  private static final String FIELD_ROLES = "roles";
+
 
   @Override
   public DBObject toDbObject(final User entity) {

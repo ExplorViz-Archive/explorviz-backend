@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.inject.Inject;
+import net.explorviz.security.persistence.mongo.FieldHelper;
 import net.explorviz.security.persistence.mongo.MongoAdapter;
 import net.explorviz.security.persistence.mongo.MongoClientHelper;
 import net.explorviz.security.persistence.mongo.UserAdapter;
@@ -33,17 +34,25 @@ import org.slf4j.LoggerFactory;
 @Service
 public class UserCrudMongoService implements UserCrudService {
 
-  private final IdGenerator<Long> idGen;
-
   private static final Logger LOGGER =
       LoggerFactory.getLogger(UserCrudMongoService.class.getSimpleName());
 
-  private final DBCollection userCollection;
-
   private static final String DBNAME = "explorviz";
 
+  private static final String UNIQUE = "unique";
+
+
+  private final IdGenerator<Long> idGen;
+
+
+
+  private final DBCollection userCollection;
+
+
+
   /**
-   * Creates a new {@code UserCrudMongoDb}
+   * Creates a new {@code UserCrudMongoDb}.
+   *
    */
   @Inject
   public UserCrudMongoService(final MongoClientHelper mongoHelper) {
@@ -55,23 +64,24 @@ public class UserCrudMongoService implements UserCrudService {
 
     // Find all ids
     final DBCursor maxCursor =
-        this.userCollection.find(new BasicDBObject(), new BasicDBObject("id", 1))
-            .sort(new BasicDBObject("id", -1)).limit(1);
+        this.userCollection.find(new BasicDBObject(), new BasicDBObject(FieldHelper.FIELD_ID, 1))
+            .sort(new BasicDBObject(FieldHelper.FIELD_ID, -1)).limit(1);
     Long maxId = 0L;
 
     // If there are objects in the db, find the maximum id
     if (maxCursor.hasNext()) {
       final DBObject o = maxCursor.next();
-      maxId = o.get("id") == null ? 0L : (Long) o.get("id");
+      maxId = o.get("id") == null ? 0L : (Long) o.get(FieldHelper.FIELD_ID);
     }
 
     this.idGen = new CountingIdGenerator(maxId);
-    LOGGER.info(this.idGen.toString());
+
 
     // Create indices with unique constraints (if not existing)
-    this.userCollection.createIndex(new BasicDBObject("username", 1),
-        new BasicDBObject("unique", true));
-    this.userCollection.createIndex(new BasicDBObject("id", 1), new BasicDBObject("unique", true));
+    this.userCollection.createIndex(new BasicDBObject(FieldHelper.FIELD_USERNAME, 1),
+        new BasicDBObject(UNIQUE, true));
+    this.userCollection.createIndex(new BasicDBObject(FieldHelper.FIELD_ID, 1),
+        new BasicDBObject(UNIQUE, true));
   }
 
 
@@ -89,9 +99,9 @@ public class UserCrudMongoService implements UserCrudService {
     // Generate an id
     user.setId(this.idGen.next());
     final MongoAdapter<User> userAdapter = new UserAdapter();
-    final DBObject userDBObject = userAdapter.toDbObject(user);
+    final DBObject userDbObject = userAdapter.toDbObject(user);
 
-    final long id = (Long) userDBObject.get("id");
+    final long id = (Long) userDbObject.get(FieldHelper.FIELD_ID);
 
     if (LOGGER.isInfoEnabled()) {
       LOGGER.info("Inserted new user with id " + id);
@@ -105,10 +115,10 @@ public class UserCrudMongoService implements UserCrudService {
   public void updateUser(final User user) throws MongoException {
     final DBObject query = new BasicDBObject("id", user.getId());
     final MongoAdapter<User> userAdapter = new UserAdapter();
-    final DBObject userDBObject = userAdapter.toDbObject(user);
+    final DBObject userDbObject = userAdapter.toDbObject(user);
 
 
-    this.userCollection.update(query, userDBObject);
+    this.userCollection.update(query, userDbObject);
 
   }
 

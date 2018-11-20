@@ -49,7 +49,7 @@ public class UserValidationService {
         throw new ForbiddenException(MSG_WRONGCRED);
       }
     } catch (CannotPerformOperationException | InvalidHashException e) {
-      throw new ForbiddenException(MSG_WRONGCRED);
+      throw new ForbiddenException(MSG_WRONGCRED, e);
     }
 
 
