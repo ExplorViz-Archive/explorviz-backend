@@ -68,6 +68,8 @@ public class UserCrudMongoService implements UserCrudService {
             .sort(new BasicDBObject(FieldHelper.FIELD_ID, -1)).limit(1);
     Long maxId = 0L;
 
+
+
     // If there are objects in the db, find the maximum id
     if (maxCursor.hasNext()) {
       final DBObject o = maxCursor.next();
@@ -101,6 +103,7 @@ public class UserCrudMongoService implements UserCrudService {
     final MongoAdapter<User> userAdapter = new UserAdapter();
     final DBObject userDbObject = userAdapter.toDbObject(user);
 
+    this.userCollection.save(userDbObject);
     final long id = (Long) userDbObject.get(FieldHelper.FIELD_ID);
 
     if (LOGGER.isInfoEnabled()) {
@@ -113,7 +116,7 @@ public class UserCrudMongoService implements UserCrudService {
 
   @Override
   public void updateUser(final User user) throws MongoException {
-    final DBObject query = new BasicDBObject("id", user.getId());
+    final DBObject query = new BasicDBObject(FieldHelper.FIELD_ID, user.getId());
     final MongoAdapter<User> userAdapter = new UserAdapter();
     final DBObject userDbObject = userAdapter.toDbObject(user);
 
