@@ -7,12 +7,12 @@ import java.util.List;
 import net.explorviz.landscape.model.helper.BaseEntity;
 
 /**
- * Model representing aggregated communication between classes (from sourceClazz to targetClazz)
+ * Model representing unidirectional communication between classes (from sourceClazz to targetClazz)
  * within a single application.
  */
 @SuppressWarnings("serial")
-@Type("aggregatedclazzcommunication")
-public class AggregatedClazzCommunication extends BaseEntity {
+@Type("unidirectionalclazzcommunication")
+public class UnidirectionalClazzCommunication extends BaseEntity {
 
   private int requests;
 
@@ -62,7 +62,7 @@ public class AggregatedClazzCommunication extends BaseEntity {
 
     if (this.sourceClazz.equals(clazzcommunication.getSourceClazz())
         && this.targetClazz.equals(clazzcommunication.getTargetClazz())) {
-      this.setRequests(this.getRequests() + clazzcommunication.getRequests());
+      this.setRequests(this.getRequests() + clazzcommunication.getTotalRequests());
       this.outgoingClazzCommunications.add(clazzcommunication);
       return true;
     }

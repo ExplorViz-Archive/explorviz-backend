@@ -33,10 +33,10 @@ public class Application extends BaseEntity {
   private List<ApplicationCommunication> outgoingAppCommu = new ArrayList<>();
 
   @Relationship("aggregatedOutgoingClazzCommunications")
-  private List<AggregatedClazzCommunication> aggregatedOutgoingClazzCommu = new ArrayList<>();
+  private List<UnidirectionalClazzCommunication> aggregatedOutgoingClazzCommu = new ArrayList<>();
 
   @Relationship("cumulatedClazzCommunications")
-  private List<CumulatedClazzCommunication> cumulatedClazzCommunications = new ArrayList<>();
+  private List<BidrectionalClazzCommunication> cumulatedClazzCommunications = new ArrayList<>();
 
   public String getName() {
     return this.name;
@@ -95,21 +95,21 @@ public class Application extends BaseEntity {
     this.outgoingAppCommu = outgoingCommunications;
   }
 
-  public List<AggregatedClazzCommunication> getAggregatedOutgoingClazzCommunications() {
+  public List<UnidirectionalClazzCommunication> getAggregatedOutgoingClazzCommunications() {
     return this.aggregatedOutgoingClazzCommu;
   }
 
   public void setAggregatedOutgoingClazzCommunications(
-      final List<AggregatedClazzCommunication> aggregatedOutgoingClazzCommu) {
+      final List<UnidirectionalClazzCommunication> aggregatedOutgoingClazzCommu) {
     this.aggregatedOutgoingClazzCommu = aggregatedOutgoingClazzCommu;
   }
 
-  public List<CumulatedClazzCommunication> getCumulatedClazzCommunications() {
+  public List<BidrectionalClazzCommunication> getCumulatedClazzCommunications() {
     return this.cumulatedClazzCommunications;
   }
 
   public void setCumulatedClazzCommunications(
-      final List<CumulatedClazzCommunication> cumulatedClazzCommunications) {
+      final List<BidrectionalClazzCommunication> cumulatedClazzCommunications) {
     this.cumulatedClazzCommunications = cumulatedClazzCommunications;
   }
 

@@ -7,13 +7,13 @@ import java.util.List;
 import net.explorviz.landscape.model.helper.BaseEntity;
 
 /**
- * Model representing cumulated communications between classes (both directions) (within a single
- * application).
+ * Model representing bidirectional communications between classes (both directions) (within a
+ * single application).
  */
 
 @SuppressWarnings("serial")
-@Type("cumulatedclazzcommunication")
-public class CumulatedClazzCommunication extends BaseEntity {
+@Type("bidrectionalclazzcommunication")
+public class BidrectionalClazzCommunication extends BaseEntity {
 
   private int requests;
 
@@ -23,8 +23,9 @@ public class CumulatedClazzCommunication extends BaseEntity {
   @Relationship("targetClazz")
   private Clazz targetClazz;
 
-  @Relationship("aggregatedClazzCommunications")
-  private List<AggregatedClazzCommunication> aggregatedClazzCommunications = new ArrayList<>();
+  @Relationship("unidirectionalClazzCommunications")
+  private List<UnidirectionalClazzCommunication> unidirectionalClazzCommunications =
+      new ArrayList<>();
 
   public int getRequests() {
     return this.requests;
@@ -50,25 +51,25 @@ public class CumulatedClazzCommunication extends BaseEntity {
     this.targetClazz = targetClazz;
   }
 
-  public List<AggregatedClazzCommunication> getAggregatedClazzCommunications() {
-    return this.aggregatedClazzCommunications;
+  public List<UnidirectionalClazzCommunication> getUnidirectionalClazzCommunications() {
+    return this.unidirectionalClazzCommunications;
   }
 
-  public void setAggregatedClazzCommunications(
-      final List<AggregatedClazzCommunication> clazzCommunications) {
-    this.aggregatedClazzCommunications = clazzCommunications;
+  public void setunidirectionalClazzCommunications(
+      final List<UnidirectionalClazzCommunication> clazzCommunications) {
+    this.unidirectionalClazzCommunications = clazzCommunications;
   }
 
   // adds a clazzCommunication if sourceClazz and targetClazz matches or otherwise
-  public boolean addAggregatedClazzCommunication(
-      final AggregatedClazzCommunication aggClazzcommunication) {
+  public boolean addUnidirectionalClazzCommunication(
+      final UnidirectionalClazzCommunication aggClazzcommunication) {
 
     if (this.sourceClazz.equals(aggClazzcommunication.getSourceClazz())
         && this.targetClazz.equals(aggClazzcommunication.getTargetClazz())
         || this.sourceClazz.equals(aggClazzcommunication.getTargetClazz())
             && this.targetClazz.equals(aggClazzcommunication.getSourceClazz())) {
       this.setRequests(this.getRequests() + aggClazzcommunication.getRequests());
-      this.aggregatedClazzCommunications.add(aggClazzcommunication);
+      this.unidirectionalClazzCommunications.add(aggClazzcommunication);
       return true;
     }
     return false;
@@ -76,7 +77,7 @@ public class CumulatedClazzCommunication extends BaseEntity {
 
   public void reset() {
     this.requests = 0;
-    this.aggregatedClazzCommunications.clear();
+    this.unidirectionalClazzCommunications.clear();
   }
 
 }

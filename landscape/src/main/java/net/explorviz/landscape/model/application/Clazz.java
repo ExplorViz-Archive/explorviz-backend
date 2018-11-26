@@ -3,9 +3,7 @@ package net.explorviz.landscape.model.application;
 import com.github.jasminb.jsonapi.annotations.Relationship;
 import com.github.jasminb.jsonapi.annotations.Type;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import net.explorviz.landscape.model.helper.BaseEntity;
 
 /**
@@ -18,14 +16,12 @@ public class Clazz extends BaseEntity {
   private String name;
   private String fullQualifiedName;
   private int instanceCount;
-  private transient Set<Integer> objectIds = new HashSet<>();
 
   @Relationship("parent")
   private Component parent;
 
   @Relationship("outgoingClazzCommunications")
-  private List<ClazzCommunication> outgoingClazzCommunications =
-      new ArrayList<>();
+  private List<ClazzCommunication> outgoingClazzCommunications = new ArrayList<>();
 
   public String getName() {
     return this.name;
@@ -41,14 +37,6 @@ public class Clazz extends BaseEntity {
 
   public void setFullQualifiedName(final String name) {
     this.fullQualifiedName = name;
-  }
-
-  public Set<Integer> getObjectIds() {
-    return this.objectIds;
-  }
-
-  public void setObjectIds(final Set<Integer> objectIds) {
-    this.objectIds = objectIds;
   }
 
   public Component getParent() {
@@ -81,9 +69,8 @@ public class Clazz extends BaseEntity {
    */
   public void reset() {
     this.instanceCount = 0;
-    this.getObjectIds().clear();
 
-    // Do we need this bi-directional reset due to JSON API converter?
+    // TODO Do we need this bi-directional reset due to JSON API converter?
     this.getOutgoingClazzCommunications().forEach((outgoingClazz) -> {
       outgoingClazz.reset();
     });

@@ -12,7 +12,7 @@ import java.util.Map.Entry;
 import java.util.TreeMap;
 import java.util.concurrent.TimeUnit;
 import javax.ws.rs.ClientErrorException;
-import net.explorviz.landscape.model.application.AggregatedClazzCommunication;
+import net.explorviz.landscape.model.application.UnidirectionalClazzCommunication;
 import net.explorviz.landscape.model.application.Application;
 import net.explorviz.landscape.model.application.ApplicationCommunication;
 import net.explorviz.landscape.model.application.Clazz;
@@ -77,7 +77,7 @@ public final class RepositoryStorage {
     result.registerClass(Node.class);
     result.registerClass(Application.class);
     result.registerClass(ApplicationCommunication.class);
-    result.registerClass(AggregatedClazzCommunication.class);
+    result.registerClass(UnidirectionalClazzCommunication.class);
     result.registerClass(DatabaseQuery.class);
     result.registerClass(EProgrammingLanguage.class);
     result.registerClass(Component.class);

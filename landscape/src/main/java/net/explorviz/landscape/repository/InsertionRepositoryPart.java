@@ -13,7 +13,6 @@ import explorviz.live_trace_processing.record.event.remote.BeforeSentRemoteCallR
 import explorviz.live_trace_processing.record.misc.SystemMonitoringRecord;
 import explorviz.live_trace_processing.record.trace.HostApplicationMetaDataRecord;
 import explorviz.live_trace_processing.record.trace.Trace;
-import gnu.trove.iterator.TIntIterator;
 import gnu.trove.set.hash.TIntHashSet;
 import java.util.HashMap;
 import java.util.List;
@@ -489,13 +488,8 @@ public class InsertionRepositoryPart {
       appCached.put(fullQName, clazz);
     }
 
-    if (objectIds != null) {
-      final TIntIterator iterator = objectIds.iterator();
-      while (iterator.hasNext()) {
-        clazz.getObjectIds().add(iterator.next());
-      }
-      clazz.setInstanceCount(clazz.getObjectIds().size());
-    }
+    // set instanceCount
+    clazz.setInstanceCount(clazz.getInstanceCount() + 1);
 
     return clazz;
   }

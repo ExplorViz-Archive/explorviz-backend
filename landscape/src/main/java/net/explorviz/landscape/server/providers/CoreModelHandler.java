@@ -1,14 +1,15 @@
 package net.explorviz.landscape.server.providers;
 
-import net.explorviz.landscape.model.application.AggregatedClazzCommunication;
 import net.explorviz.landscape.model.application.Application;
 import net.explorviz.landscape.model.application.ApplicationCommunication;
+import net.explorviz.landscape.model.application.BidrectionalClazzCommunication;
 import net.explorviz.landscape.model.application.Clazz;
 import net.explorviz.landscape.model.application.ClazzCommunication;
 import net.explorviz.landscape.model.application.Component;
-import net.explorviz.landscape.model.application.CumulatedClazzCommunication;
 import net.explorviz.landscape.model.application.DatabaseQuery;
 import net.explorviz.landscape.model.application.RuntimeInformation;
+import net.explorviz.landscape.model.application.Trace;
+import net.explorviz.landscape.model.application.UnidirectionalClazzCommunication;
 import net.explorviz.landscape.model.landscape.Landscape;
 import net.explorviz.landscape.model.landscape.Node;
 import net.explorviz.landscape.model.landscape.NodeGroup;
@@ -16,7 +17,7 @@ import net.explorviz.landscape.model.store.Timestamp;
 import net.explorviz.shared.security.User;
 
 /**
- * Handles the registration of (core) model types for the JSONAPI provideer.
+ * Handles the registration of (core) model types for the JSONAPI provider.
  */
 public final class CoreModelHandler {
 
@@ -37,10 +38,11 @@ public final class CoreModelHandler {
     GenericTypeFinder.getTypeMap().putIfAbsent("Component", Component.class);
     GenericTypeFinder.getTypeMap().putIfAbsent("Clazz", Clazz.class);
     GenericTypeFinder.getTypeMap().putIfAbsent("ClazzCommunication", ClazzCommunication.class);
-    GenericTypeFinder.getTypeMap().putIfAbsent("AggregatedClazzCommunication",
-        AggregatedClazzCommunication.class);
-    GenericTypeFinder.getTypeMap().putIfAbsent("CumulatedClazzCommunication",
-        CumulatedClazzCommunication.class);
+    GenericTypeFinder.getTypeMap().putIfAbsent("Trace", Trace.class);
+    GenericTypeFinder.getTypeMap().putIfAbsent("UnidirectionalClazzCommunication",
+        UnidirectionalClazzCommunication.class);
+    GenericTypeFinder.getTypeMap().putIfAbsent("BidirectionalClazzCommunication",
+        BidrectionalClazzCommunication.class);
     GenericTypeFinder.getTypeMap().putIfAbsent("ApplicationCommunication",
         ApplicationCommunication.class);
     GenericTypeFinder.getTypeMap().putIfAbsent("RuntimeInformation", RuntimeInformation.class);
