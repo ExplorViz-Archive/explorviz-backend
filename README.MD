@@ -30,12 +30,13 @@ The API documentation is available [here](https://explorviz.github.io/explorviz-
 1. Download the latest [Eclipse IDE for Java Developers](http://www.eclipse.org/downloads/eclipse-packages/) (ExplorViz requires JDK 8 compliance)
 2. Follow the [CAU-SE guidelines for quality assurance](https://github.com/cau-se/code-quality-configurations/tree/master/java) (Only necessary if you contribute code)
 
-## Setup Development
+## Setup Development (Docker and docker-compose are required)
 1. Follow the previous [Eclipse Setup](#eclipse-setup)
 2. Clone this repository
 3. Import project into Eclipse: via `Import -> Gradle -> Existing Gradle project -> path/to/explorviz-backend`
-4. Start **explorviz-backend** microservices via run configurations in the [run-configurations](run-configurations) folder: `Right click single config -> Run as -> ExplorViz-X` (where `X` is the name of a microservice)
-5. Setup and start [explorviz-frontend](https://github.com/ExplorViz/explorviz-frontend)
+4. Follow the instructions inside of the [docker-compose](docker-compose) folder to start mandatory docker-based services (e.g. MongoDB)
+5. Start **explorviz-backend** microservices via run configurations in the [run-configurations](run-configurations) folder: `Right click single config -> Run as -> ExplorViz-X` (where `X` is the name of a microservice)
+6. Setup and start [explorviz-frontend](https://github.com/ExplorViz/explorviz-frontend)
 
 ### Further Information
 * To force the download of newly added dependencies: `Right click on the project explorviz-backend -> Gradle -> Refresh Gradle Project`. You might need to uncomment the respective lines in the build.gradle file.
