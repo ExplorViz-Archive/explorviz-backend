@@ -9,12 +9,12 @@ import net.explorviz.landscape.model.helper.BaseEntity;
  * {@link Clazz} in a specific {@link Trace}.
  */
 @SuppressWarnings("serial")
-@Type("runtimeinformation")
-public class RuntimeInformation extends BaseEntity {
+@Type("tracedetail")
+public class TraceStep extends BaseEntity {
 
   // related trace
-  @Relationship("trace")
-  private Trace trace;
+  @Relationship("parentTrace")
+  private Trace parentTrace;
 
   // position in the related trace (first position = 1)
   private int tracePosition = 1;
@@ -29,7 +29,7 @@ public class RuntimeInformation extends BaseEntity {
   private float averageResponseTime;
 
 
-  public RuntimeInformation(final ClazzCommunication clazzCommunication) {
+  public TraceStep(final ClazzCommunication clazzCommunication) {
     this.setClazzCommunication(clazzCommunication);
   }
 
@@ -49,12 +49,12 @@ public class RuntimeInformation extends BaseEntity {
     return result;
   }
 
-  public Trace getTrace() {
-    return this.trace;
+  public Trace getParentTrace() {
+    return this.parentTrace;
   }
 
-  public void setTrace(final Trace trace) {
-    this.trace = trace;
+  public void setParentTrace(final Trace parentTrace) {
+    this.parentTrace = parentTrace;
   }
 
   public Integer getTracePosition() {

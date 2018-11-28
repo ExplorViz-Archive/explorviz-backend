@@ -7,8 +7,7 @@ import java.util.List;
 import net.explorviz.landscape.model.helper.BaseEntity;
 
 /**
- * Model representing a trace containing severals {@link RuntimeInformation} between two
- * {@link Clazz}.
+ * Model representing a trace containing severals {@link TraceStep} between two {@link Clazz}.
  */
 @SuppressWarnings("serial")
 @Type("trace")
@@ -16,12 +15,14 @@ public class Trace extends BaseEntity {
 
   private long traceId;
 
-  private float totalTraceDuration;
-
   private int totalRequests;
 
-  @Relationship("runtimeInformations")
-  private final List<RuntimeInformation> runtimeInformations = new ArrayList<>();
+  private float totalTraceDuration;
+
+  private float averageResponseTime;
+
+  @Relationship("traceSteps")
+  private List<TraceStep> traceSteps = new ArrayList<>();
 
 
   public Trace(final long traceId) {
@@ -44,57 +45,35 @@ public class Trace extends BaseEntity {
     return result;
   }
 
-  // returns a runtimeInformation for a given clazzCommunication or creates a new one
-  public RuntimeInformation retrieveRuntimeInformationByClazzCommunication(
-      final ClazzCommunication clazzCommunication) {
-    for (final RuntimeInformation runtimeInformation : this.getRuntimeInformations()) {
-      if (runtimeInformation.equals(clazzCommunication)) {
-        return runtimeInformation;
-      }
-    }
-    // create a new runtimeInformation
-    return new RuntimeInformation(clazzCommunication);
-  }
-
-  public void addRuntimeInformation(final Long traceId, final int tracePosition, final int requests,
+  /**
+   * Adds a new call within a trace as a {@link TraceDetail}
+   *
+   * @param traceId
+   * @param tracePosition
+   * @param requests
+   * @param averageResponseTime
+   * @param currentTraceDuration
+   * @param clazzCommunication
+   */
+  public void addTraceStep(final Long traceId, final int tracePosition, final int requests,
       final float averageResponseTime, final float currentTraceDuration,
       final ClazzCommunication clazzCommunication) {
 
-    final List<RuntimeInformation> runtimeInformations = this.getRuntimeInformations();
-    RuntimeInformation lastRuntimeInformation = null; // NO PMD
+    final TraceStep newTraceStep = new TraceStep(clazzCommunication);
 
-    final RuntimeInformation runtimeInformation =
-        this.retrieveRuntimeInformationByClazzCommunication(clazzCommunication);
+    final float beforeSum = this.getTotalRequests() * averageResponseTime;
+    final float currentSum = requests * averageResponseTime;
 
-    // retrieve the last runtime for aggregation purposes
-    if (!runtimeInformations.isEmpty()) {
-      lastRuntimeInformation = runtimeInformations.get(runtimeInformations.size() - 1);
+    this.setAverageResponseTime(
+        (beforeSum + currentSum) / (this.getTotalRequests() + requests));
 
-      final float beforeSum =
-          lastRuntimeInformation.getRequests() * lastRuntimeInformation.getAverageResponseTime();
-      final float currentSum = requests * averageResponseTime;
+    newTraceStep.setCurrentTraceDuration(currentTraceDuration);
+    newTraceStep.setTracePosition(tracePosition);
 
-      runtimeInformation.setAverageResponseTime(
-          (beforeSum + currentSum) / (lastRuntimeInformation.getRequests() + requests));
-      runtimeInformation.setRequests(lastRuntimeInformation.getRequests() + requests);
-      runtimeInformation.setCurrentTraceDuration(
-          (currentTraceDuration + lastRuntimeInformation.getCurrentTraceDuration()) / 2f);
-      runtimeInformation.setTracePosition(tracePosition);
+    this.setTotalTraceDuration(newTraceStep.getCurrentTraceDuration());
+    this.setTotalRequests(this.getTotalRequests() + requests);
 
-      this.setTotalTraceDuration(runtimeInformation.getCurrentTraceDuration());
-      this.setTotalRequests(lastRuntimeInformation.getRequests() + requests);
-
-      return;
-    }
-
-    // if no related runtimeInformation exists
-    runtimeInformation.setTrace(this);
-    runtimeInformation.setTracePosition(tracePosition);
-    runtimeInformation.setRequests(requests);
-    runtimeInformation.setCurrentTraceDuration(currentTraceDuration);
-    runtimeInformation.setAverageResponseTime(averageResponseTime);
-
-    this.runtimeInformations.add(runtimeInformation);
+    return;
   }
 
   public long getTraceId() {
@@ -105,8 +84,12 @@ public class Trace extends BaseEntity {
     this.traceId = traceId;
   }
 
-  public List<RuntimeInformation> getRuntimeInformations() {
-    return this.runtimeInformations;
+  public List<TraceStep> getTraceSteps() {
+    return this.traceSteps;
+  }
+
+  public void setTraceSteps(final List<TraceStep> traceSteps) {
+    this.traceSteps = traceSteps;
   }
 
   public float getTotalTraceDuration() {
@@ -123,6 +106,14 @@ public class Trace extends BaseEntity {
 
   public void setTotalRequests(final int totalRequests) {
     this.totalRequests = totalRequests;
+  }
+
+  public float getAverageResponseTime() {
+    return this.averageResponseTime;
+  }
+
+  public void setAverageResponseTime(final float averageResponseTime) {
+    this.averageResponseTime = averageResponseTime;
   }
 
 }

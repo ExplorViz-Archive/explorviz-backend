@@ -27,10 +27,11 @@ public class Component extends BaseEntity {
   @Relationship("parentComponent")
   private Component parentComponent;
 
-  // @Relationship("belongingApplication")
+  // @Relationship("parentApplication")
   // Don't parse since cycle results in stackoverflow when accessing
   // latestLandscape
-  private Application belongingApplication;
+  private Application parentApplication;
+
 
   public String getName() {
     return this.name;
@@ -57,11 +58,11 @@ public class Component extends BaseEntity {
   }
 
   public Application getBelongingApplication() {
-    return this.belongingApplication;
+    return this.parentApplication;
   }
 
   public void setBelongingApplication(final Application belongingApplication) {
-    this.belongingApplication = belongingApplication;
+    this.parentApplication = belongingApplication;
   }
 
   public List<Component> getChildren() {

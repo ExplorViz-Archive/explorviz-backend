@@ -19,7 +19,7 @@ public class ClazzCommunication extends BaseEntity {
   @Relationship("targetClazz")
   private Clazz targetClazz;
 
-  @Relationship("trace")
+  @Relationship("traces")
   private final List<Trace> traces = new ArrayList<>();
 
   private String operationName = "<unknown>";
@@ -27,7 +27,7 @@ public class ClazzCommunication extends BaseEntity {
   // added up requests (for all involved traces)
   private int totalRequests;
 
-  // average response time (for all involved traces)
+  // average response time (for all involved related tracesteps)
   private float averageResponseTime = 0;
 
 
@@ -71,12 +71,12 @@ public class ClazzCommunication extends BaseEntity {
   }
 
   // checks if a trace is existing and if not creates one and adds the runtime information
-  public void addTrace(final Long traceId, final int tracePosition, final int requests,
+  public void addTraceStep(final Long traceId, final int tracePosition, final int requests,
       final float averageResponseTime, final float currentTraceDuration) {
 
     final Trace trace = this.retrieveTraceByTraceId(traceId);
-    trace.addRuntimeInformation(traceId, tracePosition, requests, averageResponseTime,
-        currentTraceDuration, this);
+    trace.addTraceStep(traceId, tracePosition, requests, averageResponseTime, currentTraceDuration,
+        this);
   }
 
   public int getTotalRequests() {

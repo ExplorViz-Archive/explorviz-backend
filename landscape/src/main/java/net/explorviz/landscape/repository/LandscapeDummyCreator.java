@@ -36,13 +36,13 @@ final class LandscapeDummyCreator {
   public static Landscape createDummyLandscape() {
 
     if (dummyLandscape != null) {
-      dummyLandscape.getTimestamp().setCalls(new Random().nextInt(CALLS_GENERATOR_BOUND));
+      dummyLandscape.getTimestamp().setTotalRequests(new Random().nextInt(CALLS_GENERATOR_BOUND));
       return dummyLandscape;
     }
 
     final Landscape landscape = new Landscape();
     landscape.initializeId();
-    landscape.getTimestamp().setCalls(new Random().nextInt(CALLS_GENERATOR_BOUND));
+    landscape.getTimestamp().setTotalRequests(new Random().nextInt(CALLS_GENERATOR_BOUND));
 
     final System requestSystem = new System();
     requestSystem.initializeId();
@@ -293,8 +293,8 @@ final class LandscapeDummyCreator {
 
     // set random usage
     node.setCpuUtilization((double) DummyLandscapeHelper.getRandomNum(10, 100) / 100);
-    node.setFreeRam((long) DummyLandscapeHelper.getRandomNum(1, 4) * formatFactor);
-    node.setUsedRam((long) DummyLandscapeHelper.getRandomNum(1, 4) * formatFactor);
+    node.setFreeRAM((long) DummyLandscapeHelper.getRandomNum(1, 4) * formatFactor);
+    node.setUsedRAM((long) DummyLandscapeHelper.getRandomNum(1, 4) * formatFactor);
 
     return node;
   }
@@ -326,8 +326,8 @@ final class LandscapeDummyCreator {
     communication.setSourceApplication(source);
     communication.setTargetApplication(target);
     communication.setRequests(requests);
-    source.getOutgoingApplicationCommunications().add(communication);
-    landscape.getOutgoingApplicationCommunications().add(communication);
+    source.getApplicationCommunications().add(communication);
+    landscape.getTotalApplicationCommunications().add(communication);
 
     return communication;
   }
@@ -472,6 +472,19 @@ final class LandscapeDummyCreator {
       dbQueryTmp.setReturnValue("null");
       dbQueryTmp.setResponseTime(DummyLandscapeHelper.getRandomNum(10, 1000));
       dbQueryTmp.setTimestamp(DummyLandscapeHelper.getCurrentTimestamp());
+      dbQueryTmp.setParentApplication(application);
+      dbQueryList.add(dbQueryTmp);
+
+      dbQueryTmp = new DatabaseQuery();
+      dbQueryTmp.initializeId();
+      dbQueryTmp.setParentApplication(application);
+      dbQueryTmp.setSqlStatement("INSERT INTO `order` (oid, name, email, odate, itemid) "
+          + "VALUES('" + DummyLandscapeHelper.getNextSequenceId()
+          + "'Tom B. Erichsen', 'erichsen@uni-kiel.de', '2017-11-16', '1');");
+      dbQueryTmp.setReturnValue("null");
+      dbQueryTmp.setResponseTime(DummyLandscapeHelper.getRandomNum(10, 1000));
+      dbQueryTmp.setTimestamp(DummyLandscapeHelper.getCurrentTimestamp());
+      dbQueryTmp.setParentApplication(application);
       dbQueryList.add(dbQueryTmp);
 
       dbQueryTmp = new DatabaseQuery();
@@ -482,16 +495,7 @@ final class LandscapeDummyCreator {
       dbQueryTmp.setReturnValue("null");
       dbQueryTmp.setResponseTime(DummyLandscapeHelper.getRandomNum(10, 1000));
       dbQueryTmp.setTimestamp(DummyLandscapeHelper.getCurrentTimestamp());
-      dbQueryList.add(dbQueryTmp);
-
-      dbQueryTmp = new DatabaseQuery();
-      dbQueryTmp.initializeId();
-      dbQueryTmp.setSqlStatement("INSERT INTO `order` (oid, name, email, odate, itemid) "
-          + "VALUES('" + DummyLandscapeHelper.getNextSequenceId()
-          + "'Tom B. Erichsen', 'erichsen@uni-kiel.de', '2017-11-16', '1');");
-      dbQueryTmp.setReturnValue("null");
-      dbQueryTmp.setResponseTime(DummyLandscapeHelper.getRandomNum(10, 1000));
-      dbQueryTmp.setTimestamp(DummyLandscapeHelper.getCurrentTimestamp());
+      dbQueryTmp.setParentApplication(application);
       dbQueryList.add(dbQueryTmp);
 
       dbQueryTmp = new DatabaseQuery();
@@ -502,6 +506,7 @@ final class LandscapeDummyCreator {
       dbQueryTmp.setReturnValue("null");
       dbQueryTmp.setResponseTime(DummyLandscapeHelper.getRandomNum(10, 1000));
       dbQueryTmp.setTimestamp(DummyLandscapeHelper.getCurrentTimestamp());
+      dbQueryTmp.setParentApplication(application);
       dbQueryList.add(dbQueryTmp);
 
       dbQueryTmp = new DatabaseQuery();
@@ -510,6 +515,7 @@ final class LandscapeDummyCreator {
       dbQueryTmp.setReturnValue(String.valueOf(DummyLandscapeHelper.getRandomNum(5, 100)));
       dbQueryTmp.setResponseTime(DummyLandscapeHelper.getRandomNum(10, 1000));
       dbQueryTmp.setTimestamp(DummyLandscapeHelper.getCurrentTimestamp());
+      dbQueryTmp.setParentApplication(application);
       dbQueryList.add(dbQueryTmp);
 
       dbQueryTmp = new DatabaseQuery();
@@ -518,6 +524,7 @@ final class LandscapeDummyCreator {
       dbQueryTmp.setReturnValue(String.valueOf(DummyLandscapeHelper.getRandomNum(5, 100)));
       dbQueryTmp.setResponseTime(DummyLandscapeHelper.getRandomNum(10, 1000));
       dbQueryTmp.setTimestamp(DummyLandscapeHelper.getCurrentTimestamp());
+      dbQueryTmp.setParentApplication(application);
       dbQueryList.add(dbQueryTmp);
     }
     application.setDatabaseQueries(dbQueryList);

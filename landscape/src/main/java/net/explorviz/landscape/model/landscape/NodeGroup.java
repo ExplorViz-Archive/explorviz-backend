@@ -16,11 +16,13 @@ import net.explorviz.landscape.model.helper.NameComperator;
 public class NodeGroup extends BaseEntity {
 
   private String name;
+
   @Relationship("parent")
   private final List<Node> nodes = new ArrayList<>();
 
   @Relationship("parent")
   private System parent;
+
 
   public String getName() {
     return this.name;

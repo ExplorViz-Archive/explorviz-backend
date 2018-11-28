@@ -13,8 +13,6 @@ public class ApplicationCommunication extends BaseEntity {
 
   private int requests;
   private String technology;
-
-  // in ns
   private float averageResponseTime;
 
   @Relationship("sourceApplication")
@@ -28,6 +26,7 @@ public class ApplicationCommunication extends BaseEntity {
 
   @Relationship("targetClazz")
   private Clazz targetClazz;
+
 
   public int getRequests() {
     return this.requests;

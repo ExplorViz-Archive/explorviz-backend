@@ -130,7 +130,7 @@ public class RemoteCallRepositoryPart {
     final Application currentApplication =
         this.getHostApplication(receivedRemoteCallRecord, inserter, landscape);
 
-    for (final ApplicationCommunication commu : landscape.getOutgoingApplicationCommunications()) {
+    for (final ApplicationCommunication commu : landscape.getTotalApplicationCommunications()) {
       if (commu.getSourceApplication() == callerApplication
           && commu.getTargetApplication() == currentApplication
           || commu.getSourceApplication() == currentApplication
@@ -143,8 +143,9 @@ public class RemoteCallRepositoryPart {
         commu.setAverageResponseTime((float) (oldAverage + sentRemoteCallRecord
             .getRuntimeStatisticInformationList().get(runtimeIndex).getAverage()) / 2f);
 
-        landscape.getTimestamp().setCalls(landscape.getTimestamp().getCalls() + sentRemoteCallRecord
-            .getRuntimeStatisticInformationList().get(runtimeIndex).getCount());
+        landscape.getTimestamp()
+            .setTotalRequests(landscape.getTimestamp().getTotalRequests() + sentRemoteCallRecord
+                .getRuntimeStatisticInformationList().get(runtimeIndex).getCount());
         return;
       }
     }
@@ -162,12 +163,12 @@ public class RemoteCallRepositoryPart {
     communication.setTechnology(sentRemoteCallRecord.getTechnology());
 
     // add applicationCommunication to caller application
-    callerApplication.getOutgoingApplicationCommunications().add(communication);
+    callerApplication.getApplicationCommunications().add(communication);
 
-    // addapplicationCommunication to landscap
-    landscape.getOutgoingApplicationCommunications().add(communication);
+    // add applicationCommunication to landscape
+    landscape.getTotalApplicationCommunications().add(communication);
 
-    landscape.getTimestamp().setCalls(landscape.getTimestamp().getCalls()
+    landscape.getTimestamp().setTotalRequests(landscape.getTimestamp().getTotalRequests()
         + sentRemoteCallRecord.getRuntimeStatisticInformationList().get(runtimeIndex).getCount());
   }
 

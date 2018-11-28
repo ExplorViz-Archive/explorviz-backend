@@ -20,8 +20,9 @@ public class Clazz extends BaseEntity {
   @Relationship("parent")
   private Component parent;
 
-  @Relationship("outgoingClazzCommunications")
-  private List<ClazzCommunication> outgoingClazzCommunications = new ArrayList<>();
+  @Relationship("clazzCommunications")
+  private List<ClazzCommunication> clazzCommunications = new ArrayList<>();
+
 
   public String getName() {
     return this.name;
@@ -47,13 +48,12 @@ public class Clazz extends BaseEntity {
     this.parent = parent;
   }
 
-  public List<ClazzCommunication> getOutgoingClazzCommunications() {
-    return this.outgoingClazzCommunications;
+  public List<ClazzCommunication> getClazzCommunications() {
+    return this.clazzCommunications;
   }
 
-  public void setOutgoingClazzCommunications(
-      final List<ClazzCommunication> outgoingClazzCommunications) {
-    this.outgoingClazzCommunications = outgoingClazzCommunications;
+  public void setClazzCommunications(final List<ClazzCommunication> clazzCommunications) {
+    this.clazzCommunications = clazzCommunications;
   }
 
   public void setInstanceCount(final int instanceCount) {
@@ -71,11 +71,11 @@ public class Clazz extends BaseEntity {
     this.instanceCount = 0;
 
     // TODO Do we need this bi-directional reset due to JSON API converter?
-    this.getOutgoingClazzCommunications().forEach((outgoingClazz) -> {
+    this.getClazzCommunications().forEach((outgoingClazz) -> {
       outgoingClazz.reset();
     });
 
-    this.getOutgoingClazzCommunications().clear();
+    this.getClazzCommunications().clear();
   }
 
 }

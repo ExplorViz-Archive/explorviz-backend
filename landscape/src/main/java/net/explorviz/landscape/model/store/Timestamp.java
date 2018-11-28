@@ -10,13 +10,13 @@ import net.explorviz.landscape.model.helper.BaseEntity;
 @Type("timestamp")
 public class Timestamp extends BaseEntity {
 
-  private long timestampValue;
-  private long calls;
+  private long timestamp;
+  private long totalRequests;
 
-  public Timestamp(final long timestampValue, final long calls) {
+  public Timestamp(final long timestampValue, final long requests) {
     super();
-    this.setTimestampValue(timestampValue);
-    this.setCalls(calls);
+    this.setTimestamp(timestampValue);
+    this.setTotalRequests(requests);
   }
 
   public Timestamp() {
@@ -24,20 +24,20 @@ public class Timestamp extends BaseEntity {
     // explicit default constructor
   }
 
-  public long getTimestampValue() {
-    return this.timestampValue;
+  public long getTimestamp() {
+    return this.timestamp;
   }
 
-  public void setTimestampValue(final long timestampValue) {
-    this.timestampValue = timestampValue;
+  public void setTimestamp(final long timestamp) {
+    this.timestamp = timestamp;
   }
 
-  public long getCalls() {
-    return this.calls;
+  public long getTotalRequests() {
+    return this.totalRequests;
   }
 
-  public void setCalls(final long calls) {
-    this.calls = calls;
+  public void setTotalRequests(final long totalRequests) {
+    this.totalRequests = totalRequests;
   }
 
 }

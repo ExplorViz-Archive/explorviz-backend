@@ -30,7 +30,7 @@ public final class ExtensionApiImpl implements IExtensionApi {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ExtensionApiImpl.class);
 
-  private static final String VERSION_NUMBER = "1.2.0a";
+  private static final String VERSION_NUMBER = "1.3.0";
   private final LandscapeExchangeService service;
 
   @Inject
@@ -179,7 +179,7 @@ public final class ExtensionApiImpl implements IExtensionApi {
 
   @Override
   public void saveLandscapeToFile(final Landscape landscape, final String folderName) {
-    RepositoryStorage.writeToFile(landscape, landscape.getTimestamp().getTimestampValue(), folderName);
+    RepositoryStorage.writeToFile(landscape, landscape.getTimestamp().getTimestamp(), folderName);
   }
 
 }

@@ -22,6 +22,7 @@ public class System extends BaseEntity {
   @Relationship("parent")
   private Landscape parent;
 
+
   public String getName() {
     return this.name;
   }

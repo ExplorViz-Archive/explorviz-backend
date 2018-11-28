@@ -2,12 +2,11 @@ package net.explorviz.landscape.model.helper;
 
 import java.util.ArrayList;
 import java.util.List;
+import net.explorviz.landscape.model.application.AggregatedClazzCommunication;
 import net.explorviz.landscape.model.application.Application;
-import net.explorviz.landscape.model.application.BidrectionalClazzCommunication;
 import net.explorviz.landscape.model.application.Clazz;
 import net.explorviz.landscape.model.application.ClazzCommunication;
 import net.explorviz.landscape.model.application.Component;
-import net.explorviz.landscape.model.application.UnidirectionalClazzCommunication;
 
 /**
  * Helper class for several model classes.
@@ -37,11 +36,11 @@ public final class ModelHelper {
       final String operationName) {
 
     // clazzCommunication already exists
-    for (final ClazzCommunication commu : caller.getOutgoingClazzCommunications()) {
+    for (final ClazzCommunication commu : caller.getClazzCommunications()) {
       if (commu.getSourceClazz() == caller && commu.getTargetClazz() == callee
           && commu.getOperationName().equalsIgnoreCase(operationName)) {
 
-        commu.addTrace(traceId, tracePosition, requests, (float) average,
+        commu.addTraceStep(traceId, tracePosition, requests, (float) average,
             (float) overallTraceDuration);
         return;
       }
@@ -53,13 +52,14 @@ public final class ModelHelper {
     commu.setSourceClazz(caller);
     commu.setTargetClazz(callee);
     commu.setOperationName(operationName);
-    commu.addTrace(traceId, tracePosition, requests, (float) average, (float) overallTraceDuration);
+    commu.addTraceStep(traceId, tracePosition, requests, (float) average,
+        (float) overallTraceDuration);
 
     // add clazzCommunication to calling clazz (sourceClazz)
-    caller.getOutgoingClazzCommunications().add(commu);
+    caller.getClazzCommunications().add(commu);
 
     // add aggregatedClazzCommunication to application
-    ModelHelper.updateAggregatedClazzCommunication(application, commu);
+    ModelHelper.addAggregatedClazzCommunication(application, commu);
   }
 
   /**
@@ -79,14 +79,14 @@ public final class ModelHelper {
       }
 
       for (final Clazz clazz : child.getClazzes()) {
-        for (final ClazzCommunication clazzCommunication : clazz.getOutgoingClazzCommunications()) {
+        for (final ClazzCommunication clazzCommunication : clazz.getClazzCommunications()) {
           outgoingClazzCommuPartialList.add(clazzCommunication);
         }
       }
     }
     // get clazz communications
     for (final Clazz clazz : component.getClazzes()) {
-      for (final ClazzCommunication clazzCommunication : clazz.getOutgoingClazzCommunications()) {
+      for (final ClazzCommunication clazzCommunication : clazz.getClazzCommunications()) {
         outgoingClazzCommuPartialList.add(clazzCommunication);
       }
     }
@@ -126,67 +126,38 @@ public final class ModelHelper {
    * @param application - Related application
    * @param newCommunication - The ClazzCommunication which should be added
    */
-  public static void updateAggregatedClazzCommunication(final Application application,
+  public static void addAggregatedClazzCommunication(final Application application,
       final ClazzCommunication newCommunication) {
-    final List<UnidirectionalClazzCommunication> aggregatedOutgoingClazzCommu =
-        application.getAggregatedOutgoingClazzCommunications();
 
-    // matching aggregatedClazzCommunication already exists
-    for (final UnidirectionalClazzCommunication aggClazzCommu : aggregatedOutgoingClazzCommu) {
+    final List<AggregatedClazzCommunication> aggregatedClazzCommunications =
+        application.getAggregatedClazzCommunications();
+
+    // check if a matching aggregatedClazzCommunication already exists
+    for (final AggregatedClazzCommunication aggClazzCommu : aggregatedClazzCommunications) {
       if (aggClazzCommu.getSourceClazz().equals(newCommunication.getSourceClazz())
           && aggClazzCommu.getTargetClazz().equals(newCommunication.getTargetClazz())) {
         aggClazzCommu.addClazzCommunication(newCommunication);
+
+        final float currentAverageResponseTime = aggClazzCommu.getAverageResponseTime();
+        aggClazzCommu.setAverageResponseTime(
+            currentAverageResponseTime + newCommunication.getAverageResponseTime() / 2f);
+
         return;
       }
     }
 
     // creates a new aggregatedClazzCommunication
-    final UnidirectionalClazzCommunication aggCommu = new UnidirectionalClazzCommunication();
+    final AggregatedClazzCommunication aggCommu = new AggregatedClazzCommunication();
     aggCommu.initializeId();
     aggCommu.setSourceClazz(newCommunication.getSourceClazz());
     aggCommu.setTargetClazz(newCommunication.getTargetClazz());
-    aggCommu.setRequests(newCommunication.getTotalRequests());
+    aggCommu.setTotalRequests(newCommunication.getTotalRequests());
+    aggCommu.setAverageResponseTime(newCommunication.getAverageResponseTime());
 
     // adds a clazzCommunication if sourceClazz and targetClazz matches
     if (aggCommu.addClazzCommunication(newCommunication)) {
-      aggregatedOutgoingClazzCommu.add(aggCommu);
-      updateCumulatedClazzCommunication(application, aggCommu);
-    }
-  }
+      aggregatedClazzCommunications.add(aggCommu);
 
-  /**
-   * Adds an aggregatedClazzCommunication to a matching cumulatedClazzCommunication or creates a new
-   * one.
-   *
-   * @param application - Related application
-   * @param newCommunication - The AggregatedClazzCommunication which should be added
-   */
-  public static void updateCumulatedClazzCommunication(final Application application,
-      final UnidirectionalClazzCommunication newCommunication) {
-    final List<BidrectionalClazzCommunication> cumulatedClazzCommunications =
-        application.getCumulatedClazzCommunications();
-
-    // matching aggregatedClazzCommunication already exists
-    for (final BidrectionalClazzCommunication aggClazzCommu : cumulatedClazzCommunications) {
-      if (aggClazzCommu.getSourceClazz().equals(newCommunication.getSourceClazz())
-          && aggClazzCommu.getTargetClazz().equals(newCommunication.getTargetClazz())
-          || aggClazzCommu.getTargetClazz().equals(newCommunication.getSourceClazz())
-              && aggClazzCommu.getSourceClazz().equals(newCommunication.getTargetClazz())) {
-        aggClazzCommu.addUnidirectionalClazzCommunication(newCommunication);
-        return;
-      }
-    }
-
-    // creates a new aggregatedClazzCommunication
-    final BidrectionalClazzCommunication aggCommu = new BidrectionalClazzCommunication();
-    aggCommu.initializeId();
-    aggCommu.setSourceClazz(newCommunication.getSourceClazz());
-    aggCommu.setTargetClazz(newCommunication.getTargetClazz());
-    aggCommu.setRequests(newCommunication.getRequests());
-
-    // adds a clazzCommunication if sourceClazz and targetClazz matches
-    if (aggCommu.addUnidirectionalClazzCommunication(newCommunication)) {
-      cumulatedClazzCommunications.add(aggCommu);
     }
   }
 

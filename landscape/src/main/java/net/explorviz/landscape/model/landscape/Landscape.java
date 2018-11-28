@@ -27,8 +27,9 @@ public class Landscape extends BaseEntity {
   private final Map<Long, String> events = new TreeMap<>();
   private final Map<Long, String> exceptions = new TreeMap<>();
 
-  @Relationship("outgoingApplicationCommunications")
-  private List<ApplicationCommunication> outgoingApplicationCommu = new ArrayList<>();
+  @Relationship("totalApplicationCommunications")
+  private List<ApplicationCommunication> totalApplicationCommunications = new ArrayList<>();
+
 
   public Landscape() {
     super();
@@ -59,13 +60,13 @@ public class Landscape extends BaseEntity {
     this.setTimestamp(timestamp);
   }
 
-  public List<ApplicationCommunication> getOutgoingApplicationCommunications() {
-    return this.outgoingApplicationCommu;
+  public List<ApplicationCommunication> getTotalApplicationCommunications() {
+    return this.totalApplicationCommunications;
   }
 
-  public void setOutgoingApplicationCommunications(
-      final List<ApplicationCommunication> outgoingApplicationCommu) {
-    this.outgoingApplicationCommu = outgoingApplicationCommu;
+  public void setTotalApplicationCommunications(
+      final List<ApplicationCommunication> totalApplicationCommunications) {
+    this.totalApplicationCommunications = totalApplicationCommunications;
   }
 
   /**
@@ -74,7 +75,7 @@ public class Landscape extends BaseEntity {
   private void clearCommunication() {
 
     // keeps applicationCommunication, but sets it to zero requests
-    for (final ApplicationCommunication commu : this.getOutgoingApplicationCommunications()) {
+    for (final ApplicationCommunication commu : this.getTotalApplicationCommunications()) {
       commu.reset();
     }
 
