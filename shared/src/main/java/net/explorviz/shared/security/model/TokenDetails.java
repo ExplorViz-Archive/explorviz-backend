@@ -1,4 +1,4 @@
-package net.explorviz.shared.security;
+package net.explorviz.shared.security.model;
 
 import java.time.ZonedDateTime;
 import java.util.List;

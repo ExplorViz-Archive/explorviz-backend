@@ -22,7 +22,7 @@ import javax.ws.rs.core.Response;
 import net.explorviz.security.services.UserCrudService;
 import net.explorviz.security.util.PasswordStorage;
 import net.explorviz.security.util.PasswordStorage.CannotPerformOperationException;
-import net.explorviz.shared.security.User;
+import net.explorviz.shared.security.model.User;
 import org.eclipse.jetty.http.HttpStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

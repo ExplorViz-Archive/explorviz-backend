@@ -2,7 +2,7 @@ package net.explorviz.security.services;
 
 import java.util.List;
 import java.util.Optional;
-import net.explorviz.shared.security.User;
+import net.explorviz.shared.security.model.User;
 import org.jvnet.hk2.annotations.Service;
 
 /**

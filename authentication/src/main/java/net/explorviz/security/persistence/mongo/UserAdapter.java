@@ -6,10 +6,11 @@ import static net.explorviz.security.persistence.mongo.FieldHelper.FIELD_ID;
 import static net.explorviz.security.persistence.mongo.FieldHelper.FIELD_PASSWORD;
 import static net.explorviz.security.persistence.mongo.FieldHelper.FIELD_ROLES;
 import static net.explorviz.security.persistence.mongo.FieldHelper.FIELD_USERNAME;
+
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import java.util.List;
-import net.explorviz.shared.security.User;
+import net.explorviz.shared.security.model.User;
 
 /**
  * Adapter to parse {@link User} objects and to MongoDB objects and vice versa.

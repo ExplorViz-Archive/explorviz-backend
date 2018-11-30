@@ -3,7 +3,7 @@ package net.explorviz.security.server.providers;
 import com.github.jasminb.jsonapi.DeserializationFeature;
 import com.github.jasminb.jsonapi.ResourceConverter;
 import com.github.jasminb.jsonapi.SerializationFeature;
-import net.explorviz.shared.security.User;
+import net.explorviz.shared.security.model.User;
 import org.glassfish.hk2.api.Factory;
 
 /**

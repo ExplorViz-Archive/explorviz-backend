@@ -15,8 +15,8 @@ import net.explorviz.security.services.TokenService;
 import net.explorviz.security.services.UserValidationService;
 import net.explorviz.shared.annotations.Secured;
 import net.explorviz.shared.security.TokenBasedSecurityContext;
-import net.explorviz.shared.security.TokenDetails;
-import net.explorviz.shared.security.User;
+import net.explorviz.shared.security.model.TokenDetails;
+import net.explorviz.shared.security.model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

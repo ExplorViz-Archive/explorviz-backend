@@ -13,7 +13,7 @@ import net.explorviz.landscape.model.landscape.Landscape;
 import net.explorviz.landscape.model.landscape.Node;
 import net.explorviz.landscape.model.landscape.NodeGroup;
 import net.explorviz.landscape.model.store.Timestamp;
-import net.explorviz.shared.security.User;
+import net.explorviz.shared.security.model.User;
 
 /**
  * Handles the registration of (core) model types for the JSONAPI provideer.

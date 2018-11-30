@@ -14,6 +14,7 @@ import java.util.List;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.ForbiddenException;
 import net.explorviz.shared.annotations.Config;
+import net.explorviz.shared.security.model.TokenDetails;
 
 /**
  * This injectable service is used to extract and parse the details of a JSON web token. If used,

@@ -4,6 +4,7 @@ import java.security.Principal;
 import javax.ws.rs.core.SecurityContext;
 import net.explorviz.shared.security.filters.AuthenticationFilter;
 import net.explorviz.shared.security.filters.AuthorizationFilter;
+import net.explorviz.shared.security.model.TokenDetails;
 
 /**
  * Custom {@link SecurityContext} that holds security details for the authorization process.

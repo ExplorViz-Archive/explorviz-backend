@@ -19,8 +19,8 @@ import net.explorviz.security.services.TokenService;
 import net.explorviz.shared.annotations.Secured;
 import net.explorviz.shared.security.AuthenticatedUserDetails;
 import net.explorviz.shared.security.TokenBasedSecurityContext;
-import net.explorviz.shared.security.TokenDetails;
-import net.explorviz.shared.security.User;
+import net.explorviz.shared.security.model.TokenDetails;
+import net.explorviz.shared.security.model.User;
 
 /**
  * This filter is responsible for the authentication of the authentication web service. Depending on

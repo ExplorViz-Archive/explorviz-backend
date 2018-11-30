@@ -6,7 +6,8 @@ import javax.servlet.annotation.WebListener;
 import net.explorviz.security.services.UserCrudService;
 import net.explorviz.security.util.PasswordStorage;
 import net.explorviz.security.util.PasswordStorage.CannotPerformOperationException;
-import net.explorviz.shared.security.User;
+import net.explorviz.shared.security.model.User;
+import net.explorviz.shared.security.model.roles.Role;
 import org.glassfish.jersey.server.monitoring.ApplicationEvent;
 import org.glassfish.jersey.server.monitoring.ApplicationEvent.Type;
 import org.glassfish.jersey.server.monitoring.ApplicationEventListener;
@@ -61,7 +62,7 @@ public class SetupApplicationListener implements ApplicationEventListener {
     // Check whether the default user exists and if not, create it
     if (!this.userCrudService.findUserByName(ADMIN_NAME).isPresent()) {
       final String pw = PasswordStorage.createHash("password");
-      final User admin = new User(null, ADMIN_NAME, pw, Arrays.asList(ADMIN_NAME));
+      final User admin = new User(null, ADMIN_NAME, pw, Arrays.asList(new Role(3L, "admin")));
       this.userCrudService.saveNewUser(admin);
     }
 

@@ -1,10 +1,15 @@
 package net.explorviz.security.persistence.mongo;
 
+import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
+import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
+
 import com.mongodb.MongoClient;
+import com.mongodb.MongoClientOptions;
 import com.mongodb.MongoTimeoutException;
-import java.net.UnknownHostException;
 import javax.ws.rs.InternalServerErrorException;
 import net.explorviz.shared.annotations.Config;
+import org.bson.codecs.configuration.CodecRegistry;
+import org.bson.codecs.pojo.PojoCodecProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,12 +44,17 @@ public final class MongoClientHelper {
   public MongoClient getMongoClient() {
     if (this.client == null) {
       try {
-        this.client = new MongoClient(this.host + ":" + this.port);
-        this.client.getDatabaseNames();
+        final CodecRegistry pojoCodecRegistry =
+            fromRegistries(MongoClient.getDefaultCodecRegistry(),
+                fromProviders(PojoCodecProvider.builder().automatic(true).build()));
+
+        this.client = new MongoClient(this.host + ":" + this.port,
+            MongoClientOptions.builder().codecRegistry(pojoCodecRegistry).build());
+        this.client.getDatabase("explorviz");
         if (LOGGER.isInfoEnabled()) {
           LOGGER.info("Connected to " + this.host + ":" + this.port);
         }
-      } catch (final UnknownHostException | MongoTimeoutException e) {
+      } catch (final MongoTimeoutException e) {
         if (LOGGER.isErrorEnabled()) {
           LOGGER.error("Target not reachable: " + this.host + ":" + this.port);
         }

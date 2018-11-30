@@ -6,7 +6,7 @@ import net.explorviz.security.model.UserCredentials;
 import net.explorviz.security.util.PasswordStorage;
 import net.explorviz.security.util.PasswordStorage.CannotPerformOperationException;
 import net.explorviz.security.util.PasswordStorage.InvalidHashException;
-import net.explorviz.shared.security.User;
+import net.explorviz.shared.security.model.User;
 import org.jvnet.hk2.annotations.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

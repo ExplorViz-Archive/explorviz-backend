@@ -9,7 +9,7 @@ import java.util.TreeMap;
 import java.util.stream.Collectors;
 import net.explorviz.security.util.CountingIdGenerator;
 import net.explorviz.security.util.IdGenerator;
-import net.explorviz.shared.security.User;
+import net.explorviz.shared.security.model.User;
 import org.jvnet.hk2.annotations.Service;
 
 /**

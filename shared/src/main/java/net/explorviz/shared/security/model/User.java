@@ -1,4 +1,4 @@
-package net.explorviz.shared.security;
+package net.explorviz.shared.security.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
@@ -7,6 +7,7 @@ import com.github.jasminb.jsonapi.annotations.Id;
 import com.github.jasminb.jsonapi.annotations.Type;
 import java.util.ArrayList;
 import java.util.List;
+import net.explorviz.shared.security.model.roles.Role;
 
 /**
  * Model class (container) for the pair of username and password.
@@ -22,9 +23,7 @@ public class User {
   @Id(LongIdHandler.class)
   private Long id;
 
-  private List<String> roles = new ArrayList<>();
-
-  private User() {}
+  private List<Role> roles = new ArrayList<>();
 
   public User(final String username) {
     this.username = username;
@@ -38,8 +37,7 @@ public class User {
    * @param password the password
    * @param roles the roles
    */
-  public User(final Long id, final String username, final String password,
-      final List<String> roles) {
+  public User(final Long id, final String username, final String password, final List<Role> roles) {
     this.username = username;
     this.id = id;
     this.password = password;
@@ -71,11 +69,11 @@ public class User {
     this.password = password;
   }
 
-  public List<String> getRoles() {
+  public List<Role> getRoles() {
     return this.roles;
   }
 
-  public void setRoles(final List<String> roles) {
+  public void setRoles(final List<Role> roles) {
     this.roles = roles;
   }
 

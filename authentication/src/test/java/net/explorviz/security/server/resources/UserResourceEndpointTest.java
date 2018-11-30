@@ -3,6 +3,7 @@ package net.explorviz.security.server.resources;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+
 import com.github.jasminb.jsonapi.DeserializationFeature;
 import com.github.jasminb.jsonapi.JSONAPIDocument;
 import com.github.jasminb.jsonapi.LongIdHandler;
@@ -22,7 +23,7 @@ import net.explorviz.security.server.main.DependencyInjectionBinder;
 import net.explorviz.security.services.InMemoryUserCrudService;
 import net.explorviz.security.services.TokenService;
 import net.explorviz.security.services.UserCrudService;
-import net.explorviz.shared.security.User;
+import net.explorviz.shared.security.model.User;
 import org.eclipse.jetty.http.HttpHeader;
 import org.eclipse.jetty.http.HttpStatus;
 import org.glassfish.hk2.api.ServiceLocator;
