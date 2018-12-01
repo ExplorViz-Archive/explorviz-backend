@@ -1,5 +1,8 @@
 package net.explorviz.security.services;
 
+import static com.mongodb.client.model.Filters.eq;
+import static com.mongodb.client.model.Updates.set;
+
 import com.mongodb.BasicDBObject;
 import com.mongodb.MongoException;
 import com.mongodb.client.MongoCollection;
@@ -105,6 +108,8 @@ public class UserCrudMongoService implements UserCrudService {
     final Role adminRole = this.roleCollection.find().limit(1).first();
 
     System.out.println(adminRole.getDescriptor());
+
+    this.roleCollection.updateOne(eq("descriptor", "admin"), set("descriptor", "test"));
 
     // user.setRoles(Arrays.asList(adminRole));
 

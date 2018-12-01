@@ -1,6 +1,7 @@
 package net.explorviz.shared.annotations.injection;
 
 import java.io.IOException;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Properties;
 import javax.inject.Singleton;
@@ -48,6 +49,7 @@ public class ConfigInjectionResolver implements InjectionResolver<Config> {
    * at application startup.
    */
   public ConfigInjectionResolver() {
+
     final ClassLoader loader = Thread.currentThread().getContextClassLoader();
     // PROPERTIES_PATH = loader.getResource(PROPERTIES_FILENAME).getFile();
 
@@ -57,7 +59,7 @@ public class ConfigInjectionResolver implements InjectionResolver<Config> {
       LOGGER.error(
           "Couldn't load properties file. Is WEB-INF/classes/explorviz.properties a valid file?. Exception: {}", // NOCS
           e.getMessage());
-      throw exception;
+      throw this.exception;
     }
   }
 
@@ -67,41 +69,49 @@ public class ConfigInjectionResolver implements InjectionResolver<Config> {
     final Type t = injectee.getRequiredType();
 
     if (String.class == t) {
-      return handlePropertyLoading(injectee);
+      return this.handlePropertyLoading(injectee);
     }
 
     if ("int".equals(t.toString())) {
       try {
-        return Integer.valueOf(handlePropertyLoading(injectee));
+        return Integer.valueOf(this.handlePropertyLoading(injectee));
       } catch (final NumberFormatException e) {
         LOGGER.error("Property injection for type 'int' failed. Stacktrace:", e);
-        throw exception;
+        throw this.exception;
       }
     }
 
     if ("boolean".equals(t.toString())) {
-      return Boolean.valueOf(handlePropertyLoading(injectee));
+      return Boolean.valueOf(this.handlePropertyLoading(injectee));
     }
 
     if (LOGGER.isErrorEnabled()) {
       LOGGER.error("Property injection failed: {}",
           "Type '" + t + "' for property injection is not valid. Use String, int or boolean.");
     }
-    throw exception;
+    throw this.exception;
 
   }
 
   private String handlePropertyLoading(final Injectee injectee) {
     final Config annotation = injectee.getParent().getAnnotation(Config.class);
 
+    System.out.println("test");
+
+    for (final Annotation a : injectee.getParent().getAnnotations()) {
+      System.out.println(a);
+    }
+
     if (annotation != null) {
+
       final String propName = annotation.value();
+      System.out.println(String.valueOf(PROP.get(propName)));
       return String.valueOf(PROP.get(propName));
     }
 
-    LOGGER.error("Property injection for type 'int' failed: {}",
+    LOGGER.error("Property injection for type 'String' failed: {}",
         "Annotation for property injection is not present.");
-    throw exception;
+    throw this.exception;
   }
 
   @Override

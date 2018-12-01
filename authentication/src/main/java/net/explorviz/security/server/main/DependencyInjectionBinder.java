@@ -3,6 +3,7 @@ package net.explorviz.security.server.main;
 import com.github.jasminb.jsonapi.ResourceConverter;
 import javax.inject.Singleton;
 import net.explorviz.security.persistence.mongo.MongoClientHelper;
+import net.explorviz.security.server.injection.DatastoreFactory;
 import net.explorviz.security.server.providers.ResourceConverterFactory;
 import net.explorviz.security.services.TokenService;
 import net.explorviz.security.services.UserCrudMongoService;
@@ -15,6 +16,7 @@ import net.explorviz.shared.security.TokenParserService;
 import org.glassfish.hk2.api.InjectionResolver;
 import org.glassfish.hk2.api.TypeLiteral;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
+import xyz.morphia.Datastore;
 
 /**
  * The DependencyInjectionBinder is used to register Contexts and Dependency Injection (CDI) aspects
@@ -30,6 +32,8 @@ public class DependencyInjectionBinder extends AbstractBinder {
 
     this.bindFactory(ResourceConverterFactory.class).to(ResourceConverter.class)
         .in(Singleton.class);
+
+    this.bindFactory(DatastoreFactory.class).to(Datastore.class).in(Singleton.class);
 
     this.bind(TokenService.class).to(TokenService.class).in(Singleton.class);
     this.bind(UserValidationService.class).to(UserValidationService.class).in(Singleton.class);

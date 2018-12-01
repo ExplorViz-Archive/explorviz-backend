@@ -8,10 +8,14 @@ import com.mongodb.MongoClientOptions;
 import com.mongodb.MongoTimeoutException;
 import javax.ws.rs.InternalServerErrorException;
 import net.explorviz.shared.annotations.Config;
+import net.explorviz.shared.security.model.User;
+import net.explorviz.shared.security.model.roles.Role;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.PojoCodecProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import xyz.morphia.Datastore;
+import xyz.morphia.Morphia;
 
 /**
  * Handles the access to the {@link MongoClient} instance. Only one instance of {@link MongoClient}
@@ -47,6 +51,15 @@ public final class MongoClientHelper {
         final CodecRegistry pojoCodecRegistry =
             fromRegistries(MongoClient.getDefaultCodecRegistry(),
                 fromProviders(PojoCodecProvider.builder().automatic(true).build()));
+
+        final Morphia morphia = new Morphia();
+
+        morphia.map(User.class, Role.class);
+
+        final Datastore datastore =
+            morphia.createDatastore(new MongoClient(this.host + ":" + this.port), "explorviz");
+
+
 
         this.client = new MongoClient(this.host + ":" + this.port,
             MongoClientOptions.builder().codecRegistry(pojoCodecRegistry).build());

@@ -8,11 +8,14 @@ import com.github.jasminb.jsonapi.annotations.Type;
 import java.util.ArrayList;
 import java.util.List;
 import net.explorviz.shared.security.model.roles.Role;
+import xyz.morphia.annotations.Entity;
+import xyz.morphia.annotations.Reference;
 
 /**
  * Model class (container) for the pair of username and password.
  */
 @Type("user")
+@Entity("users")
 public class User {
 
   private String username;
@@ -21,9 +24,15 @@ public class User {
   private String password;
 
   @Id(LongIdHandler.class)
+  @xyz.morphia.annotations.Id
   private Long id;
 
+  @Reference
   private List<Role> roles = new ArrayList<>();
+
+  public User() {
+    // For MongoDB
+  }
 
   public User(final String username) {
     this.username = username;
