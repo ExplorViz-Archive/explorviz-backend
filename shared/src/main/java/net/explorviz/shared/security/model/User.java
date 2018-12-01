@@ -3,12 +3,14 @@ package net.explorviz.shared.security.model;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
 import com.github.jasminb.jsonapi.LongIdHandler;
-import com.github.jasminb.jsonapi.annotations.Id;
 import com.github.jasminb.jsonapi.annotations.Type;
 import java.util.ArrayList;
 import java.util.List;
 import net.explorviz.shared.security.model.roles.Role;
 import xyz.morphia.annotations.Entity;
+import xyz.morphia.annotations.Id;
+import xyz.morphia.annotations.IndexOptions;
+import xyz.morphia.annotations.Indexed;
 import xyz.morphia.annotations.Reference;
 
 /**
@@ -18,14 +20,15 @@ import xyz.morphia.annotations.Reference;
 @Entity("users")
 public class User {
 
+  @Id
+  @com.github.jasminb.jsonapi.annotations.Id(LongIdHandler.class)
+  private Long id;
+
+  @Indexed(options = @IndexOptions(unique = true))
   private String username;
 
   @JsonProperty(access = Access.WRITE_ONLY)
   private String password;
-
-  @Id(LongIdHandler.class)
-  @xyz.morphia.annotations.Id
-  private Long id;
 
   @Reference
   private List<Role> roles = new ArrayList<>();

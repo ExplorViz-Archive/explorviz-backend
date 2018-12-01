@@ -32,7 +32,7 @@ public class DatastoreFactory implements Factory<Datastore> {
     morphia.map(User.class, Role.class);
 
     this.datastore = morphia.createDatastore(new MongoClient("127.0.0.1:27017"), "explorviz");
-
+    this.datastore.ensureIndexes();
   }
 
   @Override

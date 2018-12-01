@@ -1,25 +1,17 @@
 package net.explorviz.security.services;
 
-import static com.mongodb.client.model.Filters.eq;
-import static com.mongodb.client.model.Updates.set;
-
-import com.mongodb.BasicDBObject;
 import com.mongodb.MongoException;
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.model.IndexOptions;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import javax.inject.Inject;
-import net.explorviz.security.persistence.mongo.FieldHelper;
-import net.explorviz.security.persistence.mongo.MongoClientHelper;
 import net.explorviz.security.util.CountingIdGenerator;
 import net.explorviz.security.util.IdGenerator;
 import net.explorviz.shared.security.model.User;
-import net.explorviz.shared.security.model.roles.Role;
 import org.jvnet.hk2.annotations.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import xyz.morphia.Datastore;
 
 /**
  * Offers CRUD operations on user objects, backed by a MongoDB instance as persistence layer. Each
@@ -35,21 +27,11 @@ import org.slf4j.LoggerFactory;
 @Service
 public class UserCrudMongoService implements UserCrudService {
 
-  private static final Logger LOGGER =
-      LoggerFactory.getLogger(UserCrudMongoService.class.getSimpleName());
-
-  private static final String DBNAME = "explorviz";
-
-  private static final String UNIQUE = "unique";
-
+  private static final Logger LOGGER = LoggerFactory.getLogger(UserCrudMongoService.class);
 
   private final IdGenerator<Long> idGen;
 
-
-
-  private final MongoCollection<User> userCollection;
-  private final MongoCollection<Role> roleCollection;
-
+  private final Datastore datastore;
 
 
   /**
@@ -57,22 +39,13 @@ public class UserCrudMongoService implements UserCrudService {
    *
    */
   @Inject
-  public UserCrudMongoService(final MongoClientHelper mongoHelper) {
+  public UserCrudMongoService(final Datastore datastore) {
 
-    this.roleCollection =
-        mongoHelper.getMongoClient().getDatabase(DBNAME).getCollection("role", Role.class);
+    this.datastore = datastore;
 
-    this.roleCollection.insertOne(new Role(3L, "admin"));
-
-    this.userCollection =
-        mongoHelper.getMongoClient().getDatabase(DBNAME).getCollection("user", User.class);
-
+    final User userWithMaxId = this.datastore.createQuery(User.class).order("id").get();
 
     // Create a new id generator, which will count upwards beginning from the max id
-
-    final User userWithMaxId =
-        this.userCollection.find().sort(new BasicDBObject("id", -1)).limit(1).first();
-
     long counterInitValue = 0L;
 
     if (userWithMaxId != null) {
@@ -82,10 +55,10 @@ public class UserCrudMongoService implements UserCrudService {
     this.idGen = new CountingIdGenerator(counterInitValue);
 
     // Create indices with unique constraints (if not existing)
-    this.userCollection.createIndex(new BasicDBObject(FieldHelper.FIELD_USERNAME, 1),
-        new IndexOptions().unique(true));
-    this.userCollection.createIndex(new BasicDBObject(FieldHelper.FIELD_ID, 1),
-        new IndexOptions().unique(true));
+    // this.userCollection.createIndex(new BasicDBObject(FieldHelper.FIELD_USERNAME, 1),
+    // new IndexOptions().unique(true));
+    // this.userCollection.createIndex(new BasicDBObject(FieldHelper.FIELD_ID, 1),
+    // new IndexOptions().unique(true));
   }
 
 
@@ -105,15 +78,7 @@ public class UserCrudMongoService implements UserCrudService {
 
     user.setId(this.idGen.next());
 
-    final Role adminRole = this.roleCollection.find().limit(1).first();
-
-    System.out.println(adminRole.getDescriptor());
-
-    this.roleCollection.updateOne(eq("descriptor", "admin"), set("descriptor", "test"));
-
-    // user.setRoles(Arrays.asList(adminRole));
-
-    this.userCollection.insertOne(user);
+    this.datastore.save(user);
 
     if (LOGGER.isInfoEnabled()) {
       LOGGER.info("Inserted new user with id " + user.getId());

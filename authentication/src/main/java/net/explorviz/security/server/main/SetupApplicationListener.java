@@ -57,22 +57,9 @@ public class SetupApplicationListener implements ApplicationEventListener {
 
   private void initDefaultUser() throws CannotPerformOperationException {
 
-    // Check whether the default user exists and if not, create it
-    // if (!this.userCrudService.findUserByName(ADMIN_NAME).isPresent()) {
-    // final String pw = PasswordStorage.createHash("password");
-    // final User admin = new User(null, ADMIN_NAME, pw, Arrays.asList(new Role(3L, "admin")));
-    // this.userCrudService.saveNewUser(admin);
-    // }
-
     this.datastore.save(new Role(3L, "admin"));
     final String pw = PasswordStorage.createHash("password");
-    this.datastore.save(new User(1L, ADMIN_NAME, "test", Arrays.asList(new Role(3L, "admin"))));
-
-    final User test = this.datastore.createQuery(User.class).asList().get(0);
-
-    System.out.println(test.getUsername());
-    System.out.println(test.getRoles().get(0).getDescriptor());
-
+    this.datastore.save(new User(1L, ADMIN_NAME, pw, Arrays.asList(new Role(3L, "admin"))));
   }
 
 }

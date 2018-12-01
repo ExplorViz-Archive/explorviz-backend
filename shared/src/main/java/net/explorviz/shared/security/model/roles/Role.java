@@ -1,16 +1,19 @@
 package net.explorviz.shared.security.model.roles;
 
 import com.github.jasminb.jsonapi.LongIdHandler;
-import com.github.jasminb.jsonapi.annotations.Id;
 import xyz.morphia.annotations.Entity;
+import xyz.morphia.annotations.Id;
+import xyz.morphia.annotations.IndexOptions;
+import xyz.morphia.annotations.Indexed;
 
 @Entity("roles")
 public class Role {
 
-  @Id(LongIdHandler.class)
-  @xyz.morphia.annotations.Id
+  @Id
+  @com.github.jasminb.jsonapi.annotations.Id(LongIdHandler.class)
   private Long id;
 
+  @Indexed(options = @IndexOptions(unique = true))
   private String descriptor;
 
   public Role() {
