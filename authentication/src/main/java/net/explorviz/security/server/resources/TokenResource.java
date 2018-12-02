@@ -17,8 +17,6 @@ import net.explorviz.shared.annotations.Secured;
 import net.explorviz.shared.security.TokenBasedSecurityContext;
 import net.explorviz.shared.security.model.TokenDetails;
 import net.explorviz.shared.security.model.User;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * The token resource class provides endpoints for token obtainment and refreshment.
@@ -27,7 +25,7 @@ import org.slf4j.LoggerFactory;
 public class TokenResource {
 
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(TokenResource.class.getSimpleName()); // NOPMD
+  // private static final Logger LOGGER = LoggerFactory.getLogger(TokenResource.class); // NOPMD
 
   @Inject
   private UserValidationService userService;

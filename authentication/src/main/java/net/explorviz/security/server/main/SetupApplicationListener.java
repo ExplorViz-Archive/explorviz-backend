@@ -1,8 +1,10 @@
 package net.explorviz.security.server.main;
 
 import java.util.Arrays;
+import java.util.List;
 import javax.inject.Inject;
 import javax.servlet.annotation.WebListener;
+import net.explorviz.security.services.RoleService;
 import net.explorviz.security.util.PasswordStorage;
 import net.explorviz.security.util.PasswordStorage.CannotPerformOperationException;
 import net.explorviz.shared.security.model.User;
@@ -29,6 +31,9 @@ public class SetupApplicationListener implements ApplicationEventListener {
   @Inject
   private Datastore datastore;
 
+  @Inject
+  private RoleService roleService;
+
   @Override
   public void onEvent(final ApplicationEvent event) {
 
@@ -39,7 +44,7 @@ public class SetupApplicationListener implements ApplicationEventListener {
 
     if (event.getType().equals(t)) {
       try {
-        this.initDefaultUser();
+        this.createDefaultData();
       } catch (final CannotPerformOperationException e) {
         if (LOGGER.isWarnEnabled()) {
           LOGGER.warn("Unable to create default user: " + e.getMessage());
@@ -55,11 +60,18 @@ public class SetupApplicationListener implements ApplicationEventListener {
   }
 
 
-  private void initDefaultUser() throws CannotPerformOperationException {
+  private void createDefaultData() throws CannotPerformOperationException {
 
-    this.datastore.save(new Role(3L, "admin"));
+    final List<Role> roleList = this.roleService.getAllRoles();
+
+    for (final Role r : roleList) {
+      this.datastore.save(r);
+    }
+
+    final long id = roleList.size() + 1;
+
     final String pw = PasswordStorage.createHash("password");
-    this.datastore.save(new User(1L, ADMIN_NAME, pw, Arrays.asList(new Role(3L, "admin"))));
+    this.datastore.save(new User(id, ADMIN_NAME, pw, Arrays.asList(roleList.get(0))));
   }
 
 }
