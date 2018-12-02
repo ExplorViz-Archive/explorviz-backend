@@ -20,6 +20,7 @@ import net.explorviz.security.util.PasswordStorage;
 import net.explorviz.security.util.PasswordStorage.CannotPerformOperationException;
 import net.explorviz.security.util.PasswordStorage.InvalidHashException;
 import net.explorviz.shared.security.model.User;
+import net.explorviz.shared.security.model.roles.Role;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -137,7 +138,7 @@ public class UserResourceTest {
 
   @Test
   public void testListOfNewUsers() {
-    final List<String> roles = Arrays.asList("role");
+    final List<Role> roles = Arrays.asList(new Role(1L, "role"));
     final User u1 = new User(null, "u1", "pw", roles);
     final User u2 = new User(null, "u2", "pw", roles);
     final User u3 = new User(null, "u3", "pw", roles);
@@ -152,7 +153,7 @@ public class UserResourceTest {
 
   @Test
   public void testListOfNewUsersWithInvalidUser() {
-    final List<String> roles = Arrays.asList("role");
+    final List<Role> roles = Arrays.asList(new Role(1L, "role"));
     final User u1 = new User(null, "u1", "", roles);
     final User u2 = new User(null, "u2", "pw", roles);
     final User u3 = new User(null, "u3", "pw", roles);
@@ -169,11 +170,11 @@ public class UserResourceTest {
   public void testUserByRole() {
     final User u1 = new User("testuser");
     u1.setPassword("password");
-    u1.setRoles(Arrays.asList("role1", "role2"));
+    u1.setRoles(Arrays.asList(new Role(1L, "role1"), new Role(2L, "role2")));
 
     final User u2 = new User("testuser2");
     u2.setPassword("password");
-    u2.setRoles(Arrays.asList("role1"));
+    u2.setRoles(Arrays.asList(new Role(1L, "role1")));
 
     this.userResource.newUser(u1);
     this.userResource.newUser(u2);
@@ -244,7 +245,7 @@ public class UserResourceTest {
 
     final long uid = newUser.getId();
 
-    final User update = new User(null, null, null, Arrays.asList("newrole"));
+    final User update = new User(null, null, null, Arrays.asList(new Role(3L, "newrole")));
     final User updatedUser = this.userResource.updateUser(uid, update);
 
     assertTrue(updatedUser.getRoles().contains("newrole"));

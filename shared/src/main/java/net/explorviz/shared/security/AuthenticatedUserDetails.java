@@ -2,6 +2,7 @@ package net.explorviz.shared.security;
 
 import java.security.Principal;
 import java.util.List;
+import net.explorviz.shared.security.model.roles.Role;
 
 /**
  * Model for details of an authenticated user.
@@ -9,19 +10,19 @@ import java.util.List;
 public final class AuthenticatedUserDetails implements Principal {
 
   private final String username;
-  private final List<String> roles;
+  private final List<Role> roles;
 
-  public AuthenticatedUserDetails(final String username, final List<String> roles) {
+  public AuthenticatedUserDetails(final String username, final List<Role> roles) {
     this.username = username;
     this.roles = roles;
   }
 
-  public List<String> getRoles() {
-    return roles;
+  public List<Role> getRoles() {
+    return this.roles;
   }
 
   @Override
   public String getName() {
-    return username;
+    return this.username;
   }
 }

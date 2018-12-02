@@ -15,6 +15,7 @@ import javax.validation.constraints.NotNull;
 import javax.ws.rs.ForbiddenException;
 import net.explorviz.shared.annotations.Config;
 import net.explorviz.shared.security.model.TokenDetails;
+import net.explorviz.shared.security.model.roles.Role;
 
 /**
  * This injectable service is used to extract and parse the details of a JSON web token. If used,
@@ -45,16 +46,16 @@ public class TokenParserService {
 
     try {
 
-      final Claims claims = Jwts.parser().setSigningKey(secret).requireAudience(audience)
-          .setAllowedClockSkewSeconds(clockSkewInSeconds).parseClaimsJws(token).getBody();
+      final Claims claims = Jwts.parser().setSigningKey(this.secret).requireAudience(this.audience)
+          .setAllowedClockSkewSeconds(this.clockSkewInSeconds).parseClaimsJws(token).getBody();
 
-      return new TokenDetails.Builder().withId(extractTokenIdFromClaims(claims))
-          .withUsername(extractUsernameFromClaims(claims))
-          .withAuthorities(extractAuthoritiesFromClaims(claims))
-          .withIssuedDate(extractIssuedDateFromClaims(claims))
-          .withExpirationDate(extractExpirationDateFromClaims(claims))
-          .withRefreshCount(extractRefreshCountFromClaims(claims))
-          .withRefreshLimit(extractRefreshLimitFromClaims(claims)).build();
+      return new TokenDetails.Builder().withId(this.extractTokenIdFromClaims(claims))
+          .withUsername(this.extractUsernameFromClaims(claims))
+          .withAuthorities(this.extractAuthoritiesFromClaims(claims))
+          .withIssuedDate(this.extractIssuedDateFromClaims(claims))
+          .withExpirationDate(this.extractExpirationDateFromClaims(claims))
+          .withRefreshCount(this.extractRefreshCountFromClaims(claims))
+          .withRefreshLimit(this.extractRefreshLimitFromClaims(claims)).build();
 
     } catch (UnsupportedJwtException | MalformedJwtException | IllegalArgumentException
         | SignatureException e) {
@@ -95,8 +96,8 @@ public class TokenParserService {
    * @return User authorities from the JWT token
    */
   @SuppressWarnings("unchecked")
-  private List<String> extractAuthoritiesFromClaims(@NotNull final Claims claims) {
-    return (List<String>) claims.getOrDefault("roles", new ArrayList<String>());
+  private List<Role> extractAuthoritiesFromClaims(@NotNull final Claims claims) {
+    return (List<Role>) claims.getOrDefault("roles", new ArrayList<Role>());
   }
 
   /**

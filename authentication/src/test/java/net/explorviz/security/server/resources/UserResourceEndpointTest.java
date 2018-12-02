@@ -24,6 +24,7 @@ import net.explorviz.security.services.InMemoryUserCrudService;
 import net.explorviz.security.services.TokenService;
 import net.explorviz.security.services.UserCrudService;
 import net.explorviz.shared.security.model.User;
+import net.explorviz.shared.security.model.roles.Role;
 import org.eclipse.jetty.http.HttpHeader;
 import org.eclipse.jetty.http.HttpStatus;
 import org.glassfish.hk2.api.ServiceLocator;
@@ -54,8 +55,6 @@ public class UserResourceEndpointTest extends JerseyTest {
 
   private ResourceConverter jsonApiConverter;
 
-
-
   @Override
   public void setUp() throws Exception {
 
@@ -67,7 +66,7 @@ public class UserResourceEndpointTest extends JerseyTest {
 
     // Create tokens for random users
     final User admin = new User("Admin");
-    admin.setRoles(Arrays.asList("admin"));
+    admin.setRoles(Arrays.asList(new Role(1L, "admin")));
     final User normie = new User("Normie");
 
     this.adminToken = "Bearer " + this.tokenService.issueNewToken(admin);
@@ -343,8 +342,8 @@ public class UserResourceEndpointTest extends JerseyTest {
 
       final UserInput other = (UserInput) obj;
 
-      final List<String> temp1 = new ArrayList(this.roles);
-      final List<String> temp2 = new ArrayList(other.roles);
+      final List<Role> temp1 = new ArrayList(this.roles);
+      final List<Role> temp2 = new ArrayList(other.roles);
 
       temp1.sort(null);
       temp2.sort(null);
