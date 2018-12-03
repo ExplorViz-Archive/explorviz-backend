@@ -6,8 +6,7 @@ import net.explorviz.security.server.injection.DatastoreFactory;
 import net.explorviz.security.server.providers.ResourceConverterFactory;
 import net.explorviz.security.services.RoleService;
 import net.explorviz.security.services.TokenService;
-import net.explorviz.security.services.UserCrudMongoService;
-import net.explorviz.security.services.UserCrudService;
+import net.explorviz.security.services.UserMongoCrudService;
 import net.explorviz.security.services.UserValidationService;
 import net.explorviz.shared.annotations.Config;
 import net.explorviz.shared.annotations.injection.ConfigInjectionResolver;
@@ -38,7 +37,7 @@ public class DependencyInjectionBinder extends AbstractBinder {
     this.bind(TokenService.class).to(TokenService.class).in(Singleton.class);
     this.bind(UserValidationService.class).to(UserValidationService.class).in(Singleton.class);
     this.bind(TokenParserService.class).to(TokenParserService.class).in(Singleton.class);
-    this.bind(UserCrudMongoService.class).to(UserCrudService.class).in(Singleton.class);
+    this.bind(UserMongoCrudService.class).to(UserMongoCrudService.class).in(Singleton.class);
 
     this.bind(RoleService.class).to(RoleService.class).in(Singleton.class);
 

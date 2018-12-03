@@ -15,7 +15,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.ws.rs.BadRequestException;
-import net.explorviz.security.services.UserCrudService;
+import net.explorviz.security.services.UserMongoCrudService;
 import net.explorviz.security.util.PasswordStorage;
 import net.explorviz.security.util.PasswordStorage.CannotPerformOperationException;
 import net.explorviz.security.util.PasswordStorage.InvalidHashException;
@@ -42,7 +42,7 @@ public class UserResourceTest {
   private UserResource userResource;
 
   @Mock
-  private UserCrudService userCrudService;
+  private UserMongoCrudService userCrudService;
 
 
   private final Map<Long, User> users = new HashMap<>();
@@ -52,7 +52,7 @@ public class UserResourceTest {
   public void setUp() {
 
 
-    when(this.userCrudService.saveNewUser(any())).thenAnswer(inv -> {
+    when(this.userCrudService.saveNewEntity(any())).thenAnswer(inv -> {
       final User u = (User) inv.getArgument(0);
       final long id = ++this.lastId;
       final User newUser = new User(id, u.getUsername(), u.getPassword(), u.getRoles());
@@ -60,14 +60,14 @@ public class UserResourceTest {
       return Optional.ofNullable(newUser);
     });
 
-    when(this.userCrudService.getUserById(any())).thenAnswer(inv -> {
+    when(this.userCrudService.getEntityById(any())).thenAnswer(inv -> {
       return Optional.ofNullable(this.users.get(inv.getArgument(0)));
     });
 
     doAnswer(inv -> {
       this.users.remove(inv.getArgument(0));
       return null;
-    }).when(this.userCrudService).deleteUserById(any());
+    }).when(this.userCrudService).deleteEntityById(any());
 
     when(this.userCrudService.getUsersByRole(any())).thenAnswer(inv -> {
       final String role = inv.getArgument(0);

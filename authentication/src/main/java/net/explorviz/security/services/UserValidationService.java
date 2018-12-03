@@ -24,7 +24,7 @@ public class UserValidationService {
 
 
   @Inject
-  private UserCrudService userCrudService;
+  private UserMongoCrudService userCrudService;
 
   /**
    * This method validates the passed {@link UserCredentials}, therefore enables overall
@@ -39,10 +39,9 @@ public class UserValidationService {
       throw new ForbiddenException("Enter username and password");
     }
 
-    final User user = this.userCrudService.findUserByName(userCredentials.getUsername())
-        .orElseThrow(() -> new ForbiddenException(MSG_WRONGCRED));
-
-
+    final User user =
+        this.userCrudService.findEntityByFieldValue("username", userCredentials.getUsername())
+            .orElseThrow(() -> new ForbiddenException(MSG_WRONGCRED));
 
     try {
       if (!PasswordStorage.verifyPassword(userCredentials.getPassword(), user.getPassword())) {

@@ -16,9 +16,8 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.Response;
 import net.explorviz.security.server.main.DependencyInjectionBinder;
-import net.explorviz.security.services.InMemoryUserCrudService;
 import net.explorviz.security.services.TokenService;
-import net.explorviz.security.services.UserCrudService;
+import net.explorviz.security.services.UserMongoCrudService;
 import net.explorviz.shared.security.model.User;
 import net.explorviz.shared.security.model.roles.Role;
 import org.eclipse.jetty.http.HttpHeader;
@@ -89,7 +88,7 @@ public class UserResourceEndpointTest extends JerseyTest {
     c.register(new AbstractBinder() {
       @Override
       protected void configure() {
-        this.bind(InMemoryUserCrudService.class).to(UserCrudService.class).in(Singleton.class)
+        this.bind(UserMongoCrudService.class).to(UserMongoCrudService.class).in(Singleton.class)
             .ranked(10);
 
       }
