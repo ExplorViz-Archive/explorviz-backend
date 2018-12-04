@@ -22,9 +22,6 @@ final class LandscapeDummyCreator {
 
   private static final int CALLS_GENERATOR_BOUND = 300000;
 
-  // defines a position within our dummy trace
-  private static int tracePositionCounter = 0;
-
   // CHECKSTYLE.OFF: MultipleStringLiteralsCheck - Much more readable than NOCS in many lines
   // CHECKSTYLE.OFF: MagicNumberCheck - Much more readable than NOCS in many lines
 
@@ -36,15 +33,6 @@ final class LandscapeDummyCreator {
     // Utility class
   }
 
-  /**
-   * Increases the tracePositionCounter and returns the new value
-   *
-   * @return
-   */
-  public static int increaseAndGetTracePositionCounter() {
-    tracePositionCounter = tracePositionCounter + 1;
-    return tracePositionCounter;
-  }
 
   public static Landscape createDummyLandscape() {
 
@@ -377,20 +365,18 @@ final class LandscapeDummyCreator {
   /**
    * Creating a communication between two clazzes within the dummy landscape
    *
+   * @param traceId
    * @param requests
    * @param sourceClazz
    * @param targetClazz
    * @param application
    */
-  private static void createClazzCommunication(final int requests, final Clazz sourceClazz,
-      final Clazz targetClazz, final Application application) {
-
-    // specifiy trace information (here: just a single trace with id 1)
-    final int traceId = 1;
+  private static void createClazzCommunication(final int traceId, final int tracePosition,
+      final int requests, final Clazz sourceClazz, final Clazz targetClazz,
+      final Application application) {
 
     final float averageResponseTime = 0L + DummyLandscapeHelper.getRandomNum(10, 1000);
     final float overallTraceDuration = 0L + DummyLandscapeHelper.getRandomNum(1000, 10000);
-    final int tracePosition = increaseAndGetTracePositionCounter();
     final String operationName = "getMethod" + DummyLandscapeHelper.getRandomNum(1, 50) + "()";
 
     ModelHelper.addClazzCommunication(sourceClazz, targetClazz, application, requests,
@@ -466,24 +452,34 @@ final class LandscapeDummyCreator {
     final Clazz loggingClazz = createClazz("AccountSqlMapDao", logging, 25);
     createClazz("AccountSqlMapDao2", logging, 5);
 
-    createClazzCommunication(40, graphDbClazz, helpersClazz, application);
-    createClazzCommunication(800, toolingClazz, implClazz, application);
-    createClazzCommunication(60, implClazz, helpersClazz, application);
-    createClazzCommunication(600, implClazz, apiImplClazz, application);
-    createClazzCommunication(1000, implClazz, loggingClazz, application);
-    createClazzCommunication(100, guardClazz, unsafeClazz, application);
-    createClazzCommunication(1000, apiClazz, configurationClazz, application);
-    createClazzCommunication(150, lifecycleClazz, loggingClazz, application);
-    createClazzCommunication(12000, guardClazz, implClazz, application);
+    // specify a first trace for the dummy landscape
+    final int firstTraceId = 1;
 
-    createClazzCommunication(3500, implClazz, loggingClazz, application);
-    createClazzCommunication(500, loggingClazz, implClazz, application);
+    createClazzCommunication(firstTraceId, 1, 40, graphDbClazz, helpersClazz, application);
+    createClazzCommunication(firstTraceId, 2, 800, toolingClazz, implClazz, application);
+    createClazzCommunication(firstTraceId, 3, 60, implClazz, helpersClazz, application);
+    createClazzCommunication(firstTraceId, 4, 600, implClazz, apiImplClazz, application);
+    createClazzCommunication(firstTraceId, 5, 1000, implClazz, loggingClazz, application);
+    createClazzCommunication(firstTraceId, 6, 100, guardClazz, unsafeClazz, application);
+    createClazzCommunication(firstTraceId, 7, 1000, apiClazz, configurationClazz, application);
+    createClazzCommunication(firstTraceId, 8, 150, lifecycleClazz, loggingClazz, application);
+    createClazzCommunication(firstTraceId, 9, 12000, guardClazz, implClazz, application);
+    createClazzCommunication(firstTraceId, 10, 3500, implClazz, loggingClazz, application);
+    createClazzCommunication(firstTraceId, 11, 500, loggingClazz, implClazz, application);
+    createClazzCommunication(firstTraceId, 12, 4200, implClazz, helpersClazz, application);
+    createClazzCommunication(firstTraceId, 13, 4200, helpersClazz, implClazz, application);
+    createClazzCommunication(firstTraceId, 14, 2100, implClazz, helpersClazz, application);
+    createClazzCommunication(firstTraceId, 15, 2100, helpersClazz, implClazz, application);
 
-    createClazzCommunication(4200, implClazz, helpersClazz, application);
-    createClazzCommunication(4200, helpersClazz, implClazz, application);
+    // specify a second trace for the dummy landscape
+    final int secondTraceId = 2;
 
-    createClazzCommunication(2100, implClazz, helpersClazz, application);
-    createClazzCommunication(2100, helpersClazz, implClazz, application);
+    createClazzCommunication(secondTraceId, 1, 2500, implClazz, loggingClazz, application);
+    createClazzCommunication(secondTraceId, 2, 900, loggingClazz, implClazz, application);
+    createClazzCommunication(secondTraceId, 3, 8200, implClazz, helpersClazz, application);
+    createClazzCommunication(secondTraceId, 4, 11200, helpersClazz, implClazz, application);
+    createClazzCommunication(secondTraceId, 5, 1200, implClazz, helpersClazz, application);
+    createClazzCommunication(secondTraceId, 6, 390, helpersClazz, implClazz, application);
 
     return application;
   }
