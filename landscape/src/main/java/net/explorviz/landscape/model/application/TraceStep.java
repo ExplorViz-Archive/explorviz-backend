@@ -17,7 +17,7 @@ public class TraceStep extends BaseEntity {
   private Trace parentTrace;
 
   // position in the related trace (first position = 1)
-  private int tracePosition = 1;
+  private int tracePosition = 0;
 
   @Relationship("clazzCommunication")
   private ClazzCommunication clazzCommunication;

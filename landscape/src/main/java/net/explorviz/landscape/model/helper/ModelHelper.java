@@ -24,14 +24,14 @@ public final class ModelHelper {
    * @param callee - Called clazz
    * @param application - Related application
    * @param requests - Amount of observed calls
-   * @param average - Average response time in ns
+   * @param averageResponseTime - Average response time in ns
    * @param overallTraceDuration - In ns
    * @param traceId - Of the reconstructed trace
    * @param tracePosition - Position within the trace
    * @param operationName - Name of the called operation
    */
   public static void addClazzCommunication(final Clazz caller, final Clazz callee,
-      final Application application, final int requests, final double average,
+      final Application application, final int requests, final double averageResponseTime,
       final double overallTraceDuration, final long traceId, final int tracePosition,
       final String operationName) {
 
@@ -41,10 +41,10 @@ public final class ModelHelper {
           && commu.getOperationName().equalsIgnoreCase(operationName)) {
 
         final float currentAverageResponseTime = commu.getAverageResponseTime();
-        commu.setAverageResponseTime((currentAverageResponseTime + (float) average) / 2f);
+        commu.setAverageResponseTime((currentAverageResponseTime + (float) averageResponseTime) / 2f);
         final int newTotalRequests = commu.getTotalRequests() + requests;
         commu.setTotalRequests(newTotalRequests);
-        commu.addTraceStep(application, traceId, tracePosition, requests, (float) average,
+        commu.addTraceStep(application, traceId, tracePosition, requests, (float) averageResponseTime,
             (float) overallTraceDuration);
 
         return;
@@ -57,9 +57,9 @@ public final class ModelHelper {
     commu.setSourceClazz(caller);
     commu.setTargetClazz(callee);
     commu.setOperationName(operationName);
-    commu.setAverageResponseTime((float) average);
+    commu.setAverageResponseTime((float) averageResponseTime);
     commu.setTotalRequests(requests);
-    commu.addTraceStep(application, traceId, tracePosition, requests, (float) average,
+    commu.addTraceStep(application, traceId, tracePosition, requests, (float) averageResponseTime,
         (float) overallTraceDuration);
 
     // add clazzCommunication to calling clazz (sourceClazz)

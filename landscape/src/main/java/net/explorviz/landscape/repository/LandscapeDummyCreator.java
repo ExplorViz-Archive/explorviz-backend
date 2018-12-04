@@ -22,6 +22,9 @@ final class LandscapeDummyCreator {
 
   private static final int CALLS_GENERATOR_BOUND = 300000;
 
+  // defines a position within our dummy trace
+  private static int tracePositionCounter = 0;
+
   // CHECKSTYLE.OFF: MultipleStringLiteralsCheck - Much more readable than NOCS in many lines
   // CHECKSTYLE.OFF: MagicNumberCheck - Much more readable than NOCS in many lines
 
@@ -31,6 +34,16 @@ final class LandscapeDummyCreator {
 
   private LandscapeDummyCreator() {
     // Utility class
+  }
+
+  /**
+   * Increases the tracePositionCounter and returns the new value
+   *
+   * @return
+   */
+  public static int increaseAndGetTracePositionCounter() {
+    tracePositionCounter = tracePositionCounter + 1;
+    return tracePositionCounter;
   }
 
   public static Landscape createDummyLandscape() {
@@ -361,15 +374,31 @@ final class LandscapeDummyCreator {
     return clazz;
   }
 
+  /**
+   * Creating a communication between two clazzes within the dummy landscape
+   *
+   * @param requests
+   * @param sourceClazz
+   * @param targetClazz
+   * @param application
+   */
   private static void createClazzCommunication(final int requests, final Clazz sourceClazz,
       final Clazz targetClazz, final Application application) {
+
+    // specifiy trace information (here: just a single trace with id 1)
+    final int traceId = 1;
+
+    final float averageResponseTime = 0L + DummyLandscapeHelper.getRandomNum(10, 1000);
+    final float overallTraceDuration = 0L + DummyLandscapeHelper.getRandomNum(1000, 10000);
+    final int tracePosition = increaseAndGetTracePositionCounter();
+    final String operationName = "getMethod" + DummyLandscapeHelper.getRandomNum(1, 50) + "()";
+
     ModelHelper.addClazzCommunication(sourceClazz, targetClazz, application, requests,
-        0L + DummyLandscapeHelper.getRandomNum(10, 1000),
-        0L + DummyLandscapeHelper.getRandomNum(1000, 10000), 1L, 1,
-        "getMethod" + DummyLandscapeHelper.getRandomNum(1, 50) + "()");
+        averageResponseTime, overallTraceDuration, traceId, tracePosition, operationName);
   }
 
   private static Application createWebshopApplication(final Application application) {
+
     final Component org = createComponent("org", null, application);
     application.getComponents().add(org);
     final Component neo4j = createComponent("webshop", org, application);

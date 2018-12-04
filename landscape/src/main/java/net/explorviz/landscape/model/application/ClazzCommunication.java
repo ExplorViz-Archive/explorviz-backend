@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 @Type("clazzcommunication")
 public class ClazzCommunication extends BaseEntity {
 
+  @SuppressWarnings("unused")
   private static final Logger LOGGER = LoggerFactory.getLogger(ClazzCommunication.class);
 
   @Relationship("sourceClazz")
