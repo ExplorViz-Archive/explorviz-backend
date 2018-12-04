@@ -365,7 +365,7 @@ final class LandscapeDummyCreator {
       final Clazz targetClazz, final Application application) {
     ModelHelper.addClazzCommunication(sourceClazz, targetClazz, application, requests,
         0L + DummyLandscapeHelper.getRandomNum(10, 1000),
-        0L + DummyLandscapeHelper.getRandomNum(1000, 10000), 0L, 1,
+        0L + DummyLandscapeHelper.getRandomNum(1000, 10000), 1L, 1,
         "getMethod" + DummyLandscapeHelper.getRandomNum(1, 50) + "()");
   }
 

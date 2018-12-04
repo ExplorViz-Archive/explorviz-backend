@@ -38,8 +38,9 @@ public class Trace extends BaseEntity {
    * @param averageResponseTime
    * @param currentTraceDuration
    * @param clazzCommunication
+   * @return TraceStep
    */
-  public void addTraceStep(final int tracePosition, final int requests,
+  public TraceStep addTraceStep(final int tracePosition, final int requests,
       final float averageResponseTime, final float currentTraceDuration,
       final ClazzCommunication clazzCommunication) {
 
@@ -55,7 +56,7 @@ public class Trace extends BaseEntity {
 
     this.getTraceSteps().add(newTraceStep);
 
-    return;
+    return newTraceStep;
   }
 
   public long getTraceId() {
