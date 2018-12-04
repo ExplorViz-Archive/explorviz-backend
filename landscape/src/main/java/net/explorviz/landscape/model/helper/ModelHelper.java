@@ -40,8 +40,13 @@ public final class ModelHelper {
       if (commu.getSourceClazz() == caller && commu.getTargetClazz() == callee
           && commu.getOperationName().equalsIgnoreCase(operationName)) {
 
+        final float currentAverageResponseTime = commu.getAverageResponseTime();
+        commu.setAverageResponseTime((currentAverageResponseTime + (float) average) / 2f);
+        final int newTotalRequests = commu.getTotalRequests() + requests;
+        commu.setTotalRequests(newTotalRequests);
         commu.addTraceStep(traceId, tracePosition, requests, (float) average,
             (float) overallTraceDuration);
+
         return;
       }
     }
@@ -52,6 +57,8 @@ public final class ModelHelper {
     commu.setSourceClazz(caller);
     commu.setTargetClazz(callee);
     commu.setOperationName(operationName);
+    commu.setAverageResponseTime((float) average);
+    commu.setTotalRequests(requests);
     commu.addTraceStep(traceId, tracePosition, requests, (float) average,
         (float) overallTraceDuration);
 
@@ -140,7 +147,7 @@ public final class ModelHelper {
 
         final float currentAverageResponseTime = aggClazzCommu.getAverageResponseTime();
         aggClazzCommu.setAverageResponseTime(
-            currentAverageResponseTime + newCommunication.getAverageResponseTime() / 2f);
+            (currentAverageResponseTime + newCommunication.getAverageResponseTime()) / 2f);
         final int newTotalRequests =
             aggClazzCommu.getTotalRequests() + newCommunication.getTotalRequests();
         aggClazzCommu.setTotalRequests(newTotalRequests);
@@ -154,8 +161,8 @@ public final class ModelHelper {
     aggCommu.initializeId();
     aggCommu.setSourceClazz(newCommunication.getSourceClazz());
     aggCommu.setTargetClazz(newCommunication.getTargetClazz());
-    aggCommu.setTotalRequests(newCommunication.getTotalRequests());
     aggCommu.setAverageResponseTime(newCommunication.getAverageResponseTime());
+    aggCommu.setTotalRequests(newCommunication.getTotalRequests());
 
     // adds a clazzCommunication if sourceClazz and targetClazz matches
     if (aggCommu.addClazzCommunication(newCommunication)) {
