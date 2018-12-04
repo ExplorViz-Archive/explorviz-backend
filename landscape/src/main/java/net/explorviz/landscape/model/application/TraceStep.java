@@ -9,7 +9,7 @@ import net.explorviz.landscape.model.helper.BaseEntity;
  * {@link Clazz} in a specific {@link Trace}.
  */
 @SuppressWarnings("serial")
-@Type("tracedetail")
+@Type("tracestep")
 public class TraceStep extends BaseEntity {
 
   // related trace
