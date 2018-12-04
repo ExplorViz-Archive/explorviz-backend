@@ -38,7 +38,7 @@ public class GeneralExceptionMapper implements ExceptionMapper<Throwable> {
       message = "404 - not found"; // NOPMD
     } else {
       if (LOGGER.isErrorEnabled()) {
-        LOGGER.error(exception.toString());
+        LOGGER.error("General error occured", exception);
       }
     }
 
