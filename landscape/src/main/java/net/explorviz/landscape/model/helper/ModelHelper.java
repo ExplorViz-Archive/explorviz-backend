@@ -141,6 +141,9 @@ public final class ModelHelper {
         final float currentAverageResponseTime = aggClazzCommu.getAverageResponseTime();
         aggClazzCommu.setAverageResponseTime(
             currentAverageResponseTime + newCommunication.getAverageResponseTime() / 2f);
+        final int newTotalRequests =
+            aggClazzCommu.getTotalRequests() + newCommunication.getTotalRequests();
+        aggClazzCommu.setTotalRequests(newTotalRequests);
 
         return;
       }
