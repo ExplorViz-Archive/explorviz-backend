@@ -20,7 +20,7 @@ public class ClazzCommunication extends BaseEntity {
   private Clazz targetClazz;
 
   @Relationship("traces")
-  private final List<Trace> traces = new ArrayList<>();
+  private List<Trace> traces = new ArrayList<>();
 
   private String operationName = "<unknown>";
 
@@ -59,10 +59,14 @@ public class ClazzCommunication extends BaseEntity {
     return this.traces;
   }
 
+  public void setTraces(final List<Trace> traces) {
+    this.traces = traces;;
+  }
+
   // returns a trace for a given traceId or creates a new one
   public Trace retrieveTraceByTraceId(final Long traceId) {
-    for (final Trace trace : this.traces) {
-      if (trace.equals(traceId)) {
+    for (final Trace trace : this.getTraces()) {
+      if (trace.getId().equals(traceId)) {
         return trace;
       }
     }
@@ -71,12 +75,16 @@ public class ClazzCommunication extends BaseEntity {
   }
 
   // checks if a trace is existing and if not creates one and adds the runtime information
-  public void addTraceStep(final Long traceId, final int tracePosition, final int requests,
-      final float averageResponseTime, final float currentTraceDuration) {
+  public void addTraceStep(final Application application, final Long traceId,
+      final int tracePosition, final int requests, final float averageResponseTime,
+      final float currentTraceDuration) {
 
     final Trace trace = this.retrieveTraceByTraceId(traceId);
-    trace.addTraceStep(traceId, tracePosition, requests, averageResponseTime, currentTraceDuration,
-        this);
+    trace.addTraceStep(tracePosition, requests, averageResponseTime, currentTraceDuration, this);
+
+    // reference the new trace for the application for easy access
+    this.getTraces().add(trace);
+    application.getTraces().add(trace);
   }
 
   public int getTotalRequests() {

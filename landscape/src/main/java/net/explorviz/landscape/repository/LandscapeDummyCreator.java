@@ -450,6 +450,12 @@ final class LandscapeDummyCreator {
     createClazzCommunication(3500, implClazz, loggingClazz, application);
     createClazzCommunication(500, loggingClazz, implClazz, application);
 
+    createClazzCommunication(4200, implClazz, helpersClazz, application);
+    createClazzCommunication(4200, helpersClazz, implClazz, application);
+
+    createClazzCommunication(2100, implClazz, helpersClazz, application);
+    createClazzCommunication(2100, helpersClazz, implClazz, application);
+
     return application;
   }
 

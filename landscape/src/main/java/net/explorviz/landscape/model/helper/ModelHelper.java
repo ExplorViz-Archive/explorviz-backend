@@ -44,7 +44,7 @@ public final class ModelHelper {
         commu.setAverageResponseTime((currentAverageResponseTime + (float) average) / 2f);
         final int newTotalRequests = commu.getTotalRequests() + requests;
         commu.setTotalRequests(newTotalRequests);
-        commu.addTraceStep(traceId, tracePosition, requests, (float) average,
+        commu.addTraceStep(application, traceId, tracePosition, requests, (float) average,
             (float) overallTraceDuration);
 
         return;
@@ -59,7 +59,7 @@ public final class ModelHelper {
     commu.setOperationName(operationName);
     commu.setAverageResponseTime((float) average);
     commu.setTotalRequests(requests);
-    commu.addTraceStep(traceId, tracePosition, requests, (float) average,
+    commu.addTraceStep(application, traceId, tracePosition, requests, (float) average,
         (float) overallTraceDuration);
 
     // add clazzCommunication to calling clazz (sourceClazz)

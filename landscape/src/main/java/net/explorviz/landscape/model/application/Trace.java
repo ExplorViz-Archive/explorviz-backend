@@ -29,24 +29,8 @@ public class Trace extends BaseEntity {
     this.setTraceId(traceId);
   }
 
-  // checks if a trace with a corresponding traceId exists
-  @Override
-  public boolean equals(final Object object) {
-    boolean result = false;
-
-    if (object == null || object.getClass() != this.getClass()) {
-      result = false;
-    } else {
-      final Trace trace = (Trace) object;
-      if (((Long) this.getTraceId()).equals(trace.getTraceId())) {
-        result = true;
-      }
-    }
-    return result;
-  }
-
   /**
-   * Adds a new call within a trace as a {@link TraceDetail}
+   * Adds a new call within a trace as a {@link TraceStep}
    *
    * @param traceId
    * @param tracePosition
@@ -55,23 +39,21 @@ public class Trace extends BaseEntity {
    * @param currentTraceDuration
    * @param clazzCommunication
    */
-  public void addTraceStep(final Long traceId, final int tracePosition, final int requests,
+  public void addTraceStep(final int tracePosition, final int requests,
       final float averageResponseTime, final float currentTraceDuration,
       final ClazzCommunication clazzCommunication) {
 
-    final TraceStep newTraceStep = new TraceStep(clazzCommunication);
+    final TraceStep newTraceStep = new TraceStep(this, clazzCommunication, tracePosition, requests,
+        averageResponseTime, currentTraceDuration);
 
     final float beforeSum = this.getTotalRequests() * averageResponseTime;
     final float currentSum = requests * averageResponseTime;
 
-    this.setAverageResponseTime(
-        (beforeSum + currentSum) / (this.getTotalRequests() + requests));
-
-    newTraceStep.setCurrentTraceDuration(currentTraceDuration);
-    newTraceStep.setTracePosition(tracePosition);
-
+    this.setAverageResponseTime((beforeSum + currentSum) / (this.getTotalRequests() + requests));
     this.setTotalTraceDuration(newTraceStep.getCurrentTraceDuration());
     this.setTotalRequests(this.getTotalRequests() + requests);
+
+    this.getTraceSteps().add(newTraceStep);
 
     return;
   }

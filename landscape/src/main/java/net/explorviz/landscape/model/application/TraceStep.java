@@ -28,25 +28,24 @@ public class TraceStep extends BaseEntity {
 
   private float averageResponseTime;
 
-
-  public TraceStep(final ClazzCommunication clazzCommunication) {
+  /**
+   * Creates a new TraceStep and assigns related communication information
+   *
+   * @param clazzCommunication
+   * @param currentTraceDuration
+   * @param averageResponseTime
+   * @param requests
+   * @param tracePosition
+   */
+  public TraceStep(final Trace parentTrace, final ClazzCommunication clazzCommunication,
+      final int tracePosition, final int requests, final float averageResponseTime,
+      final float currentTraceDuration) {
+    this.setParentTrace(parentTrace);
     this.setClazzCommunication(clazzCommunication);
-  }
-
-  // checks if a a clazz communication has the same source and target clazzes
-  @Override
-  public boolean equals(final Object object) {
-    boolean result = false;
-
-    if (object == null || object.getClass() != this.getClass()) {
-      result = false;
-    } else {
-      final ClazzCommunication clazzCommunication = (ClazzCommunication) object;
-      if (this.getClazzCommunication().equals(clazzCommunication)) {
-        result = true;
-      }
-    }
-    return result;
+    this.setTracePosition(tracePosition);
+    this.setAverageResponseTime(averageResponseTime);
+    this.setRequests(requests);
+    this.setCurrentTraceDuration(currentTraceDuration);
   }
 
   public Trace getParentTrace() {
