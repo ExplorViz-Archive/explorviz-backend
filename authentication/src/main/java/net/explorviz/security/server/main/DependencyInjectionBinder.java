@@ -8,8 +8,9 @@ import net.explorviz.security.services.RoleService;
 import net.explorviz.security.services.TokenService;
 import net.explorviz.security.services.UserMongoCrudService;
 import net.explorviz.security.services.UserValidationService;
-import net.explorviz.shared.annotations.Config;
+import net.explorviz.shared.annotations.ConfigValues;
 import net.explorviz.shared.annotations.injection.ConfigInjectionResolver;
+import net.explorviz.shared.annotations.injection.ConfigValuesInjectionResolver;
 import net.explorviz.shared.exceptions.ErrorObjectHelper;
 import net.explorviz.shared.security.TokenParserService;
 import org.glassfish.hk2.api.InjectionResolver;
@@ -27,7 +28,10 @@ public class DependencyInjectionBinder extends AbstractBinder {
   public void configure() {
 
     // Injectable config properties
-    this.bind(new ConfigInjectionResolver()).to(new TypeLiteral<InjectionResolver<Config>>() {});
+    this.bind(new ConfigInjectionResolver())
+        .to(new TypeLiteral<InjectionResolver<ConfigValues>>() {});
+    this.bind(new ConfigValuesInjectionResolver())
+        .to(new TypeLiteral<InjectionResolver<ConfigValues>>() {});
 
     this.bindFactory(ResourceConverterFactory.class).to(ResourceConverter.class)
         .in(Singleton.class);

@@ -1,6 +1,7 @@
 package net.explorviz.shared.annotations;
 
 import java.lang.annotation.ElementType;
+import java.lang.annotation.Repeatable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
@@ -20,9 +21,9 @@ import java.lang.annotation.Target;
  *
  * @see net.explorviz.shared.annotations.injection.ConfigInjectionResolver
  */
-@Target({ElementType.FIELD, ElementType.CONSTRUCTOR, ElementType.LOCAL_VARIABLE, ElementType.TYPE,
-    ElementType.TYPE_PARAMETER, ElementType.PARAMETER})
+@Target({ElementType.CONSTRUCTOR, ElementType.PARAMETER, ElementType.METHOD, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
+@Repeatable(ConfigValues.class)
 public @interface Config {
   String value(); // NOCS
 }

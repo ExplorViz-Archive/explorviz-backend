@@ -5,8 +5,6 @@ apply plugin: 'maven'
 dependencies {    
   // JSON Web Token (JWT)
   compile 'io.jsonwebtoken:jjwt-api:0.10.5'
-  
-  // JWT POJO Mapper for claims
   runtime 'io.jsonwebtoken:jjwt-impl:0.10.5', 'io.jsonwebtoken:jjwt-jackson:0.10.5'
   
   // JSON-API parsing
