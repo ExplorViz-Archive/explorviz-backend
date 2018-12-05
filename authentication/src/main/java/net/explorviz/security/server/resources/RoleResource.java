@@ -1,6 +1,5 @@
 package net.explorviz.security.server.resources;
 
-import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
@@ -25,11 +24,7 @@ public class RoleResource {
   @RolesAllowed({ADMIN_ROLE})
   @Produces(MEDIA_TYPE)
   public List<Role> getAllRoles() {
-    System.out.println("hier");
-    final List<Role> roleList = new ArrayList<>();
-
-    roleList.add(new Role(1L, "admin"));
-    return roleList;
+    return this.roleService.getAllRoles();
   }
 
 }
