@@ -71,7 +71,8 @@ public class UserResourceTest {
 
     when(this.userCrudService.getUsersByRole(any())).thenAnswer(inv -> {
       final String role = inv.getArgument(0);
-      return this.users.values().stream().filter(u -> u.getRoles().contains(role))
+      return this.users.values().stream()
+          .filter(u -> u.getRoles().stream().anyMatch(r -> r.getDescriptor().equals(role)))
           .collect(Collectors.toList());
 
     });
@@ -248,7 +249,7 @@ public class UserResourceTest {
     final User update = new User(null, null, null, Arrays.asList(new Role(3L, "newrole")));
     final User updatedUser = this.userResource.updateUser(uid, update);
 
-    assertTrue(updatedUser.getRoles().contains("newrole"));
+    assertTrue(updatedUser.getRoles().stream().anyMatch(r -> r.getDescriptor().equals("newrole")));
     assertEquals(newUser.getId(), updatedUser.getId());
     assertEquals(u1.getUsername(), updatedUser.getUsername());
     assertEquals(u1.getPassword(), updatedUser.getPassword());
