@@ -4,6 +4,7 @@ import com.mongodb.MongoException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import javax.inject.Inject;
 import net.explorviz.security.util.CountingIdGenerator;
 import net.explorviz.security.util.IdGenerator;
@@ -33,6 +34,7 @@ public class UserMongoCrudService implements MongoCrudService<User> {
   private final IdGenerator<Long> idGen;
 
   private final Datastore datastore;
+
 
 
   /**
@@ -65,7 +67,6 @@ public class UserMongoCrudService implements MongoCrudService<User> {
   @Override
   public Optional<User> saveNewEntity(final User user) throws MongoException {
     // Generate an id
-
     user.setId(this.idGen.next());
 
     this.datastore.save(user);
@@ -124,15 +125,18 @@ public class UserMongoCrudService implements MongoCrudService<User> {
 
     final List<User> listToBeReturned = new ArrayList<>();
 
-    final List<User> userList = this.datastore.createQuery(User.class).asList();
+    List<User> userList = this.datastore.createQuery(User.class).asList();
 
-    for (final User user : userList) {
-      if (user.getRoles().contains(role)) {
-        listToBeReturned.add(user);
-      }
-    }
 
-    return listToBeReturned;
+
+    userList =
+        userList.stream()
+            .filter(u -> u.getRoles().stream()
+                .anyMatch(r -> r.getId().longValue() == role.getId().longValue()
+                    && r.getDescriptor().equals(role.getDescriptor())))
+            .collect(Collectors.toList());
+
+    return userList;
   }
 
 
