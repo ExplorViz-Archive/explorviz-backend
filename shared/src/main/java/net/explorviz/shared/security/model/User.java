@@ -3,6 +3,7 @@ package net.explorviz.shared.security.model;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
 import com.github.jasminb.jsonapi.LongIdHandler;
+import com.github.jasminb.jsonapi.annotations.Relationship;
 import com.github.jasminb.jsonapi.annotations.Type;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +32,7 @@ public class User {
   private String password;
 
   @Reference
+  @Relationship("roles")
   private List<Role> roles = new ArrayList<>();
 
   public User() {
