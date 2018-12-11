@@ -128,14 +128,8 @@ public class UserMongoCrudService implements MongoCrudService<User> {
 
     List<User> userList = this.datastore.createQuery(User.class).asList();
 
-
-
     userList =
-        userList.stream()
-            .filter(u -> u.getRoles().stream()
-                .anyMatch(r -> r.getId().longValue() == role.getId().longValue()
-                    && r.getDescriptor().equals(role.getDescriptor())))
-            .collect(Collectors.toList());
+        userList.stream().filter(u -> u.getRoles().contains(role)).collect(Collectors.toList());
 
     return userList;
   }

@@ -283,6 +283,10 @@ public class UserResourceEndpointTest extends JerseyTest {
   // ByRole
   @Test
   public void findByRole() throws DocumentSerializationException {
+
+    // Somehow the admin user is created after the setup method dropped the table
+    this.datastore.getCollection(User.class).drop();
+
     final User u1 =
         new User(1L, "user1", "pw", Arrays.asList(this.roleService.getAllRoles().get(0)));
     final User u2 =

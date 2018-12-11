@@ -266,6 +266,7 @@ public class UserResourceTest {
     final long uid = newUser.getId();
 
     final User update = new User(null, null, null, Arrays.asList(new Role(3L, "newrole")));
+    this.roles.add(new Role(3L, "newrole"));
     final User updatedUser = this.userResource.updateUser(uid, update);
 
     assertTrue(updatedUser.getRoles().stream().anyMatch(r -> r.getDescriptor().equals("newrole")));
