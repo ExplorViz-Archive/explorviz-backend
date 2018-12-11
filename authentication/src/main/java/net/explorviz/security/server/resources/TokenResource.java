@@ -27,6 +27,8 @@ public class TokenResource {
 
   // private static final Logger LOGGER = LoggerFactory.getLogger(TokenResource.class); // NOPMD
 
+  private static final String MEDIA_TYPE = "application/vnd.api+json";
+
   @Inject
   private UserValidationService userService;
 
@@ -44,22 +46,19 @@ public class TokenResource {
    */
   @POST
   @Consumes(MediaType.APPLICATION_JSON)
-  @Produces(MediaType.APPLICATION_JSON)
+  @Produces(MEDIA_TYPE)
   @PermitAll
-  public Token issueToken(final UserCredentials credentials) {
+  public User issueToken(final UserCredentials credentials) {
 
     // curl -X POST
     // 'http://localhost:8082/v1/tokens/'
     // -H 'Content-Type: application/json'
     // -d '{ "username": "admin", "password": "password" }'
 
-    User user;
-    user = this.userService.validateUserCredentials(credentials);
+    final User user = this.userService.validateUserCredentials(credentials);
+    user.setToken(this.tokenService.issueNewToken(user));
 
-    final Token t = new Token();
-    t.setToken(this.tokenService.issueNewToken(user));
-
-    return t;
+    return user;
   }
 
   /**

@@ -38,6 +38,8 @@ public class User {
 
   private HashMap<String, String> settings = new HashMap<>(); // NOPMD
 
+  private String token;
+
   public User() {
     // For MongoDB
   }
@@ -108,6 +110,14 @@ public class User {
 
   public void setSettings(final HashMap<String, String> settings) {
     this.settings = settings;
+  }
+
+  public void setToken(final String newToken) {
+    this.token = newToken;
+  }
+
+  public String getToken() {
+    return this.token;
   }
 
 

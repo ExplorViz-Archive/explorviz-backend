@@ -75,6 +75,7 @@ public class SetupApplicationListener implements ApplicationEventListener {
 
     final HashMap<String, String> settings = new HashMap<>();
     settings.put("app-viz-class-color", "0xFF0000");
+    settings.put("show-fps-counter", "false");
 
     this.datastore.save(new User(id, ADMIN_NAME, pw, Arrays.asList(roleList.get(0)), settings));
   }
