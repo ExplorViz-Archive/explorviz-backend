@@ -6,6 +6,7 @@ import com.github.jasminb.jsonapi.LongIdHandler;
 import com.github.jasminb.jsonapi.annotations.Relationship;
 import com.github.jasminb.jsonapi.annotations.Type;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import net.explorviz.shared.security.model.roles.Role;
 import xyz.morphia.annotations.Entity;
@@ -35,6 +36,8 @@ public class User {
   @Relationship("roles")
   private List<Role> roles = new ArrayList<>();
 
+  private HashMap<String, String> settings = new HashMap<>(); // NOPMD
+
   public User() {
     // For MongoDB
   }
@@ -57,6 +60,14 @@ public class User {
     this.password = password;
     this.roles = roles;
   }
+
+
+  public User(final Long id, final String username, final String password, final List<Role> roles,
+      final HashMap<String, String> settings) { // NOPMD
+    this(id, username, password, roles);
+    this.settings = settings;
+  }
+
 
   public Long getId() {
     return this.id;
@@ -90,5 +101,15 @@ public class User {
   public void setRoles(final List<Role> roles) {
     this.roles = roles;
   }
+
+  public HashMap<String, String> getSettings() {
+    return this.settings;
+  }
+
+  public void setSettings(final HashMap<String, String> settings) {
+    this.settings = settings;
+  }
+
+
 
 }

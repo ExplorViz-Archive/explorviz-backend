@@ -8,6 +8,7 @@ import com.github.jasminb.jsonapi.JSONAPIDocument;
 import com.github.jasminb.jsonapi.ResourceConverter;
 import com.github.jasminb.jsonapi.exceptions.DocumentSerializationException;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -306,6 +307,8 @@ public class UserResourceEndpointTest extends JerseyTest {
   public void removeUser() throws DocumentSerializationException {
     final User u = new User(1L, "user1", "pw", Arrays.asList(new Role(5L, "admin")));
 
+    this.userCrudService.saveNewEntity(u);
+
     final Response deleteResponse = this.target("v1/users/" + u.getId()).request()
         .header(HttpHeader.AUTHORIZATION.asString(), this.adminToken).delete();
     final Response getResponse = this.target("v1/users/" + u.getId()).request()
@@ -313,6 +316,24 @@ public class UserResourceEndpointTest extends JerseyTest {
 
     assertEquals(HttpStatus.NO_CONTENT_204, deleteResponse.getStatus());
     assertEquals(HttpStatus.NOT_FOUND_404, getResponse.getStatus());
+  }
+
+  @Test
+  public void testRetrieveSettings() throws DocumentSerializationException {
+    final HashMap<String, String> settings = new HashMap<>();
+    settings.put("somekey", "somevalue");
+    final User u = new User(1L, "user1", "pw", null, settings);
+
+    this.userCrudService.saveNewEntity(u);
+
+    final byte[] retrievedUserRaw = this.target("v1/users/" + u.getId()).request()
+        .header(HttpHeader.AUTHORIZATION.asString(), this.adminToken).get(byte[].class);
+
+    final User retrievedUser =
+        this.jsonApiConverter.readDocument(retrievedUserRaw, User.class).get();
+
+    assertEquals("Settings do not match", settings, retrievedUser.getSettings());
+
   }
 
 }
