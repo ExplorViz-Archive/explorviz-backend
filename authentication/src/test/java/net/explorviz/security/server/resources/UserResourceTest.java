@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.ws.rs.BadRequestException;
+import net.explorviz.security.services.RoleService;
 import net.explorviz.security.services.UserMongoCrudService;
 import net.explorviz.security.util.PasswordStorage;
 import net.explorviz.security.util.PasswordStorage.CannotPerformOperationException;
@@ -44,12 +45,22 @@ public class UserResourceTest {
   @Mock
   private UserMongoCrudService userCrudService;
 
+  @Mock
+  private RoleService roleService;
+
 
   private final Map<Long, User> users = new HashMap<>();
+
+  private final List<Role> roles = new ArrayList<>();
+
   private Long lastId = 0L;
 
   @Before
   public void setUp() {
+
+
+
+    when(this.roleService.getAllRoles()).thenReturn(this.roles);
 
 
     when(this.userCrudService.saveNewEntity(any())).thenAnswer(inv -> {
@@ -86,6 +97,7 @@ public class UserResourceTest {
   @After
   public void tearDown() {
     this.users.clear();
+    this.roles.clear();
   }
 
 
@@ -139,6 +151,7 @@ public class UserResourceTest {
 
   @Test
   public void testListOfNewUsers() {
+    this.roles.add(new Role(1L, "role"));
     final List<Role> roles = Arrays.asList(new Role(1L, "role"));
     final User u1 = new User(null, "u1", "pw", roles);
     final User u2 = new User(null, "u2", "pw", roles);
@@ -154,6 +167,7 @@ public class UserResourceTest {
 
   @Test
   public void testListOfNewUsersWithInvalidUser() {
+    this.roles.add(new Role(1L, "role"));
     final List<Role> roles = Arrays.asList(new Role(1L, "role"));
     final User u1 = new User(null, "u1", "", roles);
     final User u2 = new User(null, "u2", "pw", roles);
@@ -169,6 +183,11 @@ public class UserResourceTest {
 
   @Test
   public void testUserByRole() {
+
+    this.roles.add(new Role(1L, "role1"));
+    this.roles.add(new Role(2L, "role2"));
+    this.roles.add(new Role(3L, "role3"));
+
     final User u1 = new User("testuser");
     u1.setPassword("password");
     u1.setRoles(Arrays.asList(new Role(1L, "role1"), new Role(2L, "role2")));

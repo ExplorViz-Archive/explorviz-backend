@@ -19,10 +19,12 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
+import net.explorviz.security.services.RoleService;
 import net.explorviz.security.services.UserMongoCrudService;
 import net.explorviz.security.util.PasswordStorage;
 import net.explorviz.security.util.PasswordStorage.CannotPerformOperationException;
 import net.explorviz.shared.security.model.User;
+import net.explorviz.shared.security.model.roles.Role;
 import org.eclipse.jetty.http.HttpStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,6 +51,8 @@ public class UserResource {
   @Inject
   private UserMongoCrudService userCrudService;
 
+  @Inject
+  private RoleService roleService;
 
   // CHECKSTYLE.OFF: Cyclomatic
 
@@ -76,6 +80,12 @@ public class UserResource {
       throw new BadRequestException("Can't create user with id. Payload must not have an id.");
     }
 
+    for (final Role r : user.getRoles()) {
+      if (!this.roleService.getAllRoles().contains(r)) {
+        throw new BadRequestException("Unknown role: " + r);
+      }
+    }
+
     try {
       user.setPassword(PasswordStorage.createHash(user.getPassword()));
 
@@ -85,6 +95,7 @@ public class UserResource {
       }
       throw new InternalServerErrorException(e);
     }
+
 
     try {
       return this.userCrudService.saveNewEntity(user)
