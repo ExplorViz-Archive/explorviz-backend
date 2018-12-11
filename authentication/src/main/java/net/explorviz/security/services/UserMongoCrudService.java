@@ -69,13 +69,14 @@ public class UserMongoCrudService implements MongoCrudService<User> {
     // Generate an id
     user.setId(this.idGen.next());
 
+
+
     this.datastore.save(user);
 
     if (LOGGER.isInfoEnabled()) {
       LOGGER.info("Inserted new user with id " + user.getId());
     }
-    return Optional.ofNullable(
-        new User(user.getId(), user.getUsername(), user.getPassword(), user.getRoles()));
+    return Optional.ofNullable(user);
   }
 
   @Override
@@ -87,6 +88,7 @@ public class UserMongoCrudService implements MongoCrudService<User> {
   public Optional<User> getEntityById(final Long id) throws MongoException {
 
     final User userObject = this.datastore.get(User.class, id);
+    System.out.println(userObject.getSettings());
 
     return Optional.ofNullable(userObject);
   }
