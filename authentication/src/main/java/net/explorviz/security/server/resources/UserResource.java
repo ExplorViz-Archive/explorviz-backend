@@ -191,6 +191,10 @@ public class UserResource {
       targetUser.setRoles(updatedUser.getRoles());
     }
 
+    if (updatedUser.getSettings() != null) {
+      targetUser.setSettings(updatedUser.getSettings());
+    }
+
     try {
       this.userCrudService.updateEntity(targetUser);
     } catch (final MongoException ex) {

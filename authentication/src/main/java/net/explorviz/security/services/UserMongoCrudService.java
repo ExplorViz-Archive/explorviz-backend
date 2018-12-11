@@ -88,7 +88,6 @@ public class UserMongoCrudService implements MongoCrudService<User> {
   public Optional<User> getEntityById(final Long id) throws MongoException {
 
     final User userObject = this.datastore.get(User.class, id);
-    System.out.println(userObject.getSettings());
 
     return Optional.ofNullable(userObject);
   }
