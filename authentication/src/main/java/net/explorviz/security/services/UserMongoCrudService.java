@@ -46,7 +46,7 @@ public class UserMongoCrudService implements MongoCrudService<User> {
 
     this.datastore = datastore;
 
-    final User userWithMaxId = this.datastore.createQuery(User.class).order("id").get();
+    final User userWithMaxId = this.datastore.createQuery(User.class).order("-id").get();
 
     // Create a new id generator, which will count upwards beginning from the max id
     long counterInitValue = 0L;
