@@ -1,6 +1,7 @@
 package net.explorviz.security.server.main;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import javax.inject.Inject;
 import javax.servlet.annotation.WebListener;
@@ -71,7 +72,11 @@ public class SetupApplicationListener implements ApplicationEventListener {
     final long id = roleList.size() + 1;
 
     final String pw = PasswordStorage.createHash("password");
-    this.datastore.save(new User(id, ADMIN_NAME, pw, Arrays.asList(roleList.get(0))));
+
+    final HashMap<String, String> settings = new HashMap<>();
+    settings.put("app-viz-class-color", "0xFF0000");
+
+    this.datastore.save(new User(id, ADMIN_NAME, pw, Arrays.asList(roleList.get(0)), settings));
   }
 
 }
