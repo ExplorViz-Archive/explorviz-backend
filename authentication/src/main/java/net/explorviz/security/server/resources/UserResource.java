@@ -199,6 +199,11 @@ public class UserResource {
     }
 
     if (updatedUser.getRoles() != null) {
+      for (final Role r : updatedUser.getRoles()) {
+        if (!this.roleService.getAllRoles().contains(r)) {
+          throw new BadRequestException("Unknown role: " + r);
+        }
+      }
       targetUser.setRoles(updatedUser.getRoles());
     }
 
