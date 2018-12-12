@@ -47,6 +47,24 @@ public class UserSettings {
     this.appVizClassColor = appVizClassColor;
   }
 
+  @Override
+  public boolean equals(final Object obj) {
+    if (obj == null) {
+      return false;
+    }
+    if (obj == this) {
+      return true;
+    }
+    if (!(obj instanceof UserSettings)) {
+      return false;
+    }
+    final UserSettings otherObj = (UserSettings) obj;
+
+    return this.id.equals(otherObj.getId())
+        && this.appVizClassColor.equals(otherObj.appVizClassColor)
+        && this.showFpsCounter == otherObj.isShowFpsCounter();
+  }
+
 
 
 }
