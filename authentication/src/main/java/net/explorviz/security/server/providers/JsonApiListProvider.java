@@ -18,7 +18,7 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.ext.MessageBodyReader;
 import javax.ws.rs.ext.MessageBodyWriter;
 import javax.ws.rs.ext.Provider;
-import net.explorviz.shared.security.User;
+import net.explorviz.shared.security.model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

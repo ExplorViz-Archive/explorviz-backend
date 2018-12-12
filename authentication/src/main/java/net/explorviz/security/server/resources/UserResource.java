@@ -19,10 +19,12 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
-import net.explorviz.security.services.UserCrudService;
+import net.explorviz.security.services.RoleService;
+import net.explorviz.security.services.UserMongoCrudService;
 import net.explorviz.security.util.PasswordStorage;
 import net.explorviz.security.util.PasswordStorage.CannotPerformOperationException;
-import net.explorviz.shared.security.User;
+import net.explorviz.shared.security.model.User;
+import net.explorviz.shared.security.model.roles.Role;
 import org.eclipse.jetty.http.HttpStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,8 +49,10 @@ public class UserResource {
   private static final String ADMIN_ROLE = "admin";
 
   @Inject
-  private UserCrudService userCrudService;
+  private UserMongoCrudService userCrudService;
 
+  @Inject
+  private RoleService roleService;
 
   // CHECKSTYLE.OFF: Cyclomatic
 
@@ -76,6 +80,12 @@ public class UserResource {
       throw new BadRequestException("Can't create user with id. Payload must not have an id.");
     }
 
+    for (final Role r : user.getRoles()) {
+      if (!this.roleService.getAllRoles().contains(r)) {
+        throw new BadRequestException("Unknown role: " + r);
+      }
+    }
+
     try {
       user.setPassword(PasswordStorage.createHash(user.getPassword()));
 
@@ -86,8 +96,9 @@ public class UserResource {
       throw new InternalServerErrorException(e);
     }
 
+
     try {
-      return this.userCrudService.saveNewUser(user)
+      return this.userCrudService.saveNewEntity(user)
           .orElseThrow(() -> new InternalServerErrorException());
     } catch (final DuplicateKeyException ex) {
       throw new BadRequestException("User already exists", ex);
@@ -151,7 +162,8 @@ public class UserResource {
 
     User targetUser = null;
     try {
-      targetUser = this.userCrudService.getUserById(id).orElseThrow(() -> new NotFoundException());
+      targetUser =
+          this.userCrudService.getEntityById(id).orElseThrow(() -> new NotFoundException());
     } catch (final MongoException ex) {
       if (LOGGER.isErrorEnabled()) {
         LOGGER.error(MSG_USER_NOT_RETRIEVED + ex.getMessage() + " (" + ex.getCode() + ")");
@@ -187,11 +199,20 @@ public class UserResource {
     }
 
     if (updatedUser.getRoles() != null) {
+      for (final Role r : updatedUser.getRoles()) {
+        if (!this.roleService.getAllRoles().contains(r)) {
+          throw new BadRequestException("Unknown role: " + r);
+        }
+      }
       targetUser.setRoles(updatedUser.getRoles());
     }
 
+    if (updatedUser.getSettings() != null) {
+      targetUser.setSettings(updatedUser.getSettings());
+    }
+
     try {
-      this.userCrudService.updateUser(targetUser);
+      this.userCrudService.updateEntity(targetUser);
     } catch (final MongoException ex) {
       if (LOGGER.isErrorEnabled()) {
         LOGGER.error(MSG_USER_NOT_UPDATED + ex.getMessage() + " (" + ex.getCode() + ")");
@@ -247,7 +268,7 @@ public class UserResource {
     User foundUser = null;
 
     try {
-      foundUser = this.userCrudService.getUserById(id).orElseThrow(() -> new NotFoundException());
+      foundUser = this.userCrudService.getEntityById(id).orElseThrow(() -> new NotFoundException());
     } catch (final MongoException ex) {
       if (LOGGER.isErrorEnabled()) {
         LOGGER.error("Could not retrieve user: " + ex.getMessage() + " (" + ex.getCode() + ")");
@@ -270,7 +291,7 @@ public class UserResource {
   @RolesAllowed({ADMIN_ROLE})
   public Response removeUser(@PathParam("id") final Long id) {
     try {
-      this.userCrudService.deleteUserById(id);
+      this.userCrudService.deleteEntityById(id);
     } catch (final MongoException ex) {
       if (LOGGER.isErrorEnabled()) {
         LOGGER.error("Could not update user: " + ex.getMessage() + " (" + ex.getCode() + ")");

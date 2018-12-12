@@ -6,6 +6,7 @@ import java.util.Properties;
 import javax.inject.Singleton;
 import javax.ws.rs.InternalServerErrorException;
 import net.explorviz.shared.annotations.Config;
+import net.explorviz.shared.annotations.ConfigValues;
 import org.glassfish.hk2.api.Injectee;
 import org.glassfish.hk2.api.InjectionResolver;
 import org.glassfish.hk2.api.ServiceHandle;
@@ -25,9 +26,9 @@ import org.slf4j.LoggerFactory;
  */
 
 @Singleton
-public class ConfigInjectionResolver implements InjectionResolver<Config> {
+public class ConfigValuesInjectionResolver implements InjectionResolver<ConfigValues> {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(ConfigInjectionResolver.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(ConfigValuesInjectionResolver.class);
 
   private static final String PROPERTIES_FILENAME = "explorviz.properties";
   // private static String PROPERTIES_PATH;
@@ -47,7 +48,7 @@ public class ConfigInjectionResolver implements InjectionResolver<Config> {
    * the explorviz.properties file. Will be automatically created and registered in the CDI context
    * at application startup.
    */
-  public ConfigInjectionResolver() {
+  public ConfigValuesInjectionResolver() {
 
     final ClassLoader loader = Thread.currentThread().getContextClassLoader();
     // PROPERTIES_PATH = loader.getResource(PROPERTIES_FILENAME).getFile();
@@ -93,11 +94,15 @@ public class ConfigInjectionResolver implements InjectionResolver<Config> {
   }
 
   private String handlePropertyLoading(final Injectee injectee) {
-    final Config annotation = injectee.getParent().getAnnotation(Config.class);
+    final ConfigValues annotation = injectee.getParent().getAnnotation(ConfigValues.class);
 
-    if (annotation != null) {
+    final int positionInConfigArray = injectee.getPosition();
 
-      final String propName = annotation.value();
+    final Config annotationValue = annotation.value()[positionInConfigArray];
+
+    if (annotationValue != null) {
+
+      final String propName = annotationValue.value();
       return String.valueOf(PROP.get(propName));
     }
 

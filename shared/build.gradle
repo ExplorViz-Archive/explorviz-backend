@@ -2,12 +2,17 @@ apply plugin: 'com.github.spotbugs'
 // Maven plugin for Jitpack subproject publishing
 apply plugin: 'maven'
 
-dependencies {  
+dependencies {    
   // JSON Web Token (JWT)
-  api group: 'io.jsonwebtoken', name: 'jjwt', version: '0.9.1'
+  compile 'io.jsonwebtoken:jjwt-api:0.10.5'
+  runtime 'io.jsonwebtoken:jjwt-impl:0.10.5', 'io.jsonwebtoken:jjwt-jackson:0.10.5'
   
   // JSON-API parsing
   implementation group: 'com.github.jasminb', name: 'jsonapi-converter', version:'0.8'
+	
+  implementation 'xyz.morphia.morphia:core:1.4.0'
+  compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.8.1'
+  
 }
 
 spotbugs {

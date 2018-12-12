@@ -1,19 +1,25 @@
 package net.explorviz.shared.security;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.InvalidClaimException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
-import io.jsonwebtoken.SignatureException;
 import io.jsonwebtoken.UnsupportedJwtException;
+import io.jsonwebtoken.io.Deserializer;
+import io.jsonwebtoken.io.JacksonDeserializer;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.ForbiddenException;
 import net.explorviz.shared.annotations.Config;
+import net.explorviz.shared.security.model.TokenDetails;
+import net.explorviz.shared.security.model.roles.Role;
 
 /**
  * This injectable service is used to extract and parse the details of a JSON web token. If used,
@@ -42,21 +48,28 @@ public class TokenParserService {
    */
   public TokenDetails parseToken(final String token) {
 
+    final ObjectMapper mapper = new ObjectMapper();
+    final SimpleModule module = new SimpleModule();
+    module.addDeserializer(List.class, new RoleJwtDeserializer());
+    mapper.registerModule(module);
+
+    final Deserializer<Map<String, ?>> deserializer = new JacksonDeserializer<>(mapper);
+
     try {
 
-      final Claims claims = Jwts.parser().setSigningKey(secret).requireAudience(audience)
-          .setAllowedClockSkewSeconds(clockSkewInSeconds).parseClaimsJws(token).getBody();
+      final Claims claims = Jwts.parser().deserializeJsonWith(deserializer)
+          .setSigningKey(this.secret).requireAudience(this.audience)
+          .setAllowedClockSkewSeconds(this.clockSkewInSeconds).parseClaimsJws(token).getBody();
 
-      return new TokenDetails.Builder().withId(extractTokenIdFromClaims(claims))
-          .withUsername(extractUsernameFromClaims(claims))
-          .withAuthorities(extractAuthoritiesFromClaims(claims))
-          .withIssuedDate(extractIssuedDateFromClaims(claims))
-          .withExpirationDate(extractExpirationDateFromClaims(claims))
-          .withRefreshCount(extractRefreshCountFromClaims(claims))
-          .withRefreshLimit(extractRefreshLimitFromClaims(claims)).build();
+      return new TokenDetails.Builder().withId(this.extractTokenIdFromClaims(claims))
+          .withUsername(this.extractUsernameFromClaims(claims))
+          .withAuthorities(this.extractAuthoritiesFromClaims(claims))
+          .withIssuedDate(this.extractIssuedDateFromClaims(claims))
+          .withExpirationDate(this.extractExpirationDateFromClaims(claims))
+          .withRefreshCount(this.extractRefreshCountFromClaims(claims))
+          .withRefreshLimit(this.extractRefreshLimitFromClaims(claims)).build();
 
-    } catch (UnsupportedJwtException | MalformedJwtException | IllegalArgumentException
-        | SignatureException e) {
+    } catch (UnsupportedJwtException | MalformedJwtException | IllegalArgumentException e) {
       throw new ForbiddenException(INVALID_TOKEN_MSG, e);
     } catch (final ExpiredJwtException e) {
       throw new ForbiddenException("Expired token", e);
@@ -94,8 +107,8 @@ public class TokenParserService {
    * @return User authorities from the JWT token
    */
   @SuppressWarnings("unchecked")
-  private List<String> extractAuthoritiesFromClaims(@NotNull final Claims claims) {
-    return (List<String>) claims.getOrDefault("roles", new ArrayList<String>());
+  private List<Role> extractAuthoritiesFromClaims(@NotNull final Claims claims) {
+    return (List<Role>) claims.getOrDefault("roles", new ArrayList<Role>());
   }
 
   /**

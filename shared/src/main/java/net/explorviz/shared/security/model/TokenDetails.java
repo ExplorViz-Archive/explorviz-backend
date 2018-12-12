@@ -1,7 +1,8 @@
-package net.explorviz.shared.security;
+package net.explorviz.shared.security.model;
 
 import java.time.ZonedDateTime;
 import java.util.List;
+import net.explorviz.shared.security.model.roles.Role;
 
 /**
  * Model class for JSON web tokens.
@@ -11,13 +12,13 @@ public final class TokenDetails {
 
   private final String id;
   private final String username;
-  private final List<String> roles;
+  private final List<Role> roles;
   private final ZonedDateTime issuedDate;
   private final ZonedDateTime expirationDate;
   private final int refreshCount;
   private final int refreshLimit;
 
-  private TokenDetails(final String id, final String username, final List<String> roles,
+  private TokenDetails(final String id, final String username, final List<Role> roles,
       final ZonedDateTime issuedDate, final ZonedDateTime expirationDate, final int refreshCount,
       final int refreshLimit) {
     this.id = id;
@@ -30,31 +31,31 @@ public final class TokenDetails {
   }
 
   public String getId() {
-    return id;
+    return this.id;
   }
 
   public String getUsername() {
-    return username;
+    return this.username;
   }
 
-  public List<String> getRoles() {
-    return roles;
+  public List<Role> getRoles() {
+    return this.roles;
   }
 
   public ZonedDateTime getIssuedDate() {
-    return issuedDate;
+    return this.issuedDate;
   }
 
   public ZonedDateTime getExpirationDate() {
-    return expirationDate;
+    return this.expirationDate;
   }
 
   public int getRefreshCount() {
-    return refreshCount;
+    return this.refreshCount;
   }
 
   public int getRefreshLimit() {
-    return refreshLimit;
+    return this.refreshLimit;
   }
 
   /**
@@ -63,7 +64,7 @@ public final class TokenDetails {
    * @return
    */
   public boolean isEligibleForRefreshment() {
-    return refreshCount < refreshLimit;
+    return this.refreshCount < this.refreshLimit;
   }
 
   /**
@@ -73,7 +74,7 @@ public final class TokenDetails {
 
     private String id;
     private String username;
-    private List<String> roles;
+    private List<Role> roles;
     private ZonedDateTime issuedDate;
     private ZonedDateTime expirationDate;
     private int refreshCount;
@@ -89,7 +90,7 @@ public final class TokenDetails {
       return this;
     }
 
-    public Builder withAuthorities(final List<String> roles) {
+    public Builder withAuthorities(final List<Role> roles) {
       this.roles = roles;
       return this;
     }
@@ -115,8 +116,9 @@ public final class TokenDetails {
     }
 
     public TokenDetails build() {
-      return new TokenDetails(id, username, roles, issuedDate, expirationDate, // NOPMD
-          refreshCount, refreshLimit);
+      return new TokenDetails(this.id, this.username, this.roles, this.issuedDate,
+          this.expirationDate, // NOPMD
+          this.refreshCount, this.refreshLimit);
     }
   }
 }

@@ -1,12 +1,15 @@
 package net.explorviz.security.server.main;
 
 import java.util.Arrays;
+import java.util.List;
 import javax.inject.Inject;
 import javax.servlet.annotation.WebListener;
-import net.explorviz.security.services.UserCrudService;
+import net.explorviz.security.services.RoleService;
 import net.explorviz.security.util.PasswordStorage;
 import net.explorviz.security.util.PasswordStorage.CannotPerformOperationException;
-import net.explorviz.shared.security.User;
+import net.explorviz.shared.security.model.User;
+import net.explorviz.shared.security.model.UserSettings;
+import net.explorviz.shared.security.model.roles.Role;
 import org.glassfish.jersey.server.monitoring.ApplicationEvent;
 import org.glassfish.jersey.server.monitoring.ApplicationEvent.Type;
 import org.glassfish.jersey.server.monitoring.ApplicationEventListener;
@@ -14,6 +17,7 @@ import org.glassfish.jersey.server.monitoring.RequestEvent;
 import org.glassfish.jersey.server.monitoring.RequestEventListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import xyz.morphia.Datastore;
 
 /**
  * Primary starting class - executed, when the servlet context is started.
@@ -26,9 +30,10 @@ public class SetupApplicationListener implements ApplicationEventListener {
   private static final String ADMIN_NAME = "admin";
 
   @Inject
-  private UserCrudService userCrudService;
+  private Datastore datastore;
 
-
+  @Inject
+  private RoleService roleService;
 
   @Override
   public void onEvent(final ApplicationEvent event) {
@@ -40,7 +45,7 @@ public class SetupApplicationListener implements ApplicationEventListener {
 
     if (event.getType().equals(t)) {
       try {
-        this.initDefaultUser();
+        this.createDefaultData();
       } catch (final CannotPerformOperationException e) {
         if (LOGGER.isWarnEnabled()) {
           LOGGER.warn("Unable to create default user: " + e.getMessage());
@@ -56,15 +61,24 @@ public class SetupApplicationListener implements ApplicationEventListener {
   }
 
 
-  private void initDefaultUser() throws CannotPerformOperationException {
+  private void createDefaultData() throws CannotPerformOperationException {
 
-    // Check whether the default user exists and if not, create it
-    if (!this.userCrudService.findUserByName(ADMIN_NAME).isPresent()) {
-      final String pw = PasswordStorage.createHash("password");
-      final User admin = new User(null, ADMIN_NAME, pw, Arrays.asList(ADMIN_NAME));
-      this.userCrudService.saveNewUser(admin);
+    final List<Role> roleList = this.roleService.getAllRoles();
+
+    for (final Role r : roleList) {
+      this.datastore.save(r);
     }
 
+    // start at size + 2, because of hard-coded UserSettings id
+    final long id = roleList.size() + 2;
+
+    final String pw = PasswordStorage.createHash("password");
+
+    final UserSettings settings = new UserSettings();
+    settings.setAppVizClassColor("0xFF0000");
+    settings.setShowFpsCounter(false);
+
+    this.datastore.save(new User(id, ADMIN_NAME, pw, Arrays.asList(roleList.get(0)), settings));
   }
 
 }

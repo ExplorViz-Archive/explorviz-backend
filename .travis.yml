@@ -5,6 +5,9 @@ jdk:
 - oraclejdk9
 - openjdk8
 
+services:
+  - mongodb
+
 matrix:
   fast_finish: true
   allow_failures:

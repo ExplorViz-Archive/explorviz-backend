@@ -15,10 +15,8 @@ import net.explorviz.security.services.TokenService;
 import net.explorviz.security.services.UserValidationService;
 import net.explorviz.shared.annotations.Secured;
 import net.explorviz.shared.security.TokenBasedSecurityContext;
-import net.explorviz.shared.security.TokenDetails;
-import net.explorviz.shared.security.User;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import net.explorviz.shared.security.model.TokenDetails;
+import net.explorviz.shared.security.model.User;
 
 /**
  * The token resource class provides endpoints for token obtainment and refreshment.
@@ -27,7 +25,9 @@ import org.slf4j.LoggerFactory;
 public class TokenResource {
 
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(TokenResource.class.getSimpleName()); // NOPMD
+  // private static final Logger LOGGER = LoggerFactory.getLogger(TokenResource.class); // NOPMD
+
+  private static final String MEDIA_TYPE = "application/vnd.api+json";
 
   @Inject
   private UserValidationService userService;
@@ -46,22 +46,19 @@ public class TokenResource {
    */
   @POST
   @Consumes(MediaType.APPLICATION_JSON)
-  @Produces(MediaType.APPLICATION_JSON)
+  @Produces(MEDIA_TYPE)
   @PermitAll
-  public Token issueToken(final UserCredentials credentials) {
+  public User issueToken(final UserCredentials credentials) {
 
     // curl -X POST
     // 'http://localhost:8082/v1/tokens/'
     // -H 'Content-Type: application/json'
     // -d '{ "username": "admin", "password": "password" }'
 
-    User user;
-    user = this.userService.validateUserCredentials(credentials);
+    final User user = this.userService.validateUserCredentials(credentials);
+    user.setToken(this.tokenService.issueNewToken(user));
 
-    final Token t = new Token();
-    t.setToken(this.tokenService.issueNewToken(user));
-
-    return t;
+    return user;
   }
 
   /**

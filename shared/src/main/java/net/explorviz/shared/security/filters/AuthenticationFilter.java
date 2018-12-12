@@ -11,8 +11,8 @@ import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.ext.Provider;
 import net.explorviz.shared.security.AuthenticatedUserDetails;
 import net.explorviz.shared.security.TokenBasedSecurityContext;
-import net.explorviz.shared.security.TokenDetails;
 import net.explorviz.shared.security.TokenParserService;
+import net.explorviz.shared.security.model.TokenDetails;
 
 /**
  * Custom {@link ContainerRequestFilter} that is used for JWT-based authentication. If used in a web
