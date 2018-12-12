@@ -8,7 +8,6 @@ import com.github.jasminb.jsonapi.JSONAPIDocument;
 import com.github.jasminb.jsonapi.ResourceConverter;
 import com.github.jasminb.jsonapi.exceptions.DocumentSerializationException;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -21,6 +20,7 @@ import net.explorviz.security.services.TokenService;
 import net.explorviz.security.services.UserMongoCrudService;
 import net.explorviz.security.testutils.TestDatasourceFactory;
 import net.explorviz.shared.security.model.User;
+import net.explorviz.shared.security.model.UserSettings;
 import net.explorviz.shared.security.model.roles.Role;
 import org.eclipse.jetty.http.HttpHeader;
 import org.eclipse.jetty.http.HttpStatus;
@@ -324,8 +324,7 @@ public class UserResourceEndpointTest extends JerseyTest {
 
   @Test
   public void testRetrieveSettings() throws DocumentSerializationException {
-    final HashMap<String, String> settings = new HashMap<>();
-    settings.put("somekey", "somevalue");
+    final UserSettings settings = new UserSettings();
     final User u = new User(1L, "user1", "pw", null, settings);
 
     this.userCrudService.saveNewEntity(u);

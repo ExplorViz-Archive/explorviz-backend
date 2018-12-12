@@ -1,7 +1,6 @@
 package net.explorviz.security.server.main;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import javax.inject.Inject;
 import javax.servlet.annotation.WebListener;
@@ -9,6 +8,7 @@ import net.explorviz.security.services.RoleService;
 import net.explorviz.security.util.PasswordStorage;
 import net.explorviz.security.util.PasswordStorage.CannotPerformOperationException;
 import net.explorviz.shared.security.model.User;
+import net.explorviz.shared.security.model.UserSettings;
 import net.explorviz.shared.security.model.roles.Role;
 import org.glassfish.jersey.server.monitoring.ApplicationEvent;
 import org.glassfish.jersey.server.monitoring.ApplicationEvent.Type;
@@ -73,9 +73,9 @@ public class SetupApplicationListener implements ApplicationEventListener {
 
     final String pw = PasswordStorage.createHash("password");
 
-    final HashMap<String, String> settings = new HashMap<>();
-    settings.put("app-viz-class-color", "0xFF0000");
-    settings.put("show-fps-counter", "false");
+    final UserSettings settings = new UserSettings();
+    settings.setAppVizClassColor("0xFF0000");
+    settings.setShowFpsCounter(false);
 
     this.datastore.save(new User(id, ADMIN_NAME, pw, Arrays.asList(roleList.get(0)), settings));
   }

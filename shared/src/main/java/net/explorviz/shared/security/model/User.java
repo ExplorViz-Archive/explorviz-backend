@@ -6,7 +6,6 @@ import com.github.jasminb.jsonapi.LongIdHandler;
 import com.github.jasminb.jsonapi.annotations.Relationship;
 import com.github.jasminb.jsonapi.annotations.Type;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import net.explorviz.shared.security.model.roles.Role;
 import xyz.morphia.annotations.Entity;
@@ -36,7 +35,9 @@ public class User {
   @Relationship("roles")
   private List<Role> roles = new ArrayList<>();
 
-  private HashMap<String, String> settings = new HashMap<>(); // NOPMD
+  // No relationship or reference due to embedded structure
+  // Composition, not aggregation
+  private UserSettings settings = new UserSettings();
 
   private String token;
 
@@ -65,7 +66,7 @@ public class User {
 
 
   public User(final Long id, final String username, final String password, final List<Role> roles,
-      final HashMap<String, String> settings) { // NOPMD
+      final UserSettings settings) { // NOPMD
     this(id, username, password, roles);
     this.settings = settings;
   }
@@ -104,11 +105,11 @@ public class User {
     this.roles = roles;
   }
 
-  public HashMap<String, String> getSettings() {
+  public UserSettings getSettings() {
     return this.settings;
   }
 
-  public void setSettings(final HashMap<String, String> settings) {
+  public void setSettings(final UserSettings settings) {
     this.settings = settings;
   }
 
