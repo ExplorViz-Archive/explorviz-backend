@@ -19,7 +19,7 @@ import net.explorviz.landscape.model.application.Clazz;
 import net.explorviz.landscape.model.application.ClazzCommunication;
 import net.explorviz.landscape.model.application.Component;
 import net.explorviz.landscape.model.application.DatabaseQuery;
-import net.explorviz.landscape.model.application.RuntimeInformation;
+import net.explorviz.landscape.model.application.TraceStep;
 import net.explorviz.landscape.model.helper.EProgrammingLanguage;
 import net.explorviz.landscape.model.landscape.Landscape;
 import net.explorviz.landscape.model.landscape.Node;
@@ -83,7 +83,7 @@ public final class RepositoryStorage {
     result.registerClass(Component.class);
     result.registerClass(Clazz.class);
     result.registerClass(ClazzCommunication.class);
-    result.registerClass(RuntimeInformation.class);
+    result.registerClass(TraceStep.class);
 
     return result;
   }
@@ -100,7 +100,7 @@ public final class RepositoryStorage {
       final String folderName) {
     final String specificFolder = folder + folderName;
     writeToFileGeneric(landscape, specificFolder,
-        timestamp + "-" + landscape.getTimestamp().getCalls() + Configuration.MODEL_EXTENSION);
+        timestamp + "-" + landscape.getTimestamp().getTotalRequests() + Configuration.MODEL_EXTENSION);
   }
 
   public static Landscape bytesToLandscape(final byte[] byteLandscape) {

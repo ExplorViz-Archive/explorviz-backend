@@ -33,16 +33,17 @@ final class LandscapeDummyCreator {
     // Utility class
   }
 
+
   public static Landscape createDummyLandscape() {
 
     if (dummyLandscape != null) {
-      dummyLandscape.getTimestamp().setCalls(new Random().nextInt(CALLS_GENERATOR_BOUND));
+      dummyLandscape.getTimestamp().setTotalRequests(new Random().nextInt(CALLS_GENERATOR_BOUND));
       return dummyLandscape;
     }
 
     final Landscape landscape = new Landscape();
     landscape.initializeId();
-    landscape.getTimestamp().setCalls(new Random().nextInt(CALLS_GENERATOR_BOUND));
+    landscape.getTimestamp().setTotalRequests(new Random().nextInt(CALLS_GENERATOR_BOUND));
 
     final System requestSystem = new System();
     requestSystem.initializeId();
@@ -293,8 +294,8 @@ final class LandscapeDummyCreator {
 
     // set random usage
     node.setCpuUtilization((double) DummyLandscapeHelper.getRandomNum(10, 100) / 100);
-    node.setFreeRam((long) DummyLandscapeHelper.getRandomNum(1, 4) * formatFactor);
-    node.setUsedRam((long) DummyLandscapeHelper.getRandomNum(1, 4) * formatFactor);
+    node.setFreeRAM((long) DummyLandscapeHelper.getRandomNum(1, 4) * formatFactor);
+    node.setUsedRAM((long) DummyLandscapeHelper.getRandomNum(1, 4) * formatFactor);
 
     return node;
   }
@@ -326,8 +327,8 @@ final class LandscapeDummyCreator {
     communication.setSourceApplication(source);
     communication.setTargetApplication(target);
     communication.setRequests(requests);
-    source.getOutgoingApplicationCommunications().add(communication);
-    landscape.getOutgoingApplicationCommunications().add(communication);
+    source.getApplicationCommunications().add(communication);
+    landscape.getTotalApplicationCommunications().add(communication);
 
     return communication;
   }
@@ -361,15 +362,29 @@ final class LandscapeDummyCreator {
     return clazz;
   }
 
-  private static void createClazzCommunication(final int requests, final Clazz sourceClazz,
-      final Clazz targetClazz, final Application application) {
+  /**
+   * Creating a communication between two clazzes within the dummy landscape
+   *
+   * @param traceId
+   * @param requests
+   * @param sourceClazz
+   * @param targetClazz
+   * @param application
+   */
+  private static void createClazzCommunication(final int traceId, final int tracePosition,
+      final int requests, final Clazz sourceClazz, final Clazz targetClazz,
+      final Application application) {
+
+    final float averageResponseTime = 0L + DummyLandscapeHelper.getRandomNum(10, 1000);
+    final float overallTraceDuration = 0L + DummyLandscapeHelper.getRandomNum(1000, 10000);
+    final String operationName = "getMethod" + DummyLandscapeHelper.getRandomNum(1, 50) + "()";
+
     ModelHelper.addClazzCommunication(sourceClazz, targetClazz, application, requests,
-        0L + DummyLandscapeHelper.getRandomNum(10, 1000),
-        0L + DummyLandscapeHelper.getRandomNum(1000, 10000), 0L, 1,
-        "getMethod" + DummyLandscapeHelper.getRandomNum(1, 50) + "()");
+        averageResponseTime, overallTraceDuration, traceId, tracePosition, operationName);
   }
 
   private static Application createWebshopApplication(final Application application) {
+
     final Component org = createComponent("org", null, application);
     application.getComponents().add(org);
     final Component neo4j = createComponent("webshop", org, application);
@@ -437,18 +452,34 @@ final class LandscapeDummyCreator {
     final Clazz loggingClazz = createClazz("AccountSqlMapDao", logging, 25);
     createClazz("AccountSqlMapDao2", logging, 5);
 
-    createClazzCommunication(40, graphDbClazz, helpersClazz, application);
-    createClazzCommunication(800, toolingClazz, implClazz, application);
-    createClazzCommunication(60, implClazz, helpersClazz, application);
-    createClazzCommunication(600, implClazz, apiImplClazz, application);
-    createClazzCommunication(1000, implClazz, loggingClazz, application);
-    createClazzCommunication(100, guardClazz, unsafeClazz, application);
-    createClazzCommunication(1000, apiClazz, configurationClazz, application);
-    createClazzCommunication(150, lifecycleClazz, loggingClazz, application);
-    createClazzCommunication(12000, guardClazz, implClazz, application);
+    // specify a first trace for the dummy landscape
+    final int firstTraceId = 1;
 
-    createClazzCommunication(3500, implClazz, loggingClazz, application);
-    createClazzCommunication(500, loggingClazz, implClazz, application);
+    createClazzCommunication(firstTraceId, 1, 40, graphDbClazz, helpersClazz, application);
+    createClazzCommunication(firstTraceId, 2, 800, toolingClazz, implClazz, application);
+    createClazzCommunication(firstTraceId, 3, 60, implClazz, helpersClazz, application);
+    createClazzCommunication(firstTraceId, 4, 600, implClazz, apiImplClazz, application);
+    createClazzCommunication(firstTraceId, 5, 1000, implClazz, loggingClazz, application);
+    createClazzCommunication(firstTraceId, 6, 100, guardClazz, unsafeClazz, application);
+    createClazzCommunication(firstTraceId, 7, 1000, apiClazz, configurationClazz, application);
+    createClazzCommunication(firstTraceId, 8, 150, lifecycleClazz, loggingClazz, application);
+    createClazzCommunication(firstTraceId, 9, 12000, guardClazz, implClazz, application);
+    createClazzCommunication(firstTraceId, 10, 3500, implClazz, loggingClazz, application);
+    createClazzCommunication(firstTraceId, 11, 500, loggingClazz, implClazz, application);
+    createClazzCommunication(firstTraceId, 12, 4200, implClazz, helpersClazz, application);
+    createClazzCommunication(firstTraceId, 13, 4200, helpersClazz, implClazz, application);
+    createClazzCommunication(firstTraceId, 14, 2100, implClazz, helpersClazz, application);
+    createClazzCommunication(firstTraceId, 15, 2100, helpersClazz, implClazz, application);
+
+    // specify a second trace for the dummy landscape
+    final int secondTraceId = 2;
+
+    createClazzCommunication(secondTraceId, 1, 2500, implClazz, loggingClazz, application);
+    createClazzCommunication(secondTraceId, 2, 900, loggingClazz, implClazz, application);
+    createClazzCommunication(secondTraceId, 3, 8200, implClazz, helpersClazz, application);
+    createClazzCommunication(secondTraceId, 4, 11200, helpersClazz, implClazz, application);
+    createClazzCommunication(secondTraceId, 5, 1200, implClazz, helpersClazz, application);
+    createClazzCommunication(secondTraceId, 6, 390, helpersClazz, implClazz, application);
 
     return application;
   }
@@ -472,6 +503,19 @@ final class LandscapeDummyCreator {
       dbQueryTmp.setReturnValue("null");
       dbQueryTmp.setResponseTime(DummyLandscapeHelper.getRandomNum(10, 1000));
       dbQueryTmp.setTimestamp(DummyLandscapeHelper.getCurrentTimestamp());
+      dbQueryTmp.setParentApplication(application);
+      dbQueryList.add(dbQueryTmp);
+
+      dbQueryTmp = new DatabaseQuery();
+      dbQueryTmp.initializeId();
+      dbQueryTmp.setParentApplication(application);
+      dbQueryTmp.setSqlStatement("INSERT INTO `order` (oid, name, email, odate, itemid) "
+          + "VALUES('" + DummyLandscapeHelper.getNextSequenceId()
+          + "'Tom B. Erichsen', 'erichsen@uni-kiel.de', '2017-11-16', '1');");
+      dbQueryTmp.setReturnValue("null");
+      dbQueryTmp.setResponseTime(DummyLandscapeHelper.getRandomNum(10, 1000));
+      dbQueryTmp.setTimestamp(DummyLandscapeHelper.getCurrentTimestamp());
+      dbQueryTmp.setParentApplication(application);
       dbQueryList.add(dbQueryTmp);
 
       dbQueryTmp = new DatabaseQuery();
@@ -482,16 +526,7 @@ final class LandscapeDummyCreator {
       dbQueryTmp.setReturnValue("null");
       dbQueryTmp.setResponseTime(DummyLandscapeHelper.getRandomNum(10, 1000));
       dbQueryTmp.setTimestamp(DummyLandscapeHelper.getCurrentTimestamp());
-      dbQueryList.add(dbQueryTmp);
-
-      dbQueryTmp = new DatabaseQuery();
-      dbQueryTmp.initializeId();
-      dbQueryTmp.setSqlStatement("INSERT INTO `order` (oid, name, email, odate, itemid) "
-          + "VALUES('" + DummyLandscapeHelper.getNextSequenceId()
-          + "'Tom B. Erichsen', 'erichsen@uni-kiel.de', '2017-11-16', '1');");
-      dbQueryTmp.setReturnValue("null");
-      dbQueryTmp.setResponseTime(DummyLandscapeHelper.getRandomNum(10, 1000));
-      dbQueryTmp.setTimestamp(DummyLandscapeHelper.getCurrentTimestamp());
+      dbQueryTmp.setParentApplication(application);
       dbQueryList.add(dbQueryTmp);
 
       dbQueryTmp = new DatabaseQuery();
@@ -502,6 +537,7 @@ final class LandscapeDummyCreator {
       dbQueryTmp.setReturnValue("null");
       dbQueryTmp.setResponseTime(DummyLandscapeHelper.getRandomNum(10, 1000));
       dbQueryTmp.setTimestamp(DummyLandscapeHelper.getCurrentTimestamp());
+      dbQueryTmp.setParentApplication(application);
       dbQueryList.add(dbQueryTmp);
 
       dbQueryTmp = new DatabaseQuery();
@@ -510,6 +546,7 @@ final class LandscapeDummyCreator {
       dbQueryTmp.setReturnValue(String.valueOf(DummyLandscapeHelper.getRandomNum(5, 100)));
       dbQueryTmp.setResponseTime(DummyLandscapeHelper.getRandomNum(10, 1000));
       dbQueryTmp.setTimestamp(DummyLandscapeHelper.getCurrentTimestamp());
+      dbQueryTmp.setParentApplication(application);
       dbQueryList.add(dbQueryTmp);
 
       dbQueryTmp = new DatabaseQuery();
@@ -518,6 +555,7 @@ final class LandscapeDummyCreator {
       dbQueryTmp.setReturnValue(String.valueOf(DummyLandscapeHelper.getRandomNum(5, 100)));
       dbQueryTmp.setResponseTime(DummyLandscapeHelper.getRandomNum(10, 1000));
       dbQueryTmp.setTimestamp(DummyLandscapeHelper.getCurrentTimestamp());
+      dbQueryTmp.setParentApplication(application);
       dbQueryList.add(dbQueryTmp);
     }
     application.setDatabaseQueries(dbQueryList);

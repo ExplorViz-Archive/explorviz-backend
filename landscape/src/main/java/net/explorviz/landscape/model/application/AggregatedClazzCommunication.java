@@ -7,14 +7,14 @@ import java.util.List;
 import net.explorviz.landscape.model.helper.BaseEntity;
 
 /**
- * Model representing aggregated communication between classes (from sourceClazz to targetClazz)
+ * Model representing unidirectional communication between classes (from sourceClazz to targetClazz)
  * within a single application.
  */
 @SuppressWarnings("serial")
 @Type("aggregatedclazzcommunication")
 public class AggregatedClazzCommunication extends BaseEntity {
 
-  private int requests;
+  private int totalRequests;
 
   @Relationship("sourceClazz")
   private Clazz sourceClazz;
@@ -22,15 +22,18 @@ public class AggregatedClazzCommunication extends BaseEntity {
   @Relationship("targetClazz")
   private Clazz targetClazz;
 
-  @Relationship("outgoingClazzCommunications")
-  private List<ClazzCommunication> outgoingClazzCommunications = new ArrayList<>();
+  @Relationship("clazzCommunications")
+  private List<ClazzCommunication> clazzCommunications = new ArrayList<>();
 
-  public int getRequests() {
-    return this.requests;
+  private float averageResponseTime;
+
+
+  public int getTotalRequests() {
+    return this.totalRequests;
   }
 
-  public void setRequests(final int requests) {
-    this.requests = requests;
+  public void setTotalRequests(final int requests) {
+    this.totalRequests = requests;
   }
 
   public Clazz getSourceClazz() {
@@ -49,12 +52,20 @@ public class AggregatedClazzCommunication extends BaseEntity {
     this.targetClazz = targetClazz;
   }
 
-  public List<ClazzCommunication> getOutgoingClazzCommunications() {
-    return this.outgoingClazzCommunications;
+  public List<ClazzCommunication> getClazzCommunications() {
+    return this.clazzCommunications;
   }
 
-  public void setOutgoingClazzCommunications(final List<ClazzCommunication> clazzCommunications) {
-    this.outgoingClazzCommunications = clazzCommunications;
+  public void setClazzCommunications(final List<ClazzCommunication> clazzCommunications) {
+    this.clazzCommunications = clazzCommunications;
+  }
+
+  public float getAverageResponseTime() {
+    return this.averageResponseTime;
+  }
+
+  public void setAverageResponseTime(final float averageResponseTime) {
+    this.averageResponseTime = averageResponseTime;
   }
 
   // adds a clazzCommunication if sourceClazz and targetClazz matches
@@ -62,16 +73,17 @@ public class AggregatedClazzCommunication extends BaseEntity {
 
     if (this.sourceClazz.equals(clazzcommunication.getSourceClazz())
         && this.targetClazz.equals(clazzcommunication.getTargetClazz())) {
-      this.setRequests(this.getRequests() + clazzcommunication.getRequests());
-      this.outgoingClazzCommunications.add(clazzcommunication);
+      this.setTotalRequests(this.getTotalRequests() + clazzcommunication.getTotalRequests());
+      this.clazzCommunications.add(clazzcommunication);
       return true;
     }
     return false;
   }
 
   public void reset() {
-    this.requests = 0;
-    this.outgoingClazzCommunications.clear();
+    this.totalRequests = 0;
+    this.clazzCommunications.clear();
+    this.averageResponseTime = 0;
   }
 
 }

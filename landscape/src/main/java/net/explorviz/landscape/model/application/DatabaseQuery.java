@@ -1,5 +1,6 @@
 package net.explorviz.landscape.model.application;
 
+import com.github.jasminb.jsonapi.annotations.Relationship;
 import com.github.jasminb.jsonapi.annotations.Type;
 import net.explorviz.landscape.model.helper.BaseEntity;
 
@@ -14,6 +15,10 @@ public class DatabaseQuery extends BaseEntity {
   private String sqlStatement;
   private String returnValue;
   private long responseTime;
+
+  @Relationship("parentApplication")
+  private Application parentApplication;
+
 
   public long getTimestamp() {
     return this.timestamp;
@@ -45,6 +50,14 @@ public class DatabaseQuery extends BaseEntity {
 
   public void setResponseTime(final long responseTime) {
     this.responseTime = responseTime;
+  }
+
+  public Application getParentApplication() {
+    return this.parentApplication;
+  }
+
+  public void setParentApplication(final Application parentApplication) {
+    this.parentApplication = parentApplication;
   }
 
 }

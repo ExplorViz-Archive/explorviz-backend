@@ -13,7 +13,6 @@ import explorviz.live_trace_processing.record.event.remote.BeforeSentRemoteCallR
 import explorviz.live_trace_processing.record.misc.SystemMonitoringRecord;
 import explorviz.live_trace_processing.record.trace.HostApplicationMetaDataRecord;
 import explorviz.live_trace_processing.record.trace.Trace;
-import gnu.trove.iterator.TIntIterator;
 import gnu.trove.set.hash.TIntHashSet;
 import java.util.HashMap;
 import java.util.List;
@@ -122,9 +121,9 @@ public class InsertionRepositoryPart {
                 systemMonitoringRecord.getHostApplicationMetadata().getIpaddress())) {
 
           node.setCpuUtilization(systemMonitoringRecord.getCpuUtilization());
-          node.setFreeRam(
+          node.setFreeRAM(
               systemMonitoringRecord.getAbsoluteRAM() - systemMonitoringRecord.getUsedRAM());
-          node.setUsedRam(systemMonitoringRecord.getUsedRAM());
+          node.setUsedRAM(systemMonitoringRecord.getUsedRAM());
         }
       }
     }
@@ -354,8 +353,8 @@ public class InsertionRepositoryPart {
                 (BeforeJDBCOperationEventRecord) abstractBeforeEventRecord;
             final DatabaseQuery databaseQuery = new DatabaseQuery(); // NOPMD
             databaseQuery.initializeId();
-
             databaseQuery.setSqlStatement(jdbcOperationEventRecord.getSqlStatement());
+            databaseQuery.setParentApplication(currentApplication);
             currentApplication.getDatabaseQueries().add(databaseQuery);
           }
         }
@@ -385,6 +384,7 @@ public class InsertionRepositoryPart {
           final DatabaseQuery databaseQuery = databaseQueries.get(databaseQueries.size() - 1);
           databaseQuery.setReturnValue(jdbcOperationEventRecord.getFormattedReturnValue());
           databaseQuery.setResponseTime(jdbcOperationEventRecord.getMethodDuration());
+          databaseQuery.setParentApplication(currentApplication);
         }
 
         if (!callerClazzesHistory.isEmpty()) {
@@ -464,7 +464,8 @@ public class InsertionRepositoryPart {
       final double overallTraceDuration, final long traceId, final int orderIndex,
       final String operationName, final Landscape landscape) {
 
-    landscape.getTimestamp().setCalls(landscape.getTimestamp().getCalls() + requests);
+    landscape.getTimestamp()
+        .setTotalRequests(landscape.getTimestamp().getTotalRequests() + requests);
 
     // add clazzCommunication to clazz and aggregatedClazzCommunication to
     // application
@@ -489,13 +490,8 @@ public class InsertionRepositoryPart {
       appCached.put(fullQName, clazz);
     }
 
-    if (objectIds != null) {
-      final TIntIterator iterator = objectIds.iterator();
-      while (iterator.hasNext()) {
-        clazz.getObjectIds().add(iterator.next());
-      }
-      clazz.setInstanceCount(clazz.getObjectIds().size());
-    }
+    // set instanceCount
+    clazz.setInstanceCount(clazz.getInstanceCount() + 1);
 
     return clazz;
   }

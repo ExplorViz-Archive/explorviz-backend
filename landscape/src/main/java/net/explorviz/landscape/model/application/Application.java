@@ -29,14 +29,17 @@ public class Application extends BaseEntity {
   @Relationship("databaseQueries")
   private List<DatabaseQuery> databaseQueries = new ArrayList<>();
 
-  @Relationship("outgoingApplicationCommunications")
-  private List<ApplicationCommunication> outgoingAppCommu = new ArrayList<>();
+  @Relationship("applicationCommunications")
+  private List<ApplicationCommunication> applicationCommunications = new ArrayList<>();
 
-  @Relationship("aggregatedOutgoingClazzCommunications")
-  private List<AggregatedClazzCommunication> aggregatedOutgoingClazzCommu = new ArrayList<>();
+  // all aggregated clazzcommunications within an application
+  @Relationship("aggregatedClazzCommunications")
+  private List<AggregatedClazzCommunication> aggregatedClazzCommunications = new ArrayList<>();
 
-  @Relationship("cumulatedClazzCommunications")
-  private List<CumulatedClazzCommunication> cumulatedClazzCommunications = new ArrayList<>();
+  // all tracaes within an application
+  @Relationship("traces")
+  private List<Trace> traces = new ArrayList<>();
+
 
   public String getName() {
     return this.name;
@@ -86,31 +89,30 @@ public class Application extends BaseEntity {
     return this.databaseQueries;
   }
 
-  public List<ApplicationCommunication> getOutgoingApplicationCommunications() {
-    return this.outgoingAppCommu;
+  public List<ApplicationCommunication> getApplicationCommunications() {
+    return this.applicationCommunications;
   }
 
-  public void setOutgoingApplicationCommunications(
-      final List<ApplicationCommunication> outgoingCommunications) {
-    this.outgoingAppCommu = outgoingCommunications;
+  public void setApplicationCommunications(
+      final List<ApplicationCommunication> applicationCommunications) {
+    this.applicationCommunications = applicationCommunications;
   }
 
-  public List<AggregatedClazzCommunication> getAggregatedOutgoingClazzCommunications() {
-    return this.aggregatedOutgoingClazzCommu;
+  public List<AggregatedClazzCommunication> getAggregatedClazzCommunications() {
+    return this.aggregatedClazzCommunications;
   }
 
-  public void setAggregatedOutgoingClazzCommunications(
-      final List<AggregatedClazzCommunication> aggregatedOutgoingClazzCommu) {
-    this.aggregatedOutgoingClazzCommu = aggregatedOutgoingClazzCommu;
+  public void setAggregatedClazzCommunications(
+      final List<AggregatedClazzCommunication> aggregatedClazzCommunications) {
+    this.aggregatedClazzCommunications = aggregatedClazzCommunications;
   }
 
-  public List<CumulatedClazzCommunication> getCumulatedClazzCommunications() {
-    return this.cumulatedClazzCommunications;
+  public List<Trace> getTraces() {
+    return this.traces;
   }
 
-  public void setCumulatedClazzCommunications(
-      final List<CumulatedClazzCommunication> cumulatedClazzCommunications) {
-    this.cumulatedClazzCommunications = cumulatedClazzCommunications;
+  public void setTraces(final List<Trace> traces) {
+    this.traces = traces;
   }
 
   /**
@@ -128,15 +130,15 @@ public class Application extends BaseEntity {
     }
 
     // resets applicationCommunication
-    for (final ApplicationCommunication commu : this.getOutgoingApplicationCommunications()) {
+    for (final ApplicationCommunication commu : this.getApplicationCommunications()) {
       commu.reset();
     }
 
-    // clears the aggregatedClazzCommunication
-    this.getAggregatedOutgoingClazzCommunications().clear();
+    // clears the clazzCommunications
+    this.getAggregatedClazzCommunications().clear();
 
-    // clears the cumulatedClazzCommunication
-    this.getCumulatedClazzCommunications().clear();
+    // clear traces
+    this.getTraces().clear();
 
     // clears database queries
     this.getDatabaseQueries().clear();

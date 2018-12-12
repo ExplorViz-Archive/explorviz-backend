@@ -52,7 +52,7 @@ public final class LandscapePreparer {
     }
 
     // outgoing communication between applications
-    for (final ApplicationCommunication commu : landscape.getOutgoingApplicationCommunications()) {
+    for (final ApplicationCommunication commu : landscape.getTotalApplicationCommunications()) {
       createOutgoingApplicationCommunication(commu);
     }
     return landscape;
@@ -62,7 +62,7 @@ public final class LandscapePreparer {
       final ApplicationCommunication communication) {
     final Application sourceApp = communication.getSourceApplication();
     if (sourceApp != null) {
-      sourceApp.getOutgoingApplicationCommunications().add(communication);
+      sourceApp.getApplicationCommunications().add(communication);
     }
   }
 

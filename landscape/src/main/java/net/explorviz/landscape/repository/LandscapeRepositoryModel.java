@@ -108,7 +108,7 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
 
         if (this.useDummyMode) {
           final Landscape dummyLandscape = LandscapeDummyCreator.createDummyLandscape();
-          dummyLandscape.getTimestamp().setTimestampValue(milliseconds);
+          dummyLandscape.getTimestamp().setTimestamp(milliseconds);
           dummyLandscape.getTimestamp().updateId();
           RepositoryStorage.writeToFile(dummyLandscape, milliseconds,
               Configuration.LANDSCAPE_REPOSITORY);

@@ -5,6 +5,8 @@ import com.github.jasminb.jsonapi.annotations.Type;
 import java.util.ArrayList;
 import java.util.List;
 import net.explorviz.landscape.model.helper.BaseEntity;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Model representing communication between classes (within a single application).
@@ -13,11 +15,8 @@ import net.explorviz.landscape.model.helper.BaseEntity;
 @Type("clazzcommunication")
 public class ClazzCommunication extends BaseEntity {
 
-  private int requests;
-  private String operationName = "<unknown>";
-
-  @Relationship("runtimeInformations")
-  private final List<RuntimeInformation> runtimeInformations = new ArrayList<>();
+  @SuppressWarnings("unused")
+  private static final Logger LOGGER = LoggerFactory.getLogger(ClazzCommunication.class);
 
   @Relationship("sourceClazz")
   private Clazz sourceClazz;
@@ -25,13 +24,17 @@ public class ClazzCommunication extends BaseEntity {
   @Relationship("targetClazz")
   private Clazz targetClazz;
 
-  public int getRequests() {
-    return this.requests;
-  }
+  @Relationship("tracesteps")
+  private List<TraceStep> traceSteps = new ArrayList<>();
 
-  public void setRequests(final int requests) {
-    this.requests = requests;
-  }
+  private String operationName = "<unknown>";
+
+  // added up requests (for all involved traces)
+  private int totalRequests;
+
+  // average response time (for all involved related tracesteps)
+  private float averageResponseTime = 0;
+
 
   public String getOperationName() {
     return this.operationName;
@@ -57,49 +60,63 @@ public class ClazzCommunication extends BaseEntity {
     this.targetClazz = targetClazz;
   }
 
-  public List<RuntimeInformation> getRuntimeInformations() {
-    return this.runtimeInformations;
+  public List<TraceStep> getTraceSteps() {
+    return this.traceSteps;
   }
 
-  public void addRuntimeInformation(final Long traceId, final int orderIndex, final int requests,
-      final float averageResponseTime, final float overallTraceDuration) {
+  public void setTraceSteps(final List<TraceStep> traceSteps) {
+    this.traceSteps = traceSteps;;
+  }
 
-    RuntimeInformation runtime = null; // NOPMD
+  // returns a trace for a given traceId or creates a new one
+  public Trace retrieveTraceByTraceId(final Application application, final Long traceId) {
+    final List<Trace> traces = application.getTraces();
 
-    for (final RuntimeInformation runtimeInformation : this.runtimeInformations) {
-      if (runtimeInformation.getTraceId() == traceId) {
-        runtime = runtimeInformation; // NOPMD
+    for (final Trace trace : traces) {
+      if (trace.getTraceId() == traceId) {
+        return trace;
       }
     }
+    // create a new trace and refer it
+    final Trace newTrace = new Trace(traceId);
+    application.getTraces().add(newTrace);
 
-    if (runtime == null) {
-      runtime = new RuntimeInformation();
-      runtime.initializeId();
-      runtime.setTraceId(traceId);
-      runtime.getOrderIndexes().add(orderIndex);
-      runtime.setRequests(requests);
-      runtime.setOverallTraceDuration(overallTraceDuration);
-      runtime.setAverageResponseTime(averageResponseTime);
+    return newTrace;
+  }
 
-      this.runtimeInformations.add(runtime);
-      this.setRequests(this.getRequests() + requests);
-      return;
-    }
+  // checks if a trace is existing and if not creates one and adds the runtime information
+  public void addTraceStep(final Application application, final Long traceId,
+      final int tracePosition, final int requests, final float averageResponseTime,
+      final float currentTraceDuration) {
 
-    final float beforeSum = runtime.getRequests() * runtime.getAverageResponseTimeInNanoSec();
-    final float currentSum = requests * averageResponseTime;
+    final Trace trace = this.retrieveTraceByTraceId(application, traceId);
+    final TraceStep newTraceStep = trace.addTraceStep(tracePosition, requests, averageResponseTime,
+        currentTraceDuration, this);
 
-    runtime.setAverageResponseTime((beforeSum + currentSum) / (runtime.getRequests() + requests));
-    runtime.setRequests(runtime.getRequests() + requests);
-    runtime
-        .setOverallTraceDuration((overallTraceDuration + runtime.getOverallTraceDuration()) / 2f);
-    runtime.getOrderIndexes().add(orderIndex);
-    this.setRequests(this.getRequests() + requests);
+    // reference the new trace for the application for easy access
+    this.getTraceSteps().add(newTraceStep);
+  }
+
+  public int getTotalRequests() {
+    return this.totalRequests;
+  }
+
+  public void setTotalRequests(final int totalRequests) {
+    this.totalRequests = totalRequests;
+  }
+
+  public float getAverageResponseTime() {
+    return this.averageResponseTime;
+  }
+
+  public void setAverageResponseTime(final float averageRepsonseTime) {
+    this.averageResponseTime = averageRepsonseTime;
   }
 
   public void reset() {
-    this.requests = 0;
-    this.runtimeInformations.clear();
+    this.totalRequests = 0;
+    this.averageResponseTime = 0;
+
   }
 
 }
