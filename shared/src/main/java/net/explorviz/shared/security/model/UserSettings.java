@@ -1,6 +1,5 @@
 package net.explorviz.shared.security.model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.github.jasminb.jsonapi.LongIdHandler;
 import com.github.jasminb.jsonapi.annotations.Id;
 import com.github.jasminb.jsonapi.annotations.Type;
@@ -8,16 +7,14 @@ import com.github.jasminb.jsonapi.annotations.Type;
 /**
  * Model class for the user settings in the frontend.
  */
-@Type("user-settings")
+@Type("usersetting")
 public class UserSettings {
 
   @Id(LongIdHandler.class)
-  private Long id;
+  private Long id = 1L;
 
-  @JsonProperty("show-fps-counter")
   private boolean showFpsCounter;
 
-  @JsonProperty("app-viz-class-color")
   private String appVizClassColor = "0xFF0000";
 
   public UserSettings() {

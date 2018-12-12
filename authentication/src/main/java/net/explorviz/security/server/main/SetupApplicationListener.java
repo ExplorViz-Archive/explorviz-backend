@@ -69,7 +69,8 @@ public class SetupApplicationListener implements ApplicationEventListener {
       this.datastore.save(r);
     }
 
-    final long id = roleList.size() + 1;
+    // start at size + 2, because of hard-coded UserSettings id
+    final long id = roleList.size() + 2;
 
     final String pw = PasswordStorage.createHash("password");
 

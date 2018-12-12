@@ -7,6 +7,7 @@ import net.explorviz.security.server.providers.ResourceConverterFactory;
 import net.explorviz.security.server.resources.RoleResource;
 import net.explorviz.security.server.resources.TokenResource;
 import net.explorviz.security.server.resources.UserResource;
+import net.explorviz.security.server.resources.UserSettingsResource;
 import net.explorviz.shared.exceptions.mapper.GeneralExceptionMapper;
 import net.explorviz.shared.exceptions.mapper.WebApplicationExceptionMapper;
 import net.explorviz.shared.security.filters.CorsResponseFilter;
@@ -47,6 +48,7 @@ public class Application extends ResourceConfig {
     this.register(TokenResource.class);
     this.register(UserResource.class);
     this.register(RoleResource.class);
+    this.register(UserSettingsResource.class);
   }
 
 

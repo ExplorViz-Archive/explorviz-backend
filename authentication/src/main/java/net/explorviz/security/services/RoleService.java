@@ -12,7 +12,8 @@ public class RoleService {
 
     final List<Role> roleList = new ArrayList<>();
 
-    roleList.add(new Role(1L, "admin"));
+    // start at 2, because of hard-coded UserSettings id
+    roleList.add(new Role(2L, "admin"));
 
     return roleList;
   }
