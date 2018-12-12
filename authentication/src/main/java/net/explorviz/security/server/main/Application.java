@@ -4,6 +4,7 @@ import net.explorviz.security.server.filter.AuthenticationFilter;
 import net.explorviz.security.server.providers.JsonApiListProvider;
 import net.explorviz.security.server.providers.JsonApiProvider;
 import net.explorviz.security.server.providers.ResourceConverterFactory;
+import net.explorviz.security.server.providers.UserJsonApiDeserializer;
 import net.explorviz.security.server.resources.RoleResource;
 import net.explorviz.security.server.resources.TokenResource;
 import net.explorviz.security.server.resources.UserResource;
@@ -40,6 +41,7 @@ public class Application extends ResourceConfig {
 
     this.register(SetupApplicationListener.class);
 
+    this.register(UserJsonApiDeserializer.class);
     this.register(JsonApiProvider.class);
     this.register(JsonApiListProvider.class);
     this.register(ResourceConverterFactory.class);
