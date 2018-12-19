@@ -5,12 +5,12 @@ apply plugin: 'maven'
 dependencies {    
   // JSON Web Token (JWT)
   compile 'io.jsonwebtoken:jjwt-api:0.10.5'
-  runtime 'io.jsonwebtoken:jjwt-impl:0.10.5', 'io.jsonwebtoken:jjwt-jackson:0.10.5'
+  compile 'io.jsonwebtoken:jjwt-impl:0.10.5', 'io.jsonwebtoken:jjwt-jackson:0.10.5'
   
   // JSON-API parsing
-  implementation group: 'com.github.jasminb', name: 'jsonapi-converter', version:'0.8'
+  compile group: 'com.github.jasminb', name: 'jsonapi-converter', version:'0.8'
 	
-  implementation 'xyz.morphia.morphia:core:1.4.0'
+  compile 'xyz.morphia.morphia:core:1.4.0'
   compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.8.1'
   
 }

@@ -1,6 +1,7 @@
 package net.explorviz.shared.annotations.injection;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Type;
 import java.util.Properties;
 import javax.inject.Singleton;
@@ -30,35 +31,43 @@ public class ConfigValuesInjectionResolver implements InjectionResolver<ConfigVa
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ConfigValuesInjectionResolver.class);
 
-  private static final String PROPERTIES_FILENAME = "explorviz.properties";
-  // private static String PROPERTIES_PATH;
+  private static final String PROPERTIES_DEFAULT_FILENAME = "explorviz.properties";
+  private static final String PROPERTIES_CUSTOM_FILENAME = "explorviz-custom.properties";
 
   private static final Properties PROP = new Properties();
-
-  /*
-   * private final Properties properties; public ConfigurationInjectionResolver(Properties
-   * properties) { this.properties = properties; }
-   */
 
   private final InternalServerErrorException exception = new InternalServerErrorException(
       "An internal server error occured. Contact your administrator.");
 
   /**
-   * Creates a ConfigInjectionResolver that is used to load injectable configuration properties from
-   * the explorviz.properties file. Will be automatically created and registered in the CDI context
-   * at application startup.
+   * Creates a ConfigValueInjectionResolver that is used to load injectable configuration properties
+   * from the explorviz.properties file. Will be automatically created and registered in the CDI
+   * context at application startup.
    */
   public ConfigValuesInjectionResolver() {
 
     final ClassLoader loader = Thread.currentThread().getContextClassLoader();
-    // PROPERTIES_PATH = loader.getResource(PROPERTIES_FILENAME).getFile();
+
+    InputStream input = loader.getResourceAsStream(PROPERTIES_CUSTOM_FILENAME);
+
+    if (input == null) {
+      // use default properties
+      input = loader.getResourceAsStream(PROPERTIES_DEFAULT_FILENAME);
+
+      if (input == null) {
+        LOGGER.error("Couldn't load default property file.");
+        throw this.exception;
+      }
+
+      LOGGER.info("Using default property file.");
+    } else {
+      LOGGER.info("Using custom property file.");
+    }
 
     try {
-      PROP.load(loader.getResourceAsStream(PROPERTIES_FILENAME));
+      PROP.load(input);
     } catch (final IOException e) {
-      LOGGER.error(
-          "Couldn't load properties file. Is WEB-INF/classes/explorviz.properties a valid file?. Exception: {}", // NOCS
-          e.getMessage());
+      LOGGER.error("Couldn't load property file.");
       throw this.exception;
     }
   }

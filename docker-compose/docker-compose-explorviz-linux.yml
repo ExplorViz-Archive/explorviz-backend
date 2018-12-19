@@ -1,0 +1,32 @@
+version: "3.2"
+services:
+
+  reverse-proxy:
+    image: explorviz/reverse-proxy:production
+    container_name: explorviz-reverse-proxy
+    ports:
+      - "8080:8080"
+
+  mongo:
+    image: mongo
+    container_name: explorviz-auth-mongo
+    volumes:
+       - explorviz-auth-mongo-data:/data/db
+       - explorviz-auth-mongo-configdb:/data/configdb
+    expose:
+      - "27017"
+
+  authentication:
+    image: explorviz/explorviz-backend-authentication
+    container_name: explorviz-backend-auth
+    depends_on:
+      - reverse-proxy
+      - mongo
+    expose:
+      - "8082"
+    environment:
+      - MONGO_IP=mongo
+
+volumes:
+  explorviz-auth-mongo-data:
+  explorviz-auth-mongo-configdb:
