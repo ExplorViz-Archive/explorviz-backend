@@ -4,8 +4,8 @@ services:
   reverse-proxy:
     image: explorviz/reverse-proxy:production
     container_name: explorviz-reverse-proxy
-    expose:
-      - "8080"
+    ports:
+      - "8080:8080"
 
   mongo:
     image: mongo
@@ -44,9 +44,9 @@ services:
     image: explorviz/explorviz-frontend
     container_name: explorviz-frontend
     ports:
-      - "8080:80"
+      - "8090:80"
     environment:
-      - API_ROOT=http://reverse-proxy:8080
+      - API_ROOT=http://localhost:8080
 
 volumes:
   explorviz-auth-mongo-data:
