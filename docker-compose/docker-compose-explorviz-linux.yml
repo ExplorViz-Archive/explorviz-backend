@@ -39,8 +39,6 @@ services:
     container_name: explorviz-backend-analysis
     ports:
       - "10133:10133"
-    links:
-      - "landscape:127.0.0.1"
     
   frontend:
     image: explorviz/explorviz-frontend

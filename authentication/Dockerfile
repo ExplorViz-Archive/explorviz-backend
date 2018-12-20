@@ -11,4 +11,4 @@ COPY build/resources/main/explorviz.properties META-INF/explorviz-custom.propert
 COPY prod-env-updater.sh .
 RUN chmod +x ./prod-env-updater.sh
 
-CMD ./prod-env-updater.sh &&  java -cp explorviz-authentication.jar:META-INF net.explorviz.security.server.main.Main
+CMD ./prod-env-updater.sh && java -cp explorviz-authentication.jar:META-INF net.explorviz.security.server.main.Main
