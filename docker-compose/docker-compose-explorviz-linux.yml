@@ -4,12 +4,12 @@ services:
   reverse-proxy:
     image: explorviz/reverse-proxy:production
     container_name: explorviz-reverse-proxy
-    ports:
-      - "8080:8080"
+    expose:
+      - "8080"
 
   mongo:
     image: mongo
-    container_name: explorviz-auth-mongo
+    container_name: explorviz-backend-auth-mongo
     volumes:
        - explorviz-auth-mongo-data:/data/db
        - explorviz-auth-mongo-configdb:/data/configdb
@@ -26,6 +26,29 @@ services:
       - "8082"
     environment:
       - MONGO_IP=mongo
+
+  landscape:
+    image: explorviz/explorviz-backend-landscape
+    container_name: explorviz-backend-landscape
+    expose:
+      - "8081"
+      - "10135"
+
+  analysis:
+    image: explorviz/explorviz-backend-analysis
+    container_name: explorviz-backend-analysis
+    ports:
+      - "10133:10133"
+    links:
+      - "landscape:127.0.0.1"
+    
+  frontend:
+    image: explorviz/explorviz-frontend
+    container_name: explorviz-frontend
+    ports:
+      - "8080:80"
+    environment:
+      - API_ROOT=http://reverse-proxy:8080
 
 volumes:
   explorviz-auth-mongo-data:

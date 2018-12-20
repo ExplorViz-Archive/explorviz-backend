@@ -1,3 +1,4 @@
+apply plugin: 'com.github.johnrengelman.shadow'
 apply plugin: 'com.github.spotbugs'
 
 buildscript {
@@ -8,7 +9,7 @@ buildscript {
     }
   }
   dependencies {
-    classpath "gradle.plugin.com.github.spotbugs:spotbugs-gradle-plugin:1.6.3"
+    classpath 'com.github.jengelman.gradle.plugins:shadow:2.0.4'
   }
 }
 
@@ -26,6 +27,21 @@ dependencies {
 	
   // Kieker Monitoring Framework
   implementation group: 'net.kieker-monitoring', name: 'kieker', version: '1.14-SNAPSHOT'
+}
+
+assemble.dependsOn shadowJar
+jar.enabled = false
+
+jar {
+  manifest {
+    attributes(
+      'Main-Class': 'net.explorviz.analysis.Main'
+    )
+  }
+}
+
+shadowJar {
+  archiveName = "explorviz-${project.name}.${extension}"
 }
 
 spotbugs {
