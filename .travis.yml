@@ -1,5 +1,9 @@
 language: java
 
+# jdk:
+# - openjdk8
+# - oraclejdk8
+
 services:
   - mongodb
   - docker
@@ -9,10 +13,8 @@ jobs:
   allow_failures:
     - jdk: oraclejdk8
   include:
-    - stage: test
-      jdk: openjdk8
-      jdk: oraclejdk8
-      script: gradle build javadoc
+    - jdk: openjdk8
+    - jdk: oraclejdk8
     - stage: deploy
       jdk: openjdk8
     - stage: deploy
