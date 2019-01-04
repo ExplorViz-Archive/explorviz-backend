@@ -1,9 +1,5 @@
 language: java
 
-jdk:
-- openjdk8
-- oraclejdk8
-
 services:
   - mongodb
   - docker
@@ -19,13 +15,14 @@ jobs:
       script: gradle build javadoc
     - stage: deploy
       jdk: openjdk8
+    - stage: deploy
+      jdk: openjdk8
+      provider: script
       script: ls -la analysis
 
 before_script:
   - chmod +x .travis/push.sh
   - chmod +x .travis/javadoc-push.sh
-
-# script: gradle build javadoc
 
 after_success:
   - .travis/javadoc-push.sh
