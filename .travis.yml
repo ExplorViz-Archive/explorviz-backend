@@ -9,8 +9,12 @@ jobs:
   allow_failures:
     - jdk: oraclejdk8
   include:
-    - jdk: openjdk8
-    - jdk: oraclejdk8
+    - stage: test
+      jdk: openjdk8
+      script: ./gradlew test
+    - stage: test
+      jdk: oraclejdk8
+      script: ./gradlew test
     - stage: deploy
       name: "Docker Image: Analysis"
       if: (branch = dev-1) OR (branch = master)
