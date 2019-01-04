@@ -19,13 +19,13 @@ jobs:
       script: gradle build javadoc
     - stage: deploy
       jdk: openjdk8
-      script: echo "Hello World" && ls -la
+      script: ls -la analysis
 
 before_script:
   - chmod +x .travis/push.sh
   - chmod +x .travis/javadoc-push.sh
 
-script: gradle build javadoc
+# script: gradle build javadoc
 
 after_success:
   - .travis/javadoc-push.sh
