@@ -14,22 +14,22 @@ jobs:
     - stage: deploy
       name: "Docker Image: Analysis"
       jdk: openjdk8
-      script: chmod +x .travis/docker_push_analysis.sh && .travis/docker_push_analysis.sh
+      script: cd analysis && ./docker_push.sh
     - stage: deploy
       name: "Docker Image: Authentication"
       jdk: openjdk8
-      provider: script
-      script: echo "TODO"
+      script: cd authentication && ./docker_push.sh
     - stage: deploy
       name: "Docker Image: Discovery"
       jdk: openjdk8
-      provider: script
-      script: echo "TODO"
+      script: cd discovery && ./docker_push.sh
     - stage: deploy
       name: "Docker Image: Landscape"
       jdk: openjdk8
-      provider: script
-      script: echo "TODO"
+      script: cd landscape && ./docker_push.sh
+
+before_script:
+  - chmod +x .travis/docker_push.sh
 
 #before_script:
 #  - chmod +x .travis/push.sh
