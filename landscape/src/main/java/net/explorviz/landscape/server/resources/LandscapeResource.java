@@ -77,6 +77,8 @@ public class LandscapeResource {
 
   /**
    * For downloading a landscape from the landscape repository.
+   *
+   * TODO: Use timestamp or id?
    */
   @GET
   @Path("/export/{fileName}")
@@ -90,7 +92,8 @@ public class LandscapeResource {
     final Landscape landscapeWithNewIDs =
         RepositoryFileStorage.readFromFileGeneric(landscapeFolder, fileName + ".expl");
 
-    final byte[] landscapeAsBytes = RepositoryFileStorage.convertLandscapeToBytes(landscapeWithNewIDs);
+    final byte[] landscapeAsBytes =
+        RepositoryFileStorage.convertLandscapeToBytes(landscapeWithNewIDs);
 
     final String encodedLandscape = Base64.getEncoder().encodeToString(landscapeAsBytes);
 

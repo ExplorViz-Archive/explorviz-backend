@@ -74,6 +74,7 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
         .prepareLandscape(RepositoryFileStorage.readFromFile(timestamp, folderName));
   }
 
+  // TODO: Unused?
   public Map<Long, Long> getAvailableLandscapes(final String folderName) {
     return RepositoryFileStorage.getAvailableModelsForTimeshift(folderName);
   }
