@@ -45,8 +45,6 @@ public final class RepositoryFileStorage {
   private static String folder;
   private static String landscapeFolder;
   private static String replayFolder;
-  private static String folderForTargetModel;
-  private static String filenameForTargetModel = "targetModel" + Configuration.MODEL_EXTENSION;
 
   private RepositoryFileStorage() {
     // Utility Class
@@ -56,7 +54,6 @@ public final class RepositoryFileStorage {
     FST_CONF = createFstConfiguration();
 
     folder = FileSystemHelper.getExplorVizDirectory() + File.separator;
-    folderForTargetModel = FileSystemHelper.getExplorVizDirectory();
     replayFolder = folder + REPLAY_REPOSITORY;
     landscapeFolder = folder + LANDSCAPE_REPOSITORY;
 
