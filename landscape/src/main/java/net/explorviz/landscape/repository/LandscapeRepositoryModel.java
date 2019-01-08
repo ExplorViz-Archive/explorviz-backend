@@ -10,6 +10,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import net.explorviz.landscape.model.landscape.Landscape;
 import net.explorviz.landscape.model.store.Timestamp;
+import net.explorviz.landscape.repository.persistence.RepositoryFileStorage;
 import net.explorviz.landscape.server.helper.BroadcastService;
 import net.explorviz.landscape.server.main.Configuration;
 import net.explorviz.shared.annotations.Config;
@@ -41,7 +42,7 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
 
     if (LOAD_LAST_LANDSCAPE_ON_LOAD) {
 
-      final Landscape readLandscape = RepositoryStorage.readFromFile(System.currentTimeMillis(),
+      final Landscape readLandscape = RepositoryFileStorage.readFromFile(System.currentTimeMillis(),
           Configuration.LANDSCAPE_REPOSITORY);
 
       this.internalLandscape = readLandscape;
@@ -70,11 +71,11 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
   public Landscape getLandscape(final long timestamp, final String folderName)
       throws FileNotFoundException {
     return LandscapePreparer
-        .prepareLandscape(RepositoryStorage.readFromFile(timestamp, folderName));
+        .prepareLandscape(RepositoryFileStorage.readFromFile(timestamp, folderName));
   }
 
   public Map<Long, Long> getAvailableLandscapes(final String folderName) {
-    return RepositoryStorage.getAvailableModelsForTimeshift(folderName);
+    return RepositoryFileStorage.getAvailableModelsForTimeshift(folderName);
   }
 
   static {
@@ -88,7 +89,7 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
   }
 
   public FSTConfiguration initFstConf() {
-    return RepositoryStorage.createFstConfiguration();
+    return RepositoryFileStorage.createFstConfiguration();
   }
 
   public void reset() {
@@ -97,6 +98,9 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
     }
   }
 
+  /**
+   * Gets called each 10 seconds by external explorviz library.
+   */
   @Override
   public void periodicTimeSignal(final long timestamp) {
     // called every tenth second
@@ -110,12 +114,12 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
           final Landscape dummyLandscape = LandscapeDummyCreator.createDummyLandscape();
           dummyLandscape.getTimestamp().setTimestamp(milliseconds);
           dummyLandscape.getTimestamp().updateId();
-          RepositoryStorage.writeToFile(dummyLandscape, milliseconds,
+          RepositoryFileStorage.writeToFile(dummyLandscape, milliseconds,
               Configuration.LANDSCAPE_REPOSITORY);
           this.lastPeriodLandscape = dummyLandscape;
         } else {
           this.internalLandscape.updateTimestamp(new Timestamp(milliseconds, 0));
-          RepositoryStorage.writeToFile(this.internalLandscape, milliseconds,
+          RepositoryFileStorage.writeToFile(this.internalLandscape, milliseconds,
               Configuration.LANDSCAPE_REPOSITORY);
           final Landscape l = this.fstConf.deepCopy(this.internalLandscape);
           this.lastPeriodLandscape = LandscapePreparer.prepareLandscape(l);
@@ -129,7 +133,7 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
       }
     }
 
-    RepositoryStorage.cleanUpTooOldFiles(System.currentTimeMillis(),
+    RepositoryFileStorage.cleanUpTooOldFiles(System.currentTimeMillis(),
         Configuration.LANDSCAPE_REPOSITORY);
   }
 

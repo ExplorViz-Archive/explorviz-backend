@@ -22,7 +22,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.sse.Sse;
 import net.explorviz.landscape.api.ExtensionApiImpl;
 import net.explorviz.landscape.model.landscape.Landscape;
-import net.explorviz.landscape.repository.RepositoryStorage;
+import net.explorviz.landscape.repository.persistence.RepositoryFileStorage;
 import net.explorviz.landscape.server.helper.FileSystemHelper;
 import net.explorviz.landscape.server.main.Configuration;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
@@ -88,9 +88,9 @@ public class LandscapeResource {
         + Configuration.LANDSCAPE_REPOSITORY;
 
     final Landscape landscapeWithNewIDs =
-        RepositoryStorage.readFromFileGeneric(landscapeFolder, fileName + ".expl");
+        RepositoryFileStorage.readFromFileGeneric(landscapeFolder, fileName + ".expl");
 
-    final byte[] landscapeAsBytes = RepositoryStorage.convertLandscapeToBytes(landscapeWithNewIDs);
+    final byte[] landscapeAsBytes = RepositoryFileStorage.convertLandscapeToBytes(landscapeWithNewIDs);
 
     final String encodedLandscape = Base64.getEncoder().encodeToString(landscapeAsBytes);
 

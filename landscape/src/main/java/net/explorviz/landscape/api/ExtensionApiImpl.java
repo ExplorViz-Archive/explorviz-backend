@@ -11,7 +11,7 @@ import net.explorviz.landscape.model.landscape.Landscape;
 import net.explorviz.landscape.model.store.Timestamp;
 import net.explorviz.landscape.model.store.helper.TimestampHelper;
 import net.explorviz.landscape.repository.LandscapeExchangeService;
-import net.explorviz.landscape.repository.RepositoryStorage;
+import net.explorviz.landscape.repository.persistence.RepositoryFileStorage;
 import net.explorviz.landscape.server.main.Configuration;
 import net.explorviz.landscape.server.providers.CoreModelHandler;
 import net.explorviz.landscape.server.providers.GenericTypeFinder;
@@ -179,7 +179,7 @@ public final class ExtensionApiImpl implements IExtensionApi {
 
   @Override
   public void saveLandscapeToFile(final Landscape landscape, final String folderName) {
-    RepositoryStorage.writeToFile(landscape, landscape.getTimestamp().getTimestamp(), folderName);
+    RepositoryFileStorage.writeToFile(landscape, landscape.getTimestamp().getTimestamp(), folderName);
   }
 
 }
