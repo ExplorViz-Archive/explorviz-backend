@@ -33,15 +33,18 @@ import org.nustaq.serialization.FSTObjectOutput;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Deprecated
 public final class RepositoryFileStorage {
   private static final Logger LOGGER = LoggerFactory.getLogger(RepositoryFileStorage.class);
 
   private static final FSTConfiguration FST_CONF;
 
+  // What?
   private static final int HISTORY_INTERVAL_IN_MINUTES = Configuration.HISTORY_INTERVAL_IN_MINUTES;
   private static final String REPLAY_REPOSITORY = Configuration.REPLAY_REPOSITORY;
   private static final String LANDSCAPE_REPOSITORY = Configuration.LANDSCAPE_REPOSITORY;
 
+  // Unused
   private static String folder;
   private static String landscapeFolder;
   private static String replayFolder;

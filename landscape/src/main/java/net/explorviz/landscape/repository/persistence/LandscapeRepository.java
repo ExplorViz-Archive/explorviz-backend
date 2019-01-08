@@ -11,13 +11,24 @@ public interface LandscapeRepository {
 
 
   /**
-   * Saves a {@link Landscape} object to the repository.
+   * Saves a {@link Landscape} object in the repository.
    *
    * @param timestamp the timestamp, associated to this landscape. Will be used to index the
    *        objects.
    * @param landscape the landscape object.
    */
-  void save(final long timestamp, Landscape landscape);
+  void saveLandscape(final long timestamp, Landscape landscape);
+
+
+  /**
+   * Save a landscape as replay in the repository.
+   *
+   * @param timestamp the timestamp
+   * @param replay the replay landscape
+   */
+  default void saveReplay(final long timestamp, final Landscape replay) {
+    throw new RuntimeException("Not implemented");
+  }
 
   /**
    * Retrieves a landscape object with a specific timestamp from the repository.
@@ -26,7 +37,42 @@ public interface LandscapeRepository {
    *
    * @return the landscape object
    */
-  Landscape getByTimestamp(final long timestamp);
+  Landscape getLandscapeByTimestamp(final long timestamp);
+
+
+  /**
+   * Retrieves a landscape object with a specific, unique identifier.
+   *
+   * @param id the id of the landscape object
+   *
+   * @return the landscape object
+   */
+  Landscape getLandscapeById(final String id);
+
+
+
+  /**
+   *
+   * Retrieves a replay landscape object with a specific timestamp from the repository.
+   *
+   * @param timestamp the timestamp of the replay
+   *
+   * @return the landscape object
+   */
+  default Landscape getReplayByTimestamp(final long timestamp) {
+    throw new RuntimeException("Not implemented");
+  }
+
+  /**
+   * Retrieves a replay object with a specific, unique identifier.
+   *
+   * @param id the id of the landscape object
+   *
+   * @return the replay object
+   */
+  default Landscape getReplayById(final String id) {
+    throw new RuntimeException("Not implemented");
+  }
 
   /**
    * Returns all landscape model snapshots for timeshift use.
@@ -48,7 +94,9 @@ public interface LandscapeRepository {
    * {@code cleanup(System.currentTimeMillis())}
    *
    */
-  void cleanup();
+  default void cleanup() {
+    cleanup(System.currentTimeMillis());
+  }
 
   /**
    * Removes all landscapes in the repository.
