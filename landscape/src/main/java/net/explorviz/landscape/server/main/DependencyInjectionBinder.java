@@ -5,6 +5,8 @@ import javax.inject.Singleton;
 import net.explorviz.landscape.api.ExtensionApiImpl;
 import net.explorviz.landscape.repository.LandscapeExchangeService;
 import net.explorviz.landscape.repository.LandscapeRepositoryModel;
+import net.explorviz.landscape.repository.persistence.FileRepository;
+import net.explorviz.landscape.repository.persistence.LandscapeRepository;
 import net.explorviz.landscape.server.helper.BroadcastService;
 import net.explorviz.landscape.server.injection.ResourceConverterFactory;
 import net.explorviz.landscape.server.resources.LandscapeBroadcastSubResource;
@@ -34,6 +36,8 @@ public class DependencyInjectionBinder extends AbstractBinder {
     this.bind(ExtensionApiImpl.class).to(ExtensionApiImpl.class).in(Singleton.class);
 
     this.bind(TokenParserService.class).to(TokenParserService.class).in(Singleton.class);
+
+    this.bind(FileRepository.class).to(LandscapeRepository.class).in(Singleton.class);
 
     // Broadcast Mechanism
     this.bind(BroadcastService.class).to(BroadcastService.class).in(Singleton.class);

@@ -12,19 +12,7 @@ import java.util.Map.Entry;
 import java.util.TreeMap;
 import java.util.concurrent.TimeUnit;
 import javax.ws.rs.ClientErrorException;
-import net.explorviz.landscape.model.application.AggregatedClazzCommunication;
-import net.explorviz.landscape.model.application.Application;
-import net.explorviz.landscape.model.application.ApplicationCommunication;
-import net.explorviz.landscape.model.application.Clazz;
-import net.explorviz.landscape.model.application.ClazzCommunication;
-import net.explorviz.landscape.model.application.Component;
-import net.explorviz.landscape.model.application.DatabaseQuery;
-import net.explorviz.landscape.model.application.TraceStep;
-import net.explorviz.landscape.model.helper.EProgrammingLanguage;
 import net.explorviz.landscape.model.landscape.Landscape;
-import net.explorviz.landscape.model.landscape.Node;
-import net.explorviz.landscape.model.landscape.NodeGroup;
-import net.explorviz.landscape.model.landscape.System;
 import net.explorviz.landscape.server.helper.FileSystemHelper;
 import net.explorviz.landscape.server.main.Configuration;
 import org.nustaq.serialization.FSTConfiguration;
@@ -32,6 +20,8 @@ import org.nustaq.serialization.FSTObjectInput;
 import org.nustaq.serialization.FSTObjectOutput;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+// Still used by ExtensionApiImpl
 
 @Deprecated
 public final class RepositoryFileStorage {
@@ -54,7 +44,7 @@ public final class RepositoryFileStorage {
   }
 
   static {
-    FST_CONF = createFstConfiguration();
+    FST_CONF = FstHelper.createFstConfiguration();
 
     folder = FileSystemHelper.getExplorVizDirectory() + File.separator;
     replayFolder = folder + REPLAY_REPOSITORY;
@@ -69,24 +59,6 @@ public final class RepositoryFileStorage {
     new File(landscapeFolder).mkdir();
   }
 
-  public static FSTConfiguration createFstConfiguration() {
-    final FSTConfiguration result = FSTConfiguration.createDefaultConfiguration();
-    result.registerClass(Landscape.class);
-    result.registerClass(System.class);
-    result.registerClass(NodeGroup.class);
-    result.registerClass(Node.class);
-    result.registerClass(Application.class);
-    result.registerClass(ApplicationCommunication.class);
-    result.registerClass(AggregatedClazzCommunication.class);
-    result.registerClass(DatabaseQuery.class);
-    result.registerClass(EProgrammingLanguage.class);
-    result.registerClass(Component.class);
-    result.registerClass(Clazz.class);
-    result.registerClass(ClazzCommunication.class);
-    result.registerClass(TraceStep.class);
-
-    return result;
-  }
 
 
   /**
@@ -143,9 +115,9 @@ public final class RepositoryFileStorage {
    * @param timestamp the timestamp associated to the landscape to look for.
    * @param folderName the folder name to use.
    *
-   * @throws ClientErrorException if the is no landscape object with the given timestamp.
    *
    * @return the landscape.
+   * @throws ClientErrorException if the is no landscape object with the given timestamp.
    */
   public static Landscape readFromFile(final long timestamp, final String folderName) {
     final String specificFolder = folder + folderName;
@@ -174,9 +146,8 @@ public final class RepositoryFileStorage {
    * @param sourceFolder the folder
    * @param sourceFilename the filename
    *
-   * @throws ClientErrorException if the is no landscape object with the given timestamp.
-   *
    * @return the landscape object.
+   * @throws ClientErrorException if the is no landscape object with the given timestamp.
    */
   public static Landscape readFromFileGeneric(final String sourceFolder,
       final String sourceFilename) {
@@ -213,10 +184,11 @@ public final class RepositoryFileStorage {
 
 
   /**
-   * Returns all available landscape models
+   * Returns all available landscape models.
    *
-   * @param minutesBackwards
-   * @param specificFolder
+   * @param minutesBackwards ?
+   * @param specificFolder ?
+   *
    * @return Map with timestamps as keys and activity(?) as value
    */
   private static Map<Long, Long> getAvailableModels(final int minutesBackwards,

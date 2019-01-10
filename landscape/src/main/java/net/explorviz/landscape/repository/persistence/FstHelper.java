@@ -54,9 +54,8 @@ public class FstHelper {
    *
    * @return the given landscape as byte array
    */
-  public static byte[] convertLandscapeToBytes(final Landscape landscape,
-      final FSTConfiguration conf) {
-    // TODO: Move to "ExportHelper"
+  public static byte[] convertLandscapeToBytes(final Landscape landscape) {
+    final FSTConfiguration conf = createFstConfiguration();
     return conf.asByteArray(landscape);
   }
 

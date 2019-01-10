@@ -22,7 +22,8 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.sse.Sse;
 import net.explorviz.landscape.api.ExtensionApiImpl;
 import net.explorviz.landscape.model.landscape.Landscape;
-import net.explorviz.landscape.repository.persistence.RepositoryFileStorage;
+import net.explorviz.landscape.repository.persistence.FstHelper;
+import net.explorviz.landscape.repository.persistence.LandscapeRepository;
 import net.explorviz.landscape.server.helper.FileSystemHelper;
 import net.explorviz.landscape.server.main.Configuration;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
@@ -41,6 +42,9 @@ public class LandscapeResource {
   private static final String MEDIA_TYPE = "application/vnd.api+json";
 
   private final ExtensionApiImpl api;
+
+  @Inject
+  private LandscapeRepository landscapeRepository;
 
   @Inject
   public LandscapeResource(final ExtensionApiImpl api) {
@@ -89,11 +93,15 @@ public class LandscapeResource {
     final String landscapeFolder = FileSystemHelper.getExplorVizDirectory() + File.separator
         + Configuration.LANDSCAPE_REPOSITORY;
 
-    final Landscape landscapeWithNewIDs =
-        RepositoryFileStorage.readFromFileGeneric(landscapeFolder, fileName + ".expl");
+    // final Landscape landscapeWithNewIDs =
+    // RepositoryFileStorage.readFromFileGeneric(landscapeFolder, fileName + ".expl");
 
-    final byte[] landscapeAsBytes =
-        RepositoryFileStorage.convertLandscapeToBytes(landscapeWithNewIDs);
+    final Landscape landscapeWithNewIDs =
+        this.landscapeRepository.getLandscapeById(fileName + ".expl");
+
+    // final byte[] landscapeAsBytes =
+    // RepositoryFileStorage.convertLandscapeToBytes(landscapeWithNewIDs);
+    final byte[] landscapeAsBytes = FstHelper.convertLandscapeToBytes(landscapeWithNewIDs);
 
     final String encodedLandscape = Base64.getEncoder().encodeToString(landscapeAsBytes);
 

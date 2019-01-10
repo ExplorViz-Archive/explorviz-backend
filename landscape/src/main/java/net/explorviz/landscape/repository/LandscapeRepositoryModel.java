@@ -10,7 +10,8 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import net.explorviz.landscape.model.landscape.Landscape;
 import net.explorviz.landscape.model.store.Timestamp;
-import net.explorviz.landscape.repository.persistence.RepositoryFileStorage;
+import net.explorviz.landscape.repository.persistence.FstHelper;
+import net.explorviz.landscape.repository.persistence.LandscapeRepository;
 import net.explorviz.landscape.server.helper.BroadcastService;
 import net.explorviz.landscape.server.main.Configuration;
 import net.explorviz.shared.annotations.Config;
@@ -34,6 +35,9 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
   private boolean useDummyMode;
 
   @Inject
+  private LandscapeRepository landscapeRepository;
+
+  @Inject
   public LandscapeRepositoryModel(final BroadcastService broadcastService) {
 
     this.broadcastService = broadcastService;
@@ -42,8 +46,12 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
 
     if (LOAD_LAST_LANDSCAPE_ON_LOAD) {
 
-      final Landscape readLandscape = RepositoryFileStorage.readFromFile(System.currentTimeMillis(),
-          Configuration.LANDSCAPE_REPOSITORY);
+      // final Landscape readLandscape =
+      // RepositoryFileStorage.readFromFile(System.currentTimeMillis(),
+      // Configuration.LANDSCAPE_REPOSITORY);
+
+      final Landscape readLandscape =
+          this.landscapeRepository.getLandscapeByTimestamp(System.currentTimeMillis());
 
       this.internalLandscape = readLandscape;
     } else {
@@ -71,12 +79,15 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
   public Landscape getLandscape(final long timestamp, final String folderName)
       throws FileNotFoundException {
     return LandscapePreparer
-        .prepareLandscape(RepositoryFileStorage.readFromFile(timestamp, folderName));
+        .prepareLandscape(this.landscapeRepository.getLandscapeByTimestamp(timestamp));
+
+    // RepositoryFileStorage.readFromFile(timestamp, folderName)
   }
 
   // TODO: Unused?
   public Map<Long, Long> getAvailableLandscapes(final String folderName) {
-    return RepositoryFileStorage.getAvailableModelsForTimeshift(folderName);
+    // return RepositoryFileStorage.getAvailableModelsForTimeshift(folderName);
+    return this.landscapeRepository.getAllForTimeshift();
   }
 
   static {
@@ -90,8 +101,9 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
   }
 
   public FSTConfiguration initFstConf() {
-    return RepositoryFileStorage.createFstConfiguration();
+    return FstHelper.createFstConfiguration();
   }
+
 
   public void reset() {
     synchronized (this.internalLandscape) {
@@ -115,13 +127,13 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
           final Landscape dummyLandscape = LandscapeDummyCreator.createDummyLandscape();
           dummyLandscape.getTimestamp().setTimestamp(milliseconds);
           dummyLandscape.getTimestamp().updateId();
-          RepositoryFileStorage.writeToFile(dummyLandscape, milliseconds,
-              Configuration.LANDSCAPE_REPOSITORY);
+
+          this.landscapeRepository.saveLandscape(milliseconds, dummyLandscape);
           this.lastPeriodLandscape = dummyLandscape;
         } else {
           this.internalLandscape.updateTimestamp(new Timestamp(milliseconds, 0));
-          RepositoryFileStorage.writeToFile(this.internalLandscape, milliseconds,
-              Configuration.LANDSCAPE_REPOSITORY);
+
+          this.landscapeRepository.saveLandscape(milliseconds, this.internalLandscape);
           final Landscape l = this.fstConf.deepCopy(this.internalLandscape);
           this.lastPeriodLandscape = LandscapePreparer.prepareLandscape(l);
         }
@@ -134,8 +146,8 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
       }
     }
 
-    RepositoryFileStorage.cleanUpTooOldFiles(System.currentTimeMillis(),
-        Configuration.LANDSCAPE_REPOSITORY);
+
+    this.landscapeRepository.cleanup();
   }
 
   private void resetCommunication() {
