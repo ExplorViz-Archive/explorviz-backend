@@ -353,6 +353,14 @@ public class InsertionRepositoryPart {
                 (BeforeJDBCOperationEventRecord) abstractBeforeEventRecord;
             final DatabaseQuery databaseQuery = new DatabaseQuery(); // NOPMD
             databaseQuery.initializeId();
+
+            // parse type of Statement, e.g. Statement or PreparedStatement
+            final String operationSignature = jdbcOperationEventRecord.getOperationSignature();
+            final String parsedStatementType =
+                operationSignature.contains(" ") ? operationSignature.split(" ")[0]
+                    : operationSignature;
+            databaseQuery.setStatementType(parsedStatementType);
+
             databaseQuery.setSqlStatement(jdbcOperationEventRecord.getSqlStatement());
             databaseQuery.setParentApplication(currentApplication);
             currentApplication.getDatabaseQueries().add(databaseQuery);

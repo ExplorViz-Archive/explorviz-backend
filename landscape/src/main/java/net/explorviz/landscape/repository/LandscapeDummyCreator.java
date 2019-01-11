@@ -497,6 +497,7 @@ final class LandscapeDummyCreator {
     for (int i = 0; i < maxIterations; i++) {
       DatabaseQuery dbQueryTmp = new DatabaseQuery();
       dbQueryTmp.initializeId();
+      dbQueryTmp.setStatementType("Statement");
       dbQueryTmp.setSqlStatement(
           "CREATE TABLE IF NOT EXISTS `order` (oid integer PRIMARY KEY, name text NOT NULL, "
               + "email text NOT NULL, odate text NOT NULL, itemid integer NOT NULL);");
@@ -508,6 +509,7 @@ final class LandscapeDummyCreator {
 
       dbQueryTmp = new DatabaseQuery();
       dbQueryTmp.initializeId();
+      dbQueryTmp.setStatementType("Statement");
       dbQueryTmp.setParentApplication(application);
       dbQueryTmp.setSqlStatement("INSERT INTO `order` (oid, name, email, odate, itemid) "
           + "VALUES('" + DummyLandscapeHelper.getNextSequenceId()
@@ -520,6 +522,7 @@ final class LandscapeDummyCreator {
 
       dbQueryTmp = new DatabaseQuery();
       dbQueryTmp.initializeId();
+      dbQueryTmp.setStatementType("Statement");
       dbQueryTmp.setSqlStatement("INSERT INTO `order` (oid, name, email, odate, itemid) "
           + "VALUES('" + DummyLandscapeHelper.getNextSequenceId()
           + "'Tom B. Erichsen', 'erichsen@uni-kiel.de', '2017-11-16', '1');");
@@ -531,6 +534,7 @@ final class LandscapeDummyCreator {
 
       dbQueryTmp = new DatabaseQuery();
       dbQueryTmp.initializeId();
+      dbQueryTmp.setStatementType("Statement");
       dbQueryTmp.setSqlStatement("INSERT INTO `order` (oid, name, email, odate, itemid) "
           + "VALUES('" + DummyLandscapeHelper.getNextSequenceId()
           + "', 'Carol K. Durham', 'durham@uni-kiel.de', '2017-10-08', '1');");
@@ -542,6 +546,7 @@ final class LandscapeDummyCreator {
 
       dbQueryTmp = new DatabaseQuery();
       dbQueryTmp.initializeId();
+      dbQueryTmp.setStatementType("Statement");
       dbQueryTmp.setSqlStatement("SELECT * FROM `order` WHERE name = Carol K. Durham");
       dbQueryTmp.setReturnValue(String.valueOf(DummyLandscapeHelper.getRandomNum(5, 100)));
       dbQueryTmp.setResponseTime(DummyLandscapeHelper.getRandomNum(10, 1000));
@@ -551,6 +556,7 @@ final class LandscapeDummyCreator {
 
       dbQueryTmp = new DatabaseQuery();
       dbQueryTmp.initializeId();
+      dbQueryTmp.setStatementType("Statement");
       dbQueryTmp.setSqlStatement("SELECT * FROM `order` WHERE name = Tom B. Erichsen");
       dbQueryTmp.setReturnValue(String.valueOf(DummyLandscapeHelper.getRandomNum(5, 100)));
       dbQueryTmp.setResponseTime(DummyLandscapeHelper.getRandomNum(10, 1000));
