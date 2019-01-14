@@ -17,7 +17,7 @@ services:
       - "27017"
 
   authentication:
-    image: explorviz/explorviz-backend-authentication
+    image: explorviz/explorviz-backend-authentication:dev
     container_name: explorviz-backend-auth
     depends_on:
       - reverse-proxy
@@ -28,20 +28,20 @@ services:
       - MONGO_IP=mongo
 
   landscape:
-    image: explorviz/explorviz-backend-landscape
+    image: explorviz/explorviz-backend-landscape:dev
     container_name: explorviz-backend-landscape
     expose:
       - "8081"
       - "10135"
 
   analysis:
-    image: explorviz/explorviz-backend-analysis
+    image: explorviz/explorviz-backend-analysis:dev
     container_name: explorviz-backend-analysis
     ports:
       - "10133:10133"
     
   frontend:
-    image: explorviz/explorviz-frontend
+    image: explorviz/explorviz-frontend:dev
     container_name: explorviz-frontend
     ports:
       - "8090:80"
