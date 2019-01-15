@@ -61,8 +61,6 @@ public class MongoRepository implements LandscapeRepository<String, Long> {
 
   @Override
   public String getLandscapeByTimestamp(final long timestamp) {
-
-
     final DBCollection landscapeCollection = this.mongoHelper.getLandscapeCollection();
     final DBObject query = new BasicDBObject("_id", timestamp);
     final DBCursor result = landscapeCollection.find(query);
@@ -103,18 +101,77 @@ public class MongoRepository implements LandscapeRepository<String, Long> {
         from - TimeUnit.MINUTES.toMillis(Configuration.HISTORY_INTERVAL_IN_MINUTES);
 
     final DBCollection landscapeCollection = this.mongoHelper.getLandscapeCollection();
+    final DBCollection replayCollection = this.mongoHelper.getReplayCollection();
     final DBObject query = new BasicDBObject("_id", new BasicDBObject("$lt", enddate));
-    final WriteResult result = landscapeCollection.remove(query);
+    final WriteResult landsapeResult = landscapeCollection.remove(query);
+    final WriteResult replayResult = replayCollection.remove(query);
+    // TODO: Replays
 
     if (LOGGER.isInfoEnabled()) {
-      LOGGER.info(String.format("Cleaned %d old objects", result.getN()));
+      LOGGER.info(String.format("Cleaned %d landscape and %d replay objects", landsapeResult.getN(),
+          replayResult.getN()));
     }
   }
 
   @Override
   public void clear() {
     final DBCollection landscapeCollection = this.mongoHelper.getLandscapeCollection();
+    final DBCollection replayCollection = this.mongoHelper.getReplayCollection();
     landscapeCollection.remove(new BasicDBObject());
+    replayCollection.remove(new BasicDBObject());
+  }
+
+
+
+  @Override
+  public void saveReplay(final long timestamp, final Landscape replay) {
+    final String landscapeJsonApi;
+    try {
+      landscapeJsonApi = this.serializeLandscape(replay);
+    } catch (final DocumentSerializationException e) {
+      throw new InternalServerErrorException("Error serializing: " + e.getMessage(), e);
+    }
+
+    final DBCollection landscapeCollection = this.mongoHelper.getReplayCollection();
+
+    final DBObject landscapeDbo = new BasicDBObject();
+    landscapeDbo.put("_id", timestamp);
+    landscapeDbo.put(LANDSCAPE_FIELD, landscapeJsonApi);
+
+    landscapeCollection.save(landscapeDbo);
+  }
+
+
+
+  @Override
+  public String getReplayByTimestamp(final long timestamp) {
+    final DBCollection landscapeCollection = this.mongoHelper.getReplayCollection();
+    final DBObject query = new BasicDBObject("_id", timestamp);
+    final DBCursor result = landscapeCollection.find(query);
+    if (result.count() == 1) {
+      return (String) result.one().get(LANDSCAPE_FIELD);
+    } else {
+      throw new ClientErrorException("Landscape not found for provided timestamp " + timestamp,
+          404);
+    }
+  }
+
+
+
+  @Override
+  public String getReplayById(final Long id) {
+    final String regexQuery = "\\{\"data\":\\{\"type\":\"landscape\",\"id\":\"" + id + "\"";
+
+    final Pattern pat = Pattern.compile(regexQuery, Pattern.CASE_INSENSITIVE);
+
+    final DBCollection landscapeCollection = this.mongoHelper.getReplayCollection();
+    final DBObject query = new BasicDBObject(LANDSCAPE_FIELD, pat);
+    final DBCursor result = landscapeCollection.find(query);
+    if (result.count() == 1) {
+      return (String) result.one().get(LANDSCAPE_FIELD);
+    } else {
+      throw new ClientErrorException("Landscape not found for provided id " + id, 404);
+    }
   }
 
 

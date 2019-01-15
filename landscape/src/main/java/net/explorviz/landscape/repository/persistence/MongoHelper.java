@@ -15,6 +15,7 @@ public class MongoHelper {
   private static final String DEFAULT_PORT = "27018";
   private static final String DEFAULT_DB = "explorviz";
   private static final String LANDSCAPE_COLLECTION = "landscape";
+  private static final String REPLAY_COLLECTION = "replay";
 
   private static final Logger LOGGER = LoggerFactory.getLogger(MongoHelper.class.getSimpleName());
 
@@ -80,6 +81,11 @@ public class MongoHelper {
   public DBCollection getLandscapeCollection() {
     return this.getDatabase().getCollection(LANDSCAPE_COLLECTION);
   }
+
+  public DBCollection getReplayCollection() {
+    return this.getDatabase().getCollection(REPLAY_COLLECTION);
+  }
+
 
   private String getUri() {
 

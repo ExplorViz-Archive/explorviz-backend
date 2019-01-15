@@ -78,6 +78,34 @@ public class MongoRepositoryTest {
 
   }
 
+  @Test
+  public void findReplayByTimestamp() {
+    final long ts = System.currentTimeMillis();
+    final Landscape landscape = LandscapeDummyCreator.createDummyLandscape();
+    this.repo.saveReplay(ts, landscape);
+
+    final String rawLandscape = this.repo.getReplayByTimestamp(ts);
+
+
+
+    assertTrue(rawLandscape.startsWith("{\"data\":{\"type\":\"landscape\""));
+  }
+
+  @Test
+  public void findReplayById() {
+    final long ts = System.currentTimeMillis();
+    final Landscape landscape = LandscapeDummyCreator.createDummyLandscape();
+    final Landscape landscape2 = LandscapeDummyCreator.createDummyLandscape();
+    this.repo.saveReplay(ts, landscape);
+    this.repo.saveReplay(ts, landscape2);
+
+    final long id = landscape.getId();
+    final String rawLandscape = this.repo.getReplayById(id);
+
+    assertTrue(rawLandscape.startsWith("{\"data\":{\"type\":\"landscape\",\"id\":\"" + id + "\""));
+
+  }
+
 
 
 }
