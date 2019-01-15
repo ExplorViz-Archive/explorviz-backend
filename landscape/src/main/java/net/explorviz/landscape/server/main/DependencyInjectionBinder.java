@@ -7,6 +7,8 @@ import net.explorviz.landscape.repository.LandscapeExchangeService;
 import net.explorviz.landscape.repository.LandscapeRepositoryModel;
 import net.explorviz.landscape.repository.persistence.FileRepository;
 import net.explorviz.landscape.repository.persistence.LandscapeRepository;
+import net.explorviz.landscape.repository.persistence.MongoHelper;
+import net.explorviz.landscape.repository.persistence.MongoRepository;
 import net.explorviz.landscape.server.helper.BroadcastService;
 import net.explorviz.landscape.server.injection.ResourceConverterFactory;
 import net.explorviz.landscape.server.resources.LandscapeBroadcastSubResource;
@@ -37,7 +39,10 @@ public class DependencyInjectionBinder extends AbstractBinder {
 
     this.bind(TokenParserService.class).to(TokenParserService.class).in(Singleton.class);
 
+    // Persistence
     this.bind(FileRepository.class).to(LandscapeRepository.class).in(Singleton.class);
+    this.bind(MongoHelper.class).to(MongoHelper.class).in(Singleton.class);
+    this.bind(MongoRepository.class).to(MongoRepository.class).in(Singleton.class);
 
     // Broadcast Mechanism
     this.bind(BroadcastService.class).to(BroadcastService.class).in(Singleton.class);
