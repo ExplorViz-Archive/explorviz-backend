@@ -37,7 +37,7 @@ interface IExtensionApi {
 
   void setDummyMode(boolean value) throws FileNotFoundException, IOException;
 
-  void saveLandscapeToFile(Landscape landscape, String folderName);
+  void saveLandscapeToFile(Landscape landscape, long totalRequests, String folderName);
 
   List<Timestamp> getUploadedTimestamps();
 

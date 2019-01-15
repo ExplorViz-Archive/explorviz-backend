@@ -8,7 +8,13 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import net.explorviz.landscape.model.application.AggregatedClazzCommunication;
+import net.explorviz.landscape.model.application.Application;
+import net.explorviz.landscape.model.application.ApplicationCommunication;
 import net.explorviz.landscape.model.landscape.Landscape;
+import net.explorviz.landscape.model.landscape.Node;
+import net.explorviz.landscape.model.landscape.NodeGroup;
+import net.explorviz.landscape.model.landscape.System;
 import net.explorviz.landscape.model.store.Timestamp;
 import net.explorviz.landscape.server.helper.BroadcastService;
 import net.explorviz.landscape.server.main.Configuration;
@@ -41,8 +47,8 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
 
     if (LOAD_LAST_LANDSCAPE_ON_LOAD) {
 
-      final Landscape readLandscape = RepositoryStorage.readFromFile(System.currentTimeMillis(),
-          Configuration.LANDSCAPE_REPOSITORY);
+      final Landscape readLandscape = RepositoryStorage
+          .readFromFile(java.lang.System.currentTimeMillis(), Configuration.LANDSCAPE_REPOSITORY);
 
       this.internalLandscape = readLandscape;
     } else {
@@ -100,23 +106,27 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
   @Override
   public void periodicTimeSignal(final long timestamp) {
     // called every tenth second
-    // passed timestamp is nanosecond
+    // passed timestamp is in nanosecond
     synchronized (this.internalLandscape) {
       synchronized (this.lastPeriodLandscape) {
 
-        final long milliseconds = System.currentTimeMillis();
+        final long milliseconds = java.lang.System.currentTimeMillis();
+
+        // calculates the total requests for the internal landscape and stores them in its timestamp
+        final long calculatedTotalRequests = calculateTotalRequests(this.internalLandscape);
+        this.internalLandscape.getTimestamp().setTotalRequests(calculatedTotalRequests);
 
         if (this.useDummyMode) {
           final Landscape dummyLandscape = LandscapeDummyCreator.createDummyLandscape();
           dummyLandscape.getTimestamp().setTimestamp(milliseconds);
           dummyLandscape.getTimestamp().updateId();
-          RepositoryStorage.writeToFile(dummyLandscape, milliseconds,
+          RepositoryStorage.writeToFile(dummyLandscape, milliseconds, calculatedTotalRequests,
               Configuration.LANDSCAPE_REPOSITORY);
           this.lastPeriodLandscape = dummyLandscape;
         } else {
           this.internalLandscape.updateTimestamp(new Timestamp(milliseconds, 0));
           RepositoryStorage.writeToFile(this.internalLandscape, milliseconds,
-              Configuration.LANDSCAPE_REPOSITORY);
+              calculatedTotalRequests, Configuration.LANDSCAPE_REPOSITORY);
           final Landscape l = this.fstConf.deepCopy(this.internalLandscape);
           this.lastPeriodLandscape = LandscapePreparer.prepareLandscape(l);
         }
@@ -129,8 +139,39 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
       }
     }
 
-    RepositoryStorage.cleanUpTooOldFiles(System.currentTimeMillis(),
+    RepositoryStorage.cleanUpTooOldFiles(java.lang.System.currentTimeMillis(),
         Configuration.LANDSCAPE_REPOSITORY);
+  }
+
+  /**
+   * Calculates all requests contained in a Landscape
+   *
+   * @param landscape
+   */
+  private static long calculateTotalRequests(final Landscape landscape) {
+
+    long totalRequests = 0;
+
+    for (final System system : landscape.getSystems()) {
+      for (final NodeGroup nodegroup : system.getNodeGroups()) {
+        for (final Node node : nodegroup.getNodes()) {
+          for (final Application application : node.getApplications()) {
+            // aggClazzCommunication
+            for (final AggregatedClazzCommunication clazzCommu : application
+                .getAggregatedClazzCommunications()) {
+              totalRequests += clazzCommu.getTotalRequests();
+
+            }
+            // applicationCommunication
+            for (final ApplicationCommunication appCommu : application
+                .getApplicationCommunications()) {
+              totalRequests += appCommu.getRequests();
+            }
+          }
+        }
+      }
+    }
+    return totalRequests;
   }
 
   private void resetCommunication() {
