@@ -6,11 +6,22 @@ import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
 import com.mongodb.client.MongoDatabase;
 import net.explorviz.shared.annotations.Config;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class MongoHelper {
 
+  private static final String DEFAULT_HOST = "localhost";
+  private static final String DEFAULT_PORT = "27018";
+  private static final String DEFAULT_DB = "explorviz";
   private static final String LANDSCAPE_COLLECTION = "landscape";
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(MongoHelper.class.getSimpleName());
+
+
   private static MongoClient client = null;
+
+
 
   @Config("mongo.host")
   private String host;
@@ -50,7 +61,17 @@ public class MongoHelper {
    *
    */
   public DB getDatabase() {
-    return this.getClient().getDB(this.dbName);
+
+    String dbName = this.dbName;
+
+    if (dbName == null || "".equals(dbName)) {
+      if (LOGGER.isWarnEnabled()) {
+        LOGGER.warn("No database name given, falling back to " + DEFAULT_DB);
+      }
+      dbName = DEFAULT_DB;
+    }
+
+    return this.getClient().getDB(dbName);
   }
 
   /**
@@ -61,7 +82,25 @@ public class MongoHelper {
   }
 
   private String getUri() {
-    return this.host + ':' + this.port;
+
+    String host = this.host;
+    String port = this.port;
+
+    if (host == null || "".equals(host)) {
+      if (LOGGER.isWarnEnabled()) {
+        LOGGER.warn("No host configured, falling back to " + DEFAULT_HOST);
+        host = DEFAULT_HOST;
+      }
+    }
+
+    if (port == null || "".equals(port)) {
+      if (LOGGER.isWarnEnabled()) {
+        LOGGER.warn("No port configured, falling back to " + DEFAULT_PORT);
+        port = DEFAULT_PORT;
+      }
+    }
+
+    return "mongodb://" + host + ':' + port;
   }
 
   /**
