@@ -58,6 +58,8 @@ public class MongoRepositoryTest {
 
     final String rawLandscape = this.repo.getLandscapeByTimestamp(ts);
 
+
+
     assertTrue(rawLandscape.startsWith("{\"data\":{\"type\":\"landscape\""));
   }
 
@@ -65,12 +67,14 @@ public class MongoRepositoryTest {
   public void testFindById() {
     final long ts = System.currentTimeMillis();
     final Landscape landscape = LandscapeDummyCreator.createDummyLandscape();
+    final Landscape landscape2 = LandscapeDummyCreator.createDummyLandscape();
     this.repo.saveLandscape(ts, landscape);
+    this.repo.saveLandscape(ts, landscape2);
 
     final long id = landscape.getId();
     final String rawLandscape = this.repo.getLandscapeById(id);
 
-    assertTrue(rawLandscape.startsWith("{\"data\":{\"type\":\"landscape\""));
+    assertTrue(rawLandscape.startsWith("{\"data\":{\"type\":\"landscape\",\"id\":\"" + id + "\""));
 
   }
 

@@ -10,6 +10,7 @@ import com.mongodb.DBObject;
 import com.mongodb.WriteResult;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Pattern;
 import javax.inject.Inject;
 import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.InternalServerErrorException;
@@ -60,6 +61,8 @@ public class MongoRepository implements LandscapeRepository<String, Long> {
 
   @Override
   public String getLandscapeByTimestamp(final long timestamp) {
+
+
     final DBCollection landscapeCollection = this.mongoHelper.getLandscapeCollection();
     final DBObject query = new BasicDBObject("_id", timestamp);
     final DBCursor result = landscapeCollection.find(query);
@@ -73,7 +76,18 @@ public class MongoRepository implements LandscapeRepository<String, Long> {
 
   @Override
   public String getLandscapeById(final Long id) {
-    throw new RuntimeException("Not implemented");
+    final String regexQuery = "\\{\"data\":\\{\"type\":\"landscape\",\"id\":\"" + id + "\"";
+
+    final Pattern pat = Pattern.compile(regexQuery, Pattern.CASE_INSENSITIVE);
+
+    final DBCollection landscapeCollection = this.mongoHelper.getLandscapeCollection();
+    final DBObject query = new BasicDBObject(LANDSCAPE_FIELD, pat);
+    final DBCursor result = landscapeCollection.find(query);
+    if (result.count() == 1) {
+      return (String) result.one().get(LANDSCAPE_FIELD);
+    } else {
+      throw new ClientErrorException("Landscape not found for provided id " + id, 404);
+    }
   }
 
 
