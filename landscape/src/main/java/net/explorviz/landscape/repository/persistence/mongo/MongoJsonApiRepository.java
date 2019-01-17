@@ -1,6 +1,5 @@
-package net.explorviz.landscape.repository.persistence;
+package net.explorviz.landscape.repository.persistence.mongo;
 
-import com.github.jasminb.jsonapi.JSONAPIDocument;
 import com.github.jasminb.jsonapi.ResourceConverter;
 import com.github.jasminb.jsonapi.exceptions.DocumentSerializationException;
 import com.mongodb.BasicDBObject;
@@ -15,14 +14,28 @@ import javax.inject.Inject;
 import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.InternalServerErrorException;
 import net.explorviz.landscape.model.landscape.Landscape;
+import net.explorviz.landscape.repository.persistence.LandscapeRepository;
 import net.explorviz.landscape.server.main.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class MongoRepository implements LandscapeRepository<String, Long> {
+/**
+ * Stores and retrieves landscapes from a mongodb, which is given in the
+ * {@code explorviz.properties} resource.
+ *
+ * <p>
+ *
+ * This repository will return all requested landscape objects in the json api format, which is the
+ * format the objects are persisted in internally. Prefer this class over {@link MongoRepository} if
+ * you don't need an actually landscape object to avoid costy de-/serialization.
+ *
+ * </p>
+ *
+ */
+public class MongoJsonApiRepository implements LandscapeRepository<String> {
 
   private static final Logger LOGGER =
-      LoggerFactory.getLogger(MongoRepository.class.getSimpleName());
+      LoggerFactory.getLogger(MongoJsonApiRepository.class.getSimpleName());
   private static final String LANDSCAPE_FIELD = "landscape";
 
 
@@ -30,12 +43,14 @@ public class MongoRepository implements LandscapeRepository<String, Long> {
   private final MongoHelper mongoHelper;
 
 
-  private final ResourceConverter jsonApiConverter;
+  private final LandscapeSerializationHelper serializationHelper;
+
 
   @Inject
-  public MongoRepository(final MongoHelper mongoHelper, final ResourceConverter converter) {
+  public MongoJsonApiRepository(final MongoHelper mongoHelper, final ResourceConverter converter,
+      final LandscapeSerializationHelper helper) {
     this.mongoHelper = mongoHelper;
-    this.jsonApiConverter = converter;
+    this.serializationHelper = helper;
   }
 
 
@@ -45,7 +60,7 @@ public class MongoRepository implements LandscapeRepository<String, Long> {
 
     final String landscapeJsonApi;
     try {
-      landscapeJsonApi = this.serializeLandscape(landscape);
+      landscapeJsonApi = this.serializationHelper.serialize(landscape);
     } catch (final DocumentSerializationException e) {
       throw new InternalServerErrorException("Error serializing: " + e.getMessage(), e);
     }
@@ -73,7 +88,7 @@ public class MongoRepository implements LandscapeRepository<String, Long> {
   }
 
   @Override
-  public String getLandscapeById(final Long id) {
+  public String getLandscapeById(final long id) {
     final String regexQuery = "\\{\"data\":\\{\"type\":\"landscape\",\"id\":\"" + id + "\"";
 
     final Pattern pat = Pattern.compile(regexQuery, Pattern.CASE_INSENSITIVE);
@@ -127,7 +142,7 @@ public class MongoRepository implements LandscapeRepository<String, Long> {
   public void saveReplay(final long timestamp, final Landscape replay) {
     final String landscapeJsonApi;
     try {
-      landscapeJsonApi = this.serializeLandscape(replay);
+      landscapeJsonApi = this.serializationHelper.serialize(replay);
     } catch (final DocumentSerializationException e) {
       throw new InternalServerErrorException("Error serializing: " + e.getMessage(), e);
     }
@@ -159,7 +174,7 @@ public class MongoRepository implements LandscapeRepository<String, Long> {
 
 
   @Override
-  public String getReplayById(final Long id) {
+  public String getReplayById(final long id) {
     final String regexQuery = "\\{\"data\":\\{\"type\":\"landscape\",\"id\":\"" + id + "\"";
 
     final Pattern pat = Pattern.compile(regexQuery, Pattern.CASE_INSENSITIVE);
@@ -174,19 +189,6 @@ public class MongoRepository implements LandscapeRepository<String, Long> {
     }
   }
 
-
-
-  /**
-   * Serializes a landscape to a json-api string.
-   *
-   * @throws DocumentSerializationException if the landscape could not be parsed.
-   */
-  private String serializeLandscape(final Landscape l) throws DocumentSerializationException {
-    final JSONAPIDocument<Landscape> landscapeDoc = new JSONAPIDocument<>(l);
-    final byte[] landscapeBytes = this.jsonApiConverter.writeDocument(landscapeDoc);
-    return new String(landscapeBytes);
-
-  }
 
 
 }

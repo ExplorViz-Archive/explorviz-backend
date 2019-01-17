@@ -1,4 +1,4 @@
-package net.explorviz.landscape.repository.persistence;
+package net.explorviz.landscape.repository.persistence.mongo;
 
 import com.mongodb.DB;
 import com.mongodb.DBCollection;

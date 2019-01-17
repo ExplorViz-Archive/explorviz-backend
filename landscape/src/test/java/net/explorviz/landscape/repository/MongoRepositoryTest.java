@@ -1,11 +1,11 @@
 package net.explorviz.landscape.repository;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 import javax.inject.Inject;
 import net.explorviz.landscape.model.landscape.Landscape;
-import net.explorviz.landscape.repository.persistence.mongo.MongoJsonApiRepository;
+import net.explorviz.landscape.repository.persistence.mongo.MongoRepository;
 import net.explorviz.landscape.server.main.DependencyInjectionBinder;
 import net.explorviz.landscape.server.providers.CoreModelHandler;
 import org.glassfish.hk2.api.ServiceLocator;
@@ -15,15 +15,10 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-/**
- * Tests the {@link MongoJsonApiRepository}. Expects a running mongodb server.
- *
- */
-public class MongoJsonApiRepositoryTest {
-
+public class MongoRepositoryTest {
 
   @Inject
-  private MongoJsonApiRepository repo;
+  private MongoRepository repo;
 
   @BeforeClass
   public static void setUpAll() {
@@ -56,11 +51,10 @@ public class MongoJsonApiRepositoryTest {
     final Landscape landscape = LandscapeDummyCreator.createDummyLandscape();
     this.repo.saveLandscape(ts, landscape);
 
-    final String rawLandscape = this.repo.getLandscapeByTimestamp(ts);
+    final Landscape landscapeRetrieved = this.repo.getLandscapeByTimestamp(ts);
 
+    assertEquals("Ids don't match", landscape.getId(), landscapeRetrieved.getId());
 
-
-    assertTrue(rawLandscape.startsWith("{\"data\":{\"type\":\"landscape\""));
   }
 
   @Test
@@ -72,9 +66,9 @@ public class MongoJsonApiRepositoryTest {
     this.repo.saveLandscape(ts, landscape2);
 
     final long id = landscape.getId();
-    final String rawLandscape = this.repo.getLandscapeById(id);
+    final Landscape landscapeRetrieved = this.repo.getLandscapeById(id);
 
-    assertTrue(rawLandscape.startsWith("{\"data\":{\"type\":\"landscape\",\"id\":\"" + id + "\""));
+    assertEquals("Ids don't match", id, (long) landscapeRetrieved.getId());
 
   }
 
@@ -84,11 +78,11 @@ public class MongoJsonApiRepositoryTest {
     final Landscape landscape = LandscapeDummyCreator.createDummyLandscape();
     this.repo.saveReplay(ts, landscape);
 
-    final String rawLandscape = this.repo.getReplayByTimestamp(ts);
+    final Landscape landscapeRetrieved = this.repo.getReplayByTimestamp(ts);
 
 
 
-    assertTrue(rawLandscape.startsWith("{\"data\":{\"type\":\"landscape\""));
+    assertEquals("Ids don't match", landscape.getId(), landscapeRetrieved.getId());
   }
 
   @Test
@@ -100,12 +94,10 @@ public class MongoJsonApiRepositoryTest {
     this.repo.saveReplay(ts, landscape2);
 
     final long id = landscape.getId();
-    final String rawLandscape = this.repo.getReplayById(id);
+    final Landscape landscapeRetrieved = this.repo.getReplayById(id);
 
-    assertTrue(rawLandscape.startsWith("{\"data\":{\"type\":\"landscape\",\"id\":\"" + id + "\""));
+    assertEquals("Ids don't match", id, (long) landscapeRetrieved.getId());
 
   }
-
-
 
 }
