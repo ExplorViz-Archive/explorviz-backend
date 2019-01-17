@@ -14,7 +14,6 @@ import net.explorviz.landscape.model.landscape.Landscape;
 import net.explorviz.landscape.model.landscape.Node;
 import net.explorviz.landscape.model.landscape.NodeGroup;
 import net.explorviz.landscape.model.landscape.System;
-import net.explorviz.landscape.model.store.Timestamp;
 import net.explorviz.landscape.server.helper.LandscapeBroadcastService;
 import net.explorviz.landscape.server.main.Configuration;
 import net.explorviz.shared.annotations.Config;
@@ -119,19 +118,25 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
         final long milliseconds = java.lang.System.currentTimeMillis();
 
         // calculates the total requests for the internal landscape and stores them in its timestamp
-        final int calculatedTotalRequests = calculateTotalRequests(this.internalLandscape);
-        this.internalLandscape.getTimestamp().setTotalRequests(calculatedTotalRequests);
+        int calculatedTotalRequests = 0;
 
         if (this.useDummyMode) {
           final Landscape dummyLandscape = LandscapeDummyCreator.createDummyLandscape();
           dummyLandscape.getTimestamp().setTimestamp(milliseconds);
           dummyLandscape.getTimestamp().updateId();
+
+          calculatedTotalRequests = calculateTotalRequests(dummyLandscape);
+          dummyLandscape.getTimestamp().setTotalRequests(calculatedTotalRequests);
+
           RepositoryStorage.writeToFile(dummyLandscape, milliseconds, calculatedTotalRequests,
               Configuration.LANDSCAPE_REPOSITORY);
           this.lastPeriodLandscape = dummyLandscape;
         } else {
-          this.internalLandscape
-              .updateTimestamp(new Timestamp(milliseconds, calculatedTotalRequests));
+
+          calculatedTotalRequests = calculateTotalRequests(this.internalLandscape);
+          this.internalLandscape.getTimestamp().setTotalRequests(calculatedTotalRequests);
+          this.internalLandscape.getTimestamp().setTimestamp(milliseconds);
+
           RepositoryStorage.writeToFile(this.internalLandscape, milliseconds,
               calculatedTotalRequests, Configuration.LANDSCAPE_REPOSITORY);
 
