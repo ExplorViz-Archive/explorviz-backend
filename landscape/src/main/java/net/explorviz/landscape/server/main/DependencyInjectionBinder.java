@@ -3,9 +3,9 @@ package net.explorviz.landscape.server.main;
 import com.github.jasminb.jsonapi.ResourceConverter;
 import javax.inject.Singleton;
 import net.explorviz.landscape.api.ExtensionApiImpl;
+import net.explorviz.landscape.model.landscape.Landscape;
 import net.explorviz.landscape.repository.LandscapeExchangeService;
 import net.explorviz.landscape.repository.LandscapeRepositoryModel;
-import net.explorviz.landscape.repository.persistence.FileRepository;
 import net.explorviz.landscape.repository.persistence.LandscapeRepository;
 import net.explorviz.landscape.repository.persistence.mongo.LandscapeSerializationHelper;
 import net.explorviz.landscape.repository.persistence.mongo.MongoHelper;
@@ -42,12 +42,15 @@ public class DependencyInjectionBinder extends AbstractBinder {
     this.bind(TokenParserService.class).to(TokenParserService.class).in(Singleton.class);
 
     // Persistence
-    this.bind(FileRepository.class).to(LandscapeRepository.class).in(Singleton.class);
     this.bind(MongoHelper.class).to(MongoHelper.class).in(Singleton.class);
     this.bind(MongoJsonApiRepository.class).to(MongoJsonApiRepository.class).in(Singleton.class);
     this.bind(LandscapeSerializationHelper.class).to(LandscapeSerializationHelper.class)
         .in(Singleton.class);
     this.bind(MongoRepository.class).to(MongoRepository.class).in(Singleton.class);
+    this.bind(MongoRepository.class).to(new TypeLiteral<LandscapeRepository<Landscape>>() {});
+    this.bind(MongoJsonApiRepository.class).to(new TypeLiteral<LandscapeRepository<String>>() {});
+
+
 
     // Broadcast Mechanism
     this.bind(BroadcastService.class).to(BroadcastService.class).in(Singleton.class);

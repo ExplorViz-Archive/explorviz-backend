@@ -1,13 +1,17 @@
 package net.explorviz.landscape.repository.persistence;
 
 import java.util.Map;
+import javax.ws.rs.ClientErrorException;
 import net.explorviz.landscape.model.landscape.Landscape;
 
 /**
  * Represents a repository to store {@link Landscape} objects persistently.
  *
+ * @param T the return type of landscapes.
+ * @param I the type of the id.
+ *
  */
-public interface LandscapeRepository {
+public interface LandscapeRepository<T> {
 
 
   /**
@@ -36,8 +40,10 @@ public interface LandscapeRepository {
    * @param timestamp the timestamp of the landscape object
    *
    * @return the landscape object
+   *
+   * @throws ClientErrorException if the landscape could not be found.
    */
-  Landscape getLandscapeByTimestamp(final long timestamp);
+  T getLandscapeByTimestamp(final long timestamp);
 
 
   /**
@@ -46,20 +52,21 @@ public interface LandscapeRepository {
    * @param id the id of the landscape object
    *
    * @return the landscape object
+   *
+   * @throws ClientErrorException if the landscape could not be found.
    */
-  Landscape getLandscapeById(final String id);
+  T getLandscapeById(final long id);
 
 
 
   /**
-   *
    * Retrieves a replay landscape object with a specific timestamp from the repository.
    *
    * @param timestamp the timestamp of the replay
    *
    * @return the landscape object
    */
-  default Landscape getReplayByTimestamp(final long timestamp) {
+  default T getReplayByTimestamp(final long timestamp) {
     throw new RuntimeException("Not implemented");
   }
 
@@ -70,7 +77,7 @@ public interface LandscapeRepository {
    *
    * @return the replay object
    */
-  default Landscape getReplayById(final String id) {
+  default T getReplayById(final long id) {
     throw new RuntimeException("Not implemented");
   }
 

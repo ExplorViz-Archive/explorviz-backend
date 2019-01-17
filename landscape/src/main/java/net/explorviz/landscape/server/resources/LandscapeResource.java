@@ -44,7 +44,7 @@ public class LandscapeResource {
   private final ExtensionApiImpl api;
 
   @Inject
-  private LandscapeRepository landscapeRepository;
+  private LandscapeRepository<String> landscapeRepository;
 
   @Inject
   public LandscapeResource(final ExtensionApiImpl api) {
@@ -86,7 +86,6 @@ public class LandscapeResource {
    */
   @GET
   @Path("/export/{fileName}")
-  @Produces("*/*")
   public Response getExportLandscape(@PathParam("fileName") final String fileName)
       throws FileNotFoundException {
 
@@ -106,7 +105,7 @@ public class LandscapeResource {
     final String encodedLandscape = Base64.getEncoder().encodeToString(landscapeAsBytes);
 
     // send encoded landscape
-    return Response.ok(encodedLandscape, "*/*").build();
+    return Response.ok(encodedLandscape, "application/vnd.api+json").build();
   }
 
   @GET

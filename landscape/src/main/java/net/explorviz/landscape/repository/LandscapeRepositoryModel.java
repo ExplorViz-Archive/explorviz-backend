@@ -35,7 +35,7 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
   private boolean useDummyMode;
 
   @Inject
-  private LandscapeRepository landscapeRepository;
+  private LandscapeRepository<Landscape> landscapeRepository;
 
   @Inject
   public LandscapeRepositoryModel(final BroadcastService broadcastService) {
@@ -91,6 +91,7 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
   }
 
   static {
+    // TODO: Unused
     Configuration.DATABASE_NAMES.add("hsqldb");
     Configuration.DATABASE_NAMES.add("postgres");
     Configuration.DATABASE_NAMES.add("db2");
