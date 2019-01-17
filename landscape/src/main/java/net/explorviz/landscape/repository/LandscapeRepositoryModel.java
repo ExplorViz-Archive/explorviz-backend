@@ -4,7 +4,6 @@ import explorviz.live_trace_processing.reader.IPeriodicTimeSignalReceiver;
 import explorviz.live_trace_processing.reader.TimeSignalReader;
 import explorviz.live_trace_processing.record.IRecord;
 import java.io.FileNotFoundException;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -16,15 +15,19 @@ import net.explorviz.landscape.model.landscape.Node;
 import net.explorviz.landscape.model.landscape.NodeGroup;
 import net.explorviz.landscape.model.landscape.System;
 import net.explorviz.landscape.model.store.Timestamp;
-import net.explorviz.landscape.server.helper.BroadcastService;
+import net.explorviz.landscape.server.helper.LandscapeBroadcastService;
 import net.explorviz.landscape.server.main.Configuration;
 import net.explorviz.shared.annotations.Config;
 import org.jvnet.hk2.annotations.Service;
 import org.nustaq.serialization.FSTConfiguration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Service
 @Singleton
 public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiver {
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(LandscapeRepositoryModel.class);
 
   private static final boolean LOAD_LAST_LANDSCAPE_ON_LOAD = false;
   private volatile Landscape lastPeriodLandscape;
@@ -33,17 +36,17 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
   private final InsertionRepositoryPart insertionRepositoryPart;
   private final RemoteCallRepositoryPart remoteCallRepositoryPart;
 
-  private final BroadcastService broadcastService;
+  private final LandscapeBroadcastService broadcastService;
 
   @Config("repository.useDummyMode")
   private boolean useDummyMode;
 
   @Inject
-  public LandscapeRepositoryModel(final BroadcastService broadcastService) {
+  public LandscapeRepositoryModel(final LandscapeBroadcastService broadcastService) {
+
+    this.fstConf = this.initFSTConf();
 
     this.broadcastService = broadcastService;
-
-    this.fstConf = this.initFstConf();
 
     if (LOAD_LAST_LANDSCAPE_ON_LOAD) {
 
@@ -59,12 +62,19 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
     this.insertionRepositoryPart = new InsertionRepositoryPart();
     this.remoteCallRepositoryPart = new RemoteCallRepositoryPart();
 
-    final Landscape l = this.fstConf.deepCopy(this.internalLandscape);
-
-    this.lastPeriodLandscape = LandscapePreparer.prepareLandscape(l);
+    try {
+      final Landscape l = this.fstConf.deepCopy(this.internalLandscape);
+      this.lastPeriodLandscape = LandscapePreparer.prepareLandscape(l);
+    } catch (final Exception e) {
+      LOGGER.error("Error when deep-copying landscape.", e);
+    }
 
     new TimeSignalReader(TimeUnit.SECONDS.toMillis(Configuration.outputIntervalSeconds), this)
         .start();
+  }
+
+  public FSTConfiguration initFSTConf() {
+    return RepositoryStorage.createFSTConfiguration();
   }
 
   public Landscape getLastPeriodLandscape() {
@@ -75,12 +85,10 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
 
   public Landscape getLandscape(final long timestamp, final String folderName)
       throws FileNotFoundException {
-    return LandscapePreparer
-        .prepareLandscape(RepositoryStorage.readFromFile(timestamp, folderName));
-  }
 
-  public Map<Long, Long> getAvailableLandscapes(final String folderName) {
-    return RepositoryStorage.getAvailableModelsForTimeshift(folderName);
+    final Landscape loadedLandscape = RepositoryStorage.readFromFile(timestamp, folderName);
+
+    return LandscapePreparer.prepareLandscape(loadedLandscape);
   }
 
   static {
@@ -93,27 +101,25 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
     Configuration.DATABASE_NAMES.add("hypersql");
   }
 
-  public FSTConfiguration initFstConf() {
-    return RepositoryStorage.createFstConfiguration();
-  }
-
   public void reset() {
     synchronized (this.internalLandscape) {
       this.internalLandscape.reset();
     }
   }
 
+  /**
+   * Key function for the backend. Handles the persistence of a landscape every 10 seconds passed
+   * timestamp format is nanoseconds since 1970, as defined in Kieker.
+   */
   @Override
   public void periodicTimeSignal(final long timestamp) {
-    // called every tenth second
-    // passed timestamp is in nanosecond
     synchronized (this.internalLandscape) {
       synchronized (this.lastPeriodLandscape) {
 
         final long milliseconds = java.lang.System.currentTimeMillis();
 
         // calculates the total requests for the internal landscape and stores them in its timestamp
-        final long calculatedTotalRequests = calculateTotalRequests(this.internalLandscape);
+        final int calculatedTotalRequests = calculateTotalRequests(this.internalLandscape);
         this.internalLandscape.getTimestamp().setTotalRequests(calculatedTotalRequests);
 
         if (this.useDummyMode) {
@@ -124,14 +130,20 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
               Configuration.LANDSCAPE_REPOSITORY);
           this.lastPeriodLandscape = dummyLandscape;
         } else {
-          this.internalLandscape.updateTimestamp(new Timestamp(milliseconds, 0));
+          this.internalLandscape
+              .updateTimestamp(new Timestamp(milliseconds, calculatedTotalRequests));
           RepositoryStorage.writeToFile(this.internalLandscape, milliseconds,
               calculatedTotalRequests, Configuration.LANDSCAPE_REPOSITORY);
-          final Landscape l = this.fstConf.deepCopy(this.internalLandscape);
-          this.lastPeriodLandscape = LandscapePreparer.prepareLandscape(l);
+
+          try {
+            final Landscape l = this.fstConf.deepCopy(this.internalLandscape);
+            this.lastPeriodLandscape = LandscapePreparer.prepareLandscape(l);
+          } catch (final Exception e) {
+            LOGGER.error("Error when deep-copying landscape.", e);
+          }
         }
 
-        // broadcast to registered clients
+        // broadcast latest landscape to registered clients
         this.broadcastService.broadcastMessage(this.lastPeriodLandscape);
 
         this.remoteCallRepositoryPart.checkForTimedoutRemoteCalls();
@@ -148,9 +160,9 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
    *
    * @param landscape
    */
-  private static long calculateTotalRequests(final Landscape landscape) {
+  private static int calculateTotalRequests(final Landscape landscape) {
 
-    long totalRequests = 0;
+    int totalRequests = 0;
 
     for (final System system : landscape.getSystems()) {
       for (final NodeGroup nodegroup : system.getNodeGroups()) {

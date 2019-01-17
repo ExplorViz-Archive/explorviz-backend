@@ -8,15 +8,15 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.sse.SseEventSink;
-import net.explorviz.landscape.server.helper.BroadcastService;
+import net.explorviz.landscape.server.helper.LandscapeBroadcastService;
 
 @Singleton
 public class LandscapeBroadcastSubResource {
 
-  private final BroadcastService broadcastService;
+  private final LandscapeBroadcastService broadcastService;
 
   @Inject
-  public LandscapeBroadcastSubResource(final BroadcastService broadcastService) {
+  public LandscapeBroadcastSubResource(final LandscapeBroadcastService broadcastService) {
     this.broadcastService = broadcastService;
   }
 

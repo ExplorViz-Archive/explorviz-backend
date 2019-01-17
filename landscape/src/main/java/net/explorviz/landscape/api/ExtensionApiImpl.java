@@ -72,48 +72,6 @@ public final class ExtensionApiImpl implements IExtensionApi {
   }
 
   /**
-   * Provides the "intervalSize" newest timestamps within the server.
-   *
-   * @param intervalSize (number of retrieved timestamps)
-   * @return List of {@link Timestamp}
-   */
-  @Override
-  public List<Timestamp> getNewestTimestamps(final int intervalSize) {
-    final List<Timestamp> allTimestamps =
-        this.service.getTimestampObjectsInRepo(Configuration.LANDSCAPE_REPOSITORY);
-    return TimestampHelper.filterMostRecentTimestamps(allTimestamps, intervalSize);
-  }
-
-  /**
-   * Provides the "intervalSize" oldest timestamps within the server.
-   *
-   * @param intervalSize (number of retrieved timestamps)
-   * @return List of Timestamp
-   */
-
-  @Override
-  public List<Timestamp> getOldestTimestamps(final int intervalSize) {
-    final List<Timestamp> allTimestamps =
-        this.service.getTimestampObjectsInRepo(Configuration.LANDSCAPE_REPOSITORY);
-    return TimestampHelper.filterOldestTimestamps(allTimestamps, intervalSize);
-  }
-
-  /**
-   * Provides the "intervalSize" timestamps before a passed "fromTimestamp" within the server.
-   *
-   * @param fromTimestamp - Timestamp that sets the limit
-   * @param intervalSize - Number of to-be retrieved timestamps
-   * @return List of timestamps
-   */
-  @Override
-  public List<Timestamp> getPreviousTimestamps(final long fromTimestamp, final int intervalSize) {
-    final List<Timestamp> allTimestamps =
-        this.service.getTimestampObjectsInRepo(Configuration.LANDSCAPE_REPOSITORY);
-    return TimestampHelper.filterTimestampsBeforeTimestamp(allTimestamps, fromTimestamp,
-        intervalSize);
-  }
-
-  /**
    * Provides the "intervalSize" timestamps after a passed "afterTimestamp" within the server.
    *
    * @param afterTimestamp - Timestamp that sets the limit
@@ -129,6 +87,9 @@ public final class ExtensionApiImpl implements IExtensionApi {
         intervalSize);
   }
 
+  /**
+   * Provides a list of all uploaded timestamps.
+   */
   @Override
   public List<Timestamp> getUploadedTimestamps() {
     return this.service.getTimestampObjectsInRepo(Configuration.REPLAY_REPOSITORY);
