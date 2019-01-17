@@ -59,6 +59,8 @@ public class Trace extends BaseEntity {
     return newTraceStep;
   }
 
+  public Trace() {}
+
   public long getTraceId() {
     return this.traceId;
   }
