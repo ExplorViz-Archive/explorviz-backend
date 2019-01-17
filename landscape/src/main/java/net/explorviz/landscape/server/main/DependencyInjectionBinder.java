@@ -5,7 +5,7 @@ import javax.inject.Singleton;
 import net.explorviz.landscape.api.ExtensionApiImpl;
 import net.explorviz.landscape.repository.LandscapeExchangeService;
 import net.explorviz.landscape.repository.LandscapeRepositoryModel;
-import net.explorviz.landscape.server.helper.BroadcastService;
+import net.explorviz.landscape.server.helper.LandscapeBroadcastService;
 import net.explorviz.landscape.server.injection.ResourceConverterFactory;
 import net.explorviz.landscape.server.resources.LandscapeBroadcastSubResource;
 import net.explorviz.shared.annotations.Config;
@@ -36,11 +36,13 @@ public class DependencyInjectionBinder extends AbstractBinder {
     this.bind(TokenParserService.class).to(TokenParserService.class).in(Singleton.class);
 
     // Broadcast Mechanism
-    this.bind(BroadcastService.class).to(BroadcastService.class).in(Singleton.class);
+    this.bind(LandscapeBroadcastService.class).to(LandscapeBroadcastService.class)
+        .in(Singleton.class);
     this.bind(LandscapeBroadcastSubResource.class).to(LandscapeBroadcastSubResource.class);
 
     // injectable config properties
-    this.bind(new ConfigInjectionResolver()).to(new TypeLiteral<InjectionResolver<Config>>() {});
+    this.bind(new ConfigInjectionResolver()).to(new TypeLiteral<InjectionResolver<Config>>() {
+    });
 
     // ErrorObject Handler
     this.bind(ErrorObjectHelper.class).to(ErrorObjectHelper.class).in(Singleton.class);

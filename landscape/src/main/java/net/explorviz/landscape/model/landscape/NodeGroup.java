@@ -17,7 +17,7 @@ public class NodeGroup extends BaseEntity {
 
   private String name;
 
-  @Relationship("parent")
+  @Relationship("nodes")
   private final List<Node> nodes = new ArrayList<>();
 
   @Relationship("parent")

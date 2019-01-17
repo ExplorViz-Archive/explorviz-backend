@@ -51,12 +51,6 @@ public class LandscapeExchangeService {
     this.model = model;
   }
 
-  public Landscape getLandscapeByTimestampAndActivity(final long timestamp, final long activity) {
-    LandscapeExchangeService.timestamp = timestamp;
-    LandscapeExchangeService.activity = activity;
-    return this.getCurrentLandscape();
-  }
-
   public LandscapeRepositoryModel getModel() {
     return this.model;
   }
@@ -112,27 +106,27 @@ public class LandscapeExchangeService {
           // first validation check -> filename
 
           final String timestampAsString = filename.split("-")[0];
-          final String activityAsString = filename.split("-")[1].split(EXPLORVIZ_FILE_ENDING)[0];
+          final String callsAsString = filename.split("-")[1].split(EXPLORVIZ_FILE_ENDING)[0];
 
-          Timestamp possibleTimestamp = timestampCache.get(timestampAsString + activityAsString);
+          Timestamp possibleTimestamp = timestampCache.get(timestampAsString + callsAsString);
 
           if (possibleTimestamp == null) {
 
             // new timestamp -> add to cache
             // and initialize ID of entity
             long timestamp;
-            long activity;
+            int calls;
 
             try {
               timestamp = Long.parseLong(timestampAsString);
-              activity = Long.parseLong(activityAsString);
+              calls = Integer.parseInt(callsAsString);
             } catch (final NumberFormatException e) {
               continue;
             }
 
-            possibleTimestamp = new Timestamp(timestamp, activity); // NOPMD
+            possibleTimestamp = new Timestamp(timestamp, calls); // NOPMD
             possibleTimestamp.initializeId();
-            timestampCache.put(timestampAsString + activityAsString, possibleTimestamp);
+            timestampCache.put(timestampAsString + callsAsString, possibleTimestamp);
           }
 
           timestamps.add(possibleTimestamp);

@@ -24,7 +24,7 @@ public class ClazzCommunication extends BaseEntity {
   @Relationship("targetClazz")
   private Clazz targetClazz;
 
-  @Relationship("tracesteps")
+  @Relationship("traceSteps")
   private List<TraceStep> traceSteps = new ArrayList<>();
 
   private String operationName = "<unknown>";

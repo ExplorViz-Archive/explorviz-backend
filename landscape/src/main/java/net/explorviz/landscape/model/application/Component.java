@@ -1,5 +1,6 @@
 package net.explorviz.landscape.model.application;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.github.jasminb.jsonapi.annotations.Relationship;
 import com.github.jasminb.jsonapi.annotations.Type;
@@ -12,7 +13,7 @@ import net.explorviz.landscape.model.helper.BaseEntity;
  */
 @SuppressWarnings("serial")
 @Type("component")
-@JsonIgnoreProperties("belongingApplication")
+@JsonIgnoreProperties("parentApplication")
 public class Component extends BaseEntity {
 
   private String name;
@@ -30,6 +31,7 @@ public class Component extends BaseEntity {
   // @Relationship("parentApplication")
   // Don't parse since cycle results in stackoverflow when accessing
   // latestLandscape
+  @JsonIgnore
   private Application parentApplication;
 
 
