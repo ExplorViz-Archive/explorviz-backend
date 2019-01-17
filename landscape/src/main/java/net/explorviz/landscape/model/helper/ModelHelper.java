@@ -41,11 +41,12 @@ public final class ModelHelper {
           && commu.getOperationName().equalsIgnoreCase(operationName)) {
 
         final float currentAverageResponseTime = commu.getAverageResponseTime();
-        commu.setAverageResponseTime((currentAverageResponseTime + (float) averageResponseTime) / 2f);
+        commu.setAverageResponseTime(
+            (currentAverageResponseTime + (float) averageResponseTime) / 2f);
         final int newTotalRequests = commu.getTotalRequests() + requests;
         commu.setTotalRequests(newTotalRequests);
-        commu.addTraceStep(application, traceId, tracePosition, requests, (float) averageResponseTime,
-            (float) overallTraceDuration);
+        commu.addTraceStep(application, traceId, tracePosition, requests,
+            (float) averageResponseTime, (float) overallTraceDuration);
 
         return;
       }

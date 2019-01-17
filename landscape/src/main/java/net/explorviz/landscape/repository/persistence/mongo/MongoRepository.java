@@ -6,8 +6,6 @@ import javax.inject.Inject;
 import javax.ws.rs.InternalServerErrorException;
 import net.explorviz.landscape.model.landscape.Landscape;
 import net.explorviz.landscape.repository.persistence.LandscapeRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Stores and retrieves landscapes from a mongodb, which is given in the
@@ -30,8 +28,6 @@ import org.slf4j.LoggerFactory;
  */
 public class MongoRepository implements LandscapeRepository<Landscape> {
 
-  private static final Logger LOGGER =
-      LoggerFactory.getLogger(MongoRepository.class.getSimpleName());
 
   @Inject
   private MongoJsonApiRepository repo;
@@ -51,7 +47,7 @@ public class MongoRepository implements LandscapeRepository<Landscape> {
     try {
       return this.serializationHelper.deserialize(jsonLandscape);
     } catch (final DocumentSerializationException e) {
-      throw new InternalServerErrorException("Error serializing: " + e.getMessage(), e);
+      throw new InternalServerErrorException("Error serializing: " + e.getMessage(), e); // NOPMD
     }
   }
 

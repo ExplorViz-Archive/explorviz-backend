@@ -1,7 +1,6 @@
 package net.explorviz.landscape.repository;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 
 import javax.inject.Inject;
 import net.explorviz.landscape.model.landscape.Landscape;
@@ -26,13 +25,15 @@ public class MongoRepositoryTest {
   }
 
 
+  /**
+   * Perform DI.
+   */
   @Before
   public void setUp() {
     if (this.repo == null) {
       final DependencyInjectionBinder binder = new DependencyInjectionBinder();
       final ServiceLocator locator = ServiceLocatorUtilities.bind(binder);
       locator.inject(this);
-      assertNotNull(this.repo);
     }
     this.repo.clear();
   }
@@ -53,7 +54,7 @@ public class MongoRepositoryTest {
 
     final Landscape landscapeRetrieved = this.repo.getLandscapeByTimestamp(ts);
 
-    assertEquals("Ids don't match", landscape.getId(), landscapeRetrieved.getId());
+    assertEquals("Ids don't match", landscape.getId(), landscapeRetrieved.getId()); // NOPMD
 
   }
 

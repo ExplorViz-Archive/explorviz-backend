@@ -1,6 +1,5 @@
 package net.explorviz.landscape.repository;
 
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import javax.inject.Inject;
@@ -31,13 +30,15 @@ public class MongoJsonApiRepositoryTest {
   }
 
 
+  /**
+   * Injects depedencies.
+   */
   @Before
   public void setUp() {
     if (this.repo == null) {
       final DependencyInjectionBinder binder = new DependencyInjectionBinder();
       final ServiceLocator locator = ServiceLocatorUtilities.bind(binder);
       locator.inject(this);
-      assertNotNull(this.repo);
     }
     this.repo.clear();
   }
@@ -60,7 +61,7 @@ public class MongoJsonApiRepositoryTest {
 
 
 
-    assertTrue(rawLandscape.startsWith("{\"data\":{\"type\":\"landscape\""));
+    assertTrue("Invalid landscape", rawLandscape.startsWith("{\"data\":{\"type\":\"landscape\""));
   }
 
   @Test
@@ -74,7 +75,8 @@ public class MongoJsonApiRepositoryTest {
     final long id = landscape.getId();
     final String rawLandscape = this.repo.getLandscapeById(id);
 
-    assertTrue(rawLandscape.startsWith("{\"data\":{\"type\":\"landscape\",\"id\":\"" + id + "\""));
+    assertTrue("Ivalid landscape or wrong id",
+        rawLandscape.startsWith("{\"data\":{\"type\":\"landscape\",\"id\":\"" + id + "\""));
 
   }
 
@@ -88,7 +90,7 @@ public class MongoJsonApiRepositoryTest {
 
 
 
-    assertTrue(rawLandscape.startsWith("{\"data\":{\"type\":\"landscape\""));
+    assertTrue("Invalid landscape", rawLandscape.startsWith("{\"data\":{\"type\":\"landscape\""));
   }
 
   @Test
@@ -102,7 +104,8 @@ public class MongoJsonApiRepositoryTest {
     final long id = landscape.getId();
     final String rawLandscape = this.repo.getReplayById(id);
 
-    assertTrue(rawLandscape.startsWith("{\"data\":{\"type\":\"landscape\",\"id\":\"" + id + "\""));
+    assertTrue("Ivalid landscape or wrong id",
+        rawLandscape.startsWith("{\"data\":{\"type\":\"landscape\",\"id\":\"" + id + "\""));
 
   }
 

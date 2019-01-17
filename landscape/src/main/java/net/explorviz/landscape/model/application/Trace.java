@@ -30,14 +30,13 @@ public class Trace extends BaseEntity {
   }
 
   /**
-   * Adds a new call within a trace as a {@link TraceStep}
+   * Adds a new call within a trace as a {@link TraceStep}.
    *
-   * @param traceId
-   * @param tracePosition
-   * @param requests
-   * @param averageResponseTime
-   * @param currentTraceDuration
-   * @param clazzCommunication
+   * @param tracePosition the trace position
+   * @param requests the request
+   * @param averageResponseTime the average response time
+   * @param currentTraceDuration the current trace duration
+   * @param clazzCommunication the class communication
    * @return TraceStep
    */
   public TraceStep addTraceStep(final int tracePosition, final int requests,

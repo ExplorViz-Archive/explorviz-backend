@@ -9,7 +9,7 @@ import net.explorviz.shared.annotations.Config;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class MongoHelper {
+public final class MongoHelper { // NOPMD
 
   private static final String DEFAULT_HOST = "localhost";
   private static final String DEFAULT_PORT = "27018";
@@ -20,7 +20,7 @@ public class MongoHelper {
   private static final Logger LOGGER = LoggerFactory.getLogger(MongoHelper.class.getSimpleName());
 
 
-  private static MongoClient client = null;
+  private static MongoClient client; // NOPMD
 
 
 
@@ -42,7 +42,7 @@ public class MongoHelper {
    */
 
   private MongoHelper() {
-    if (client == null) {
+    if (MongoHelper.client == null) {
       MongoHelper.client = new MongoClient(new MongoClientURI(this.getUri()));
     }
   }
@@ -65,7 +65,7 @@ public class MongoHelper {
 
     String dbName = this.dbName;
 
-    if (dbName == null || "".equals(dbName)) {
+    if (dbName == null || dbName.isEmpty()) {
       if (LOGGER.isWarnEnabled()) {
         LOGGER.warn("No database name given, falling back to " + DEFAULT_DB);
       }
@@ -92,17 +92,17 @@ public class MongoHelper {
     String host = this.host;
     String port = this.port;
 
-    if (host == null || "".equals(host)) {
+    if (host == null || host.isEmpty()) {
       if (LOGGER.isWarnEnabled()) {
         LOGGER.warn("No host configured, falling back to " + DEFAULT_HOST);
-        host = DEFAULT_HOST;
       }
+      host = DEFAULT_HOST;
     }
 
-    if (port == null || "".equals(port)) {
+    if (port == null || port.isEmpty()) {
+      port = DEFAULT_PORT;
       if (LOGGER.isWarnEnabled()) {
         LOGGER.warn("No port configured, falling back to " + DEFAULT_PORT);
-        port = DEFAULT_PORT;
       }
     }
 

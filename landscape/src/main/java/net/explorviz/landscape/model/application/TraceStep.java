@@ -29,13 +29,13 @@ public class TraceStep extends BaseEntity {
   private float averageResponseTime;
 
   /**
-   * Creates a new TraceStep and assigns related communication information
+   * Creates a new TraceStep and assigns related communication information.
    *
-   * @param clazzCommunication
-   * @param currentTraceDuration
-   * @param averageResponseTime
-   * @param requests
-   * @param tracePosition
+   * @param clazzCommunication the class communication
+   * @param currentTraceDuration the current duration
+   * @param averageResponseTime the average response time
+   * @param requests the request
+   * @param tracePosition the position of the trace
    */
   public TraceStep(final Trace parentTrace, final ClazzCommunication clazzCommunication,
       final int tracePosition, final int requests, final float averageResponseTime,

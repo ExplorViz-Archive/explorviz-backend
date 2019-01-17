@@ -30,9 +30,7 @@ public interface LandscapeRepository<T> {
    * @param timestamp the timestamp
    * @param replay the replay landscape
    */
-  default void saveReplay(final long timestamp, final Landscape replay) {
-    throw new RuntimeException("Not implemented");
-  }
+  void saveReplay(final long timestamp, final Landscape replay);
 
   /**
    * Retrieves a landscape object with a specific timestamp from the repository.
@@ -66,9 +64,7 @@ public interface LandscapeRepository<T> {
    *
    * @return the landscape object
    */
-  default T getReplayByTimestamp(final long timestamp) {
-    throw new RuntimeException("Not implemented");
-  }
+  T getReplayByTimestamp(final long timestamp);
 
   /**
    * Retrieves a replay object with a specific, unique identifier.
@@ -77,9 +73,7 @@ public interface LandscapeRepository<T> {
    *
    * @return the replay object
    */
-  default T getReplayById(final long id) {
-    throw new RuntimeException("Not implemented");
-  }
+  T getReplayById(final long id);
 
   /**
    * Returns all landscape model snapshots for timeshift use.

@@ -20,7 +20,7 @@ import org.nustaq.serialization.FSTConfiguration;
  *
  *
  */
-public class FstHelper {
+public final class FstHelper {
 
   /**
    * Creates a new {@link FSTConfiguration} and registers all available model classes.
@@ -46,6 +46,8 @@ public class FstHelper {
     return result;
   }
 
+
+  private FstHelper() {}
 
   /**
    * Converts a landscape object to bytes.

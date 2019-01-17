@@ -80,9 +80,7 @@ public class LandscapeResource {
   }
 
   /**
-   * For downloading a landscape from the landscape repository.
-   *
-   * TODO: Use timestamp or id?
+   * For downloading a landscape from the landscape repository. TODO: Use timestamp or id?
    */
   @GET
   @Path("/export/{fileName}")

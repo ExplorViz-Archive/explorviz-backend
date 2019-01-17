@@ -294,8 +294,8 @@ final class LandscapeDummyCreator {
 
     // set random usage
     node.setCpuUtilization((double) DummyLandscapeHelper.getRandomNum(10, 100) / 100);
-    node.setFreeRAM((long) DummyLandscapeHelper.getRandomNum(1, 4) * formatFactor);
-    node.setUsedRAM((long) DummyLandscapeHelper.getRandomNum(1, 4) * formatFactor);
+    node.setFreeRam((long) DummyLandscapeHelper.getRandomNum(1, 4) * formatFactor);
+    node.setUsedRam((long) DummyLandscapeHelper.getRandomNum(1, 4) * formatFactor);
 
     return node;
   }
@@ -363,13 +363,13 @@ final class LandscapeDummyCreator {
   }
 
   /**
-   * Creating a communication between two clazzes within the dummy landscape
+   * Creating a communication between two clazzes within the dummy landscape.
    *
-   * @param traceId
-   * @param requests
-   * @param sourceClazz
-   * @param targetClazz
-   * @param application
+   * @param traceId the id of the trace
+   * @param requests the request
+   * @param sourceClazz the source class
+   * @param targetClazz the target class
+   * @param application the appliaction
    */
   private static void createClazzCommunication(final int traceId, final int tracePosition,
       final int requests, final Clazz sourceClazz, final Clazz targetClazz,

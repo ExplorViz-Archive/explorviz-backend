@@ -1,6 +1,5 @@
 package net.explorviz.landscape.repository.persistence.mongo;
 
-import com.github.jasminb.jsonapi.ResourceConverter;
 import com.github.jasminb.jsonapi.exceptions.DocumentSerializationException;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
@@ -16,6 +15,7 @@ import javax.ws.rs.InternalServerErrorException;
 import net.explorviz.landscape.model.landscape.Landscape;
 import net.explorviz.landscape.repository.persistence.LandscapeRepository;
 import net.explorviz.landscape.server.main.Configuration;
+import org.apache.commons.lang3.NotImplementedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,7 +36,9 @@ public class MongoJsonApiRepository implements LandscapeRepository<String> {
 
   private static final Logger LOGGER =
       LoggerFactory.getLogger(MongoJsonApiRepository.class.getSimpleName());
+
   private static final String LANDSCAPE_FIELD = "landscape";
+  private static final String ID_FIELD = "_id";
 
 
 
@@ -47,7 +49,7 @@ public class MongoJsonApiRepository implements LandscapeRepository<String> {
 
 
   @Inject
-  public MongoJsonApiRepository(final MongoHelper mongoHelper, final ResourceConverter converter,
+  public MongoJsonApiRepository(final MongoHelper mongoHelper,
       final LandscapeSerializationHelper helper) {
     this.mongoHelper = mongoHelper;
     this.serializationHelper = helper;
@@ -58,7 +60,7 @@ public class MongoJsonApiRepository implements LandscapeRepository<String> {
   @Override
   public void saveLandscape(final long timestamp, final Landscape landscape) {
 
-    final String landscapeJsonApi;
+    String landscapeJsonApi;
     try {
       landscapeJsonApi = this.serializationHelper.serialize(landscape);
     } catch (final DocumentSerializationException e) {
@@ -68,7 +70,7 @@ public class MongoJsonApiRepository implements LandscapeRepository<String> {
     final DBCollection landscapeCollection = this.mongoHelper.getLandscapeCollection();
 
     final DBObject landscapeDbo = new BasicDBObject();
-    landscapeDbo.put("_id", timestamp);
+    landscapeDbo.put(ID_FIELD, timestamp);
     landscapeDbo.put(LANDSCAPE_FIELD, landscapeJsonApi);
 
     landscapeCollection.save(landscapeDbo);
@@ -77,9 +79,9 @@ public class MongoJsonApiRepository implements LandscapeRepository<String> {
   @Override
   public String getLandscapeByTimestamp(final long timestamp) {
     final DBCollection landscapeCollection = this.mongoHelper.getLandscapeCollection();
-    final DBObject query = new BasicDBObject("_id", timestamp);
+    final DBObject query = new BasicDBObject(ID_FIELD, timestamp);
     final DBCursor result = landscapeCollection.find(query);
-    if (result.count() == 1) {
+    if (result.count() > 0) {
       return (String) result.one().get(LANDSCAPE_FIELD);
     } else {
       throw new ClientErrorException("Landscape not found for provided timestamp " + timestamp,
@@ -96,7 +98,7 @@ public class MongoJsonApiRepository implements LandscapeRepository<String> {
     final DBCollection landscapeCollection = this.mongoHelper.getLandscapeCollection();
     final DBObject query = new BasicDBObject(LANDSCAPE_FIELD, pat);
     final DBCursor result = landscapeCollection.find(query);
-    if (result.count() == 1) {
+    if (result.count() == 0) {
       return (String) result.one().get(LANDSCAPE_FIELD);
     } else {
       throw new ClientErrorException("Landscape not found for provided id " + id, 404);
@@ -107,7 +109,7 @@ public class MongoJsonApiRepository implements LandscapeRepository<String> {
 
   @Override
   public Map<Long, Long> getAllForTimeshift() {
-    throw new RuntimeException("Not implemented");
+    throw new NotImplementedException("Not implemented");
   }
 
   @Override
@@ -117,7 +119,7 @@ public class MongoJsonApiRepository implements LandscapeRepository<String> {
 
     final DBCollection landscapeCollection = this.mongoHelper.getLandscapeCollection();
     final DBCollection replayCollection = this.mongoHelper.getReplayCollection();
-    final DBObject query = new BasicDBObject("_id", new BasicDBObject("$lt", enddate));
+    final DBObject query = new BasicDBObject(ID_FIELD, new BasicDBObject("$lt", enddate));
     final WriteResult landsapeResult = landscapeCollection.remove(query);
     final WriteResult replayResult = replayCollection.remove(query);
     // TODO: Replays
@@ -140,7 +142,7 @@ public class MongoJsonApiRepository implements LandscapeRepository<String> {
 
   @Override
   public void saveReplay(final long timestamp, final Landscape replay) {
-    final String landscapeJsonApi;
+    String landscapeJsonApi;
     try {
       landscapeJsonApi = this.serializationHelper.serialize(replay);
     } catch (final DocumentSerializationException e) {
@@ -161,9 +163,9 @@ public class MongoJsonApiRepository implements LandscapeRepository<String> {
   @Override
   public String getReplayByTimestamp(final long timestamp) {
     final DBCollection landscapeCollection = this.mongoHelper.getReplayCollection();
-    final DBObject query = new BasicDBObject("_id", timestamp);
+    final DBObject query = new BasicDBObject(ID_FIELD, timestamp);
     final DBCursor result = landscapeCollection.find(query);
-    if (result.count() == 1) {
+    if (result.count() > 0) {
       return (String) result.one().get(LANDSCAPE_FIELD);
     } else {
       throw new ClientErrorException("Landscape not found for provided timestamp " + timestamp,
@@ -182,7 +184,7 @@ public class MongoJsonApiRepository implements LandscapeRepository<String> {
     final DBCollection landscapeCollection = this.mongoHelper.getReplayCollection();
     final DBObject query = new BasicDBObject(LANDSCAPE_FIELD, pat);
     final DBCursor result = landscapeCollection.find(query);
-    if (result.count() == 1) {
+    if (result.count() > 0) {
       return (String) result.one().get(LANDSCAPE_FIELD);
     } else {
       throw new ClientErrorException("Landscape not found for provided id " + id, 404);

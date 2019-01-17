@@ -121,9 +121,9 @@ public class InsertionRepositoryPart {
                 systemMonitoringRecord.getHostApplicationMetadata().getIpaddress())) {
 
           node.setCpuUtilization(systemMonitoringRecord.getCpuUtilization());
-          node.setFreeRAM(
+          node.setFreeRam(
               systemMonitoringRecord.getAbsoluteRAM() - systemMonitoringRecord.getUsedRAM());
-          node.setUsedRAM(systemMonitoringRecord.getUsedRAM());
+          node.setUsedRam(systemMonitoringRecord.getUsedRAM());
         }
       }
     }
