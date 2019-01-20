@@ -13,9 +13,13 @@ public class UserSettings {
   @Id(LongIdHandler.class)
   private Long id = 1L;
 
-  private boolean showFpsCounter;
+  private boolean showFpsCounter = false;
 
-  private String appVizClassColor = "0xFF0000";
+  private double appVizCommArrowSize = 1.0;
+
+  private boolean appVizTransparency = true;
+
+  private double appVizTransparencyIntensity = 0.3;
 
   public UserSettings() {
     // For MongoDB
@@ -39,12 +43,30 @@ public class UserSettings {
   }
 
 
-  public String getAppVizClassColor() {
-    return this.appVizClassColor;
+  public double getAppVizCommArrowSize() {
+    return this.appVizCommArrowSize;
   }
 
-  public void setAppVizClassColor(final String appVizClassColor) {
-    this.appVizClassColor = appVizClassColor;
+  public void setAppVizCommArrowSize(final double appVizCommArrowSize) {
+    this.appVizCommArrowSize = appVizCommArrowSize;
+  }
+
+
+  public boolean isAppVizTransparency() {
+    return this.appVizTransparency;
+  }
+
+  public void setAppVizTransparency(final boolean appVizTransparency) {
+    this.appVizTransparency = appVizTransparency;
+  }
+
+
+  public double getAppVizTransparencyIntensity() {
+    return this.appVizTransparencyIntensity;
+  }
+
+  public void setAppVizTransparencyIntensity(final double appVizTransparencyIntensity) {
+    this.appVizTransparencyIntensity = appVizTransparencyIntensity;
   }
 
   @Override
@@ -61,7 +83,9 @@ public class UserSettings {
     final UserSettings otherObj = (UserSettings) obj;
 
     return this.id.equals(otherObj.getId())
-        && this.appVizClassColor.equals(otherObj.appVizClassColor)
+        && this.appVizCommArrowSize == otherObj.appVizCommArrowSize
+        && this.appVizTransparency == otherObj.appVizTransparency
+        && this.appVizTransparencyIntensity == otherObj.appVizTransparencyIntensity
         && this.showFpsCounter == otherObj.isShowFpsCounter();
   }
 
