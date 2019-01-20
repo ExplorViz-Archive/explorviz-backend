@@ -3,6 +3,7 @@ package net.explorviz.shared.security.model;
 import com.github.jasminb.jsonapi.LongIdHandler;
 import com.github.jasminb.jsonapi.annotations.Id;
 import com.github.jasminb.jsonapi.annotations.Type;
+import javax.ws.rs.BadRequestException;
 
 /**
  * Model class for the user settings in the frontend.
@@ -69,6 +70,19 @@ public class UserSettings {
     this.appVizTransparencyIntensity = appVizTransparencyIntensity;
   }
 
+  /*
+   * Checks if the settings are valid
+   */
+  public void validate() {
+    if (this.appVizCommArrowSize <= 0.0) {
+      throw new BadRequestException("appVizCommArrowSize must be > 0");
+    }
+    if (this.appVizTransparencyIntensity < 0.0 || this.appVizTransparencyIntensity > 1.0) {
+      throw new BadRequestException("appVizCommArrowSize must be between 0.0 and 1.0");
+    }
+  }
+
+
   @Override
   public boolean equals(final Object obj) {
     if (obj == null) {
@@ -83,9 +97,9 @@ public class UserSettings {
     final UserSettings otherObj = (UserSettings) obj;
 
     return this.id.equals(otherObj.getId())
-        && this.appVizCommArrowSize == otherObj.appVizCommArrowSize
-        && this.appVizTransparency == otherObj.appVizTransparency
-        && this.appVizTransparencyIntensity == otherObj.appVizTransparencyIntensity
+        && this.appVizCommArrowSize == otherObj.getAppVizCommArrowSize()
+        && this.appVizTransparency == otherObj.isAppVizTransparency()
+        && this.appVizTransparencyIntensity == otherObj.getAppVizTransparencyIntensity()
         && this.showFpsCounter == otherObj.isShowFpsCounter();
   }
 
