@@ -73,7 +73,7 @@ public class ClazzCommunication extends BaseEntity {
     final List<Trace> traces = application.getTraces();
 
     for (final Trace trace : traces) {
-      if (trace.getTraceId() == traceId) {
+      if (trace.getTraceId().equals(traceId)) {
         return trace;
       }
     }
