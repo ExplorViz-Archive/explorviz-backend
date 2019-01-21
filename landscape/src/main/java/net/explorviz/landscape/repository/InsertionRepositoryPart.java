@@ -338,13 +338,15 @@ public class InsertionRepositoryPart {
           }
 
           if (!isAbstractConstructor) {
+
+            final String traceId = Long.toString(abstractBeforeEventRecord.getTraceId());
+
             this.createOrUpdateCall(callerClazz, currentClazz, currentApplication,
                 abstractBeforeEventRecord.getRuntimeStatisticInformationList().get(runtimeIndex)
                     .getCount(),
                 abstractBeforeEventRecord.getRuntimeStatisticInformationList().get(runtimeIndex)
                     .getAverage(),
-                overallTraceDuration, abstractBeforeEventRecord.getTraceId(), orderIndex,
-                methodName, landscape);
+                overallTraceDuration, traceId, orderIndex, methodName, landscape);
             orderIndex++;
           }
 
@@ -469,7 +471,7 @@ public class InsertionRepositoryPart {
 
   private void createOrUpdateCall(final Clazz caller, final Clazz callee,
       final Application application, final int requests, final double average,
-      final double overallTraceDuration, final long traceId, final int orderIndex,
+      final double overallTraceDuration, final String traceId, final int orderIndex,
       final String operationName, final Landscape landscape) {
 
     landscape.getTimestamp()

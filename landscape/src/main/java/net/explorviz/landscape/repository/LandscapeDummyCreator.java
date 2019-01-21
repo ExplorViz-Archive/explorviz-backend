@@ -371,7 +371,7 @@ final class LandscapeDummyCreator {
    * @param targetClazz
    * @param application
    */
-  private static void createClazzCommunication(final int traceId, final int tracePosition,
+  private static void createClazzCommunication(final String traceId, final int tracePosition,
       final int requests, final Clazz sourceClazz, final Clazz targetClazz,
       final Application application) {
 
@@ -453,7 +453,7 @@ final class LandscapeDummyCreator {
     createClazz("AccountSqlMapDao2", logging, 5);
 
     // specify a first trace for the dummy landscape
-    final int firstTraceId = 1;
+    final String firstTraceId = "1";
 
     createClazzCommunication(firstTraceId, 1, 40, graphDbClazz, helpersClazz, application);
     createClazzCommunication(firstTraceId, 2, 800, toolingClazz, implClazz, application);
@@ -472,7 +472,7 @@ final class LandscapeDummyCreator {
     createClazzCommunication(firstTraceId, 15, 2100, helpersClazz, implClazz, application);
 
     // specify a second trace for the dummy landscape
-    final int secondTraceId = 2;
+    final String secondTraceId = "2";
 
     createClazzCommunication(secondTraceId, 1, 2500, implClazz, loggingClazz, application);
     createClazzCommunication(secondTraceId, 2, 900, loggingClazz, implClazz, application);

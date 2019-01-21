@@ -69,7 +69,7 @@ public class ClazzCommunication extends BaseEntity {
   }
 
   // returns a trace for a given traceId or creates a new one
-  public Trace retrieveTraceByTraceId(final Application application, final Long traceId) {
+  public Trace retrieveTraceByTraceId(final Application application, final String traceId) {
     final List<Trace> traces = application.getTraces();
 
     for (final Trace trace : traces) {
@@ -85,7 +85,7 @@ public class ClazzCommunication extends BaseEntity {
   }
 
   // checks if a trace is existing and if not creates one and adds the runtime information
-  public void addTraceStep(final Application application, final Long traceId,
+  public void addTraceStep(final Application application, final String traceId,
       final int tracePosition, final int requests, final float averageResponseTime,
       final float currentTraceDuration) {
 
