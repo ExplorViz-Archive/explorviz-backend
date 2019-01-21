@@ -54,11 +54,6 @@ assemble.dependsOn shadowJar
 artifacts {
   	archives file: file('libs/explorviz-common-1.0.jar'), name: 'explorviz-common', type: 'jar'
   	archives file: file('libs/explorviz-worker-1.0.jar'), name: 'explorviz-worker', type: 'jar'
-  	archives war
-}
-
-war {
-	archiveName = "explorviz-${project.name}.${extension}"
 }
 
 jar {

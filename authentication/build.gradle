@@ -19,10 +19,6 @@ dependencies {
 
 assemble.dependsOn shadowJar
 
-war {
-  archiveName = "explorviz-${project.name}.${extension}"
-}
-
 jar {
   manifest {
     attributes(

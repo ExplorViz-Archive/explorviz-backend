@@ -4,6 +4,9 @@ allprojects {
 
 subprojects {
 
+  // Disable Jar task since we only use ShadowJar task
+  tasks.jar.enabled = false
+
   // BEGIN QA Tooling for subprojects
   
   buildscript {
@@ -53,10 +56,6 @@ subprojects {
   }
 	
   // END QA Tooling for subprojects
-
-  if (project.name == 'authentication' || project.name == 'landscape' || project.name == 'discovery') {
-    apply plugin: 'war'
-  }
 
   repositories {
     // Order of declaration determines how Gradle will check for dependencies at runtime. 

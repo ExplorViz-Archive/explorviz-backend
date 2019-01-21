@@ -25,8 +25,7 @@ jobs:
       name: "Docker Image: Discovery"
       if: (branch = dev-1) OR (branch = master)
       jdk: openjdk8
-      # script: cd discovery && ../.travis/docker_push.sh
-      script: echo "TODO"
+      script: cd discovery && ../.travis/docker_push.sh
     - stage: deploy
       name: "Docker Image: Landscape"
       if: (branch = dev-1) OR (branch = master)
