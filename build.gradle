@@ -4,8 +4,11 @@ allprojects {
 
 subprojects {
 
-  // Disable Jar task since we only use ShadowJar task
-  tasks.jar.enabled = false
+  // Disable jar task for microservices, 
+  // since we only use ShadowJar task
+  if (project.name != 'shared') {
+  	tasks.jar.enabled = false
+  }  
 
   // BEGIN QA Tooling for subprojects
   
