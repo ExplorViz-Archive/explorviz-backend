@@ -37,9 +37,6 @@ public class MongoJsonApiRepository implements LandscapeRepository<String> {
   private static final Logger LOGGER =
       LoggerFactory.getLogger(MongoJsonApiRepository.class.getSimpleName());
 
-  private static final String LANDSCAPE_FIELD = "landscape";
-  private static final String ID_FIELD = "_id";
-
 
 
   private final MongoHelper mongoHelper;
@@ -70,8 +67,8 @@ public class MongoJsonApiRepository implements LandscapeRepository<String> {
     final DBCollection landscapeCollection = this.mongoHelper.getLandscapeCollection();
 
     final DBObject landscapeDbo = new BasicDBObject();
-    landscapeDbo.put(ID_FIELD, timestamp);
-    landscapeDbo.put(LANDSCAPE_FIELD, landscapeJsonApi);
+    landscapeDbo.put(MongoHelper.ID_FIELD, timestamp);
+    landscapeDbo.put(MongoHelper.LANDSCAPE_FIELD, landscapeJsonApi);
 
     landscapeCollection.save(landscapeDbo);
   }
@@ -79,10 +76,10 @@ public class MongoJsonApiRepository implements LandscapeRepository<String> {
   @Override
   public String getLandscapeByTimestamp(final long timestamp) {
     final DBCollection landscapeCollection = this.mongoHelper.getLandscapeCollection();
-    final DBObject query = new BasicDBObject(ID_FIELD, timestamp);
+    final DBObject query = new BasicDBObject(MongoHelper.ID_FIELD, timestamp);
     final DBCursor result = landscapeCollection.find(query);
     if (result.count() > 0) {
-      return (String) result.one().get(LANDSCAPE_FIELD);
+      return (String) result.one().get(MongoHelper.LANDSCAPE_FIELD);
     } else {
       throw new ClientErrorException("Landscape not found for provided timestamp " + timestamp,
           404);
@@ -96,10 +93,10 @@ public class MongoJsonApiRepository implements LandscapeRepository<String> {
     final Pattern pat = Pattern.compile(regexQuery, Pattern.CASE_INSENSITIVE);
 
     final DBCollection landscapeCollection = this.mongoHelper.getLandscapeCollection();
-    final DBObject query = new BasicDBObject(LANDSCAPE_FIELD, pat);
+    final DBObject query = new BasicDBObject(MongoHelper.LANDSCAPE_FIELD, pat);
     final DBCursor result = landscapeCollection.find(query);
     if (result.count() == 0) {
-      return (String) result.one().get(LANDSCAPE_FIELD);
+      return (String) result.one().get(MongoHelper.LANDSCAPE_FIELD);
     } else {
       throw new ClientErrorException("Landscape not found for provided id " + id, 404);
     }
@@ -119,7 +116,8 @@ public class MongoJsonApiRepository implements LandscapeRepository<String> {
 
     final DBCollection landscapeCollection = this.mongoHelper.getLandscapeCollection();
     final DBCollection replayCollection = this.mongoHelper.getReplayCollection();
-    final DBObject query = new BasicDBObject(ID_FIELD, new BasicDBObject("$lt", enddate));
+    final DBObject query =
+        new BasicDBObject(MongoHelper.ID_FIELD, new BasicDBObject("$lt", enddate));
     final WriteResult landsapeResult = landscapeCollection.remove(query);
     final WriteResult replayResult = replayCollection.remove(query);
     // TODO: Replays
@@ -153,7 +151,7 @@ public class MongoJsonApiRepository implements LandscapeRepository<String> {
 
     final DBObject landscapeDbo = new BasicDBObject();
     landscapeDbo.put("_id", timestamp);
-    landscapeDbo.put(LANDSCAPE_FIELD, landscapeJsonApi);
+    landscapeDbo.put(MongoHelper.LANDSCAPE_FIELD, landscapeJsonApi);
 
     landscapeCollection.save(landscapeDbo);
   }
@@ -163,10 +161,10 @@ public class MongoJsonApiRepository implements LandscapeRepository<String> {
   @Override
   public String getReplayByTimestamp(final long timestamp) {
     final DBCollection landscapeCollection = this.mongoHelper.getReplayCollection();
-    final DBObject query = new BasicDBObject(ID_FIELD, timestamp);
+    final DBObject query = new BasicDBObject(MongoHelper.ID_FIELD, timestamp);
     final DBCursor result = landscapeCollection.find(query);
     if (result.count() > 0) {
-      return (String) result.one().get(LANDSCAPE_FIELD);
+      return (String) result.one().get(MongoHelper.LANDSCAPE_FIELD);
     } else {
       throw new ClientErrorException("Landscape not found for provided timestamp " + timestamp,
           404);
@@ -182,10 +180,10 @@ public class MongoJsonApiRepository implements LandscapeRepository<String> {
     final Pattern pat = Pattern.compile(regexQuery, Pattern.CASE_INSENSITIVE);
 
     final DBCollection landscapeCollection = this.mongoHelper.getReplayCollection();
-    final DBObject query = new BasicDBObject(LANDSCAPE_FIELD, pat);
+    final DBObject query = new BasicDBObject(MongoHelper.LANDSCAPE_FIELD, pat);
     final DBCursor result = landscapeCollection.find(query);
     if (result.count() > 0) {
-      return (String) result.one().get(LANDSCAPE_FIELD);
+      return (String) result.one().get(MongoHelper.LANDSCAPE_FIELD);
     } else {
       throw new ClientErrorException("Landscape not found for provided id " + id, 404);
     }

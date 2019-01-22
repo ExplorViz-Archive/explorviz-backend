@@ -1,5 +1,6 @@
 package net.explorviz.landscape.repository.persistence.mongo;
 
+import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
 import com.mongodb.MongoClient;
@@ -16,6 +17,9 @@ public final class MongoHelper { // NOPMD
   private static final String DEFAULT_DB = "explorviz";
   private static final String LANDSCAPE_COLLECTION = "landscape";
   private static final String REPLAY_COLLECTION = "replay";
+
+  public static final String LANDSCAPE_FIELD = "landscape";
+  public static final String ID_FIELD = "_id";
 
   private static final Logger LOGGER = LoggerFactory.getLogger(MongoHelper.class.getSimpleName());
 
@@ -55,6 +59,12 @@ public final class MongoHelper { // NOPMD
    */
   private MongoClient getClient() {
     return MongoHelper.client;
+  }
+
+
+  private void initDb() {
+    this.getLandscapeCollection().createIndex(new BasicDBObject(LANDSCAPE_FIELD, 1), null, true);
+    this.getReplayCollection().createIndex(new BasicDBObject(LANDSCAPE_FIELD, 1), null, true);
   }
 
   /**
