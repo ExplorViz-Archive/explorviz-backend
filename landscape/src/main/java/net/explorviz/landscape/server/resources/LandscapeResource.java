@@ -12,8 +12,6 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.sse.Sse;
 import net.explorviz.landscape.api.ExtensionApiImpl;
 import net.explorviz.landscape.model.landscape.Landscape;
-import net.explorviz.landscape.repository.persistence.LandscapeRepository;
-import net.explorviz.landscape.server.main.Configuration;
 
 /**
  * Resource providing {@link Landscape} data for the frontend.
@@ -26,8 +24,6 @@ public class LandscapeResource {
 
   private final ExtensionApiImpl api;
 
-  @Inject
-  private LandscapeRepository<String> landscapeRepository;
 
   @Inject
   public LandscapeResource(final ExtensionApiImpl api) {
@@ -38,7 +34,7 @@ public class LandscapeResource {
   @Path("/by-timestamp")
   @Produces(MEDIA_TYPE)
   public Landscape getLandscapeByTimestamp(@QueryParam("timestamp") final long timestamp) {
-    return this.api.getLandscape(timestamp, Configuration.LANDSCAPE_REPOSITORY);
+    return this.api.getLandscape(timestamp);
   }
 
   @Path("/broadcast")
@@ -56,7 +52,7 @@ public class LandscapeResource {
   @Produces(MEDIA_TYPE)
   public Landscape getReplayLandscape(@PathParam("timestamp") final long timestamp)
       throws FileNotFoundException {
-    return this.api.getLandscape(timestamp, Configuration.REPLAY_REPOSITORY);
+    return this.api.getLandscape(timestamp);
   }
 
 }

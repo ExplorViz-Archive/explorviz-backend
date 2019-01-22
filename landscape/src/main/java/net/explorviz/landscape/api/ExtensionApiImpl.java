@@ -4,7 +4,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
-import java.util.NoSuchElementException;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import net.explorviz.landscape.model.landscape.Landscape;
@@ -62,13 +61,8 @@ public final class ExtensionApiImpl implements IExtensionApi {
    * @param timestamp - As configured in Kieker
    */
   @Override
-  public Landscape getLandscape(final long timestamp, final String folderName) {
-    try {
-      return this.service.getLandscape(timestamp, folderName);
-    } catch (final FileNotFoundException e) {
-      LOGGER.debug("Specific landscape not found!", e.getMessage());
-      throw new NoSuchElementException("The requested landscape could not be found"); // NOPMD
-    }
+  public Landscape getLandscape(final long timestamp) {
+    return this.service.getLandscape(timestamp);
   }
 
   /**

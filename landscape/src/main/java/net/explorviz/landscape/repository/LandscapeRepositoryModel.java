@@ -3,7 +3,6 @@ package net.explorviz.landscape.repository;
 import explorviz.live_trace_processing.reader.IPeriodicTimeSignalReceiver;
 import explorviz.live_trace_processing.reader.TimeSignalReader;
 import explorviz.live_trace_processing.record.IRecord;
-import java.io.FileNotFoundException;
 import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -92,14 +91,15 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
     }
   }
 
-  public Landscape getLandscape(final long timestamp, final String folderName)
-      throws FileNotFoundException {
+  public Landscape getLandscape(final long timestamp) {
     return LandscapePreparer
         .prepareLandscape(this.landscapeRepository.getLandscapeByTimestamp(timestamp));
-
-    // RepositoryFileStorage.readFromFile(timestamp, folderName)
   }
 
+  public Landscape getReplay(final long timestamp) {
+    return LandscapePreparer
+        .prepareLandscape(this.landscapeRepository.getReplayByTimestamp(timestamp));
+  }
 
 
   static {
@@ -135,21 +135,31 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
         final long milliseconds = java.lang.System.currentTimeMillis();
 
         // calculates the total requests for the internal landscape and stores them in its timestamp
-        final int calculatedTotalRequests = 0;
+        int calculatedTotalRequests = 0;
 
         if (this.useDummyMode) {
           final Landscape dummyLandscape = LandscapeDummyCreator.createDummyLandscape();
           dummyLandscape.getTimestamp().setTimestamp(milliseconds);
           dummyLandscape.getTimestamp().updateId();
 
+          calculatedTotalRequests = calculateTotalRequests(dummyLandscape);
+          dummyLandscape.getTimestamp().setTotalRequests(calculatedTotalRequests);
+
           this.landscapeRepository.saveLandscape(milliseconds, dummyLandscape);
           this.lastPeriodLandscape = dummyLandscape;
         } else {
+
+          calculatedTotalRequests = calculateTotalRequests(this.internalLandscape);
+          this.internalLandscape.getTimestamp().setTotalRequests(calculatedTotalRequests);
           this.internalLandscape.setTimestamp(new Timestamp(milliseconds, 0));
 
           this.landscapeRepository.saveLandscape(milliseconds, this.internalLandscape);
-          final Landscape l = this.fstConf.deepCopy(this.internalLandscape);
-          this.lastPeriodLandscape = LandscapePreparer.prepareLandscape(l);
+          try {
+            final Landscape l = this.fstConf.deepCopy(this.internalLandscape);
+            this.lastPeriodLandscape = LandscapePreparer.prepareLandscape(l);
+          } catch (final Exception e) {
+            LOGGER.error("Error when deep-copying landscape.", e);
+          }
         }
 
         // broadcast latest landscape to registered clients

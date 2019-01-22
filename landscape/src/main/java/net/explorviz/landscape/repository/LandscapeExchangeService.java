@@ -1,7 +1,6 @@
 package net.explorviz.landscape.repository;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -12,7 +11,6 @@ import javax.inject.Singleton;
 import net.explorviz.landscape.model.landscape.Landscape;
 import net.explorviz.landscape.model.store.Timestamp;
 import net.explorviz.landscape.server.helper.FileSystemHelper;
-import net.explorviz.landscape.server.main.Configuration;
 import net.explorviz.shared.annotations.Config;
 import org.jvnet.hk2.annotations.Service;
 import org.slf4j.Logger;
@@ -80,12 +78,9 @@ public class LandscapeExchangeService {
           }
 
           // second validation check -> deserialization
-          try {
-            this.getLandscape(timestamp, Configuration.REPLAY_REPOSITORY);
-          } catch (final FileNotFoundException e) {
-            LOGGER.warn(e.getMessage());
-            continue;
-          }
+
+          this.getReplay(timestamp);
+
           names.add(filename);
         }
       }
@@ -136,9 +131,13 @@ public class LandscapeExchangeService {
     return timestamps;
   }
 
-  public Landscape getLandscape(final long timestamp, final String folderName)
-      throws FileNotFoundException {
-    return this.model.getLandscape(timestamp, folderName);
+  public Landscape getLandscape(final long timestamp) {
+    return this.model.getLandscape(timestamp);
+  }
+
+  public Landscape getReplay(final long timestamp) {
+    return this.model.getReplay(timestamp);
+
   }
 
   public void startRepository() {
