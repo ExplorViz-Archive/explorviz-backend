@@ -7,7 +7,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 import java.util.concurrent.TimeUnit;
-import javax.inject.Inject;
 import javax.ws.rs.ClientErrorException;
 import net.explorviz.landscape.model.application.AggregatedClazzCommunication;
 import net.explorviz.landscape.model.application.Application;
@@ -84,6 +83,9 @@ public final class RepositoryFileStorage {
     result.registerClass(ClazzCommunication.class);
     result.registerClass(TraceStep.class);
 
+    return result;
+  }
+
 
   /**
    * Saves a landscape object on disk.
@@ -100,17 +102,6 @@ public final class RepositoryFileStorage {
   }
 
 
-  /**
-   * Converts a landscape object to bytes.
-   *
-   * @param landscape the landscape object
-   *
-   * @return the given landscape as byte array
-   */
-  public static byte[] convertLandscapeToBytes(final Landscape landscape) {
-    // TODO: Move to "ExportHelper"
-    return FST_CONF.asByteArray(landscape);
-  }
 
   /**
    * Writes a landscape object to a file on disk.
@@ -185,29 +176,33 @@ public final class RepositoryFileStorage {
     try {
 
       FSTObjectInput fstInputOutput = null;
+      final File file = new File(sourceFolder + "/" + sourceFilename);
 
-  /**
-   * Returns all landscape model snapshots for timeshift use.
-   *
-   * @param folderName the folder
-   * @return a map containing the timestamps as keys and actvity(?) as values.
-   */
-  public static Map<Long, Long> getAvailableModelsForTimeshift(final String folderName) {
-    final String specificFolder = folder + folderName;
-    return getAvailableModels(Configuration.TIMESHIFT_INTERVAL_IN_MINUTES, specificFolder);
+      final FileInputStream fip = new FileInputStream(file);
+
+      fstInputOutput = FST_CONF.getObjectInput(fip);
+
+      loadedLandscape = (Landscape) fstInputOutput.readObject(Landscape.class);
+
+      fstInputOutput.close();
+      fip.close();
+
+    } catch (final Exception e) {
+      LOGGER.error("Error when reading landscape from file.", e);
+    }
+    return loadedLandscape;
   }
+
 
 
   /**
    * Returns all available landscape models.
    *
-   * @param minutesBackwards ?
    * @param specificFolder ?
    *
    * @return Map with timestamps as keys and activity(?) as value
    */
-  private static Map<Long, Long> getAvailableModels(final int minutesBackwards,
-      final String specificFolder) {
+  private static Map<Long, Long> getAvailableModels(final String specificFolder) {
     final Map<Long, Long> result = new TreeMap<>();
 
     if (specificFolder == null) {

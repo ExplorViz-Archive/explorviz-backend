@@ -60,7 +60,7 @@ public class Trace extends BaseEntity {
 
   public Trace() {}
 
-  public long getTraceId() {
+  public String getTraceId() {
     return this.traceId;
   }
 

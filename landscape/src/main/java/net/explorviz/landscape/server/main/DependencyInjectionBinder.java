@@ -11,7 +11,7 @@ import net.explorviz.landscape.repository.persistence.mongo.LandscapeSerializati
 import net.explorviz.landscape.repository.persistence.mongo.MongoHelper;
 import net.explorviz.landscape.repository.persistence.mongo.MongoJsonApiRepository;
 import net.explorviz.landscape.repository.persistence.mongo.MongoRepository;
-import net.explorviz.landscape.server.helper.BroadcastService;
+import net.explorviz.landscape.server.helper.LandscapeBroadcastService;
 import net.explorviz.landscape.server.injection.ResourceConverterFactory;
 import net.explorviz.landscape.server.resources.LandscapeBroadcastSubResource;
 import net.explorviz.shared.annotations.Config;
@@ -58,8 +58,7 @@ public class DependencyInjectionBinder extends AbstractBinder {
     this.bind(LandscapeBroadcastSubResource.class).to(LandscapeBroadcastSubResource.class);
 
     // injectable config properties
-    this.bind(new ConfigInjectionResolver()).to(new TypeLiteral<InjectionResolver<Config>>() {
-    });
+    this.bind(new ConfigInjectionResolver()).to(new TypeLiteral<InjectionResolver<Config>>() {});
 
     // ErrorObject Handler
     this.bind(ErrorObjectHelper.class).to(ErrorObjectHelper.class).in(Singleton.class);

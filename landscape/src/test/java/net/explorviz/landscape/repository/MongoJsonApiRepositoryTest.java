@@ -66,11 +66,13 @@ public class MongoJsonApiRepositoryTest {
 
   @Test
   public void testFindById() {
-    final long ts = System.currentTimeMillis();
+
     final Landscape landscape = LandscapeDummyCreator.createDummyLandscape();
+    final long ts = System.currentTimeMillis();
     final Landscape landscape2 = LandscapeDummyCreator.createDummyLandscape();
+    final long ts2 = ts + 1;
     this.repo.saveLandscape(ts, landscape);
-    this.repo.saveLandscape(ts, landscape2);
+    this.repo.saveLandscape(ts2, landscape2);
 
     final long id = landscape.getId();
     final String rawLandscape = this.repo.getLandscapeById(id);

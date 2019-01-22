@@ -141,8 +141,8 @@ public final class ExtensionApiImpl implements IExtensionApi {
   @Override
   public void saveLandscapeToFile(final Landscape landscape, final long totalRequests,
       final String folderName) {
-    RepositoryStorage.writeToFile(landscape, landscape.getTimestamp().getTimestamp(), totalRequests,
-        folderName);
+    RepositoryFileStorage.writeToFile(landscape, landscape.getTimestamp().getTimestamp(),
+        totalRequests, folderName);
   }
 
 }

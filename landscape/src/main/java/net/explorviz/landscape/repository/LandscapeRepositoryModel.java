@@ -11,13 +11,12 @@ import net.explorviz.landscape.model.application.AggregatedClazzCommunication;
 import net.explorviz.landscape.model.application.Application;
 import net.explorviz.landscape.model.application.ApplicationCommunication;
 import net.explorviz.landscape.model.landscape.Landscape;
-import net.explorviz.landscape.model.store.Timestamp;
-import net.explorviz.landscape.repository.persistence.FstHelper;
-import net.explorviz.landscape.repository.persistence.LandscapeRepository;
-import net.explorviz.landscape.server.helper.BroadcastService;
 import net.explorviz.landscape.model.landscape.Node;
 import net.explorviz.landscape.model.landscape.NodeGroup;
 import net.explorviz.landscape.model.landscape.System;
+import net.explorviz.landscape.model.store.Timestamp;
+import net.explorviz.landscape.repository.persistence.FstHelper;
+import net.explorviz.landscape.repository.persistence.LandscapeRepository;
 import net.explorviz.landscape.server.helper.LandscapeBroadcastService;
 import net.explorviz.landscape.server.main.Configuration;
 import net.explorviz.shared.annotations.Config;
@@ -48,7 +47,7 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
   private LandscapeRepository<Landscape> landscapeRepository;
 
   @Inject
-  public LandscapeRepositoryModel(final BroadcastService broadcastService) {
+  public LandscapeRepositoryModel(final LandscapeBroadcastService broadcastService) {
 
     this.fstConf = this.initFSTConf();
 
@@ -61,7 +60,7 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
       // Configuration.LANDSCAPE_REPOSITORY);
 
       final Landscape readLandscape =
-          this.landscapeRepository.getLandscapeByTimestamp(System.currentTimeMillis());
+          this.landscapeRepository.getLandscapeByTimestamp(java.lang.System.currentTimeMillis());
 
       this.internalLandscape = readLandscape;
     } else {
@@ -84,7 +83,7 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
   }
 
   public FSTConfiguration initFSTConf() {
-    return RepositoryStorage.createFSTConfiguration();
+    return FstHelper.createFstConfiguration();
   }
 
   public Landscape getLastPeriodLandscape() {
@@ -115,7 +114,7 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
   }
 
   public FSTConfiguration initFstConf() {
-    return RepositoryStorage.createFstConfiguration();
+    return FstHelper.createFstConfiguration();
   }
 
   public void reset() {
@@ -136,7 +135,7 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
         final long milliseconds = java.lang.System.currentTimeMillis();
 
         // calculates the total requests for the internal landscape and stores them in its timestamp
-        int calculatedTotalRequests = 0;
+        final int calculatedTotalRequests = 0;
 
         if (this.useDummyMode) {
           final Landscape dummyLandscape = LandscapeDummyCreator.createDummyLandscape();
@@ -146,7 +145,7 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
           this.landscapeRepository.saveLandscape(milliseconds, dummyLandscape);
           this.lastPeriodLandscape = dummyLandscape;
         } else {
-          this.internalLandscape.updateTimestamp(new Timestamp(milliseconds, 0));
+          this.internalLandscape.setTimestamp(new Timestamp(milliseconds, 0));
 
           this.landscapeRepository.saveLandscape(milliseconds, this.internalLandscape);
           final Landscape l = this.fstConf.deepCopy(this.internalLandscape);

@@ -67,6 +67,7 @@ public class MongoRepositoryTest {
     this.repo.saveLandscape(ts, landscape2);
 
     final long id = landscape.getId();
+
     final Landscape landscapeRetrieved = this.repo.getLandscapeById(id);
 
     assertEquals("Ids don't match", id, (long) landscapeRetrieved.getId());

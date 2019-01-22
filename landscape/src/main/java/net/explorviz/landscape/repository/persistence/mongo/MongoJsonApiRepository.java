@@ -70,7 +70,16 @@ public class MongoJsonApiRepository implements LandscapeRepository<String> {
     landscapeDbo.put(MongoHelper.ID_FIELD, timestamp);
     landscapeDbo.put(MongoHelper.LANDSCAPE_FIELD, landscapeJsonApi);
 
-    landscapeCollection.save(landscapeDbo);
+    final WriteResult res = landscapeCollection.save(landscapeDbo);
+
+    if (res.getN() == 0) {
+      if (LOGGER.isErrorEnabled()) {
+        LOGGER.error("No document saved.");
+      }
+    } else if (LOGGER.isInfoEnabled()) {
+      LOGGER.info(
+          String.format("Saved landscape {timestamp: %d, id: %d}", timestamp, landscape.getId()));
+    }
   }
 
   @Override
@@ -88,17 +97,19 @@ public class MongoJsonApiRepository implements LandscapeRepository<String> {
 
   @Override
   public String getLandscapeById(final long id) {
-    final String regexQuery = "\\{\"data\":\\{\"type\":\"landscape\",\"id\":\"" + id + "\"";
+    final String regexQuery = "\\{\"data\":\\{\"type\":\"landscape\",\"id\":\"" + id;
+
 
     final Pattern pat = Pattern.compile(regexQuery, Pattern.CASE_INSENSITIVE);
 
     final DBCollection landscapeCollection = this.mongoHelper.getLandscapeCollection();
     final DBObject query = new BasicDBObject(MongoHelper.LANDSCAPE_FIELD, pat);
     final DBCursor result = landscapeCollection.find(query);
-    if (result.count() == 0) {
+    if (result.count() != 0) {
       return (String) result.one().get(MongoHelper.LANDSCAPE_FIELD);
     } else {
-      throw new ClientErrorException("Landscape not found for provided id " + id, 404);
+      throw new ClientErrorException(String.format("Landscape with provided id %d not found", id),
+          404);
     }
   }
 
@@ -182,7 +193,7 @@ public class MongoJsonApiRepository implements LandscapeRepository<String> {
     final DBCollection landscapeCollection = this.mongoHelper.getReplayCollection();
     final DBObject query = new BasicDBObject(MongoHelper.LANDSCAPE_FIELD, pat);
     final DBCursor result = landscapeCollection.find(query);
-    if (result.count() > 0) {
+    if (result.count() != 0) {
       return (String) result.one().get(MongoHelper.LANDSCAPE_FIELD);
     } else {
       throw new ClientErrorException("Landscape not found for provided id " + id, 404);

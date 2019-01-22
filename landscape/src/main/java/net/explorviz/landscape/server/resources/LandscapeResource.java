@@ -12,8 +12,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.sse.Sse;
 import net.explorviz.landscape.api.ExtensionApiImpl;
 import net.explorviz.landscape.model.landscape.Landscape;
-import net.explorviz.landscape.repository.RepositoryStorage;
-import net.explorviz.landscape.server.helper.FileSystemHelper;
+import net.explorviz.landscape.repository.persistence.LandscapeRepository;
 import net.explorviz.landscape.server.main.Configuration;
 
 /**
