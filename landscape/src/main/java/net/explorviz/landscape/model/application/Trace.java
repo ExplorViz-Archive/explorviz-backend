@@ -13,7 +13,7 @@ import net.explorviz.landscape.model.helper.BaseEntity;
 @Type("trace")
 public class Trace extends BaseEntity {
 
-  private long traceId;
+  private String traceId;
 
   private int totalRequests;
 
@@ -25,7 +25,7 @@ public class Trace extends BaseEntity {
   private List<TraceStep> traceSteps = new ArrayList<>();
 
 
-  public Trace(final long traceId) {
+  public Trace(final String traceId) {
     this.setTraceId(traceId);
   }
 
@@ -64,7 +64,7 @@ public class Trace extends BaseEntity {
     return this.traceId;
   }
 
-  public void setTraceId(final long traceId) {
+  public void setTraceId(final String traceId) {
     this.traceId = traceId;
   }
 

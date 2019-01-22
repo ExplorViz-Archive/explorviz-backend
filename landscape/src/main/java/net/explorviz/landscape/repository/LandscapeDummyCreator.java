@@ -371,7 +371,7 @@ final class LandscapeDummyCreator {
    * @param targetClazz the target class
    * @param application the appliaction
    */
-  private static void createClazzCommunication(final int traceId, final int tracePosition,
+  private static void createClazzCommunication(final String traceId, final int tracePosition,
       final int requests, final Clazz sourceClazz, final Clazz targetClazz,
       final Application application) {
 
@@ -453,7 +453,7 @@ final class LandscapeDummyCreator {
     createClazz("AccountSqlMapDao2", logging, 5);
 
     // specify a first trace for the dummy landscape
-    final int firstTraceId = 1;
+    final String firstTraceId = "1";
 
     createClazzCommunication(firstTraceId, 1, 40, graphDbClazz, helpersClazz, application);
     createClazzCommunication(firstTraceId, 2, 800, toolingClazz, implClazz, application);
@@ -472,7 +472,7 @@ final class LandscapeDummyCreator {
     createClazzCommunication(firstTraceId, 15, 2100, helpersClazz, implClazz, application);
 
     // specify a second trace for the dummy landscape
-    final int secondTraceId = 2;
+    final String secondTraceId = "2";
 
     createClazzCommunication(secondTraceId, 1, 2500, implClazz, loggingClazz, application);
     createClazzCommunication(secondTraceId, 2, 900, loggingClazz, implClazz, application);
@@ -497,6 +497,7 @@ final class LandscapeDummyCreator {
     for (int i = 0; i < maxIterations; i++) {
       DatabaseQuery dbQueryTmp = new DatabaseQuery();
       dbQueryTmp.initializeId();
+      dbQueryTmp.setStatementType("Statement");
       dbQueryTmp.setSqlStatement(
           "CREATE TABLE IF NOT EXISTS `order` (oid integer PRIMARY KEY, name text NOT NULL, "
               + "email text NOT NULL, odate text NOT NULL, itemid integer NOT NULL);");
@@ -508,6 +509,7 @@ final class LandscapeDummyCreator {
 
       dbQueryTmp = new DatabaseQuery();
       dbQueryTmp.initializeId();
+      dbQueryTmp.setStatementType("Statement");
       dbQueryTmp.setParentApplication(application);
       dbQueryTmp.setSqlStatement("INSERT INTO `order` (oid, name, email, odate, itemid) "
           + "VALUES('" + DummyLandscapeHelper.getNextSequenceId()
@@ -520,6 +522,7 @@ final class LandscapeDummyCreator {
 
       dbQueryTmp = new DatabaseQuery();
       dbQueryTmp.initializeId();
+      dbQueryTmp.setStatementType("Statement");
       dbQueryTmp.setSqlStatement("INSERT INTO `order` (oid, name, email, odate, itemid) "
           + "VALUES('" + DummyLandscapeHelper.getNextSequenceId()
           + "'Tom B. Erichsen', 'erichsen@uni-kiel.de', '2017-11-16', '1');");
@@ -531,6 +534,7 @@ final class LandscapeDummyCreator {
 
       dbQueryTmp = new DatabaseQuery();
       dbQueryTmp.initializeId();
+      dbQueryTmp.setStatementType("Statement");
       dbQueryTmp.setSqlStatement("INSERT INTO `order` (oid, name, email, odate, itemid) "
           + "VALUES('" + DummyLandscapeHelper.getNextSequenceId()
           + "', 'Carol K. Durham', 'durham@uni-kiel.de', '2017-10-08', '1');");
@@ -542,6 +546,7 @@ final class LandscapeDummyCreator {
 
       dbQueryTmp = new DatabaseQuery();
       dbQueryTmp.initializeId();
+      dbQueryTmp.setStatementType("Statement");
       dbQueryTmp.setSqlStatement("SELECT * FROM `order` WHERE name = Carol K. Durham");
       dbQueryTmp.setReturnValue(String.valueOf(DummyLandscapeHelper.getRandomNum(5, 100)));
       dbQueryTmp.setResponseTime(DummyLandscapeHelper.getRandomNum(10, 1000));
@@ -551,6 +556,7 @@ final class LandscapeDummyCreator {
 
       dbQueryTmp = new DatabaseQuery();
       dbQueryTmp.initializeId();
+      dbQueryTmp.setStatementType("Statement");
       dbQueryTmp.setSqlStatement("SELECT * FROM `order` WHERE name = Tom B. Erichsen");
       dbQueryTmp.setReturnValue(String.valueOf(DummyLandscapeHelper.getRandomNum(5, 100)));
       dbQueryTmp.setResponseTime(DummyLandscapeHelper.getRandomNum(10, 1000));

@@ -20,12 +20,6 @@ interface IExtensionApi {
   Landscape getLandscape(long timestamp, String folderName);
 
   // Timestamp related
-  List<Timestamp> getNewestTimestamps(int intervalSize);
-
-  List<Timestamp> getOldestTimestamps(int intervalSize);
-
-  List<Timestamp> getPreviousTimestamps(long timestamp, int intervalSize);
-
   List<Timestamp> getSubsequentTimestamps(long timestamp, int intervalSize);
 
   // Extension related
@@ -37,7 +31,7 @@ interface IExtensionApi {
 
   void setDummyMode(boolean value) throws FileNotFoundException, IOException;
 
-  void saveLandscapeToFile(Landscape landscape, String folderName);
+  void saveLandscapeToFile(Landscape landscape, long totalRequests, String folderName);
 
   List<Timestamp> getUploadedTimestamps();
 

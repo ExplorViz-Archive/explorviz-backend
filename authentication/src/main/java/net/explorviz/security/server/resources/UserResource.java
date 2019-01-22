@@ -208,6 +208,7 @@ public class UserResource {
     }
 
     if (updatedUser.getSettings() != null) {
+      updatedUser.getSettings().validate();
       targetUser.setSettings(updatedUser.getSettings());
     }
 

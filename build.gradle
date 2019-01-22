@@ -4,6 +4,12 @@ allprojects {
 
 subprojects {
 
+  // Disable jar task for microservices, 
+  // since we only use ShadowJar task
+  if (project.name != 'shared') {
+  	tasks.jar.enabled = false
+  }  
+
   // BEGIN QA Tooling for subprojects
   
   buildscript {
@@ -54,10 +60,6 @@ subprojects {
 	
   // END QA Tooling for subprojects
 
-  if (project.name == 'authentication' || project.name == 'landscape' || project.name == 'discovery') {
-    apply plugin: 'war'
-  }
-
   repositories {
     // Order of declaration determines how Gradle will check for dependencies at runtime. 
     jcenter()
@@ -87,8 +89,8 @@ subprojects {
 	    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version:'2.9.6'
 	    
 	    // JSON-API parsing
-        implementation group: 'com.github.jasminb', name: 'jsonapi-converter', version:'0.8'
-	    
+        implementation group: 'com.github.jasminb', name: 'jsonapi-converter', version:'0.9'
+            
 	    // Jetty servlet-container
 		implementation group: 'org.glassfish.jersey.containers', name: 'jersey-container-jetty-servlet', version: '2.27'
 		

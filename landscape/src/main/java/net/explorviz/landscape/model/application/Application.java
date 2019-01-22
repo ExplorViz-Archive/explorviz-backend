@@ -32,7 +32,7 @@ public class Application extends BaseEntity {
   @Relationship("applicationCommunications")
   private List<ApplicationCommunication> applicationCommunications = new ArrayList<>();
 
-  // all aggregated clazzcommunications within an application
+  // all aggregated clazzCommunications within an application
   @Relationship("aggregatedClazzCommunications")
   private List<AggregatedClazzCommunication> aggregatedClazzCommunications = new ArrayList<>();
 

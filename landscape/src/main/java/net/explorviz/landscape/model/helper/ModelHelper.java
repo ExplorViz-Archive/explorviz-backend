@@ -32,7 +32,7 @@ public final class ModelHelper {
    */
   public static void addClazzCommunication(final Clazz caller, final Clazz callee,
       final Application application, final int requests, final double averageResponseTime,
-      final double overallTraceDuration, final long traceId, final int tracePosition,
+      final double overallTraceDuration, final String traceId, final int tracePosition,
       final String operationName) {
 
     // clazzCommunication already exists

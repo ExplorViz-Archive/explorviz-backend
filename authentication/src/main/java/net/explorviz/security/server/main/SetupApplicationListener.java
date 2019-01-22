@@ -75,8 +75,6 @@ public class SetupApplicationListener implements ApplicationEventListener {
     final String pw = PasswordStorage.createHash("password");
 
     final UserSettings settings = new UserSettings();
-    settings.setAppVizClassColor("0xFF0000");
-    settings.setShowFpsCounter(false);
 
     this.datastore.save(new User(id, ADMIN_NAME, pw, Arrays.asList(roleList.get(0)), settings));
   }

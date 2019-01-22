@@ -53,11 +53,13 @@ public class DependencyInjectionBinder extends AbstractBinder {
 
 
     // Broadcast Mechanism
-    this.bind(BroadcastService.class).to(BroadcastService.class).in(Singleton.class);
+    this.bind(LandscapeBroadcastService.class).to(LandscapeBroadcastService.class)
+        .in(Singleton.class);
     this.bind(LandscapeBroadcastSubResource.class).to(LandscapeBroadcastSubResource.class);
 
     // injectable config properties
-    this.bind(new ConfigInjectionResolver()).to(new TypeLiteral<InjectionResolver<Config>>() {});
+    this.bind(new ConfigInjectionResolver()).to(new TypeLiteral<InjectionResolver<Config>>() {
+    });
 
     // ErrorObject Handler
     this.bind(ErrorObjectHelper.class).to(ErrorObjectHelper.class).in(Singleton.class);

@@ -309,7 +309,7 @@ public class UserResourceEndpointTest extends JerseyTest {
 
   @Test
   public void removeUser() throws DocumentSerializationException {
-    final User u = new User(1L, "user1", "pw", Arrays.asList(new Role(5L, "admin")));
+    final User u = new User(1L, "user1", "pw", Arrays.asList(new Role(2L, "admin")));
 
     this.userCrudService.saveNewEntity(u);
 

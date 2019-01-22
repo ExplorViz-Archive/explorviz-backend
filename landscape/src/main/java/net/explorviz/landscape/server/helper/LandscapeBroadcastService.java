@@ -14,16 +14,16 @@ import org.slf4j.LoggerFactory;
 
 @Service
 @Singleton
-public class BroadcastService {
+public class LandscapeBroadcastService {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(BroadcastService.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(LandscapeBroadcastService.class);
   private static final MediaType APPLICATION_JSON_API_TYPE =
       new MediaType("application", "vnd.api+json");
 
   private final Sse sse;
   private final SseBroadcaster broadcaster;
 
-  public BroadcastService(@Context final Sse sse) {
+  public LandscapeBroadcastService(@Context final Sse sse) {
     this.sse = sse;
     this.broadcaster = sse.newBroadcaster();
 

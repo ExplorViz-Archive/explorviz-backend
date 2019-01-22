@@ -56,10 +56,6 @@ public class Landscape extends BaseEntity {
     return this.exceptions;
   }
 
-  public void updateTimestamp(final Timestamp timestamp) {
-    this.setTimestamp(timestamp);
-  }
-
   public List<ApplicationCommunication> getTotalApplicationCommunications() {
     return this.totalApplicationCommunications;
   }

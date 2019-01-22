@@ -1,18 +1,27 @@
 package net.explorviz.landscape.repository.persistence; // NOPMD
 
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 import java.util.concurrent.TimeUnit;
+import javax.inject.Inject;
 import javax.ws.rs.ClientErrorException;
+import net.explorviz.landscape.model.application.AggregatedClazzCommunication;
+import net.explorviz.landscape.model.application.Application;
+import net.explorviz.landscape.model.application.ApplicationCommunication;
+import net.explorviz.landscape.model.application.Clazz;
+import net.explorviz.landscape.model.application.ClazzCommunication;
+import net.explorviz.landscape.model.application.Component;
+import net.explorviz.landscape.model.application.DatabaseQuery;
+import net.explorviz.landscape.model.application.TraceStep;
+import net.explorviz.landscape.model.helper.EProgrammingLanguage;
 import net.explorviz.landscape.model.landscape.Landscape;
+import net.explorviz.landscape.model.landscape.Node;
+import net.explorviz.landscape.model.landscape.NodeGroup;
+import net.explorviz.landscape.model.landscape.System;
 import net.explorviz.landscape.server.helper.FileSystemHelper;
 import net.explorviz.landscape.server.main.Configuration;
 import org.nustaq.serialization.FSTConfiguration;
@@ -59,6 +68,21 @@ public final class RepositoryFileStorage {
     new File(landscapeFolder).mkdir();
   }
 
+  public static FSTConfiguration createFstConfiguration() {
+    final FSTConfiguration result = FSTConfiguration.createDefaultConfiguration();
+    result.registerClass(Landscape.class);
+    result.registerClass(System.class);
+    result.registerClass(NodeGroup.class);
+    result.registerClass(Node.class);
+    result.registerClass(Application.class);
+    result.registerClass(ApplicationCommunication.class);
+    result.registerClass(AggregatedClazzCommunication.class);
+    result.registerClass(DatabaseQuery.class);
+    result.registerClass(EProgrammingLanguage.class);
+    result.registerClass(Component.class);
+    result.registerClass(Clazz.class);
+    result.registerClass(ClazzCommunication.class);
+    result.registerClass(TraceStep.class);
 
 
   /**
@@ -69,10 +93,10 @@ public final class RepositoryFileStorage {
    * @param folderName the output folder
    */
   public static void writeToFile(final Landscape landscape, final long timestamp,
-      final String folderName) {
+      final long totalRequests, final String folderName) {
     final String specificFolder = folder + folderName;
-    writeToFileGeneric(landscape, specificFolder, timestamp + "-"
-        + landscape.getTimestamp().getTotalRequests() + Configuration.MODEL_EXTENSION);
+    writeToFileGeneric(landscape, specificFolder,
+        timestamp + "-" + totalRequests + Configuration.MODEL_EXTENSION);
   }
 
 
@@ -98,14 +122,28 @@ public final class RepositoryFileStorage {
   private static void writeToFileGeneric(final Landscape landscape, final String destFolder,
       final String destFilename) {
 
-    try (OutputStream stream = Files.newOutputStream(Paths.get(destFolder + "/" + destFilename))) {
-      try (FSTObjectOutput output = FST_CONF.getObjectOutput(stream)) {
-        output.writeObject(landscape, Landscape.class);
-        output.close();
+    try {
+
+      FSTObjectOutput fstObjectOutput = null;
+
+      final File file = new File(destFolder + "/" + destFilename);
+
+      // if file doesn't exists, then create it
+      if (!file.exists()) {
+        file.createNewFile();
       }
 
-    } catch (final IOException e) {
-      LOGGER.error("Error when writing to file", e);
+      final FileOutputStream fop = new FileOutputStream(file);
+
+      fstObjectOutput = FST_CONF.getObjectOutput(fop);
+      fstObjectOutput.writeObject(landscape, Landscape.class);
+      fstObjectOutput.close();
+
+      fop.flush();
+      fop.close();
+
+    } catch (final Exception e) {
+      LOGGER.error("Error when writing landscape to file", e);
     }
   }
 
@@ -121,8 +159,7 @@ public final class RepositoryFileStorage {
    */
   public static Landscape readFromFile(final long timestamp, final String folderName) {
     final String specificFolder = folder + folderName;
-    final Map<Long, Long> availableModels =
-        getAvailableModels(HISTORY_INTERVAL_IN_MINUTES, specificFolder);
+    final Map<Long, Long> availableModels = getAvailableModels(specificFolder);
     String readInModel = null;
 
     for (final Entry<Long, Long> availableModel : availableModels.entrySet()) {
@@ -140,36 +177,14 @@ public final class RepositoryFileStorage {
     return readFromFileGeneric(specificFolder, readInModel);
   }
 
-  /**
-   * Retrieves a specific landscape object.
-   *
-   * @param sourceFolder the folder
-   * @param sourceFilename the filename
-   *
-   * @return the landscape object.
-   * @throws ClientErrorException if the is no landscape object with the given timestamp.
-   */
   public static Landscape readFromFileGeneric(final String sourceFolder,
       final String sourceFilename) {
 
-    FSTObjectInput input;
-    final Path path = Paths.get(sourceFolder + "/" + sourceFilename);
+    Landscape loadedLandscape = new Landscape();
 
-    try (InputStream stream = Files.newInputStream(path)) {
-      input = FST_CONF.getObjectInput(stream);
-    } catch (final IOException e) {
-      throw new ClientErrorException("Model not found", 404, e);
-    }
-
-    Landscape landscape = null;
     try {
-      landscape = (Landscape) input.readObject(Landscape.class);
-    } catch (final Exception e) { // NOPMD
-      LOGGER.error("Error when reading Landscape from file.", e);
-    }
 
-    return landscape;
-  }
+      FSTObjectInput fstInputOutput = null;
 
   /**
    * Returns all landscape model snapshots for timeshift use.
@@ -207,19 +222,15 @@ public final class RepositoryFileStorage {
           final long timestamp = Long.parseLong(split[0]);
 
           if (specificFolder.endsWith(REPLAY_REPOSITORY)) {
-            // don't check age of files in the replay repository
-            final long activities = Long.parseLong(split[1].split("\\.")[0]);
-            result.put(timestamp, activities);
+            final long totalRequests = Long.parseLong(split[1].split("\\.")[0]);
+            result.put(timestamp, totalRequests);
           } else if (specificFolder.endsWith(LANDSCAPE_REPOSITORY)) {
-            if (java.lang.System.currentTimeMillis()
-                - TimeUnit.MINUTES.toMillis(minutesBackwards) < timestamp) {
-              final long activities = Long.parseLong(split[1].split("\\.")[0]);
-              result.put(timestamp, activities);
-            }
+            final long totalRequests = Long.parseLong(split[1].split("\\.")[0]);
+            result.put(timestamp, totalRequests);
           } else {
             // every other folder
-            final long activities = Long.parseLong(split[1].split("\\.")[0]);
-            result.put(timestamp, activities);
+            final long totalRequests = Long.parseLong(split[1].split("\\.")[0]);
+            result.put(timestamp, totalRequests);
           }
         }
       }

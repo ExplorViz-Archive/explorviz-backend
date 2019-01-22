@@ -12,6 +12,8 @@ import net.explorviz.landscape.model.helper.BaseEntity;
 public class DatabaseQuery extends BaseEntity {
 
   private long timestamp;
+  // at the moment: Statement or PreparedStatement
+  private String statementType;
   private String sqlStatement;
   private String returnValue;
   private long responseTime;
@@ -26,6 +28,14 @@ public class DatabaseQuery extends BaseEntity {
 
   public void setTimestamp(final long timestamp) {
     this.timestamp = timestamp;
+  }
+
+  public String getStatementType() {
+    return this.statementType;
+  }
+
+  public void setStatementType(final String statementType) {
+    this.statementType = statementType;
   }
 
   public String getSqlStatement() {
