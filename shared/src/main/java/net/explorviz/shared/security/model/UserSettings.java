@@ -42,15 +42,15 @@ public class UserSettings {
     this.numericAttributes.put("appVizTransparencyIntensity", 0.3);
   }
 
-  public void setBooleanAttribute(final String attr, final boolean val) {
+  public void put(final String attr, final boolean val) {
     this.booleanAttributes.put(attr, val);
   }
 
-  public void setNumericAttribute(final String attr, final Number val) {
+  public void put(final String attr, final Number val) {
     this.numericAttributes.put(attr, val);
   }
 
-  public void setStringAttribute(final String attr, final String val) {
+  public void put(final String attr, final String val) {
     this.stringAttributes.put(attr, val);
   }
 
