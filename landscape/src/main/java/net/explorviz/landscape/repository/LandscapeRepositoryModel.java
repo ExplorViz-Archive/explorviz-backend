@@ -16,6 +16,7 @@ import net.explorviz.landscape.model.landscape.System;
 import net.explorviz.landscape.model.store.Timestamp;
 import net.explorviz.landscape.repository.persistence.FstHelper;
 import net.explorviz.landscape.repository.persistence.LandscapeRepository;
+import net.explorviz.landscape.repository.persistence.ReplayRepository;
 import net.explorviz.landscape.server.helper.LandscapeBroadcastService;
 import net.explorviz.landscape.server.main.Configuration;
 import net.explorviz.shared.annotations.Config;
@@ -44,6 +45,9 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
 
   @Inject
   private LandscapeRepository<Landscape> landscapeRepository;
+
+  @Inject
+  private ReplayRepository<Landscape> replayRepository;
 
   @Inject
   public LandscapeRepositoryModel(final LandscapeBroadcastService broadcastService) {
@@ -98,7 +102,7 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
 
   public Landscape getReplay(final long timestamp) {
     return LandscapePreparer
-        .prepareLandscape(this.landscapeRepository.getReplayByTimestamp(timestamp));
+        .prepareLandscape(this.replayRepository.getReplayByTimestamp(timestamp));
   }
 
 

@@ -6,7 +6,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.Random;
 import javax.inject.Inject;
 import net.explorviz.landscape.model.landscape.Landscape;
-import net.explorviz.landscape.repository.persistence.mongo.MongoJsonApiRepository;
+import net.explorviz.landscape.repository.persistence.mongo.MongoReplayJsonApiRepository;
 import net.explorviz.landscape.server.main.DependencyInjectionBinder;
 import net.explorviz.landscape.server.providers.CoreModelHandler;
 import org.glassfish.hk2.api.ServiceLocator;
@@ -16,15 +16,12 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-/**
- * Tests the {@link MongoJsonApiRepository}. Expects a running mongodb server.
- *
- */
-public class MongoJsonApiRepositoryTest {
+public class MongoReplayJsonApiRepositoryTest {
+
 
 
   @Inject
-  private MongoJsonApiRepository repo;
+  private MongoReplayJsonApiRepository repo;
 
   @BeforeClass
   public static void setUpAll() {
@@ -52,38 +49,6 @@ public class MongoJsonApiRepositoryTest {
   }
 
 
-
-  @Test
-  public void findByTimestamp() {
-    final long ts = System.currentTimeMillis();
-    final Landscape landscape = LandscapeDummyCreator.createDummyLandscape();
-    this.repo.saveLandscape(ts, landscape, 0);
-
-    final String rawLandscape = this.repo.getLandscapeByTimestamp(ts);
-
-
-
-    assertTrue("Invalid landscape", rawLandscape.startsWith("{\"data\":{\"type\":\"landscape\""));
-  }
-
-  @Test
-  public void testFindById() {
-
-    final Landscape landscape = LandscapeDummyCreator.createDummyLandscape();
-    final long ts = System.currentTimeMillis();
-    final Landscape landscape2 = LandscapeDummyCreator.createDummyLandscape();
-    final long ts2 = ts + 1;
-    this.repo.saveLandscape(ts, landscape, 0);
-    this.repo.saveLandscape(ts2, landscape2, 0);
-
-    final long id = landscape.getId();
-    final String rawLandscape = this.repo.getLandscapeById(id);
-
-    assertTrue("Ivalid landscape or wrong id",
-        rawLandscape.startsWith("{\"data\":{\"type\":\"landscape\",\"id\":\"" + id + "\""));
-
-  }
-
   @Test
   public void findReplayByTimestamp() {
     final long ts = System.currentTimeMillis();
@@ -96,6 +61,7 @@ public class MongoJsonApiRepositoryTest {
 
     assertTrue("Invalid landscape", rawLandscape.startsWith("{\"data\":{\"type\":\"landscape\""));
   }
+
 
   @Test
   public void findReplayById() {
@@ -113,8 +79,6 @@ public class MongoJsonApiRepositoryTest {
 
   }
 
-
-
   @Test
   public void testTotalRequestsReplay() {
     final Random rand = new Random();
@@ -127,16 +91,5 @@ public class MongoJsonApiRepositoryTest {
     assertEquals("Requests not matching", requests, retrievedRequests);
   }
 
-  @Test
-  public void testTotalRequestsLadnscape() {
-    final Random rand = new Random();
-    final long ts = System.currentTimeMillis();
-    final long requests = rand.nextInt(Integer.MAX_VALUE) + 1;
-    final Landscape landscape = LandscapeDummyCreator.createDummyLandscape();
-    this.repo.saveLandscape(ts, landscape, requests);
-
-    final long retrievedRequests = this.repo.getLandscapeTotalRequests(ts);
-    assertEquals("Requests not matching", requests, retrievedRequests);
-  }
 
 }

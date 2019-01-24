@@ -24,16 +24,17 @@ import org.slf4j.LoggerFactory;
  * <p>
  *
  * This repository will return all requested landscape objects in the json api format, which is the
- * format the objects are persisted in internally. Prefer this class over {@link MongoRepository} if
- * you don't need an actually landscape object to avoid costy de-/serialization.
+ * format the objects are persisted in internally. Prefer this class over
+ * {@link MongoLandscapeRepository} if you don't need an actually landscape object to avoid costy
+ * de-/serialization.
  *
  * </p>
  *
  */
-public class MongoJsonApiRepository implements LandscapeRepository<String> {
+public class MongoLandscapeJsonApiRepository implements LandscapeRepository<String> {
 
   private static final Logger LOGGER =
-      LoggerFactory.getLogger(MongoJsonApiRepository.class.getSimpleName());
+      LoggerFactory.getLogger(MongoLandscapeJsonApiRepository.class.getSimpleName());
 
 
 
@@ -44,7 +45,7 @@ public class MongoJsonApiRepository implements LandscapeRepository<String> {
 
 
   @Inject
-  public MongoJsonApiRepository(final MongoHelper mongoHelper,
+  public MongoLandscapeJsonApiRepository(final MongoHelper mongoHelper,
       final LandscapeSerializationHelper helper) {
     this.mongoHelper = mongoHelper;
     this.serializationHelper = helper;
@@ -145,60 +146,6 @@ public class MongoJsonApiRepository implements LandscapeRepository<String> {
 
 
   @Override
-  public void saveReplay(final long timestamp, final Landscape replay, final long totalRequests) {
-    String landscapeJsonApi;
-    try {
-      landscapeJsonApi = this.serializationHelper.serialize(replay);
-    } catch (final DocumentSerializationException e) {
-      throw new InternalServerErrorException("Error serializing: " + e.getMessage(), e);
-    }
-
-    final DBCollection landscapeCollection = this.mongoHelper.getReplayCollection();
-
-    final DBObject landscapeDbo = new BasicDBObject();
-    landscapeDbo.put(MongoHelper.FIELD_ID, timestamp);
-    landscapeDbo.put(MongoHelper.FIELD_LANDSCAPE, landscapeJsonApi);
-    landscapeDbo.put(MongoHelper.FIELD_REQUESTS, totalRequests);
-
-    landscapeCollection.save(landscapeDbo);
-  }
-
-
-
-  @Override
-  public String getReplayByTimestamp(final long timestamp) {
-    final DBCollection landscapeCollection = this.mongoHelper.getReplayCollection();
-    final DBObject query = new BasicDBObject(MongoHelper.FIELD_ID, timestamp);
-    final DBCursor result = landscapeCollection.find(query);
-    if (result.count() > 0) {
-      return (String) result.one().get(MongoHelper.FIELD_LANDSCAPE);
-    } else {
-      throw new ClientErrorException("Landscape not found for provided timestamp " + timestamp,
-          404);
-    }
-  }
-
-
-
-  @Override
-  public String getReplayById(final long id) {
-    final String regexQuery = "\\{\"data\":\\{\"type\":\"landscape\",\"id\":\"" + id + "\"";
-
-    final Pattern pat = Pattern.compile(regexQuery, Pattern.CASE_INSENSITIVE);
-
-    final DBCollection landscapeCollection = this.mongoHelper.getReplayCollection();
-    final DBObject query = new BasicDBObject(MongoHelper.FIELD_LANDSCAPE, pat);
-    final DBCursor result = landscapeCollection.find(query);
-    if (result.count() != 0) {
-      return (String) result.one().get(MongoHelper.FIELD_LANDSCAPE);
-    } else {
-      throw new ClientErrorException("Landscape not found for provided id " + id, 404);
-    }
-  }
-
-
-
-  @Override
   public long getLandscapeTotalRequests(final long timestamp) {
     final DBCollection landCollection = this.mongoHelper.getLandscapeCollection();
     final DBObject query = new BasicDBObject(MongoHelper.FIELD_ID, timestamp);
@@ -208,20 +155,6 @@ public class MongoJsonApiRepository implements LandscapeRepository<String> {
     } else {
       throw new ClientErrorException("Landscape not found for provided timestamp " + timestamp,
           404);
-    }
-  }
-
-
-
-  @Override
-  public long getReplayTotalRequests(final long timestamp) {
-    final DBCollection collection = this.mongoHelper.getReplayCollection();
-    final DBObject query = new BasicDBObject(MongoHelper.FIELD_ID, timestamp);
-    final DBCursor result = collection.find(query);
-    if (result.count() != 0) {
-      return (long) result.one().get(MongoHelper.FIELD_REQUESTS);
-    } else {
-      throw new ClientErrorException("Replay not found for provided timestamp " + timestamp, 404);
     }
   }
 

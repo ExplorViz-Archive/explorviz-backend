@@ -7,10 +7,13 @@ import net.explorviz.landscape.model.landscape.Landscape;
 import net.explorviz.landscape.repository.LandscapeExchangeService;
 import net.explorviz.landscape.repository.LandscapeRepositoryModel;
 import net.explorviz.landscape.repository.persistence.LandscapeRepository;
+import net.explorviz.landscape.repository.persistence.ReplayRepository;
 import net.explorviz.landscape.repository.persistence.mongo.LandscapeSerializationHelper;
 import net.explorviz.landscape.repository.persistence.mongo.MongoHelper;
-import net.explorviz.landscape.repository.persistence.mongo.MongoJsonApiRepository;
-import net.explorviz.landscape.repository.persistence.mongo.MongoRepository;
+import net.explorviz.landscape.repository.persistence.mongo.MongoLandscapeJsonApiRepository;
+import net.explorviz.landscape.repository.persistence.mongo.MongoLandscapeRepository;
+import net.explorviz.landscape.repository.persistence.mongo.MongoReplayJsonApiRepository;
+import net.explorviz.landscape.repository.persistence.mongo.MongoReplayRepository;
 import net.explorviz.landscape.server.helper.LandscapeBroadcastService;
 import net.explorviz.landscape.server.injection.ResourceConverterFactory;
 import net.explorviz.landscape.server.resources.LandscapeBroadcastSubResource;
@@ -43,14 +46,27 @@ public class DependencyInjectionBinder extends AbstractBinder {
 
     // Persistence
     this.bind(MongoHelper.class).to(MongoHelper.class).in(Singleton.class);
-    this.bind(MongoJsonApiRepository.class).to(MongoJsonApiRepository.class).in(Singleton.class);
+    this.bind(MongoLandscapeJsonApiRepository.class).to(MongoLandscapeJsonApiRepository.class)
+        .in(Singleton.class);
     this.bind(LandscapeSerializationHelper.class).to(LandscapeSerializationHelper.class)
         .in(Singleton.class);
-    this.bind(MongoRepository.class).to(MongoRepository.class).in(Singleton.class);
-    this.bind(MongoRepository.class).to(new TypeLiteral<LandscapeRepository<Landscape>>() {});
-    this.bind(MongoJsonApiRepository.class).to(new TypeLiteral<LandscapeRepository<String>>() {});
-
-
+    // Landscape
+    this.bind(MongoLandscapeRepository.class).to(MongoLandscapeRepository.class)
+        .in(Singleton.class);
+    this.bind(MongoLandscapeJsonApiRepository.class).to(MongoLandscapeJsonApiRepository.class)
+        .in(Singleton.class);
+    this.bind(MongoLandscapeRepository.class)
+        .to(new TypeLiteral<LandscapeRepository<Landscape>>() {}).in(Singleton.class);;
+    this.bind(MongoLandscapeJsonApiRepository.class)
+        .to(new TypeLiteral<LandscapeRepository<String>>() {}).in(Singleton.class);;
+    // Replay
+    this.bind(MongoReplayRepository.class).to(MongoReplayRepository.class).in(Singleton.class);
+    this.bind(MongoReplayJsonApiRepository.class).to(MongoReplayJsonApiRepository.class)
+        .in(Singleton.class);
+    this.bind(MongoReplayRepository.class).to(new TypeLiteral<ReplayRepository<Landscape>>() {})
+        .in(Singleton.class);
+    this.bind(MongoReplayJsonApiRepository.class).to(new TypeLiteral<ReplayRepository<String>>() {})
+        .in(Singleton.class);
 
     // Broadcast Mechanism
     this.bind(LandscapeBroadcastService.class).to(LandscapeBroadcastService.class)

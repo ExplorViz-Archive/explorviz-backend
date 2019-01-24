@@ -5,7 +5,7 @@ import static org.junit.Assert.assertEquals;
 import java.util.Random;
 import javax.inject.Inject;
 import net.explorviz.landscape.model.landscape.Landscape;
-import net.explorviz.landscape.repository.persistence.mongo.MongoRepository;
+import net.explorviz.landscape.repository.persistence.mongo.MongoLandscapeRepository;
 import net.explorviz.landscape.server.main.DependencyInjectionBinder;
 import net.explorviz.landscape.server.providers.CoreModelHandler;
 import org.glassfish.hk2.api.ServiceLocator;
@@ -15,10 +15,10 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class MongoRepositoryTest {
+public class MongoLandscapeRepositoryTest {
 
   @Inject
-  private MongoRepository repo;
+  private MongoLandscapeRepository repo;
 
   @BeforeClass
   public static void setUpAll() {
@@ -87,48 +87,10 @@ public class MongoRepositoryTest {
 
   }
 
-  @Test
-  public void findReplayByTimestamp() {
-    final long ts = System.currentTimeMillis();
-    final Landscape landscape = LandscapeDummyCreator.createDummyLandscape();
-    this.repo.saveReplay(ts, landscape, 0);
 
-    final Landscape landscapeRetrieved = this.repo.getReplayByTimestamp(ts);
-
-
-
-    assertEquals("Ids don't match", landscape.getId(), landscapeRetrieved.getId());
-  }
 
   @Test
-  public void findReplayById() {
-    final long ts = System.currentTimeMillis();
-    final Landscape landscape = LandscapeDummyCreator.createDummyLandscape();
-    final Landscape landscape2 = LandscapeDummyCreator.createDummyLandscape();
-    this.repo.saveReplay(ts, landscape, 0);
-    this.repo.saveReplay(ts, landscape2, 0);
-
-    final long id = landscape.getId();
-    final Landscape landscapeRetrieved = this.repo.getReplayById(id);
-
-    assertEquals("Ids don't match", id, (long) landscapeRetrieved.getId());
-
-  }
-
-  @Test
-  public void testTotalRequestsReplay() {
-    final Random rand = new Random();
-    final long ts = System.currentTimeMillis();
-    final long requests = rand.nextInt(Integer.MAX_VALUE) + 1;
-    final Landscape landscape = LandscapeDummyCreator.createDummyLandscape();
-    this.repo.saveReplay(ts, landscape, requests);
-
-    final long retrievedRequests = this.repo.getReplayTotalRequests(ts);
-    assertEquals("Requests not matching", requests, retrievedRequests);
-  }
-
-  @Test
-  public void testTotalRequestsLadnscape() {
+  public void testTotalRequestsLandscape() {
     final Random rand = new Random();
     final long ts = System.currentTimeMillis();
     final long requests = rand.nextInt(Integer.MAX_VALUE) + 1;

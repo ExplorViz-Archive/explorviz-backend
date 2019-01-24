@@ -24,14 +24,6 @@ public interface LandscapeRepository<T> {
   void saveLandscape(final long timestamp, Landscape landscape, long totalRequests);
 
 
-  /**
-   * Save a landscape as replay in the repository.
-   *
-   * @param timestamp the timestamp
-   * @param replay the replay landscape
-   * @param totalRequests the total amount of requests
-   */
-  void saveReplay(final long timestamp, final Landscape replay, long totalRequests);
 
   /**
    * Retrieves a landscape object with a specific timestamp from the repository.
@@ -64,35 +56,6 @@ public interface LandscapeRepository<T> {
    * @return the total requests
    */
   long getLandscapeTotalRequests(long timestamp);
-
-
-  /**
-   * Retrieves the total requests of a replay.
-   *
-   * @param timestamp the timestamp of the replay
-   * @return the total requests
-   */
-  long getReplayTotalRequests(long timestamp);
-
-
-  /**
-   * Retrieves a replay landscape object with a specific timestamp from the repository.
-   *
-   * @param timestamp the timestamp of the replay
-   *
-   * @return the landscape object
-   */
-  T getReplayByTimestamp(final long timestamp);
-
-  /**
-   * Retrieves a replay object with a specific, unique identifier.
-   *
-   * @param id the id of the landscape object
-   *
-   * @return the replay object
-   */
-  T getReplayById(final long id);
-
 
 
   /**

@@ -14,22 +14,22 @@ import net.explorviz.landscape.repository.persistence.LandscapeRepository;
  *
  * This repository will return all requested landscapes as actual java objects. Since landscapes are
  * stored in json api format, this requires costy deserialization. If you don't need the actual
- * object but rather just their strin representation, use {@link MongoJsonApiRepository}
+ * object but rather just their strin representation, use {@link MongoLandscapeJsonApiRepository}
  *
  * </p>
  *
  * <p>
  *
- * This class is just a decorator for {@link MongoJsonApiRepository} which deserializes the
+ * This class is just a decorator for {@link MongoLandscapeJsonApiRepository} which deserializes the
  * retrieved objects.
  *
  * </p>
  */
-public class MongoRepository implements LandscapeRepository<Landscape> {
+public class MongoLandscapeRepository implements LandscapeRepository<Landscape> {
 
 
   @Inject
-  private MongoJsonApiRepository repo;
+  private MongoLandscapeJsonApiRepository repo;
 
   @Inject
   private LandscapeSerializationHelper serializationHelper;
@@ -65,32 +65,6 @@ public class MongoRepository implements LandscapeRepository<Landscape> {
 
 
   @Override
-  public void saveReplay(final long timestamp, final Landscape replay, final long totalRequests) {
-    this.repo.saveReplay(timestamp, replay, totalRequests);
-  }
-
-  @Override
-  public Landscape getReplayByTimestamp(final long timestamp) {
-    final String jsonLandscape = this.repo.getReplayByTimestamp(timestamp);
-    try {
-      return this.serializationHelper.deserialize(jsonLandscape);
-    } catch (final DocumentSerializationException e) {
-      throw new InternalServerErrorException("Error serializing: " + e.getMessage(), e);
-    }
-  }
-
-  @Override
-  public Landscape getReplayById(final long id) {
-    final String jsonLandscape = this.repo.getReplayById(id);
-    try {
-      return this.serializationHelper.deserialize(jsonLandscape);
-    } catch (final DocumentSerializationException e) {
-      throw new InternalServerErrorException("Error serializing: " + e.getMessage(), e);
-    }
-  }
-
-
-  @Override
   public void cleanup(final long from) {
     this.repo.cleanup();
 
@@ -104,11 +78,6 @@ public class MongoRepository implements LandscapeRepository<Landscape> {
   @Override
   public long getLandscapeTotalRequests(final long timestamp) {
     return this.repo.getLandscapeTotalRequests(timestamp);
-  }
-
-  @Override
-  public long getReplayTotalRequests(final long timestamp) {
-    return this.repo.getReplayTotalRequests(timestamp);
   }
 
 
