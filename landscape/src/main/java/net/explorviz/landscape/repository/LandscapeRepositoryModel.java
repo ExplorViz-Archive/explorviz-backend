@@ -145,7 +145,8 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
           calculatedTotalRequests = calculateTotalRequests(dummyLandscape);
           dummyLandscape.getTimestamp().setTotalRequests(calculatedTotalRequests);
 
-          this.landscapeRepository.saveLandscape(milliseconds, dummyLandscape);
+          this.landscapeRepository.saveLandscape(milliseconds, dummyLandscape,
+              calculatedTotalRequests);
           this.lastPeriodLandscape = dummyLandscape;
         } else {
 
@@ -153,7 +154,8 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
           this.internalLandscape.getTimestamp().setTotalRequests(calculatedTotalRequests);
           this.internalLandscape.setTimestamp(new Timestamp(milliseconds, 0));
 
-          this.landscapeRepository.saveLandscape(milliseconds, this.internalLandscape);
+          this.landscapeRepository.saveLandscape(milliseconds, this.internalLandscape,
+              calculatedTotalRequests);
           try {
             final Landscape l = this.fstConf.deepCopy(this.internalLandscape);
             this.lastPeriodLandscape = LandscapePreparer.prepareLandscape(l);

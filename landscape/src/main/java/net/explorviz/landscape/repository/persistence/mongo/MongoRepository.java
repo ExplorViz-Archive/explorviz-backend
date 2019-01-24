@@ -1,7 +1,6 @@
 package net.explorviz.landscape.repository.persistence.mongo;
 
 import com.github.jasminb.jsonapi.exceptions.DocumentSerializationException;
-import java.util.Map;
 import javax.inject.Inject;
 import javax.ws.rs.InternalServerErrorException;
 import net.explorviz.landscape.model.landscape.Landscape;
@@ -37,8 +36,9 @@ public class MongoRepository implements LandscapeRepository<Landscape> {
 
 
   @Override
-  public void saveLandscape(final long timestamp, final Landscape landscape) {
-    this.repo.saveLandscape(timestamp, landscape);
+  public void saveLandscape(final long timestamp, final Landscape landscape,
+      final long totalRequests) {
+    this.repo.saveLandscape(timestamp, landscape, totalRequests);
   }
 
   @Override
@@ -65,8 +65,8 @@ public class MongoRepository implements LandscapeRepository<Landscape> {
 
 
   @Override
-  public void saveReplay(final long timestamp, final Landscape replay) {
-    this.repo.saveReplay(timestamp, replay);
+  public void saveReplay(final long timestamp, final Landscape replay, final long totalRequests) {
+    this.repo.saveReplay(timestamp, replay, totalRequests);
   }
 
   @Override
@@ -89,10 +89,6 @@ public class MongoRepository implements LandscapeRepository<Landscape> {
     }
   }
 
-  @Override
-  public Map<Long, Long> getAllForTimeshift() {
-    return this.repo.getAllForTimeshift();
-  }
 
   @Override
   public void cleanup(final long from) {
@@ -103,6 +99,16 @@ public class MongoRepository implements LandscapeRepository<Landscape> {
   @Override
   public void clear() {
     this.repo.clear();
+  }
+
+  @Override
+  public long getLandscapeTotalRequests(final long timestamp) {
+    return this.repo.getLandscapeTotalRequests(timestamp);
+  }
+
+  @Override
+  public long getReplayTotalRequests(final long timestamp) {
+    return this.repo.getReplayTotalRequests(timestamp);
   }
 
 

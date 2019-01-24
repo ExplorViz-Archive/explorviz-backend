@@ -1,6 +1,5 @@
 package net.explorviz.landscape.repository.persistence;
 
-import java.util.Map;
 import javax.ws.rs.ClientErrorException;
 import net.explorviz.landscape.model.landscape.Landscape;
 
@@ -20,8 +19,9 @@ public interface LandscapeRepository<T> {
    * @param timestamp the timestamp, associated to this landscape. Will be used to index the
    *        objects.
    * @param landscape the landscape object.
+   * @param totalRequests the total amount of requests
    */
-  void saveLandscape(final long timestamp, Landscape landscape);
+  void saveLandscape(final long timestamp, Landscape landscape, long totalRequests);
 
 
   /**
@@ -29,8 +29,9 @@ public interface LandscapeRepository<T> {
    *
    * @param timestamp the timestamp
    * @param replay the replay landscape
+   * @param totalRequests the total amount of requests
    */
-  void saveReplay(final long timestamp, final Landscape replay);
+  void saveReplay(final long timestamp, final Landscape replay, long totalRequests);
 
   /**
    * Retrieves a landscape object with a specific timestamp from the repository.
@@ -56,6 +57,23 @@ public interface LandscapeRepository<T> {
   T getLandscapeById(final long id);
 
 
+  /**
+   * Retrieves the total requests of a landscape.
+   *
+   * @param timestamp the timestamp of the landscape
+   * @return the total requests
+   */
+  long getLandscapeTotalRequests(long timestamp);
+
+
+  /**
+   * Retrieves the total requests of a replay.
+   *
+   * @param timestamp the timestamp of the replay
+   * @return the total requests
+   */
+  long getReplayTotalRequests(long timestamp);
+
 
   /**
    * Retrieves a replay landscape object with a specific timestamp from the repository.
@@ -75,12 +93,6 @@ public interface LandscapeRepository<T> {
    */
   T getReplayById(final long id);
 
-  /**
-   * Returns all landscape model snapshots for timeshift use.
-   *
-   * @return a map containing the timestamps as keys and activity(?) as values.
-   */
-  Map<Long, Long> getAllForTimeshift();
 
 
   /**

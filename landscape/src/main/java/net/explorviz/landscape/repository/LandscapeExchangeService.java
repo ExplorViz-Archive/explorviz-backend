@@ -1,7 +1,6 @@
 package net.explorviz.landscape.repository;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -57,36 +56,7 @@ public class LandscapeExchangeService {
     return this.model.getLastPeriodLandscape();
   }
 
-  public List<String> getReplayNames() {
-    final List<String> names = new ArrayList<>();
-    final File directory = new File(REPLAY_FOLDER);
-    final File[] fList = directory.listFiles();
 
-    if (fList != null) {
-      for (final File f : fList) {
-        final String filename = f.getName();
-
-        if (filename.endsWith(EXPLORVIZ_FILE_ENDING)) {
-          // first validation check -> filename
-          long timestamp;
-
-          try {
-            timestamp = Long.parseLong(filename.split("-")[0]);
-          } catch (final NumberFormatException e) {
-            LOGGER.warn(e.getMessage());
-            continue;
-          }
-
-          // second validation check -> deserialization
-
-          this.getReplay(timestamp);
-
-          names.add(filename);
-        }
-      }
-    }
-    return names;
-  }
 
   public List<Timestamp> getTimestampObjectsInRepo(final String folderName) {
     final File directory = new File(REPOSITORY_FOLDER + folderName);

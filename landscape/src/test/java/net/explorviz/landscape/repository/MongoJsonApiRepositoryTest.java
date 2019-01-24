@@ -1,7 +1,9 @@
 package net.explorviz.landscape.repository;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Random;
 import javax.inject.Inject;
 import net.explorviz.landscape.model.landscape.Landscape;
 import net.explorviz.landscape.repository.persistence.mongo.MongoJsonApiRepository;
@@ -55,7 +57,7 @@ public class MongoJsonApiRepositoryTest {
   public void findByTimestamp() {
     final long ts = System.currentTimeMillis();
     final Landscape landscape = LandscapeDummyCreator.createDummyLandscape();
-    this.repo.saveLandscape(ts, landscape);
+    this.repo.saveLandscape(ts, landscape, 0);
 
     final String rawLandscape = this.repo.getLandscapeByTimestamp(ts);
 
@@ -71,8 +73,8 @@ public class MongoJsonApiRepositoryTest {
     final long ts = System.currentTimeMillis();
     final Landscape landscape2 = LandscapeDummyCreator.createDummyLandscape();
     final long ts2 = ts + 1;
-    this.repo.saveLandscape(ts, landscape);
-    this.repo.saveLandscape(ts2, landscape2);
+    this.repo.saveLandscape(ts, landscape, 0);
+    this.repo.saveLandscape(ts2, landscape2, 0);
 
     final long id = landscape.getId();
     final String rawLandscape = this.repo.getLandscapeById(id);
@@ -86,7 +88,7 @@ public class MongoJsonApiRepositoryTest {
   public void findReplayByTimestamp() {
     final long ts = System.currentTimeMillis();
     final Landscape landscape = LandscapeDummyCreator.createDummyLandscape();
-    this.repo.saveReplay(ts, landscape);
+    this.repo.saveReplay(ts, landscape, 0);
 
     final String rawLandscape = this.repo.getReplayByTimestamp(ts);
 
@@ -100,8 +102,8 @@ public class MongoJsonApiRepositoryTest {
     final long ts = System.currentTimeMillis();
     final Landscape landscape = LandscapeDummyCreator.createDummyLandscape();
     final Landscape landscape2 = LandscapeDummyCreator.createDummyLandscape();
-    this.repo.saveReplay(ts, landscape);
-    this.repo.saveReplay(ts, landscape2);
+    this.repo.saveReplay(ts, landscape, 0);
+    this.repo.saveReplay(ts, landscape2, 0);
 
     final long id = landscape.getId();
     final String rawLandscape = this.repo.getReplayById(id);
@@ -112,5 +114,29 @@ public class MongoJsonApiRepositoryTest {
   }
 
 
+
+  @Test
+  public void testTotalRequestsReplay() {
+    final Random rand = new Random();
+    final long ts = System.currentTimeMillis();
+    final long requests = rand.nextInt(Integer.MAX_VALUE) + 1;
+    final Landscape landscape = LandscapeDummyCreator.createDummyLandscape();
+    this.repo.saveReplay(ts, landscape, requests);
+
+    final long retrievedRequests = this.repo.getReplayTotalRequests(ts);
+    assertEquals("Requests not matching", requests, retrievedRequests);
+  }
+
+  @Test
+  public void testTotalRequestsLadnscape() {
+    final Random rand = new Random();
+    final long ts = System.currentTimeMillis();
+    final long requests = rand.nextInt(Integer.MAX_VALUE) + 1;
+    final Landscape landscape = LandscapeDummyCreator.createDummyLandscape();
+    this.repo.saveLandscape(ts, landscape, requests);
+
+    final long retrievedRequests = this.repo.getLandscapeTotalRequests(ts);
+    assertEquals("Requests not matching", requests, retrievedRequests);
+  }
 
 }

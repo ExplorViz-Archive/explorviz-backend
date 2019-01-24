@@ -10,6 +10,7 @@ import net.explorviz.shared.annotations.Config;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+
 public final class MongoHelper { // NOPMD
 
   private static final String DEFAULT_HOST = "localhost";
@@ -18,8 +19,9 @@ public final class MongoHelper { // NOPMD
   private static final String LANDSCAPE_COLLECTION = "landscape";
   private static final String REPLAY_COLLECTION = "replay";
 
-  public static final String LANDSCAPE_FIELD = "landscape";
-  public static final String ID_FIELD = "_id";
+  public static final String FIELD_LANDSCAPE = "landscape";
+  public static final String FIELD_ID = "_id";
+  public static final String FIELD_REQUESTS = "requests";
 
   private static final Logger LOGGER = LoggerFactory.getLogger(MongoHelper.class.getSimpleName());
 
@@ -44,10 +46,11 @@ public final class MongoHelper { // NOPMD
    * application, hence why we suggest a singleton - the MongoClient is effectively the connection
    * pool, so for every new MongoClient, you are opening a new pool."
    */
-
-  private MongoHelper() {
+  public MongoHelper() {
     if (MongoHelper.client == null) {
       MongoHelper.client = new MongoClient(new MongoClientURI(this.getUri()));
+    } else {
+      throw new IllegalStateException("Only one instance allowed");
     }
   }
 
@@ -63,8 +66,8 @@ public final class MongoHelper { // NOPMD
 
 
   private void initDb() {
-    this.getLandscapeCollection().createIndex(new BasicDBObject(LANDSCAPE_FIELD, 1), null, true);
-    this.getReplayCollection().createIndex(new BasicDBObject(LANDSCAPE_FIELD, 1), null, true);
+    this.getLandscapeCollection().createIndex(new BasicDBObject(FIELD_LANDSCAPE, 1), null, true);
+    this.getReplayCollection().createIndex(new BasicDBObject(FIELD_LANDSCAPE, 1), null, true);
   }
 
   /**
