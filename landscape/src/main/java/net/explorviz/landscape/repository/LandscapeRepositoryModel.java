@@ -63,7 +63,7 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
       // Configuration.LANDSCAPE_REPOSITORY);
 
       final Landscape readLandscape =
-          this.landscapeRepository.getLandscapeByTimestamp(java.lang.System.currentTimeMillis());
+          this.landscapeRepository.getByTimestamp(java.lang.System.currentTimeMillis());
 
       this.internalLandscape = readLandscape;
     } else {
@@ -97,12 +97,12 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
 
   public Landscape getLandscape(final long timestamp) {
     return LandscapePreparer
-        .prepareLandscape(this.landscapeRepository.getLandscapeByTimestamp(timestamp));
+        .prepareLandscape(this.landscapeRepository.getByTimestamp(timestamp));
   }
 
   public Landscape getReplay(final long timestamp) {
     return LandscapePreparer
-        .prepareLandscape(this.replayRepository.getReplayByTimestamp(timestamp));
+        .prepareLandscape(this.replayRepository.getByTimestamp(timestamp));
   }
 
 
@@ -149,7 +149,7 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
           calculatedTotalRequests = calculateTotalRequests(dummyLandscape);
           dummyLandscape.getTimestamp().setTotalRequests(calculatedTotalRequests);
 
-          this.landscapeRepository.saveLandscape(milliseconds, dummyLandscape,
+          this.landscapeRepository.save(milliseconds, dummyLandscape,
               calculatedTotalRequests);
           this.lastPeriodLandscape = dummyLandscape;
         } else {
@@ -158,7 +158,7 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
           this.internalLandscape.getTimestamp().setTotalRequests(calculatedTotalRequests);
           this.internalLandscape.setTimestamp(new Timestamp(milliseconds, 0));
 
-          this.landscapeRepository.saveLandscape(milliseconds, this.internalLandscape,
+          this.landscapeRepository.save(milliseconds, this.internalLandscape,
               calculatedTotalRequests);
           try {
             final Landscape l = this.fstConf.deepCopy(this.internalLandscape);

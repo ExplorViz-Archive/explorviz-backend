@@ -52,9 +52,9 @@ public class MongoReplayRepositoryTest {
   public void findReplayByTimestamp() {
     final long ts = System.currentTimeMillis();
     final Landscape landscape = LandscapeDummyCreator.createDummyLandscape();
-    this.repo.saveReplay(ts, landscape, 0);
+    this.repo.save(ts, landscape, 0);
 
-    final Landscape landscapeRetrieved = this.repo.getReplayByTimestamp(ts);
+    final Landscape landscapeRetrieved = this.repo.getByTimestamp(ts);
 
 
 
@@ -66,11 +66,11 @@ public class MongoReplayRepositoryTest {
     final long ts = System.currentTimeMillis();
     final Landscape landscape = LandscapeDummyCreator.createDummyLandscape();
     final Landscape landscape2 = LandscapeDummyCreator.createDummyLandscape();
-    this.repo.saveReplay(ts, landscape, 0);
-    this.repo.saveReplay(ts, landscape2, 0);
+    this.repo.save(ts, landscape, 0);
+    this.repo.save(ts, landscape2, 0);
 
     final long id = landscape.getId();
-    final Landscape landscapeRetrieved = this.repo.getReplayById(id);
+    final Landscape landscapeRetrieved = this.repo.getById(id);
 
     assertEquals("Ids don't match", id, (long) landscapeRetrieved.getId());
 
@@ -82,9 +82,9 @@ public class MongoReplayRepositoryTest {
     final long ts = System.currentTimeMillis();
     final long requests = rand.nextInt(Integer.MAX_VALUE) + 1;
     final Landscape landscape = LandscapeDummyCreator.createDummyLandscape();
-    this.repo.saveReplay(ts, landscape, requests);
+    this.repo.save(ts, landscape, requests);
 
-    final long retrievedRequests = this.repo.getReplayTotalRequests(ts);
+    final long retrievedRequests = this.repo.getTotalRequests(ts);
     assertEquals("Requests not matching", requests, retrievedRequests);
   }
 

@@ -54,7 +54,7 @@ public class MongoLandscapeJsonApiRepository implements LandscapeRepository<Stri
 
 
   @Override
-  public void saveLandscape(final long timestamp, final Landscape landscape,
+  public void save(final long timestamp, final Landscape landscape,
       final long totalRequests) {
 
     String landscapeJsonApi;
@@ -84,7 +84,7 @@ public class MongoLandscapeJsonApiRepository implements LandscapeRepository<Stri
   }
 
   @Override
-  public String getLandscapeByTimestamp(final long timestamp) {
+  public String getByTimestamp(final long timestamp) {
     final DBCollection landscapeCollection = this.mongoHelper.getLandscapeCollection();
     final DBObject query = new BasicDBObject(MongoHelper.FIELD_ID, timestamp);
     final DBCursor result = landscapeCollection.find(query);
@@ -97,7 +97,7 @@ public class MongoLandscapeJsonApiRepository implements LandscapeRepository<Stri
   }
 
   @Override
-  public String getLandscapeById(final long id) {
+  public String getById(final long id) {
     final String regexQuery = "\\{\"data\":\\{\"type\":\"landscape\",\"id\":\"" + id;
 
 
@@ -146,7 +146,7 @@ public class MongoLandscapeJsonApiRepository implements LandscapeRepository<Stri
 
 
   @Override
-  public long getLandscapeTotalRequests(final long timestamp) {
+  public long getTotalRequests(final long timestamp) {
     final DBCollection landCollection = this.mongoHelper.getLandscapeCollection();
     final DBObject query = new BasicDBObject(MongoHelper.FIELD_ID, timestamp);
     final DBCursor result = landCollection.find(query);

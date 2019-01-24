@@ -21,7 +21,7 @@ public interface LandscapeRepository<T> {
    * @param landscape the landscape object.
    * @param totalRequests the total amount of requests
    */
-  void saveLandscape(final long timestamp, Landscape landscape, long totalRequests);
+  void save(final long timestamp, Landscape landscape, long totalRequests);
 
 
 
@@ -34,7 +34,7 @@ public interface LandscapeRepository<T> {
    *
    * @throws ClientErrorException if the landscape could not be found.
    */
-  T getLandscapeByTimestamp(final long timestamp);
+  T getByTimestamp(final long timestamp);
 
 
   /**
@@ -46,7 +46,7 @@ public interface LandscapeRepository<T> {
    *
    * @throws ClientErrorException if the landscape could not be found.
    */
-  T getLandscapeById(final long id);
+  T getById(final long id);
 
 
   /**
@@ -55,7 +55,7 @@ public interface LandscapeRepository<T> {
    * @param timestamp the timestamp of the landscape
    * @return the total requests
    */
-  long getLandscapeTotalRequests(long timestamp);
+  long getTotalRequests(long timestamp);
 
 
   /**

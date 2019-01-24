@@ -57,9 +57,9 @@ public class MongoLandscapeJsonApiRepositoryTest {
   public void findByTimestamp() {
     final long ts = System.currentTimeMillis();
     final Landscape landscape = LandscapeDummyCreator.createDummyLandscape();
-    this.repo.saveLandscape(ts, landscape, 0);
+    this.repo.save(ts, landscape, 0);
 
-    final String rawLandscape = this.repo.getLandscapeByTimestamp(ts);
+    final String rawLandscape = this.repo.getByTimestamp(ts);
 
 
 
@@ -73,11 +73,11 @@ public class MongoLandscapeJsonApiRepositoryTest {
     final long ts = System.currentTimeMillis();
     final Landscape landscape2 = LandscapeDummyCreator.createDummyLandscape();
     final long ts2 = ts + 1;
-    this.repo.saveLandscape(ts, landscape, 0);
-    this.repo.saveLandscape(ts2, landscape2, 0);
+    this.repo.save(ts, landscape, 0);
+    this.repo.save(ts2, landscape2, 0);
 
     final long id = landscape.getId();
-    final String rawLandscape = this.repo.getLandscapeById(id);
+    final String rawLandscape = this.repo.getById(id);
 
     assertTrue("Ivalid landscape or wrong id",
         rawLandscape.startsWith("{\"data\":{\"type\":\"landscape\",\"id\":\"" + id + "\""));
@@ -92,9 +92,9 @@ public class MongoLandscapeJsonApiRepositoryTest {
     final long ts = System.currentTimeMillis();
     final long requests = rand.nextInt(Integer.MAX_VALUE) + 1;
     final Landscape landscape = LandscapeDummyCreator.createDummyLandscape();
-    this.repo.saveLandscape(ts, landscape, requests);
+    this.repo.save(ts, landscape, requests);
 
-    final long retrievedRequests = this.repo.getLandscapeTotalRequests(ts);
+    final long retrievedRequests = this.repo.getTotalRequests(ts);
     assertEquals("Requests not matching", requests, retrievedRequests);
   }
 

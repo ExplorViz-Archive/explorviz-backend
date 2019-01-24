@@ -16,13 +16,13 @@ public class MongoReplayRepository implements ReplayRepository<Landscape> {
   private LandscapeSerializationHelper serializationHelper;
 
   @Override
-  public void saveReplay(final long timestamp, final Landscape replay, final long totalRequests) {
-    this.repo.saveReplay(timestamp, replay, totalRequests);
+  public void save(final long timestamp, final Landscape replay, final long totalRequests) {
+    this.repo.save(timestamp, replay, totalRequests);
   }
 
   @Override
-  public Landscape getReplayByTimestamp(final long timestamp) {
-    final String jsonLandscape = this.repo.getReplayByTimestamp(timestamp);
+  public Landscape getByTimestamp(final long timestamp) {
+    final String jsonLandscape = this.repo.getByTimestamp(timestamp);
     try {
       return this.serializationHelper.deserialize(jsonLandscape);
     } catch (final DocumentSerializationException e) {
@@ -31,8 +31,8 @@ public class MongoReplayRepository implements ReplayRepository<Landscape> {
   }
 
   @Override
-  public Landscape getReplayById(final long id) {
-    final String jsonLandscape = this.repo.getReplayById(id);
+  public Landscape getById(final long id) {
+    final String jsonLandscape = this.repo.getById(id);
     try {
       return this.serializationHelper.deserialize(jsonLandscape);
     } catch (final DocumentSerializationException e) {
@@ -41,8 +41,8 @@ public class MongoReplayRepository implements ReplayRepository<Landscape> {
   }
 
   @Override
-  public long getReplayTotalRequests(final long timestamp) {
-    return this.repo.getReplayTotalRequests(timestamp);
+  public long getTotalRequests(final long timestamp) {
+    return this.repo.getTotalRequests(timestamp);
   }
 
 

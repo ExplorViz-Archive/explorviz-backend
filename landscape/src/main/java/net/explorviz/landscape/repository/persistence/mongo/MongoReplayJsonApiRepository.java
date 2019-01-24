@@ -30,7 +30,7 @@ public class MongoReplayJsonApiRepository implements ReplayRepository<String> {
   private LandscapeSerializationHelper serializationHelper;
 
   @Override
-  public void saveReplay(final long timestamp, final Landscape replay, final long totalRequests) {
+  public void save(final long timestamp, final Landscape replay, final long totalRequests) {
     String landscapeJsonApi;
     try {
       landscapeJsonApi = this.serializationHelper.serialize(replay);
@@ -51,7 +51,7 @@ public class MongoReplayJsonApiRepository implements ReplayRepository<String> {
 
 
   @Override
-  public String getReplayByTimestamp(final long timestamp) {
+  public String getByTimestamp(final long timestamp) {
     final DBCollection landscapeCollection = this.mongoHelper.getReplayCollection();
     final DBObject query = new BasicDBObject(MongoHelper.FIELD_ID, timestamp);
     final DBCursor result = landscapeCollection.find(query);
@@ -66,7 +66,7 @@ public class MongoReplayJsonApiRepository implements ReplayRepository<String> {
 
 
   @Override
-  public String getReplayById(final long id) {
+  public String getById(final long id) {
     final String regexQuery = "\\{\"data\":\\{\"type\":\"landscape\",\"id\":\"" + id + "\"";
 
     final Pattern pat = Pattern.compile(regexQuery, Pattern.CASE_INSENSITIVE);
@@ -82,7 +82,7 @@ public class MongoReplayJsonApiRepository implements ReplayRepository<String> {
   }
 
   @Override
-  public long getReplayTotalRequests(final long timestamp) {
+  public long getTotalRequests(final long timestamp) {
     final DBCollection collection = this.mongoHelper.getReplayCollection();
     final DBObject query = new BasicDBObject(MongoHelper.FIELD_ID, timestamp);
     final DBCursor result = collection.find(query);

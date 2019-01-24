@@ -36,14 +36,14 @@ public class MongoLandscapeRepository implements LandscapeRepository<Landscape> 
 
 
   @Override
-  public void saveLandscape(final long timestamp, final Landscape landscape,
+  public void save(final long timestamp, final Landscape landscape,
       final long totalRequests) {
-    this.repo.saveLandscape(timestamp, landscape, totalRequests);
+    this.repo.save(timestamp, landscape, totalRequests);
   }
 
   @Override
-  public Landscape getLandscapeByTimestamp(final long timestamp) {
-    final String jsonLandscape = this.repo.getLandscapeByTimestamp(timestamp);
+  public Landscape getByTimestamp(final long timestamp) {
+    final String jsonLandscape = this.repo.getByTimestamp(timestamp);
     try {
       return this.serializationHelper.deserialize(jsonLandscape);
     } catch (final DocumentSerializationException e) {
@@ -52,8 +52,8 @@ public class MongoLandscapeRepository implements LandscapeRepository<Landscape> 
   }
 
   @Override
-  public Landscape getLandscapeById(final long id) {
-    final String jsonLandscape = this.repo.getLandscapeById(id);
+  public Landscape getById(final long id) {
+    final String jsonLandscape = this.repo.getById(id);
     try {
       return this.serializationHelper.deserialize(jsonLandscape);
     } catch (final DocumentSerializationException e) {
@@ -76,8 +76,8 @@ public class MongoLandscapeRepository implements LandscapeRepository<Landscape> 
   }
 
   @Override
-  public long getLandscapeTotalRequests(final long timestamp) {
-    return this.repo.getLandscapeTotalRequests(timestamp);
+  public long getTotalRequests(final long timestamp) {
+    return this.repo.getTotalRequests(timestamp);
   }
 
 

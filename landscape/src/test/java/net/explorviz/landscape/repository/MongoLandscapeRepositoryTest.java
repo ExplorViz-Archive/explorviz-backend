@@ -51,9 +51,9 @@ public class MongoLandscapeRepositoryTest {
   public void findByTimestamp() {
     final long ts = System.currentTimeMillis();
     final Landscape landscape = LandscapeDummyCreator.createDummyLandscape();
-    this.repo.saveLandscape(ts, landscape, 0);
+    this.repo.save(ts, landscape, 0);
 
-    final Landscape landscapeRetrieved = this.repo.getLandscapeByTimestamp(ts);
+    final Landscape landscapeRetrieved = this.repo.getByTimestamp(ts);
 
     assertEquals("Ids don't match", landscape.getId(), landscapeRetrieved.getId()); // NOPMD
 
@@ -64,9 +64,9 @@ public class MongoLandscapeRepositoryTest {
   public void testTotalRequets() {
     final long ts = System.currentTimeMillis();
     final Landscape landscape = LandscapeDummyCreator.createDummyLandscape();
-    this.repo.saveLandscape(ts, landscape, 0);
+    this.repo.save(ts, landscape, 0);
 
-    final Landscape landscapeRetrieved = this.repo.getLandscapeByTimestamp(ts);
+    final Landscape landscapeRetrieved = this.repo.getByTimestamp(ts);
 
     assertEquals("Requests don't match", landscape.getId(), landscapeRetrieved.getId()); // NOPMD
   }
@@ -76,12 +76,12 @@ public class MongoLandscapeRepositoryTest {
     final long ts = System.currentTimeMillis();
     final Landscape landscape = LandscapeDummyCreator.createDummyLandscape();
     final Landscape landscape2 = LandscapeDummyCreator.createDummyLandscape();
-    this.repo.saveLandscape(ts, landscape, 0);
-    this.repo.saveLandscape(ts, landscape2, 0);
+    this.repo.save(ts, landscape, 0);
+    this.repo.save(ts, landscape2, 0);
 
     final long id = landscape.getId();
 
-    final Landscape landscapeRetrieved = this.repo.getLandscapeById(id);
+    final Landscape landscapeRetrieved = this.repo.getById(id);
 
     assertEquals("Ids don't match", id, (long) landscapeRetrieved.getId());
 
@@ -95,9 +95,9 @@ public class MongoLandscapeRepositoryTest {
     final long ts = System.currentTimeMillis();
     final long requests = rand.nextInt(Integer.MAX_VALUE) + 1;
     final Landscape landscape = LandscapeDummyCreator.createDummyLandscape();
-    this.repo.saveLandscape(ts, landscape, requests);
+    this.repo.save(ts, landscape, requests);
 
-    final long retrievedRequests = this.repo.getLandscapeTotalRequests(ts);
+    final long retrievedRequests = this.repo.getTotalRequests(ts);
     assertEquals("Requests not matching", requests, retrievedRequests);
   }
 

@@ -12,7 +12,7 @@ public interface ReplayRepository<T> {
    * @param replay the replay landscape
    * @param totalRequests the total amount of requests
    */
-  void saveReplay(final long timestamp, final Landscape replay, long totalRequests);
+  void save(final long timestamp, final Landscape replay, long totalRequests);
 
   /**
    * Retrieves the total requests of a replay.
@@ -20,7 +20,7 @@ public interface ReplayRepository<T> {
    * @param timestamp the timestamp of the replay
    * @return the total requests
    */
-  long getReplayTotalRequests(long timestamp);
+  long getTotalRequests(long timestamp);
 
   /**
    * Retrieves a replay landscape object with a specific timestamp from the repository.
@@ -29,7 +29,7 @@ public interface ReplayRepository<T> {
    *
    * @return the landscape object
    */
-  T getReplayByTimestamp(final long timestamp);
+  T getByTimestamp(final long timestamp);
 
   /**
    * Retrieves a replay object with a specific, unique identifier.
@@ -38,7 +38,7 @@ public interface ReplayRepository<T> {
    *
    * @return the replay object
    */
-  T getReplayById(final long id);
+  T getById(final long id);
 
   /**
    * Removes all landscapes that have exceeded their lifespan.
