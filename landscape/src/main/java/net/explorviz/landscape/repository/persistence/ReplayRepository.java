@@ -1,5 +1,6 @@
 package net.explorviz.landscape.repository.persistence;
 
+import java.util.List;
 import net.explorviz.landscape.model.landscape.Landscape;
 
 public interface ReplayRepository<T> {
@@ -21,6 +22,15 @@ public interface ReplayRepository<T> {
    * @return the total requests
    */
   long getTotalRequests(long timestamp);
+
+
+  /**
+   * Retrieves all timestamps currently stored in the db. Each timestamp is a unique identifier of
+   * an object.
+   *
+   * @return list of all timestamps
+   */
+  List<Long> getAllTimestamps();
 
   /**
    * Retrieves a replay landscape object with a specific timestamp from the repository.

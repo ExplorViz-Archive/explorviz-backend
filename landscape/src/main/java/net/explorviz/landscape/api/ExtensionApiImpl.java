@@ -11,7 +11,6 @@ import net.explorviz.landscape.model.store.Timestamp;
 import net.explorviz.landscape.model.store.helper.TimestampHelper;
 import net.explorviz.landscape.repository.LandscapeExchangeService;
 import net.explorviz.landscape.repository.persistence.RepositoryFileStorage;
-import net.explorviz.landscape.server.main.Configuration;
 import net.explorviz.landscape.server.providers.CoreModelHandler;
 import net.explorviz.landscape.server.providers.GenericTypeFinder;
 import net.explorviz.shared.server.helper.PropertyHelper;
@@ -75,8 +74,7 @@ public final class ExtensionApiImpl implements IExtensionApi {
   @Override
   public List<Timestamp> getSubsequentTimestamps(final long afterTimestamp,
       final int intervalSize) {
-    final List<Timestamp> allTimestamps =
-        this.service.getTimestampObjectsInRepo(Configuration.LANDSCAPE_REPOSITORY);
+    final List<Timestamp> allTimestamps = this.service.getLandscapeTimestamps();
     return TimestampHelper.filterTimestampsAfterTimestamp(allTimestamps, afterTimestamp,
         intervalSize);
   }
@@ -86,7 +84,7 @@ public final class ExtensionApiImpl implements IExtensionApi {
    */
   @Override
   public List<Timestamp> getUploadedTimestamps() {
-    return this.service.getTimestampObjectsInRepo(Configuration.REPLAY_REPOSITORY);
+    return this.service.getReplayTimestamps();
   }
 
   /**

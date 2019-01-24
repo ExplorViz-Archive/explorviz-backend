@@ -1,5 +1,6 @@
 package net.explorviz.landscape.repository.persistence;
 
+import java.util.List;
 import javax.ws.rs.ClientErrorException;
 import net.explorviz.landscape.model.landscape.Landscape;
 
@@ -36,6 +37,13 @@ public interface LandscapeRepository<T> {
    */
   T getByTimestamp(final long timestamp);
 
+  /**
+   * Retrieves all timestamps currently stored in the db. Each timestamp is a unique identifier of
+   * an object.
+   * 
+   * @return list of all timestamps
+   */
+  List<Long> getAllTimestamps();
 
   /**
    * Retrieves a landscape object with a specific, unique identifier.

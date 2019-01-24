@@ -1,6 +1,7 @@
 package net.explorviz.landscape.repository.persistence.mongo;
 
 import com.github.jasminb.jsonapi.exceptions.DocumentSerializationException;
+import java.util.List;
 import javax.inject.Inject;
 import javax.ws.rs.InternalServerErrorException;
 import net.explorviz.landscape.model.landscape.Landscape;
@@ -55,6 +56,11 @@ public class MongoReplayRepository implements ReplayRepository<Landscape> {
   @Override
   public void clear() {
     this.repo.clear();
+  }
+
+  @Override
+  public List<Long> getAllTimestamps() {
+    return this.repo.getAllTimestamps();
   }
 
 }

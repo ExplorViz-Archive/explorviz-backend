@@ -1,6 +1,7 @@
 package net.explorviz.landscape.repository.persistence.mongo;
 
 import com.github.jasminb.jsonapi.exceptions.DocumentSerializationException;
+import java.util.List;
 import javax.inject.Inject;
 import javax.ws.rs.InternalServerErrorException;
 import net.explorviz.landscape.model.landscape.Landscape;
@@ -36,8 +37,7 @@ public class MongoLandscapeRepository implements LandscapeRepository<Landscape> 
 
 
   @Override
-  public void save(final long timestamp, final Landscape landscape,
-      final long totalRequests) {
+  public void save(final long timestamp, final Landscape landscape, final long totalRequests) {
     this.repo.save(timestamp, landscape, totalRequests);
   }
 
@@ -78,6 +78,11 @@ public class MongoLandscapeRepository implements LandscapeRepository<Landscape> 
   @Override
   public long getTotalRequests(final long timestamp) {
     return this.repo.getTotalRequests(timestamp);
+  }
+
+  @Override
+  public List<Long> getAllTimestamps() {
+    return this.repo.getAllTimestamps();
   }
 
 

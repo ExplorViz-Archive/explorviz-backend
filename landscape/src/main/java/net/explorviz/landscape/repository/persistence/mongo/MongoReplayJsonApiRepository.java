@@ -6,6 +6,8 @@ import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 import com.mongodb.WriteResult;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 import javax.inject.Inject;
@@ -120,5 +122,16 @@ public class MongoReplayJsonApiRepository implements ReplayRepository<String> {
     replayCollection.remove(new BasicDBObject());
   }
 
+  @Override
+  public List<Long> getAllTimestamps() {
+    final DBCollection landCollection = this.mongoHelper.getReplayCollection();
+    final List<Long> result = new LinkedList<>();
+    try (final DBCursor cursor = landCollection.find()) {
+      while (cursor.hasNext()) {
+        result.add((long) cursor.next().get(MongoHelper.FIELD_ID));
+      }
+    }
+    return result;
+  }
 
 }

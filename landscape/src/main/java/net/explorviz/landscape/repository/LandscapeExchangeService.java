@@ -2,13 +2,15 @@ package net.explorviz.landscape.repository;
 
 import java.io.File;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import net.explorviz.landscape.model.landscape.Landscape;
 import net.explorviz.landscape.model.store.Timestamp;
+import net.explorviz.landscape.repository.persistence.LandscapeRepository;
+import net.explorviz.landscape.repository.persistence.ReplayRepository;
 import net.explorviz.landscape.server.helper.FileSystemHelper;
 import net.explorviz.shared.annotations.Config;
 import org.jvnet.hk2.annotations.Service;
@@ -40,6 +42,13 @@ public class LandscapeExchangeService {
 
   private final LandscapeRepositoryModel model;
 
+
+  @Inject
+  private LandscapeRepository<String> landscapeRepo;
+
+  @Inject
+  private ReplayRepository<String> replayRepo;
+
   @Config("repository.useDummyMode")
   private boolean useDummyMode;
 
@@ -57,49 +66,25 @@ public class LandscapeExchangeService {
   }
 
 
+  public List<Timestamp> getLandscapeTimestamps() {
+    final List<Long> rawTimestamps = this.landscapeRepo.getAllTimestamps();
+    final List<Timestamp> timestamps =
+        rawTimestamps.stream().map(t -> new Timestamp(t, this.landscapeRepo.getTotalRequests(t)))
+            .collect(Collectors.toList());
 
-  public List<Timestamp> getTimestampObjectsInRepo(final String folderName) {
-    final File directory = new File(REPOSITORY_FOLDER + folderName);
-    final File[] fList = directory.listFiles();
-    final List<Timestamp> timestamps = new LinkedList<>();
-
-    if (fList != null) {
-      for (final File f : fList) {
-        final String filename = f.getName();
-
-        if (filename.endsWith(EXPLORVIZ_FILE_ENDING)) {
-          // first validation check -> filename
-
-          final String timestampAsString = filename.split("-")[0];
-          final String callsAsString = filename.split("-")[1].split(EXPLORVIZ_FILE_ENDING)[0];
-
-          Timestamp possibleTimestamp = timestampCache.get(timestampAsString + callsAsString);
-
-          if (possibleTimestamp == null) {
-
-            // new timestamp -> add to cache
-            // and initialize ID of entity
-            long timestamp;
-            int calls;
-
-            try {
-              timestamp = Long.parseLong(timestampAsString);
-              calls = Integer.parseInt(callsAsString);
-            } catch (final NumberFormatException e) {
-              continue;
-            }
-
-            possibleTimestamp = new Timestamp(timestamp, calls); // NOPMD
-            possibleTimestamp.initializeId();
-            timestampCache.put(timestampAsString + callsAsString, possibleTimestamp);
-          }
-
-          timestamps.add(possibleTimestamp);
-        }
-      }
-    }
     return timestamps;
   }
+
+  public List<Timestamp> getReplayTimestamps() {
+    final List<Long> rawTimestamps = this.replayRepo.getAllTimestamps();
+    final List<Timestamp> timestamps =
+        rawTimestamps.stream().map(t -> new Timestamp(t, this.replayRepo.getTotalRequests(t)))
+            .collect(Collectors.toList());
+
+    return timestamps;
+  }
+
+
 
   public Landscape getLandscape(final long timestamp) {
     return this.model.getLandscape(timestamp);
