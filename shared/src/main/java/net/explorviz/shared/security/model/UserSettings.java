@@ -1,8 +1,12 @@
 package net.explorviz.shared.security.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.github.jasminb.jsonapi.LongIdHandler;
 import com.github.jasminb.jsonapi.annotations.Id;
 import com.github.jasminb.jsonapi.annotations.Type;
+import java.util.HashMap;
+import java.util.Map;
 import javax.ws.rs.BadRequestException;
 
 /**
@@ -14,16 +18,40 @@ public class UserSettings {
   @Id(LongIdHandler.class)
   private Long id = 1L;
 
-  private boolean showFpsCounter = false;
+  @JsonSerialize
+  @JsonProperty("booleanAttributes")
+  private final Map<String, Boolean> booleanAttributes;
 
-  private double appVizCommArrowSize = 1.0;
+  @JsonSerialize
+  @JsonProperty("numericAttributes")
+  private final Map<String, Number> numericAttributes;
 
-  private boolean appVizTransparency = true;
-
-  private double appVizTransparencyIntensity = 0.3;
+  @JsonSerialize
+  @JsonProperty("stringAttributes")
+  private final Map<String, String> stringAttributes;
 
   public UserSettings() {
-    // For MongoDB
+    this.booleanAttributes = new HashMap<>();
+    this.numericAttributes = new HashMap<>();
+    this.stringAttributes = new HashMap<>();
+
+    this.booleanAttributes.put("showFpsCounter", false);
+    this.booleanAttributes.put("appVizTransparency", true);
+
+    this.numericAttributes.put("appVizCommArrowSize", 1.0);
+    this.numericAttributes.put("appVizTransparencyIntensity", 0.3);
+  }
+
+  public void put(final String attr, final boolean val) {
+    this.booleanAttributes.put(attr, val);
+  }
+
+  public void put(final String attr, final Number val) {
+    this.numericAttributes.put(attr, val);
+  }
+
+  public void put(final String attr, final String val) {
+    this.stringAttributes.put(attr, val);
   }
 
   public Long getId() {
@@ -34,51 +62,18 @@ public class UserSettings {
     this.id = id;
   }
 
-  public boolean isShowFpsCounter() {
-    return this.showFpsCounter;
-  }
-
-
-  public void setShowFpsCounter(final boolean showFpsCounter) {
-    this.showFpsCounter = showFpsCounter;
-  }
-
-
-  public double getAppVizCommArrowSize() {
-    return this.appVizCommArrowSize;
-  }
-
-  public void setAppVizCommArrowSize(final double appVizCommArrowSize) {
-    this.appVizCommArrowSize = appVizCommArrowSize;
-  }
-
-
-  public boolean isAppVizTransparency() {
-    return this.appVizTransparency;
-  }
-
-  public void setAppVizTransparency(final boolean appVizTransparency) {
-    this.appVizTransparency = appVizTransparency;
-  }
-
-
-  public double getAppVizTransparencyIntensity() {
-    return this.appVizTransparencyIntensity;
-  }
-
-  public void setAppVizTransparencyIntensity(final double appVizTransparencyIntensity) {
-    this.appVizTransparencyIntensity = appVizTransparencyIntensity;
-  }
-
   /*
    * Checks if the settings are valid
    */
   public void validate() {
-    if (this.appVizCommArrowSize <= 0.0) {
+    if (this.numericAttributes.containsKey("appVizCommArrowSize")
+        && this.numericAttributes.get("appVizCommArrowSize").doubleValue() <= 0.0) {
       throw new BadRequestException("appVizCommArrowSize must be > 0");
     }
-    if (this.appVizTransparencyIntensity < 0.0 || this.appVizTransparencyIntensity > 1.0) {
-      throw new BadRequestException("appVizCommArrowSize must be between 0.0 and 1.0");
+    if (this.numericAttributes.containsKey("appVizTransparencyIntensity")
+        && (this.numericAttributes.get("appVizTransparencyIntensity").doubleValue() < 0.0
+            || this.numericAttributes.get("appVizTransparencyIntensity").doubleValue() > 1.0)) {
+      throw new BadRequestException("appVizTransparencyIntensity must be between 0.0 and 1.0");
     }
   }
 
@@ -96,11 +91,12 @@ public class UserSettings {
     }
     final UserSettings otherObj = (UserSettings) obj;
 
-    return this.id.equals(otherObj.getId())
-        && this.appVizCommArrowSize == otherObj.getAppVizCommArrowSize()
-        && this.appVizTransparency == otherObj.isAppVizTransparency()
-        && this.appVizTransparencyIntensity == otherObj.getAppVizTransparencyIntensity()
-        && this.showFpsCounter == otherObj.isShowFpsCounter();
+    return this.id.equals(otherObj.getId()) && this.booleanAttributes != null
+        && this.numericAttributes != null && this.stringAttributes != null
+        && this.booleanAttributes.equals(otherObj.booleanAttributes)
+        && this.numericAttributes.equals(otherObj.numericAttributes)
+        && this.stringAttributes.equals(otherObj.stringAttributes);
+
   }
 
 
