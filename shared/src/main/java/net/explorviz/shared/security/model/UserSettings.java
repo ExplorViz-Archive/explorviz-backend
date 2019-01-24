@@ -37,6 +37,8 @@ public class UserSettings {
 
     this.booleanAttributes.put("showFpsCounter", false);
     this.booleanAttributes.put("appVizTransparency", true);
+    this.booleanAttributes.put("enableHoverEffects", true);
+    this.booleanAttributes.put("keepHighlightingOnOpenOrClose", true);
 
     this.numericAttributes.put("appVizCommArrowSize", 1.0);
     this.numericAttributes.put("appVizTransparencyIntensity", 0.3);
