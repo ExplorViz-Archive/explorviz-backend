@@ -28,6 +28,7 @@ import net.explorviz.landscape.model.landscape.Landscape;
 import net.explorviz.landscape.model.landscape.Node;
 import net.explorviz.landscape.model.landscape.NodeGroup;
 import net.explorviz.landscape.model.landscape.System;
+import net.explorviz.landscape.repository.helper.DummyLandscapeHelper;
 import net.explorviz.landscape.repository.helper.Signature;
 import net.explorviz.landscape.repository.helper.SignatureParser;
 
@@ -362,7 +363,7 @@ public class InsertionRepositoryPart {
                 operationSignature.contains(" ") ? operationSignature.split(" ")[0]
                     : operationSignature;
             databaseQuery.setStatementType(parsedStatementType);
-
+            databaseQuery.setTimestamp(DummyLandscapeHelper.getCurrentTimestamp());
             databaseQuery.setSqlStatement(jdbcOperationEventRecord.getSqlStatement());
             databaseQuery.setParentApplication(currentApplication);
             currentApplication.getDatabaseQueries().add(databaseQuery);
