@@ -35,6 +35,7 @@ dependencies {
 }
 
 assemble.dependsOn shadowJar
+jar.enabled = false
 
 jar {
   manifest {

@@ -4,7 +4,7 @@ RUN mkdir /explorviz
 WORKDIR /explorviz
 COPY build/libs/explorviz-analysis.jar .
 
-# workaround due to oly analysis properties
+# workaround due to old analysis properties
 RUN jar xf explorviz-analysis.jar
 COPY explorviz.docker.live_trace_processing.properties META-INF/explorviz.live_trace_processing.properties
 
