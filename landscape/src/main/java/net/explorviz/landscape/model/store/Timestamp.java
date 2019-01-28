@@ -4,7 +4,8 @@ import com.github.jasminb.jsonapi.annotations.Type;
 import net.explorviz.landscape.model.helper.BaseEntity;
 
 /**
- * Model representing timestamps (a single software landscape for a specific UNIX timestamp).
+ * Model representing timestamps (a single software landscape for a specific UNIX timestamp in
+ * milliseconds).
  */
 @SuppressWarnings("serial")
 @Type("timestamp")
