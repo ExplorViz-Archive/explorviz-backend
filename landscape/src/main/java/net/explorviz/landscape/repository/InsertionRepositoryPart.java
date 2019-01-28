@@ -28,7 +28,6 @@ import net.explorviz.landscape.model.landscape.Landscape;
 import net.explorviz.landscape.model.landscape.Node;
 import net.explorviz.landscape.model.landscape.NodeGroup;
 import net.explorviz.landscape.model.landscape.System;
-import net.explorviz.landscape.repository.helper.DummyLandscapeHelper;
 import net.explorviz.landscape.repository.helper.Signature;
 import net.explorviz.landscape.repository.helper.SignatureParser;
 
@@ -109,7 +108,7 @@ public class InsertionRepositoryPart {
           this.createCommuInApp(trace, hostApplicationRecord.getHostname(), application, landscape,
               remoteCallRepositoryPart, i);
 
-          // landscape.updateLandscapeAccess(java.lang.System.nanoTime());
+          // landscape.updateLandscapeAccess(java.lang.System.currentTimeMillis());
         }
       }
     } else if (inputIRecord instanceof SystemMonitoringRecord) {
@@ -363,7 +362,7 @@ public class InsertionRepositoryPart {
                 operationSignature.contains(" ") ? operationSignature.split(" ")[0]
                     : operationSignature;
             databaseQuery.setStatementType(parsedStatementType);
-            databaseQuery.setTimestamp(DummyLandscapeHelper.getCurrentTimestamp());
+            databaseQuery.setTimestamp(java.lang.System.currentTimeMillis());
             databaseQuery.setSqlStatement(jdbcOperationEventRecord.getSqlStatement());
             databaseQuery.setParentApplication(currentApplication);
             currentApplication.getDatabaseQueries().add(databaseQuery);

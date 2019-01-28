@@ -108,7 +108,7 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
 
   /**
    * Key function for the backend. Handles the persistence of a landscape every 10 seconds passed
-   * timestamp format is nanoseconds since 1970, as defined in Kieker.
+   * timestamp format is milliseconds since 1970, as defined in Kieker.
    */
   @Override
   public void periodicTimeSignal(final long timestamp) {

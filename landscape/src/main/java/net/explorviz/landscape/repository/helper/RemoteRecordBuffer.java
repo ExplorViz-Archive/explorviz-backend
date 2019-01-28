@@ -7,7 +7,7 @@ import net.explorviz.landscape.model.application.Clazz;
  */
 public class RemoteRecordBuffer {
 
-  private final long timestampPutIntoBuffer = System.nanoTime();
+  private final long timestampPutIntoBuffer = java.lang.System.currentTimeMillis();
   private Clazz belongingClazz;
 
   public long getTimestampPutIntoBuffer() {
