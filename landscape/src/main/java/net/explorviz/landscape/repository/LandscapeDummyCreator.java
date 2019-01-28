@@ -327,6 +327,10 @@ final class LandscapeDummyCreator {
     communication.setSourceApplication(source);
     communication.setTargetApplication(target);
     communication.setRequests(requests);
+
+    final float averageResponseTime = 0L + DummyLandscapeHelper.getRandomNum(10, 1000);
+    communication.setAverageResponseTime(averageResponseTime);
+
     source.getApplicationCommunications().add(communication);
     landscape.getTotalApplicationCommunications().add(communication);
 
