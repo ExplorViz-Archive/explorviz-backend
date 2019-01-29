@@ -17,7 +17,7 @@ public class MongoReplayRepository implements ReplayRepository<Landscape> {
   private LandscapeSerializationHelper serializationHelper;
 
   @Override
-  public void save(final long timestamp, final Landscape replay, final long totalRequests) {
+  public void save(final long timestamp, final Landscape replay, final int totalRequests) {
     this.repo.save(timestamp, replay, totalRequests);
   }
 
@@ -42,7 +42,7 @@ public class MongoReplayRepository implements ReplayRepository<Landscape> {
   }
 
   @Override
-  public long getTotalRequests(final long timestamp) {
+  public int getTotalRequests(final long timestamp) {
     return this.repo.getTotalRequests(timestamp);
   }
 

@@ -11,9 +11,9 @@ import net.explorviz.landscape.model.helper.BaseEntity;
 public class Timestamp extends BaseEntity {
 
   private long timestamp;
-  private long totalRequests;
+  private int totalRequests;
 
-  public Timestamp(final long timestampValue, final long requests) {
+  public Timestamp(final long timestampValue, final int requests) {
     super();
     this.setTimestamp(timestampValue);
     this.setTotalRequests(requests);
@@ -32,11 +32,11 @@ public class Timestamp extends BaseEntity {
     this.timestamp = timestamp;
   }
 
-  public long getTotalRequests() {
+  public int getTotalRequests() {
     return this.totalRequests;
   }
 
-  public void setTotalRequests(final long totalRequests) {
+  public void setTotalRequests(final int totalRequests) {
     this.totalRequests = totalRequests;
   }
 

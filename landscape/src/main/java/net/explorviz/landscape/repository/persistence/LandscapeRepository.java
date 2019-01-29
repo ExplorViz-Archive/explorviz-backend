@@ -22,7 +22,7 @@ public interface LandscapeRepository<T> {
    * @param landscape the landscape object.
    * @param totalRequests the total amount of requests
    */
-  void save(final long timestamp, Landscape landscape, long totalRequests);
+  void save(final long timestamp, Landscape landscape, int totalRequests);
 
 
 
@@ -40,7 +40,7 @@ public interface LandscapeRepository<T> {
   /**
    * Retrieves all timestamps currently stored in the db. Each timestamp is a unique identifier of
    * an object.
-   * 
+   *
    * @return list of all timestamps
    */
   List<Long> getAllTimestamps();
@@ -63,7 +63,7 @@ public interface LandscapeRepository<T> {
    * @param timestamp the timestamp of the landscape
    * @return the total requests
    */
-  long getTotalRequests(long timestamp);
+  int getTotalRequests(long timestamp);
 
 
   /**

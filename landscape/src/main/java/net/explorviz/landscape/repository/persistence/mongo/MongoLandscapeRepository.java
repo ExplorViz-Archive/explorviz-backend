@@ -37,7 +37,7 @@ public class MongoLandscapeRepository implements LandscapeRepository<Landscape> 
 
 
   @Override
-  public void save(final long timestamp, final Landscape landscape, final long totalRequests) {
+  public void save(final long timestamp, final Landscape landscape, final int totalRequests) {
     this.repo.save(timestamp, landscape, totalRequests);
   }
 
@@ -76,7 +76,7 @@ public class MongoLandscapeRepository implements LandscapeRepository<Landscape> 
   }
 
   @Override
-  public long getTotalRequests(final long timestamp) {
+  public int getTotalRequests(final long timestamp) {
     return this.repo.getTotalRequests(timestamp);
   }
 

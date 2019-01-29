@@ -56,7 +56,7 @@ public class MongoLandscapeJsonApiRepository implements LandscapeRepository<Stri
 
 
   @Override
-  public void save(final long timestamp, final Landscape landscape, final long totalRequests) {
+  public void save(final long timestamp, final Landscape landscape, final int totalRequests) {
 
     String landscapeJsonApi;
     try {
@@ -147,12 +147,12 @@ public class MongoLandscapeJsonApiRepository implements LandscapeRepository<Stri
 
 
   @Override
-  public long getTotalRequests(final long timestamp) {
+  public int getTotalRequests(final long timestamp) {
     final DBCollection landCollection = this.mongoHelper.getLandscapeCollection();
     final DBObject query = new BasicDBObject(MongoHelper.FIELD_ID, timestamp);
     final DBCursor result = landCollection.find(query);
     if (result.count() != 0) {
-      return (long) result.one().get(MongoHelper.FIELD_REQUESTS);
+      return (int) result.one().get(MongoHelper.FIELD_REQUESTS);
     } else {
       throw new ClientErrorException("Landscape not found for provided timestamp " + timestamp,
           404);

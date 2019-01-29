@@ -13,7 +13,7 @@ public interface ReplayRepository<T> {
    * @param replay the replay landscape
    * @param totalRequests the total amount of requests
    */
-  void save(final long timestamp, final Landscape replay, long totalRequests);
+  void save(final long timestamp, final Landscape replay, int totalRequests);
 
   /**
    * Retrieves the total requests of a replay.
@@ -21,7 +21,7 @@ public interface ReplayRepository<T> {
    * @param timestamp the timestamp of the replay
    * @return the total requests
    */
-  long getTotalRequests(long timestamp);
+  int getTotalRequests(long timestamp);
 
 
   /**

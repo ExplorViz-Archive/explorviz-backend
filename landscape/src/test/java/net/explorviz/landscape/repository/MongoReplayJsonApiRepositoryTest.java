@@ -83,11 +83,11 @@ public class MongoReplayJsonApiRepositoryTest {
   public void testTotalRequestsReplay() {
     final Random rand = new Random();
     final long ts = System.currentTimeMillis();
-    final long requests = rand.nextInt(Integer.MAX_VALUE) + 1;
+    final int requests = rand.nextInt(Integer.MAX_VALUE) + 1;
     final Landscape landscape = LandscapeDummyCreator.createDummyLandscape();
     this.repo.save(ts, landscape, requests);
 
-    final long retrievedRequests = this.repo.getTotalRequests(ts);
+    final int retrievedRequests = this.repo.getTotalRequests(ts);
     assertEquals("Requests not matching", requests, retrievedRequests);
   }
 

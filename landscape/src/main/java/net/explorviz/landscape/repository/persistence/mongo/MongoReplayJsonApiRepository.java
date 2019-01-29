@@ -32,7 +32,7 @@ public class MongoReplayJsonApiRepository implements ReplayRepository<String> {
   private LandscapeSerializationHelper serializationHelper;
 
   @Override
-  public void save(final long timestamp, final Landscape replay, final long totalRequests) {
+  public void save(final long timestamp, final Landscape replay, final int totalRequests) {
     String landscapeJsonApi;
     try {
       landscapeJsonApi = this.serializationHelper.serialize(replay);
@@ -84,12 +84,12 @@ public class MongoReplayJsonApiRepository implements ReplayRepository<String> {
   }
 
   @Override
-  public long getTotalRequests(final long timestamp) {
+  public int getTotalRequests(final long timestamp) {
     final DBCollection collection = this.mongoHelper.getReplayCollection();
     final DBObject query = new BasicDBObject(MongoHelper.FIELD_ID, timestamp);
     final DBCursor result = collection.find(query);
     if (result.count() != 0) {
-      return (long) result.one().get(MongoHelper.FIELD_REQUESTS);
+      return (int) result.one().get(MongoHelper.FIELD_REQUESTS);
     } else {
       throw new ClientErrorException("Replay not found for provided timestamp " + timestamp, 404);
     }
