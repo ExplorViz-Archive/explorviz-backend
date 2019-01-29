@@ -10,7 +10,6 @@ import net.explorviz.landscape.model.landscape.Landscape;
 import net.explorviz.landscape.model.store.Timestamp;
 import net.explorviz.landscape.model.store.helper.TimestampHelper;
 import net.explorviz.landscape.repository.LandscapeExchangeService;
-import net.explorviz.landscape.repository.persistence.RepositoryFileStorage;
 import net.explorviz.landscape.server.providers.CoreModelHandler;
 import net.explorviz.landscape.server.providers.GenericTypeFinder;
 import net.explorviz.shared.server.helper.PropertyHelper;
@@ -130,11 +129,5 @@ public final class ExtensionApiImpl implements IExtensionApi {
     PropertyHelper.setBooleanProperty("useDummyMode", value);
   }
 
-  @Override
-  public void saveLandscapeToFile(final Landscape landscape, final long totalRequests,
-      final String folderName) {
-    RepositoryFileStorage.writeToFile(landscape, landscape.getTimestamp().getTimestamp(),
-        totalRequests, folderName);
-  }
 
 }

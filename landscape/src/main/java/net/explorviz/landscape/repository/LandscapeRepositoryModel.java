@@ -96,13 +96,11 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
   }
 
   public Landscape getLandscape(final long timestamp) {
-    return LandscapePreparer
-        .prepareLandscape(this.landscapeRepository.getByTimestamp(timestamp));
+    return LandscapePreparer.prepareLandscape(this.landscapeRepository.getByTimestamp(timestamp));
   }
 
   public Landscape getReplay(final long timestamp) {
-    return LandscapePreparer
-        .prepareLandscape(this.replayRepository.getByTimestamp(timestamp));
+    return LandscapePreparer.prepareLandscape(this.replayRepository.getByTimestamp(timestamp));
   }
 
 
@@ -149,8 +147,7 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
           calculatedTotalRequests = calculateTotalRequests(dummyLandscape);
           dummyLandscape.getTimestamp().setTotalRequests(calculatedTotalRequests);
 
-          this.landscapeRepository.save(milliseconds, dummyLandscape,
-              calculatedTotalRequests);
+          this.landscapeRepository.save(milliseconds, dummyLandscape, calculatedTotalRequests);
           this.lastPeriodLandscape = dummyLandscape;
         } else {
 
