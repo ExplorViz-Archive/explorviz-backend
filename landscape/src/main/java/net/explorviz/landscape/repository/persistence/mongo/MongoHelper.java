@@ -1,6 +1,5 @@
 package net.explorviz.landscape.repository.persistence.mongo;
 
-import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
 import com.mongodb.MongoClient;
@@ -46,6 +45,11 @@ public final class MongoHelper { // NOPMD
    * application, hence why we suggest a singleton - the MongoClient is effectively the connection
    * pool, so for every new MongoClient, you are opening a new pool."
    */
+  /**
+   * Creates a new MongoHelper, which should only be performed by DI.
+   *
+   * @throws IllegalStateException If an instance already exists.
+   */
   public MongoHelper() {
     if (MongoHelper.client == null) {
       MongoHelper.client = new MongoClient(new MongoClientURI(this.getUri()));
@@ -56,7 +60,7 @@ public final class MongoHelper { // NOPMD
 
   /**
    * Returns a {@link MongoClient} which is connected to the database given in the configuration
-   * file. This method is private in order to prevent unintentional closing of alls connections.
+   * file. This method is private in order to prevent unintentional closing of all connections.
    *
    * @see #close()
    */
@@ -65,10 +69,6 @@ public final class MongoHelper { // NOPMD
   }
 
 
-  private void initDb() {
-    this.getLandscapeCollection().createIndex(new BasicDBObject(FIELD_LANDSCAPE, 1), null, true);
-    this.getReplayCollection().createIndex(new BasicDBObject(FIELD_LANDSCAPE, 1), null, true);
-  }
 
   /**
    * Returns the {@link MongoDatabase} given in the configuration file.

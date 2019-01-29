@@ -14,8 +14,6 @@ import net.explorviz.landscape.server.providers.CoreModelHandler;
 import net.explorviz.landscape.server.providers.GenericTypeFinder;
 import net.explorviz.shared.server.helper.PropertyHelper;
 import org.jvnet.hk2.annotations.Service;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Interface implementation of the extension API - Offers version information and provides
@@ -25,7 +23,7 @@ import org.slf4j.LoggerFactory;
 @Singleton
 public final class ExtensionApiImpl implements IExtensionApi {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(ExtensionApiImpl.class);
+
 
   private static final String VERSION_NUMBER = "1.3.0";
   private final LandscapeExchangeService service;

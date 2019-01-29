@@ -56,9 +56,9 @@ public class DependencyInjectionBinder extends AbstractBinder {
     this.bind(MongoLandscapeJsonApiRepository.class).to(MongoLandscapeJsonApiRepository.class)
         .in(Singleton.class);
     this.bind(MongoLandscapeRepository.class)
-        .to(new TypeLiteral<LandscapeRepository<Landscape>>() {}).in(Singleton.class);;
+        .to(new TypeLiteral<LandscapeRepository<Landscape>>() {}).in(Singleton.class);
     this.bind(MongoLandscapeJsonApiRepository.class)
-        .to(new TypeLiteral<LandscapeRepository<String>>() {}).in(Singleton.class);;
+        .to(new TypeLiteral<LandscapeRepository<String>>() {}).in(Singleton.class);
     // Replay
     this.bind(MongoReplayRepository.class).to(MongoReplayRepository.class).in(Singleton.class);
     this.bind(MongoReplayJsonApiRepository.class).to(MongoReplayJsonApiRepository.class)

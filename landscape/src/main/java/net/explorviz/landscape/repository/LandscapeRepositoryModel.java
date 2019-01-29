@@ -52,7 +52,7 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
   @Inject
   public LandscapeRepositoryModel(final LandscapeBroadcastService broadcastService) {
 
-    this.fstConf = this.initFSTConf();
+    this.fstConf = this.initFstConf();
 
     this.broadcastService = broadcastService;
 
@@ -85,9 +85,6 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
         .start();
   }
 
-  public FSTConfiguration initFSTConf() {
-    return FstHelper.createFstConfiguration();
-  }
 
   public Landscape getLastPeriodLandscape() {
     synchronized (this.lastPeriodLandscape) {
@@ -118,6 +115,7 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
   public FSTConfiguration initFstConf() {
     return FstHelper.createFstConfiguration();
   }
+
 
   public void reset() {
     synchronized (this.internalLandscape) {
@@ -178,9 +176,9 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
   }
 
   /**
-   * Calculates all requests contained in a Landscape
+   * Calculates all requests contained in a Landscape.
    *
-   * @param landscape
+   * @param landscape the landscape
    */
   private static int calculateTotalRequests(final Landscape landscape) {
 

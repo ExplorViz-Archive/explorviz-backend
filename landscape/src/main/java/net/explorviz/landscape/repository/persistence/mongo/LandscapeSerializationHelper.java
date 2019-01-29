@@ -29,6 +29,13 @@ public class LandscapeSerializationHelper {
 
   }
 
+  /**
+   * Deserializes a json-api string to a {@link Landscape} object.
+   *
+   * @param jsonApi the json api string representing a landscape
+   * @return the landscape
+   * @throws DocumentSerializationException if the given string can't be deserialized to a landscape
+   */
   public Landscape deserialize(final String jsonApi) throws DocumentSerializationException {
     final JSONAPIDocument<Landscape> landscapeDoc =
         this.jsonApiConverter.readDocument(jsonApi.getBytes(), Landscape.class);

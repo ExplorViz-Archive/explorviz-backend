@@ -107,11 +107,11 @@ public class MongoLandscapeJsonApiRepository implements LandscapeRepository<Stri
     final DBCollection landscapeCollection = this.mongoHelper.getLandscapeCollection();
     final DBObject query = new BasicDBObject(MongoHelper.FIELD_LANDSCAPE, pat);
     final DBCursor result = landscapeCollection.find(query);
-    if (result.count() != 0) {
-      return (String) result.one().get(MongoHelper.FIELD_LANDSCAPE);
-    } else {
+    if (result.count() == 0) {
       throw new ClientErrorException(String.format("Landscape with provided id %d not found", id),
           404);
+    } else {
+      return (String) result.one().get(MongoHelper.FIELD_LANDSCAPE);
     }
   }
 
@@ -151,11 +151,11 @@ public class MongoLandscapeJsonApiRepository implements LandscapeRepository<Stri
     final DBCollection landCollection = this.mongoHelper.getLandscapeCollection();
     final DBObject query = new BasicDBObject(MongoHelper.FIELD_ID, timestamp);
     final DBCursor result = landCollection.find(query);
-    if (result.count() != 0) {
-      return (int) result.one().get(MongoHelper.FIELD_REQUESTS);
-    } else {
+    if (result.count() == 0) {
       throw new ClientErrorException("Landscape not found for provided timestamp " + timestamp,
           404);
+    } else {
+      return (int) result.one().get(MongoHelper.FIELD_REQUESTS);
     }
   }
 
@@ -165,7 +165,7 @@ public class MongoLandscapeJsonApiRepository implements LandscapeRepository<Stri
   public List<Long> getAllTimestamps() {
     final DBCollection landCollection = this.mongoHelper.getLandscapeCollection();
     final List<Long> result = new LinkedList<>();
-    try (final DBCursor cursor = landCollection.find()) {
+    try (DBCursor cursor = landCollection.find()) {
       while (cursor.hasNext()) {
         result.add((long) cursor.next().get(MongoHelper.FIELD_ID));
       }

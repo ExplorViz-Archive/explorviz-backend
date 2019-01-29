@@ -18,6 +18,10 @@ public final class Main {
     // Utility Class
   }
 
+  /**
+   * Starts the landscape service server.
+   *
+   */
   public static void main(final String[] args) {
 
     final Server server = new Server(getPort());
@@ -58,8 +62,10 @@ public final class Main {
     final String statedContextPath = PropertyHelper.getStringProperty("server.contextPath");
 
     if (statedContextPath == null) {
-      LOGGER.info(
-          "ATTENTION: Using default contextPath '/' for server. Maybe your stated server.contextPath property is no valid string.");
+      if (LOGGER.isInfoEnabled()) {
+        LOGGER.info("ATTENTION: Using default contextPath '/' for server. "
+            + "Maybe your stated server.contextPath property is no valid string.");
+      }
       return "/";
     } else {
       return statedContextPath;

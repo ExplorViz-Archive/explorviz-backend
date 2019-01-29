@@ -76,10 +76,10 @@ public class MongoReplayJsonApiRepository implements ReplayRepository<String> {
     final DBCollection landscapeCollection = this.mongoHelper.getReplayCollection();
     final DBObject query = new BasicDBObject(MongoHelper.FIELD_LANDSCAPE, pat);
     final DBCursor result = landscapeCollection.find(query);
-    if (result.count() != 0) {
-      return (String) result.one().get(MongoHelper.FIELD_LANDSCAPE);
-    } else {
+    if (result.count() == 0) {
       throw new ClientErrorException("Landscape not found for provided id " + id, 404);
+    } else {
+      return (String) result.one().get(MongoHelper.FIELD_LANDSCAPE);
     }
   }
 
@@ -88,10 +88,11 @@ public class MongoReplayJsonApiRepository implements ReplayRepository<String> {
     final DBCollection collection = this.mongoHelper.getReplayCollection();
     final DBObject query = new BasicDBObject(MongoHelper.FIELD_ID, timestamp);
     final DBCursor result = collection.find(query);
-    if (result.count() != 0) {
-      return (int) result.one().get(MongoHelper.FIELD_REQUESTS);
-    } else {
+    if (result.count() == 0) {
       throw new ClientErrorException("Replay not found for provided timestamp " + timestamp, 404);
+    } else {
+      return (int) result.one().get(MongoHelper.FIELD_REQUESTS);
+
     }
   }
 
@@ -126,7 +127,7 @@ public class MongoReplayJsonApiRepository implements ReplayRepository<String> {
   public List<Long> getAllTimestamps() {
     final DBCollection landCollection = this.mongoHelper.getReplayCollection();
     final List<Long> result = new LinkedList<>();
-    try (final DBCursor cursor = landCollection.find()) {
+    try (DBCursor cursor = landCollection.find()) {
       while (cursor.hasNext()) {
         result.add((long) cursor.next().get(MongoHelper.FIELD_ID));
       }
