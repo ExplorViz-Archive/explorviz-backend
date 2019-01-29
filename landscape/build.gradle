@@ -49,6 +49,7 @@ dependencies {
 // ##### BEGIN Jitpack section #####
 
 assemble.dependsOn shadowJar
+jar.enabled = false
 
 // https://discuss.gradle.org/t/deploying-multiple-artifacts-war-jar-sources-to-artifactory/4239
 artifacts {

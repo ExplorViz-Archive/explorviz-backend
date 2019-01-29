@@ -1,6 +1,5 @@
 package net.explorviz.landscape.repository.helper;
 
-import java.sql.Timestamp;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -11,16 +10,6 @@ public final class DummyLandscapeHelper {
 
   private DummyLandscapeHelper() {
     // Utility Class
-  }
-
-  /**
-   * Returns the current timestamp for dummy queries.
-   *
-   * @return current timestamp
-   */
-  public static long getCurrentTimestamp() {
-    final Timestamp timestamp = new Timestamp(System.nanoTime());
-    return timestamp.getTime();
   }
 
   /**
