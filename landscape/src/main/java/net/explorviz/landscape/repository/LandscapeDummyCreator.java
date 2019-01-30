@@ -1,7 +1,6 @@
 package net.explorviz.landscape.repository;
 
 import java.util.LinkedList;
-import java.util.Random;
 import net.explorviz.landscape.model.application.Application;
 import net.explorviz.landscape.model.application.ApplicationCommunication;
 import net.explorviz.landscape.model.application.Clazz;
@@ -20,8 +19,6 @@ import net.explorviz.landscape.repository.helper.DummyLandscapeHelper;
  */
 final class LandscapeDummyCreator {
 
-  private static final int CALLS_GENERATOR_BOUND = 300000;
-
   // CHECKSTYLE.OFF: MultipleStringLiteralsCheck - Much more readable than NOCS in many lines
   // CHECKSTYLE.OFF: MagicNumberCheck - Much more readable than NOCS in many lines
 
@@ -37,13 +34,13 @@ final class LandscapeDummyCreator {
   public static Landscape createDummyLandscape() {
 
     if (dummyLandscape != null) {
-      dummyLandscape.getTimestamp().setTotalRequests(new Random().nextInt(CALLS_GENERATOR_BOUND));
+      dummyLandscape.getTimestamp().setTotalRequests(DummyLandscapeHelper.getRandomNum(500, 25000));
       return dummyLandscape;
     }
 
     final Landscape landscape = new Landscape();
     landscape.initializeId();
-    landscape.getTimestamp().setTotalRequests(new Random().nextInt(CALLS_GENERATOR_BOUND));
+    landscape.getTimestamp().setTotalRequests(DummyLandscapeHelper.getRandomNum(500, 25000));
 
     final System requestSystem = new System();
     requestSystem.initializeId();

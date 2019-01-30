@@ -14,6 +14,7 @@ import net.explorviz.landscape.model.landscape.Landscape;
 import net.explorviz.landscape.model.landscape.Node;
 import net.explorviz.landscape.model.landscape.NodeGroup;
 import net.explorviz.landscape.model.landscape.System;
+import net.explorviz.landscape.repository.helper.DummyLandscapeHelper;
 import net.explorviz.landscape.server.helper.LandscapeBroadcastService;
 import net.explorviz.landscape.server.main.Configuration;
 import net.explorviz.shared.annotations.Config;
@@ -125,7 +126,7 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
           dummyLandscape.getTimestamp().setTimestamp(milliseconds);
           dummyLandscape.getTimestamp().updateId();
 
-          calculatedTotalRequests = calculateTotalRequests(dummyLandscape);
+          calculatedTotalRequests = DummyLandscapeHelper.getRandomNum(500, 25000);
           dummyLandscape.getTimestamp().setTotalRequests(calculatedTotalRequests);
 
           RepositoryStorage.writeToFile(dummyLandscape, milliseconds, calculatedTotalRequests,
