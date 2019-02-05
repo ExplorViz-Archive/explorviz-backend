@@ -112,7 +112,7 @@ public class AgentResource {
     eventSource.register(listener, "message");
     eventSource.open();
     // eventSource.close();
-
+    LOGGER.info("Agent registered");
 
     return this.agentRepository.registerAgent(newAgent);
   }
