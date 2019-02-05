@@ -214,6 +214,8 @@ public class UserResource {
 
     try {
       this.userCrudService.updateEntity(targetUser);
+    } catch (final DuplicateKeyException ex) {
+      throw new BadRequestException("Username already exists", ex);
     } catch (final MongoException ex) {
       if (LOGGER.isErrorEnabled()) {
         LOGGER.error(MSG_USER_NOT_UPDATED + ex.getMessage() + " (" + ex.getCode() + ")");

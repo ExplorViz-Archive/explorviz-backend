@@ -1,7 +1,6 @@
 package net.explorviz.landscape.repository;
 
 import java.util.LinkedList;
-import java.util.Random;
 import net.explorviz.landscape.model.application.Application;
 import net.explorviz.landscape.model.application.ApplicationCommunication;
 import net.explorviz.landscape.model.application.Clazz;
@@ -20,8 +19,6 @@ import net.explorviz.landscape.repository.helper.DummyLandscapeHelper;
  */
 final class LandscapeDummyCreator {
 
-  private static final int CALLS_GENERATOR_BOUND = 300000;
-
   // CHECKSTYLE.OFF: MultipleStringLiteralsCheck - Much more readable than NOCS in many lines
   // CHECKSTYLE.OFF: MagicNumberCheck - Much more readable than NOCS in many lines
 
@@ -37,13 +34,13 @@ final class LandscapeDummyCreator {
   public static Landscape createDummyLandscape() {
 
     if (dummyLandscape != null) {
-      dummyLandscape.getTimestamp().setTotalRequests(new Random().nextInt(CALLS_GENERATOR_BOUND));
+      dummyLandscape.getTimestamp().setTotalRequests(DummyLandscapeHelper.getRandomNum(500, 25000));
       return dummyLandscape;
     }
 
     final Landscape landscape = new Landscape();
     landscape.initializeId();
-    landscape.getTimestamp().setTotalRequests(new Random().nextInt(CALLS_GENERATOR_BOUND));
+    landscape.getTimestamp().setTotalRequests(DummyLandscapeHelper.getRandomNum(500, 25000));
 
     final System requestSystem = new System();
     requestSystem.initializeId();
@@ -327,6 +324,10 @@ final class LandscapeDummyCreator {
     communication.setSourceApplication(source);
     communication.setTargetApplication(target);
     communication.setRequests(requests);
+
+    final float averageResponseTime = 0L + DummyLandscapeHelper.getRandomNum(10, 1000);
+    communication.setAverageResponseTime(averageResponseTime);
+
     source.getApplicationCommunications().add(communication);
     landscape.getTotalApplicationCommunications().add(communication);
 
@@ -503,7 +504,7 @@ final class LandscapeDummyCreator {
               + "email text NOT NULL, odate text NOT NULL, itemid integer NOT NULL);");
       dbQueryTmp.setReturnValue("null");
       dbQueryTmp.setResponseTime(DummyLandscapeHelper.getRandomNum(10, 1000));
-      dbQueryTmp.setTimestamp(DummyLandscapeHelper.getCurrentTimestamp());
+      dbQueryTmp.setTimestamp(java.lang.System.currentTimeMillis());
       dbQueryTmp.setParentApplication(application);
       dbQueryList.add(dbQueryTmp);
 
@@ -516,7 +517,7 @@ final class LandscapeDummyCreator {
           + "'Tom B. Erichsen', 'erichsen@uni-kiel.de', '2017-11-16', '1');");
       dbQueryTmp.setReturnValue("null");
       dbQueryTmp.setResponseTime(DummyLandscapeHelper.getRandomNum(10, 1000));
-      dbQueryTmp.setTimestamp(DummyLandscapeHelper.getCurrentTimestamp());
+      dbQueryTmp.setTimestamp(java.lang.System.currentTimeMillis());
       dbQueryTmp.setParentApplication(application);
       dbQueryList.add(dbQueryTmp);
 
@@ -528,7 +529,7 @@ final class LandscapeDummyCreator {
           + "'Tom B. Erichsen', 'erichsen@uni-kiel.de', '2017-11-16', '1');");
       dbQueryTmp.setReturnValue("null");
       dbQueryTmp.setResponseTime(DummyLandscapeHelper.getRandomNum(10, 1000));
-      dbQueryTmp.setTimestamp(DummyLandscapeHelper.getCurrentTimestamp());
+      dbQueryTmp.setTimestamp(java.lang.System.currentTimeMillis());
       dbQueryTmp.setParentApplication(application);
       dbQueryList.add(dbQueryTmp);
 
@@ -540,7 +541,7 @@ final class LandscapeDummyCreator {
           + "', 'Carol K. Durham', 'durham@uni-kiel.de', '2017-10-08', '1');");
       dbQueryTmp.setReturnValue("null");
       dbQueryTmp.setResponseTime(DummyLandscapeHelper.getRandomNum(10, 1000));
-      dbQueryTmp.setTimestamp(DummyLandscapeHelper.getCurrentTimestamp());
+      dbQueryTmp.setTimestamp(java.lang.System.currentTimeMillis());
       dbQueryTmp.setParentApplication(application);
       dbQueryList.add(dbQueryTmp);
 
@@ -550,7 +551,7 @@ final class LandscapeDummyCreator {
       dbQueryTmp.setSqlStatement("SELECT * FROM `order` WHERE name = Carol K. Durham");
       dbQueryTmp.setReturnValue(String.valueOf(DummyLandscapeHelper.getRandomNum(5, 100)));
       dbQueryTmp.setResponseTime(DummyLandscapeHelper.getRandomNum(10, 1000));
-      dbQueryTmp.setTimestamp(DummyLandscapeHelper.getCurrentTimestamp());
+      dbQueryTmp.setTimestamp(java.lang.System.currentTimeMillis());
       dbQueryTmp.setParentApplication(application);
       dbQueryList.add(dbQueryTmp);
 
@@ -560,7 +561,7 @@ final class LandscapeDummyCreator {
       dbQueryTmp.setSqlStatement("SELECT * FROM `order` WHERE name = Tom B. Erichsen");
       dbQueryTmp.setReturnValue(String.valueOf(DummyLandscapeHelper.getRandomNum(5, 100)));
       dbQueryTmp.setResponseTime(DummyLandscapeHelper.getRandomNum(10, 1000));
-      dbQueryTmp.setTimestamp(DummyLandscapeHelper.getCurrentTimestamp());
+      dbQueryTmp.setTimestamp(java.lang.System.currentTimeMillis());
       dbQueryTmp.setParentApplication(application);
       dbQueryList.add(dbQueryTmp);
     }

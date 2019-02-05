@@ -17,6 +17,7 @@ import net.explorviz.landscape.model.store.Timestamp;
 import net.explorviz.landscape.repository.persistence.FstHelper;
 import net.explorviz.landscape.repository.persistence.LandscapeRepository;
 import net.explorviz.landscape.repository.persistence.ReplayRepository;
+import net.explorviz.landscape.repository.helper.DummyLandscapeHelper;
 import net.explorviz.landscape.server.helper.LandscapeBroadcastService;
 import net.explorviz.landscape.server.main.Configuration;
 import net.explorviz.shared.annotations.Config;
@@ -125,7 +126,7 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
 
   /**
    * Key function for the backend. Handles the persistence of a landscape every 10 seconds passed
-   * timestamp format is nanoseconds since 1970, as defined in Kieker.
+   * timestamp format is 'milliseconds' since 1970, as defined in Kieker.
    */
   @Override
   public void periodicTimeSignal(final long timestamp) {
@@ -142,7 +143,7 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
           dummyLandscape.getTimestamp().setTimestamp(milliseconds);
           dummyLandscape.getTimestamp().updateId();
 
-          calculatedTotalRequests = calculateTotalRequests(dummyLandscape);
+          calculatedTotalRequests = DummyLandscapeHelper.getRandomNum(500, 25000);
           dummyLandscape.getTimestamp().setTotalRequests(calculatedTotalRequests);
 
           this.landscapeRepository.save(milliseconds, dummyLandscape, calculatedTotalRequests);
