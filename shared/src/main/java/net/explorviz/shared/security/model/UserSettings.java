@@ -5,12 +5,16 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.github.jasminb.jsonapi.LongIdHandler;
 import com.github.jasminb.jsonapi.annotations.Id;
 import com.github.jasminb.jsonapi.annotations.Type;
-import java.util.HashMap;
 import java.util.Map;
 import javax.ws.rs.BadRequestException;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 
 /**
  * Model class for the user settings in the frontend.
+ */
+/**
+ * @author lotzk
+ *
  */
 @Type("usersetting")
 public class UserSettings {
@@ -30,30 +34,36 @@ public class UserSettings {
   @JsonProperty("stringAttributes")
   private final Map<String, String> stringAttributes;
 
+
   public UserSettings() {
-    this.booleanAttributes = new HashMap<>();
-    this.numericAttributes = new HashMap<>();
-    this.stringAttributes = new HashMap<>();
+    this.booleanAttributes = DefaultSettings.DEFAULT_BOOLEAN_SETTINGS();
+    this.numericAttributes = DefaultSettings.DEFAULT_NUMERIC_SETTINGS();
+    this.stringAttributes = DefaultSettings.DEFAULT_STRING_SETTINGS();
 
-    this.booleanAttributes.put("showFpsCounter", false);
-    this.booleanAttributes.put("appVizTransparency", true);
-    this.booleanAttributes.put("enableHoverEffects", true);
-    this.booleanAttributes.put("keepHighlightingOnOpenOrClose", true);
-
-    this.numericAttributes.put("appVizCommArrowSize", 1.0);
-    this.numericAttributes.put("appVizTransparencyIntensity", 0.3);
   }
 
   public void put(final String attr, final boolean val) {
-    this.booleanAttributes.put(attr, val);
+    if (this.booleanAttributes.containsKey(attr)) {
+      this.booleanAttributes.put(attr, val);
+    } else {
+      throw new IllegalArgumentException(String.format("Setting with key %s not found", attr));
+    }
   }
 
   public void put(final String attr, final Number val) {
-    this.numericAttributes.put(attr, val);
+    if (this.numericAttributes.containsKey(attr)) {
+      this.numericAttributes.put(attr, val);
+    } else {
+      throw new IllegalArgumentException(String.format("Setting with key %s not found", attr));
+    }
   }
 
   public void put(final String attr, final String val) {
-    this.stringAttributes.put(attr, val);
+    if (this.stringAttributes.containsKey(attr)) {
+      this.stringAttributes.put(attr, val);
+    } else {
+      throw new IllegalArgumentException(String.format("Setting with key %s not found", attr));
+    }
   }
 
   public Long getId() {
@@ -63,6 +73,20 @@ public class UserSettings {
   public void setId(final Long id) {
     this.id = id;
   }
+
+  public boolean getBooleanAttribute(final String key) {
+    return this.booleanAttributes.get(key);
+  }
+
+  public Number getNumericAttribute(final String key) {
+    return this.numericAttributes.get(key);
+  }
+
+  public String getStringAttribute(final String key) {
+    return this.stringAttributes.get(key);
+  }
+
+
 
   /*
    * Checks if the settings are valid
@@ -98,6 +122,18 @@ public class UserSettings {
         && this.booleanAttributes.equals(otherObj.booleanAttributes)
         && this.numericAttributes.equals(otherObj.numericAttributes)
         && this.stringAttributes.equals(otherObj.stringAttributes);
+
+  }
+
+  @Override
+  public String toString() {
+
+    final ToStringBuilder tsb = new ToStringBuilder(this);
+    tsb.append("numeric attributes", this.numericAttributes);
+    tsb.append("boolean attributes", this.booleanAttributes);
+    tsb.append("string attributes", this.stringAttributes);
+
+    return tsb.build();
 
   }
 
