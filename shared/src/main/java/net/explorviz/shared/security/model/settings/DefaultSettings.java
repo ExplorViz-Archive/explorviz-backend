@@ -1,4 +1,4 @@
-package net.explorviz.shared.security.model;
+package net.explorviz.shared.security.model.settings;
 
 import java.util.HashMap;
 import java.util.Map;

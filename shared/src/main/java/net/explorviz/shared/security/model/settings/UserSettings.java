@@ -1,4 +1,4 @@
-package net.explorviz.shared.security.model;
+package net.explorviz.shared.security.model.settings;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;

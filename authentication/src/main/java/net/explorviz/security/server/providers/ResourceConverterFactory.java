@@ -4,8 +4,8 @@ import com.github.jasminb.jsonapi.DeserializationFeature;
 import com.github.jasminb.jsonapi.ResourceConverter;
 import com.github.jasminb.jsonapi.SerializationFeature;
 import net.explorviz.shared.security.model.User;
-import net.explorviz.shared.security.model.UserSettings;
 import net.explorviz.shared.security.model.roles.Role;
+import net.explorviz.shared.security.model.settings.UserSettings;
 import org.glassfish.hk2.api.Factory;
 
 /**

@@ -15,7 +15,7 @@ import net.explorviz.security.services.TokenService;
 import net.explorviz.security.services.UserMongoCrudService;
 import net.explorviz.shared.security.model.TokenDetails;
 import net.explorviz.shared.security.model.User;
-import net.explorviz.shared.security.model.UserSettings;
+import net.explorviz.shared.security.model.settings.UserSettings;
 
 @Path("v1/settings")
 public class UserSettingsResource {
