@@ -96,7 +96,8 @@ public class AgentResource {
     // Attention, registration of MessageBodyReader implementation (JsonApiProvier) is mandatory
     final Client client = ClientBuilder.newBuilder().register(SseFeature.class)
         .register(new JsonApiProvider<>(this.converter)).build();
-    final WebTarget target = client.target("http://localhost:8084/broadcast/");
+    final WebTarget target =
+        client.target("http://" + newAgent.getIP() + ":" + newAgent.getPort() + "/broadcast/");
     final EventSource eventSource = EventSource.target(target).build();
 
     final EventListener listener = new EventListener() {
