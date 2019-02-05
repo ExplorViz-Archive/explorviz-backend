@@ -208,7 +208,12 @@ public class UserResource {
     }
 
     if (updatedUser.getSettings() != null) {
-      updatedUser.getSettings().validate();
+
+      try {
+        updatedUser.getSettings().validate();
+      } catch (final IllegalStateException e) {
+        throw new BadRequestException(e.getMessage());
+      }
       targetUser.setSettings(updatedUser.getSettings());
     }
 

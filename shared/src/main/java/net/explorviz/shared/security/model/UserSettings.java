@@ -6,7 +6,6 @@ import com.github.jasminb.jsonapi.LongIdHandler;
 import com.github.jasminb.jsonapi.annotations.Id;
 import com.github.jasminb.jsonapi.annotations.Type;
 import java.util.Map;
-import javax.ws.rs.BadRequestException;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 /**
@@ -92,14 +91,24 @@ public class UserSettings {
    * Checks if the settings are valid
    */
   public void validate() {
+
+    // Check whether these settings contain unkown keys
+    if (!this.numericAttributes.keySet().equals(DefaultSettings.DEFAULT_NUMERIC_SETTINGS().keySet())
+        || !this.booleanAttributes.keySet()
+            .equals(DefaultSettings.DEFAULT_BOOLEAN_SETTINGS().keySet())
+        || !this.stringAttributes.keySet()
+            .equals(DefaultSettings.DEFAULT_STRING_SETTINGS().keySet())) {
+      throw new IllegalStateException("Contain unknown settings");
+    }
+
     if (this.numericAttributes.containsKey("appVizCommArrowSize")
         && this.numericAttributes.get("appVizCommArrowSize").doubleValue() <= 0.0) {
-      throw new BadRequestException("appVizCommArrowSize must be > 0");
+      throw new IllegalStateException("appVizCommArrowSize must be > 0");
     }
     if (this.numericAttributes.containsKey("appVizTransparencyIntensity")
         && (this.numericAttributes.get("appVizTransparencyIntensity").doubleValue() < 0.0
             || this.numericAttributes.get("appVizTransparencyIntensity").doubleValue() > 1.0)) {
-      throw new BadRequestException("appVizTransparencyIntensity must be between 0.0 and 1.0");
+      throw new IllegalStateException("appVizTransparencyIntensity must be between 0.0 and 1.0");
     }
   }
 
