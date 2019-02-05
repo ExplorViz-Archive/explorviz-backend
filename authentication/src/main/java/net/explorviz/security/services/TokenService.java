@@ -56,7 +56,7 @@ public class TokenService {
 
     return Jwts.builder().setId(id).setIssuer(this.issuer).setAudience(this.audience)
         .setSubject(user.getUsername()).setIssuedAt(Date.from(issuedDate.toInstant()))
-        .setExpiration(Date.from(expirationDate.toInstant()))
+        .claim("userid", user.getId()).setExpiration(Date.from(expirationDate.toInstant()))
         .claim(ROLES_CLAIM_IDENTIFIER, user.getRoles()).claim(REFRESH_COUNT_CLAIM_IDENTIFIER, 0)
         .claim(REFRESH_LIMITCLAIM_IDENTIFIER, this.refreshLimit)
         .signWith(SignatureAlgorithm.HS256, this.secret).compact();
