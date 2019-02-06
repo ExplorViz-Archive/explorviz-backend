@@ -57,3 +57,7 @@ task spotbugs {
   dependsOn 'spotbugsMain'
   dependsOn 'spotbugsTest'
 }
+
+artifacts {
+  archives shadowJar
+}

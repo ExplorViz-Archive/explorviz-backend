@@ -55,6 +55,7 @@ jar.enabled = false
 artifacts {
   	archives file: file('libs/explorviz-common-1.0.jar'), name: 'explorviz-common', type: 'jar'
   	archives file: file('libs/explorviz-worker-1.0.jar'), name: 'explorviz-worker', type: 'jar'
+	archives shadowJar
 }
 
 jar {
@@ -68,22 +69,6 @@ jar {
 shadowJar {
 	archiveName = "explorviz-${project.name}.${extension}"
 }
-
-/*install {
-  repositories {
-    mavenInstaller {
-      addFilter('explorviz-common') {artifact, file ->
-        artifact.name == 'explorviz-common'
-      }
-      addFilter('explorviz-worker') {artifact, file ->
-        artifact.name == 'explorviz-worker'
-      }
-      addFilter('explorviz-backend') {artifact, file ->
-        artifact.name == 'explorviz-backend'
-      }
-    }
-  }
-}*/
 
 // ##### END Jitpack section #####
 
