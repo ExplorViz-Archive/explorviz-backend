@@ -69,7 +69,7 @@ shadowJar {
 	archiveName = "explorviz-${project.name}.${extension}"
 }
 
-install {
+/*install {
   repositories {
     mavenInstaller {
       addFilter('explorviz-common') {artifact, file ->
@@ -83,7 +83,7 @@ install {
       }
     }
   }
-}
+}*/
 
 // ##### END Jitpack section #####
 
