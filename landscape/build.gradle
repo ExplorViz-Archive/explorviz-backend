@@ -48,7 +48,7 @@ dependencies {
 }
 
 assemble.dependsOn shadowJar
-//jar.enabled = false
+jar.enabled = false
 
 jar {
   manifest {
@@ -61,33 +61,6 @@ jar {
 
 shadowJar {
   archiveName = "explorviz-${project.name}.${extension}"
-}
-
-// Jitpack publishing
-artifacts {
-  archives shadowJar
-}
-
-publishing {
-  publications {
-    mavenJava(MavenPublication) {
-      groupId project.group
-      artifactId project.name
-      version project.version
-      from components.java
-      artifact shadowJar
-    }
-  }
-}
-
-install {
-  repositories {
-    mavenInstaller {
-      addFilter('explorviz-landscape') { artifact, file ->
-        artifact.name == 'explorviz-landscape'
-      }
-    }
-  }
 }
 
 // Javadoc settings
@@ -121,4 +94,9 @@ task spotbugs {
   
   dependsOn 'spotbugsMain'
   dependsOn 'spotbugsTest'
+}
+
+// Jitpack publishing
+artifacts {
+  archives shadowJar
 }

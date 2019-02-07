@@ -2,7 +2,11 @@ apply plugin: 'com.github.spotbugs'
 // Maven plugin for Jitpack subproject publishing
 apply plugin: 'maven'
 
-dependencies {    
+jar {
+  archiveName = "explorviz-${project.name}.${extension}"
+}
+
+dependencies {
   // JSON Web Token (JWT)
   compile 'io.jsonwebtoken:jjwt-api:0.10.5'
   compile 'io.jsonwebtoken:jjwt-impl:0.10.5', 'io.jsonwebtoken:jjwt-jackson:0.10.5'
