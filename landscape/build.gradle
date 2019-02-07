@@ -1,5 +1,6 @@
 apply plugin: 'eclipse'
 apply plugin: 'maven'
+apply plugin: 'maven-publish'
 apply plugin: 'org.sonarqube'
 apply plugin: 'com.github.johnrengelman.shadow'
 apply plugin: 'com.github.spotbugs'
@@ -65,6 +66,18 @@ shadowJar {
 // Jitpack publishing
 artifacts {
   archives shadowJar
+}
+
+publishing {
+  publications {
+    mavenJava(MavenPublication) {
+      groupId project.group
+      artifactId project.name
+      version project.version
+      from components.java
+      artifact shadowJar
+    }
+  }
 }
 
 // Javadoc settings
