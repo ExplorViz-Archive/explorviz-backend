@@ -80,6 +80,16 @@ publishing {
   }
 }
 
+install {
+  repositories {
+    mavenInstaller {
+      addFilter('explorviz-landscape') { artifact, file ->
+        artifact.name == 'explorviz-landscape'
+      }
+    }
+  }
+}
+
 // Javadoc settings
 javadoc {
   source = sourceSets.main.allJava
