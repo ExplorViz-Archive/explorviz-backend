@@ -35,9 +35,9 @@ public class UserSettings {
 
 
   public UserSettings() {
-    this.booleanAttributes = DefaultSettings.DEFAULT_BOOLEAN_SETTINGS();
-    this.numericAttributes = DefaultSettings.DEFAULT_NUMERIC_SETTINGS();
-    this.stringAttributes = DefaultSettings.DEFAULT_STRING_SETTINGS();
+    this.booleanAttributes = DefaultSettings.booleanDefaults();
+    this.numericAttributes = DefaultSettings.numericDefaults();
+    this.stringAttributes = DefaultSettings.stringDefaults();
 
   }
 
@@ -93,11 +93,11 @@ public class UserSettings {
   public void validate() {
 
     // Check whether these settings contain unkown keys
-    if (!this.numericAttributes.keySet().equals(DefaultSettings.DEFAULT_NUMERIC_SETTINGS().keySet())
+    if (!this.numericAttributes.keySet().equals(DefaultSettings.numericDefaults().keySet())
         || !this.booleanAttributes.keySet()
-            .equals(DefaultSettings.DEFAULT_BOOLEAN_SETTINGS().keySet())
+            .equals(DefaultSettings.booleanDefaults().keySet())
         || !this.stringAttributes.keySet()
-            .equals(DefaultSettings.DEFAULT_STRING_SETTINGS().keySet())) {
+            .equals(DefaultSettings.stringDefaults().keySet())) {
       throw new IllegalStateException("Contain unknown settings");
     }
 

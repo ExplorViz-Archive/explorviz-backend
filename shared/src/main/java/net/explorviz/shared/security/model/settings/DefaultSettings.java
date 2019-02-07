@@ -22,28 +22,52 @@ public class DefaultSettings {
    */
   private static void initDefaultValues() {
     booleanSettings.put("showFpsCounter",
-        new BooleanSettingDescriptor("Show FPS Counter", "", false));
+        new BooleanSettingDescriptor("showFpsCounter", "Show FPS Counter", "", false));
     booleanSettings.put("appVizTransparency",
-        new BooleanSettingDescriptor("App Viz Transparency", "", true));
+        new BooleanSettingDescriptor("appVizTransparency", "App Viz Transparency", "", true));
     booleanSettings.put("enableHoverEffects",
-        new BooleanSettingDescriptor("Enable Hover Effects", "", true));
-    booleanSettings.put("keepHighlightingOnOpenOrClose",
-        new BooleanSettingDescriptor("Keep Highlighting On Open Or Close", "", true));
+        new BooleanSettingDescriptor("enableHoverEffects", "Enable Hover Effects", "", true));
+    booleanSettings.put("keepHighlightingOnOpenOrClose", new BooleanSettingDescriptor(
+        "keepHighlightingOnOpenOrClose", "Keep Highlighting On Open Or Close", "", true));
 
     numericSettings.put("appVizCommArrowSize",
-        new NumericSettingDescriptor("AppViz Arrow Size", "", 1.0));
-    numericSettings.put("appVizTransparencyIntensity", new NumericSettingDescriptor(
-        "AppViz Transparency Intensity", "Intesity of the transparency effect", 0.5, 0.1, 0.1));
+        new NumericSettingDescriptor("appVizCommArrowSize", "AppViz Arrow Size", "", 1.0));
+    numericSettings.put("appVizTransparencyIntensity",
+        new NumericSettingDescriptor("appVizTransparencyIntensity", "AppViz Transparency Intensity",
+            "Intesity of the transparency effect", 0.5, 0.1, 0.1));
 
   }
 
+  /**
+   *
+   * @return The descriptors for boolean settings.
+   */
+  public static Map<String, BooleanSettingDescriptor> booleanSettings() {
+    return booleanSettings;
+  }
+
+  /**
+   *
+   * @return The descriptors for string based settings.
+   */
+  public static Map<String, StringSettingDescriptor> stringSettings() {
+    return stringSettings;
+  }
+
+  /**
+   *
+   * @return The descriptors for numeric settings.
+   */
+  public static Map<String, NumericSettingDescriptor> numericSettings() {
+    return numericSettings;
+  }
 
   /**
    * Creates a new map containing the default boolean settings
    *
    * @return the default boolean settings.
    */
-  public static Map<String, Boolean> DEFAULT_BOOLEAN_SETTINGS() {
+  public static Map<String, Boolean> booleanDefaults() {
 
     return booleanSettings.entrySet().stream()
         .collect(Collectors.toMap(v -> v.getKey(), v -> v.getValue().getDefaultValue()));
@@ -54,7 +78,7 @@ public class DefaultSettings {
    *
    * @return the default numeric settings.
    */
-  public static Map<String, Number> DEFAULT_NUMERIC_SETTINGS() {
+  public static Map<String, Number> numericDefaults() {
 
     return numericSettings.entrySet().stream()
         .collect(Collectors.toMap(e -> e.getKey(), e -> e.getValue().getDefaultValue()));
@@ -66,7 +90,7 @@ public class DefaultSettings {
    *
    * @return the default string settings.
    */
-  public static Map<String, String> DEFAULT_STRING_SETTINGS() {
+  public static Map<String, String> stringDefaults() {
     return stringSettings.entrySet().stream()
         .collect(Collectors.toMap(e -> e.getKey(), e -> e.getValue().getDefaultValue()));
   }
@@ -83,9 +107,9 @@ public class DefaultSettings {
   public static boolean addMissingDefaults(final UserSettings settings) {
     boolean changed = false;
 
-    final Map<String, Boolean> defaultBools = DEFAULT_BOOLEAN_SETTINGS();
-    final Map<String, String> defaultStrings = DEFAULT_STRING_SETTINGS();
-    final Map<String, Number> defaultNum = DEFAULT_NUMERIC_SETTINGS();
+    final Map<String, Boolean> defaultBools = booleanDefaults();
+    final Map<String, String> defaultStrings = stringDefaults();
+    final Map<String, Number> defaultNum = numericDefaults();
 
     for (final String key : defaultBools.keySet()) {
       if (settings.getBooleanAttribute(key) == null) {

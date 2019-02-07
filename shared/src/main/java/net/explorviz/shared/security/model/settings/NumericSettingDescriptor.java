@@ -1,5 +1,8 @@
 package net.explorviz.shared.security.model.settings;
 
+import com.github.jasminb.jsonapi.annotations.Type;
+
+@Type("numericsettingsdescriptor")
 public class NumericSettingDescriptor extends SettingDescriptor<Double> {
 
 
@@ -9,15 +12,15 @@ public class NumericSettingDescriptor extends SettingDescriptor<Double> {
 
 
 
-  public NumericSettingDescriptor(final String name, final String description,
+  public NumericSettingDescriptor(final String id, final String name, final String description,
       final Double defaultValue) {
-    super(name, description, defaultValue);
+    super(id, name, description, defaultValue);
   }
 
 
-  public NumericSettingDescriptor(final String name, final String description, final Number min,
-      final Number max, final Double defaultValue) {
-    this(name, description, defaultValue);
+  public NumericSettingDescriptor(final String id, final String name, final String description,
+      final Number min, final Number max, final Double defaultValue) {
+    this(id, name, description, defaultValue);
     this.min = min;
     this.max = max;
   }

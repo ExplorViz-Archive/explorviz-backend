@@ -79,9 +79,22 @@ public class UserSettingsResource {
   @Path("{id}")
   @PermitAll
   @Produces(MEDIA_TYPE)
-  public SettingDescriptor settingsInfo() {
+  public SettingDescriptor settingsInfo(@PathParam("id") final String id) {
 
-    return null;
+    if (DefaultSettings.booleanSettings().containsKey(id)) {
+      return DefaultSettings.booleanSettings().get(id);
+    }
+
+    if (DefaultSettings.numericSettings().containsKey(id)) {
+      return DefaultSettings.numericSettings().get(id);
+    }
+
+    if (DefaultSettings.stringSettings().containsKey(id)) {
+      return DefaultSettings.stringSettings().get(id);
+    }
+
+    throw new NotFoundException(String.format("Setting with id %s does not exist", id));
+
   }
 
 

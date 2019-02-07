@@ -4,10 +4,12 @@ import static org.junit.Assert.assertEquals;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import javax.ws.rs.NotFoundException;
 import net.explorviz.security.server.main.DependencyInjectionBinder;
 import net.explorviz.security.services.UserMongoCrudService;
 import net.explorviz.security.testutils.TestDatasourceFactory;
 import net.explorviz.shared.security.model.User;
+import net.explorviz.shared.security.model.settings.SettingDescriptor;
 import org.glassfish.hk2.api.ServiceLocator;
 import org.glassfish.hk2.utilities.ServiceLocatorUtilities;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
@@ -29,12 +31,17 @@ public class UserSettingsTest {
   private Datastore datastore;
 
 
+  private UserSettingsResource settingsResource;
+
+
   @Before
   public void setUp() {
     final AbstractBinder b = new DependencyInjectionBinder();
     b.bindFactory(TestDatasourceFactory.class).to(Datastore.class).in(Singleton.class).ranked(2);
     final ServiceLocator locator = ServiceLocatorUtilities.bind(b);
     locator.inject(this);
+
+    this.settingsResource = new UserSettingsResource();
 
   }
 
@@ -72,7 +79,13 @@ public class UserSettingsTest {
 
   @Test
   public void testSettingsInfo() {
+    final SettingDescriptor<Number> info = this.settingsResource.settingsInfo("showFpsCounter");
+    assertEquals(false, info.getDefaultValue());
+  }
 
+  @Test(expected = NotFoundException.class)
+  public void testUnknownSettingInfo() {
+    final SettingDescriptor<Number> info = this.settingsResource.settingsInfo("unknown");
   }
 
 }
