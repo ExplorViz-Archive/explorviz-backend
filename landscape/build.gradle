@@ -1,6 +1,4 @@
 apply plugin: 'eclipse'
-apply plugin: 'maven'
-apply plugin: 'maven-publish'
 apply plugin: 'org.sonarqube'
 apply plugin: 'com.github.johnrengelman.shadow'
 apply plugin: 'com.github.spotbugs'
