@@ -15,6 +15,7 @@ import net.explorviz.security.services.TokenService;
 import net.explorviz.security.services.UserMongoCrudService;
 import net.explorviz.shared.security.model.TokenDetails;
 import net.explorviz.shared.security.model.User;
+import net.explorviz.shared.security.model.settings.DefaultSettings;
 import net.explorviz.shared.security.model.settings.UserSettings;
 
 @Path("v1/settings")
@@ -37,7 +38,7 @@ public class UserSettingsResource {
    * Returns the settings of a user with a given id.
    *
    * @param id the user id
-   * @return
+   * @return the {@link UserSettings}
    */
   @GET
   @Path("{id}")
@@ -51,17 +52,24 @@ public class UserSettingsResource {
         .orElseThrow(() -> new NotFoundException("User does not exist"));
 
 
-
     final TokenDetails details = this.tokenService
         .parseToken(headers.getHeaderString(HttpHeaders.AUTHORIZATION).substring(7));
 
-    System.out.println(details.getUsername());
 
-    if (details.getUserId() != id) {
+    if (details.getUserId() != id && !details.getRoles().contains(ADMIN_ROLE)) {
       throw new ForbiddenException();
     }
 
-    return u.getSettings();
+    final UserSettings settings = u.getSettings();
+
+    final boolean changed = DefaultSettings.addMissingDefaults(settings);
+
+    if (changed) {
+      // Update user with newer settings
+      this.userService.updateEntity(u);
+    }
+
+    return settings;
 
   }
 

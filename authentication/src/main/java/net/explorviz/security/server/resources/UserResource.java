@@ -25,6 +25,7 @@ import net.explorviz.security.util.PasswordStorage;
 import net.explorviz.security.util.PasswordStorage.CannotPerformOperationException;
 import net.explorviz.shared.security.model.User;
 import net.explorviz.shared.security.model.roles.Role;
+import net.explorviz.shared.security.model.settings.DefaultSettings;
 import org.eclipse.jetty.http.HttpStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -284,6 +285,10 @@ public class UserResource {
       throw new InternalServerErrorException(ex);
     }
 
+
+    if (DefaultSettings.addMissingDefaults(foundUser.getSettings())) {
+      this.userCrudService.updateEntity(foundUser);
+    }
 
     return foundUser;
 

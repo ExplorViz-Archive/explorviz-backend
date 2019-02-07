@@ -73,7 +73,7 @@ public class UserSettings {
     this.id = id;
   }
 
-  public boolean getBooleanAttribute(final String key) {
+  public Boolean getBooleanAttribute(final String key) {
     return this.booleanAttributes.get(key);
   }
 
