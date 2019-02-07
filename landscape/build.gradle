@@ -46,8 +46,6 @@ dependencies {
   implementation group: 'org.glassfish.jersey.media', name:'jersey-media-multipart', version:'2.26'
 }
 
-// ##### BEGIN Jitpack section #####
-
 assemble.dependsOn shadowJar
 jar.enabled = false
 
@@ -59,34 +57,21 @@ jar {
   }
 }
 
-task sourcesJar(type: Jar, dependsOn: classes) {
-    classifier = 'sources'
-    from sourceSets.main.allSource
-}
-
-task javadocJar(type: Jar, dependsOn: javadoc) {
-    classifier = 'javadoc'
-    from javadoc.destinationDir
-}
 
 shadowJar {
-	archiveName = "explorviz-${project.name}.${extension}"
+  archiveName = "explorviz-${project.name}.${extension}"
 }
 
-// https://discuss.gradle.org/t/deploying-multiple-artifacts-war-jar-sources-to-artifactory/4239
+// Jitpack publishing
 artifacts {
-    archives sourcesJar
-    archives javadocJar
-    archives shadowJar
+  archives shadowJar
 }
-
-// ##### END Jitpack section #####
 
 // Javadoc settings
 javadoc {
-	source = sourceSets.main.allJava
-	  destinationDir = file("./docs/")
-	  failOnError false
+  source = sourceSets.main.allJava
+  destinationDir = file("./docs/")
+  failOnError false
 }
 
 spotbugs {
