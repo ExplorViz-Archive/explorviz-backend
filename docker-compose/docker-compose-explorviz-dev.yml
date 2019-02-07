@@ -4,6 +4,10 @@ services:
   reverse-proxy:
     image: explorviz/reverse-proxy:production
     container_name: explorviz-reverse-proxy
+    depends_on:
+      - authentication
+      - landscape
+      - discovery
     ports:
       - "8080:8080"
 
@@ -20,7 +24,6 @@ services:
     image: explorviz/explorviz-backend-authentication:dev
     container_name: explorviz-backend-auth
     depends_on:
-      - reverse-proxy
       - mongo
     expose:
       - "8082"
@@ -45,7 +48,7 @@ services:
     container_name: explorviz-backend-discovery
     ports:
       - "8083:8083"
-    
+
   frontend:
     image: explorviz/explorviz-frontend:dev
     container_name: explorviz-frontend
