@@ -2,14 +2,15 @@ package net.explorviz.shared.security.model.settings;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class DefaultSettings {
 
-  private static final Map<String, Boolean> booleanAttributes = new HashMap<>();
+  private static final Map<String, BooleanSettingDescriptor> booleanSettings = new HashMap<>();
 
-  private static final Map<String, Number> numericAttributes = new HashMap<>();;
+  private static final Map<String, NumericSettingDescriptor> numericSettings = new HashMap<>();
 
-  private static final Map<String, String> stringAttributes = new HashMap<>();;
+  private static final Map<String, StringSettingDescriptor> stringSettings = new HashMap<>();
 
 
   static {
@@ -20,13 +21,19 @@ public class DefaultSettings {
    * Initializes the default settings.
    */
   private static void initDefaultValues() {
-    booleanAttributes.put("showFpsCounter", false);
-    booleanAttributes.put("appVizTransparency", true);
-    booleanAttributes.put("enableHoverEffects", true);
-    booleanAttributes.put("keepHighlightingOnOpenOrClose", true);
+    booleanSettings.put("showFpsCounter",
+        new BooleanSettingDescriptor("Show FPS Counter", "", false));
+    booleanSettings.put("appVizTransparency",
+        new BooleanSettingDescriptor("App Viz Transparency", "", true));
+    booleanSettings.put("enableHoverEffects",
+        new BooleanSettingDescriptor("Enable Hover Effects", "", true));
+    booleanSettings.put("keepHighlightingOnOpenOrClose",
+        new BooleanSettingDescriptor("Keep Highlighting On Open Or Close", "", true));
 
-    numericAttributes.put("appVizCommArrowSize", 1.0);
-    numericAttributes.put("appVizTransparencyIntensity", 0.3);
+    numericSettings.put("appVizCommArrowSize",
+        new NumericSettingDescriptor("AppViz Arrow Size", "", 1.0));
+    numericSettings.put("appVizTransparencyIntensity", new NumericSettingDescriptor(
+        "AppViz Transparency Intensity", "Intesity of the transparency effect", 0.5, 0.1, 0.1));
 
   }
 
@@ -37,7 +44,9 @@ public class DefaultSettings {
    * @return the default boolean settings.
    */
   public static Map<String, Boolean> DEFAULT_BOOLEAN_SETTINGS() {
-    return new HashMap<>(booleanAttributes);
+
+    return booleanSettings.entrySet().stream()
+        .collect(Collectors.toMap(v -> v.getKey(), v -> v.getValue().getDefaultValue()));
   }
 
   /**
@@ -46,7 +55,10 @@ public class DefaultSettings {
    * @return the default numeric settings.
    */
   public static Map<String, Number> DEFAULT_NUMERIC_SETTINGS() {
-    return new HashMap<>(numericAttributes);
+
+    return numericSettings.entrySet().stream()
+        .collect(Collectors.toMap(e -> e.getKey(), e -> e.getValue().getDefaultValue()));
+
   }
 
   /**
@@ -55,7 +67,8 @@ public class DefaultSettings {
    * @return the default string settings.
    */
   public static Map<String, String> DEFAULT_STRING_SETTINGS() {
-    return new HashMap<>(stringAttributes);
+    return stringSettings.entrySet().stream()
+        .collect(Collectors.toMap(e -> e.getKey(), e -> e.getValue().getDefaultValue()));
   }
 
 
@@ -70,23 +83,27 @@ public class DefaultSettings {
   public static boolean addMissingDefaults(final UserSettings settings) {
     boolean changed = false;
 
-    for (final String key : booleanAttributes.keySet()) {
+    final Map<String, Boolean> defaultBools = DEFAULT_BOOLEAN_SETTINGS();
+    final Map<String, String> defaultStrings = DEFAULT_STRING_SETTINGS();
+    final Map<String, Number> defaultNum = DEFAULT_NUMERIC_SETTINGS();
+
+    for (final String key : defaultBools.keySet()) {
       if (settings.getBooleanAttribute(key) == null) {
-        settings.put(key, booleanAttributes.get(key));
+        settings.put(key, defaultBools.get(key));
         changed = true;
       }
     }
 
-    for (final String key : numericAttributes.keySet()) {
+    for (final String key : defaultNum.keySet()) {
       if (settings.getNumericAttribute(key) == null) {
-        settings.put(key, numericAttributes.get(key));
+        settings.put(key, defaultNum.get(key));
         changed = true;
       }
     }
 
-    for (final String key : stringAttributes.keySet()) {
+    for (final String key : defaultStrings.keySet()) {
       if (settings.getNumericAttribute(key) == null) {
-        settings.put(key, stringAttributes.get(key));
+        settings.put(key, defaultStrings.get(key));
         changed = true;
       }
     }

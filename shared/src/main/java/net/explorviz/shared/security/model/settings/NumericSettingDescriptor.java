@@ -1,6 +1,6 @@
 package net.explorviz.shared.security.model.settings;
 
-public class NumericSettingObject extends SettingObject<Number> {
+public class NumericSettingDescriptor extends SettingDescriptor<Double> {
 
 
   private Number min = Long.MIN_VALUE;
@@ -9,14 +9,15 @@ public class NumericSettingObject extends SettingObject<Number> {
 
 
 
-  public NumericSettingObject(final String name, final Number value, final String description) {
-    super(name, value, description);
+  public NumericSettingDescriptor(final String name, final String description,
+      final Double defaultValue) {
+    super(name, description, defaultValue);
   }
 
 
-  public NumericSettingObject(final String name, final Number value, final String description,
-      final Number min, final Number max) {
-    this(name, value, description);
+  public NumericSettingDescriptor(final String name, final String description, final Number min,
+      final Number max, final Double defaultValue) {
+    this(name, description, defaultValue);
     this.min = min;
     this.max = max;
   }

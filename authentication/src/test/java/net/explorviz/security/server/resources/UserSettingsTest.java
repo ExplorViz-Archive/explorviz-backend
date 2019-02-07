@@ -69,4 +69,10 @@ public class UserSettingsTest {
     this.userCrudService.saveNewEntity(u);
   }
 
+
+  @Test
+  public void testSettingsInfo() {
+
+  }
+
 }

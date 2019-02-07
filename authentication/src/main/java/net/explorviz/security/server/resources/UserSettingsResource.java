@@ -16,6 +16,7 @@ import net.explorviz.security.services.UserMongoCrudService;
 import net.explorviz.shared.security.model.TokenDetails;
 import net.explorviz.shared.security.model.User;
 import net.explorviz.shared.security.model.settings.DefaultSettings;
+import net.explorviz.shared.security.model.settings.SettingDescriptor;
 import net.explorviz.shared.security.model.settings.UserSettings;
 
 @Path("v1/settings")
@@ -40,7 +41,7 @@ public class UserSettingsResource {
    * @param id the user id
    * @return the {@link UserSettings}
    */
-  @GET
+  // @GET
   @Path("{id}")
   @PermitAll
   @Produces(MEDIA_TYPE)
@@ -73,6 +74,15 @@ public class UserSettingsResource {
 
   }
 
+
+  @GET
+  @Path("{id}")
+  @PermitAll
+  @Produces(MEDIA_TYPE)
+  public SettingDescriptor settingsInfo() {
+
+    return null;
+  }
 
 
   /**
