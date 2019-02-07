@@ -107,6 +107,8 @@ public class UserResource {
       throw new InternalServerErrorException(e);
     }
 
+    // Set default settings
+    user.setSettings(new UserSettings());
 
     try {
       return this.userCrudService.saveNewEntity(user)
