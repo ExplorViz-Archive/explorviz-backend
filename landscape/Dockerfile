@@ -1,5 +1,7 @@
 FROM openjdk:8-alpine
 
+ENV DUMMY_MODE false
+
 RUN mkdir /explorviz
 WORKDIR /explorviz
 COPY build/libs/explorviz-landscape.jar .
