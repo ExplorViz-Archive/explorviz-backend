@@ -5,7 +5,6 @@
 ___
 
 [![TravsCI Build Status](https://travis-ci.org/ExplorViz/explorviz-backend.svg?branch=master)](https://travis-ci.org/ExplorViz/explorviz-backend)
-[![Dockerhub Pulls](https://img.shields.io/docker/pulls/explorviz/explorviz-docker.svg)](https://hub.docker.com/r/explorviz/explorviz-docker)
 
 ## Project Description
 ExplorViz uses dynamic analysis techniques to provide live trace visualization of the communication in large software landscape. It targets system and program comprehension in those landscapes while still providing details on the communication within an application. A landscape perspective enriches current system visualizations with additional abstraction levels for efficient comprehension of communication between hundreds of applications which is often encountered in, for instance, Cloud environments. On the application level perspective, ExplorViz utilizes the 3D city metaphor combined with an interactive concept of showing only details that are in focus of the analysis. For best accessibility, ExplorViz is a web-based tool featuring cutting-edge technologies like WebGL and HTML 5.
