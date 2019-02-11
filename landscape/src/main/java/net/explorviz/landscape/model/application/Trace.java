@@ -7,7 +7,8 @@ import java.util.List;
 import net.explorviz.landscape.model.helper.BaseEntity;
 
 /**
- * Model representing a trace containing severals {@link TraceStep} between two {@link Clazz}.
+ * Model representing a trace containing severals {@link TraceStep} between two
+ * {@link net.explorviz.landscape.model.application.Clazz}.
  */
 @SuppressWarnings("serial")
 @Type("trace")
@@ -32,13 +33,12 @@ public class Trace extends BaseEntity {
   /**
    * Adds a new call within a trace as a {@link TraceStep}
    *
-   * @param traceId
-   * @param tracePosition
-   * @param requests
-   * @param averageResponseTime
-   * @param currentTraceDuration
-   * @param clazzCommunication
-   * @return TraceStep
+   * @param tracePosition - position within the trace
+   * @param requests - total number of requests
+   * @param averageResponseTime - average response time of the trace
+   * @param currentTraceDuration - current duration of the trace
+   * @param clazzCommunication - starting clazzCommunication
+   * @return a new TraceStep
    */
   public TraceStep addTraceStep(final int tracePosition, final int requests,
       final float averageResponseTime, final float currentTraceDuration,

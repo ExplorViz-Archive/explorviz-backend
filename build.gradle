@@ -2,6 +2,23 @@ allprojects {
   apply plugin: 'java-library'
 }
 
+
+// Aggregate Javadoc in multiproject Gradle build
+def exportedProjects= [
+		':shared', 
+		':landscape',
+		':kiekeradapter',
+		':authentication',
+		':analysis',
+		':discovery'
+]
+
+task alljavadoc(type: Javadoc) {
+    source exportedProjects.collect { project(it).sourceSets.main.allJava }
+    classpath = files(exportedProjects.collect { project(it).sourceSets.main.compileClasspath })
+    destinationDir = file("${buildDir}/docs/javadoc")
+}
+
 subprojects {
 
   // BEGIN QA Tooling for subprojects

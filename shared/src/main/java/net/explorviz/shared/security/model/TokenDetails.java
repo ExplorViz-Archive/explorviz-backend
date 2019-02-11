@@ -61,7 +61,7 @@ public final class TokenDetails {
   /**
    * Check if the authentication token is eligible for refreshment.
    *
-   * @return
+   * @return if a token needs to be refreshed
    */
   public boolean isEligibleForRefreshment() {
     return this.refreshCount < this.refreshLimit;

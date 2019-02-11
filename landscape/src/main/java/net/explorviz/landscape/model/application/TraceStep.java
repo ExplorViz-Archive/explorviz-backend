@@ -6,7 +6,7 @@ import net.explorviz.landscape.model.helper.BaseEntity;
 
 /**
  * Model representing detailed runtime information for {@link ClazzCommunication} between two
- * {@link Clazz} in a specific {@link Trace}.
+ * {@link net.explorviz.landscape.model.application.Clazz} in a specific {@link Trace}.
  */
 @SuppressWarnings("serial")
 @Type("tracestep")
@@ -31,11 +31,14 @@ public class TraceStep extends BaseEntity {
   /**
    * Creates a new TraceStep and assigns related communication information
    *
-   * @param clazzCommunication
-   * @param currentTraceDuration
-   * @param averageResponseTime
-   * @param requests
-   * @param tracePosition
+   * @param parentTrace - related Trace
+   * @param clazzCommunication - starting clazzCommunication
+   * @param tracePosition - position within the trace
+   * @param requests - total number of requests
+   * @param averageResponseTime - average response time of the trace
+   * @param currentTraceDuration - current duration of the trace
+   *
+   * 
    */
   public TraceStep(final Trace parentTrace, final ClazzCommunication clazzCommunication,
       final int tracePosition, final int requests, final float averageResponseTime,

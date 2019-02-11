@@ -70,7 +70,7 @@ public final class RepositoryStorage {
   /**
    * Registers all classes for serialization
    *
-   * @return
+   * @return an FST configuration
    */
   public static FSTConfiguration createFSTConfiguration() {
     final FSTConfiguration result = FSTConfiguration.createDefaultConfiguration();

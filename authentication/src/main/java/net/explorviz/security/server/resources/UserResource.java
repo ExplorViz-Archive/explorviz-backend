@@ -145,12 +145,11 @@ public class UserResource {
 
   /**
    * Updates the details of a already existing user. The values of the targeted user will be
-   * overridden by the values of {@linkplain updatedUser}. All attributes that are {@code null} are
-   * ignored.
+   * overridden by the values of an updatedUser. All attributes that are {@code null} are ignored.
    *
-   * @param id the id of the user to update
-   * @param updatedUser a {@link User} object containing the changes. All fields set to {@code null}
-   *        will be ignored when updating.
+   * @param id - the id of the user to update
+   * @param updatedUser - a {@link User} object containing the changes. All fields set to
+   *        {@code null} will be ignored when updating.
    * @return the updated user
    */
   @PATCH
@@ -230,7 +229,7 @@ public class UserResource {
   /**
    * Retrieves all users that have a specific role.
    *
-   * @param role the role to be searched for
+   * @param role - the role to be searched for
    * @return a list of all users with the given role
    */
   @GET
@@ -256,7 +255,7 @@ public class UserResource {
   /**
    * Retrieves a single user identified by its id.
    *
-   * @param id the id of the user to return
+   * @param id - the id of the user to return
    * @return the {@link User} object with the given id
    */
   @GET
@@ -287,7 +286,8 @@ public class UserResource {
   /**
    * Removes the user with the given id.
    *
-   * @param id the id of the user to delete
+   * @param id - the id of the user to delete
+   * @return a response on success
    */
   @DELETE
   @Path("{id}")

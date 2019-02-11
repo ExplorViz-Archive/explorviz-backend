@@ -1,7 +1,6 @@
 package net.explorviz.security.services;
 
 import com.mongodb.MongoException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -36,10 +35,10 @@ public class UserMongoCrudService implements MongoCrudService<User> {
   private final Datastore datastore;
 
 
-
   /**
-   * Creates a new {@code UserCrudMongoDb}.
+   * Creates a new UserMongoDB
    *
+   * @param datastore - the datastore instance
    */
   @Inject
   public UserMongoCrudService(final Datastore datastore) {
@@ -65,11 +64,15 @@ public class UserMongoCrudService implements MongoCrudService<User> {
   }
 
   @Override
+  /**
+   * Persists an user entity
+   *
+   * @param user - a user entity
+   * @return an Optional, which contains a User or is empty
+   */
   public Optional<User> saveNewEntity(final User user) throws MongoException {
     // Generate an id
     user.setId(this.idGen.next());
-
-
 
     this.datastore.save(user);
 
@@ -123,8 +126,6 @@ public class UserMongoCrudService implements MongoCrudService<User> {
     // TODO find smarter (MongoDB based) way to check for roles
 
     final Role role = this.datastore.createQuery(Role.class).filter("descriptor", roleName).get();
-
-    final List<User> listToBeReturned = new ArrayList<>();
 
     List<User> userList = this.datastore.createQuery(User.class).asList();
 

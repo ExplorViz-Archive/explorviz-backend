@@ -16,7 +16,7 @@ public final class TimestampHelper {
   }
 
   /**
-   * Retrieves timestamps AFTER a passed {@link Timestamp}.
+   * Retrieves timestamps AFTER a passed {@link net.explorviz.landscape.model.store.Timestamp}.
    *
    * @param allTimestamps - All timestamps within the system
    * @param afterTimestamp - Define the timestamp which sets the limit
@@ -58,8 +58,9 @@ public final class TimestampHelper {
    * Retrieves the a passed {@link Timestamp} within a list of timestamps if found, otherwise the
    * following timestamp.
    *
-   * @param timestamps
-   * @param searchedTimestamp
+   * @param timestamps - a list of timestamps
+   * @param searchedTimestamp - a specific timestamp to be found
+   * @return a retrieved timestamp
    */
   public static Timestamp getTimestampPosition(final List<Timestamp> timestamps,
       final long searchedTimestamp) {

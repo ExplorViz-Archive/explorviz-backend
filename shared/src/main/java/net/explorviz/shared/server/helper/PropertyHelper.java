@@ -11,7 +11,8 @@ import javax.ws.rs.InternalServerErrorException;
 
 
 /**
- * Utility class to read configuration properties. Use the {@link Config} instead.
+ * Utility class to read configuration properties. Use the
+ * {@link net.explorviz.shared.annotations.Config} instead.
  */
 public final class PropertyHelper {
 

@@ -65,6 +65,7 @@ public class TokenResource {
    * This method refreshes a Json Web Token (JWT). The HTTP POST body must not contain data and the
    * to-be refreshed token inside of the ' Authorization: Bearer' header.
    *
+   * @param context - the context of the container
    * @return Refreshed JWT with an incremented refresh counter.
    */
   @POST

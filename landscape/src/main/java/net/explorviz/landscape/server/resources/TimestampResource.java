@@ -11,7 +11,8 @@ import net.explorviz.landscape.api.ExtensionApiImpl;
 import net.explorviz.landscape.model.store.Timestamp;
 
 /**
- * REST resource providing {@link Timestamp} data for the frontend.
+ * REST resource providing {@link net.explorviz.landscape.model.store.Timestamp} data for the
+ * frontend.
  */
 @Path("v1/timestamps")
 @RolesAllowed({"admin"})
@@ -25,11 +26,12 @@ public class TimestampResource {
   }
 
   /**
-   * Returns an List of {@link Timestamp} interval of "intervalSize" after a specific passed
-   * "timestamp"
+   * Returns an List of {@link net.explorviz.landscape.model.store.Timestamp} interval of
+   * "intervalSize" after a specific passed "timestamp"
    *
-   * @param afterTimestamp
-   * @param intervalSize
+   * @param afterTimestamp - a starting timestamp for the returned interval
+   * @param intervalSize - the size of the interval
+   * @return a filtered list of timestamps
    */
   @GET
   @Path("/subsequent-interval")
@@ -40,7 +42,9 @@ public class TimestampResource {
   }
 
   /**
-   * Returns a List of all uploaded {@link Timestamp}
+   * Returns a List of all uploaded {@link net.explorviz.landscape.model.store.Timestamp}
+   * 
+   * @return a list of all uploaded timestamps
    */
   @GET
   @Path("/all-uploaded")
