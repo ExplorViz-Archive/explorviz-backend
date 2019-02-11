@@ -20,7 +20,7 @@ This is only the backend, you will need the [explorviz-frontend](https://github.
 
 This gradle project includes or installs every necessary dependency.
 
-## Documentation (Work in progress)
+## Documentation
 The API documentation is available [here](https://explorviz.github.io/explorviz-backend/).
 
 ## Eclipse Setup
