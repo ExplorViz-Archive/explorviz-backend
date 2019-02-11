@@ -1,0 +1,100 @@
+apply plugin: 'eclipse'
+apply plugin: 'org.sonarqube'
+apply plugin: 'com.github.johnrengelman.shadow'
+apply plugin: 'com.github.spotbugs'
+
+def loadProperties = {
+    def properties = new Properties()
+    file('src/main/resources/explorviz.properties').withInputStream {
+        properties.load(it)
+    }
+    return properties
+}
+
+buildscript {
+	repositories {
+		jcenter()	
+    	maven {
+    		url 'https://plugins.gradle.org/m2/'
+    	}
+  	}
+
+    dependencies {
+		classpath 'org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.6.1'
+		classpath 'com.github.jengelman.gradle.plugins:shadow:2.0.4'
+    }
+}
+
+repositories {
+	maven {url 'https://oss.sonatype.org/content/repositories/snapshots'}
+}
+
+dependencies {
+  // Any .jar in libs
+  implementation fileTree(dir: 'libs', include: '*.jar')
+  
+  implementation project(':shared')
+  
+  // SSE context for injection
+  implementation group: 'org.glassfish.jersey.media', name: 'jersey-media-sse', version: '2.27'
+  
+  // Serialization
+  implementation group: 'de.ruedigermoeller', name: 'fst', version: '2.56' 
+   
+  // multipart/form-data type
+  implementation group: 'org.glassfish.jersey.media', name:'jersey-media-multipart', version:'2.26'
+}
+
+assemble.dependsOn shadowJar
+jar.enabled = false
+
+jar {
+  manifest {
+    attributes(
+      'Main-Class': 'net.explorviz.landscape.server.main.Main'
+    )
+  }
+}
+
+
+shadowJar {
+  archiveName = "explorviz-${project.name}.${extension}"
+}
+
+// Javadoc settings
+javadoc {
+  source = sourceSets.main.allJava
+  destinationDir = file("./docs/")
+  failOnError false
+}
+
+spotbugs {
+  excludeFilter = file("../conf/spotbugs-exclude-filter.xml")
+  reportLevel = "low"
+  effort = "max"
+  ignoreFailures = true
+  toolVersion = '3.1.7'
+}
+
+// Per default XML reports for SpotBugs are generated
+// Include this to generate HTML reports
+tasks.withType(com.github.spotbugs.SpotBugsTask) {
+  reports {
+    // Either HTML or XML reports can be activated
+    html.enabled true
+    xml.enabled false
+  }
+}
+
+task spotbugs {
+  group 'Quality Assurance'
+  description 'Run SpotBugs'
+  
+  dependsOn 'spotbugsMain'
+  dependsOn 'spotbugsTest'
+}
+
+// Jitpack publishing
+artifacts {
+  archives shadowJar
+}

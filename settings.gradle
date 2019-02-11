@@ -1,4 +1,3 @@
 rootProject.name = 'explorviz-backend'
 
-// Dependency for internal kiekeradapter
-include ':explorviz-backend-kiekeradapter'
+include ':shared', ':landscape', ':kiekeradapter', ':authentication', ':analysis', ':discovery'

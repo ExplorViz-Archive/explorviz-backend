@@ -1,0 +1,1 @@
+sed -i "s#mongo.ip=.*#mongo.ip=$MONGO_IP#g" META-INF/explorviz-custom.properties

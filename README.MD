@@ -1,8 +1,10 @@
-# ExplorViz Backend
+<p align="center">
+  <img width="60%" src="https://raw.githubusercontent.com/ExplorViz/Docs/master/images/explorviz-logo.png">
+</p>
+
+___
+
 [![TravsCI Build Status](https://travis-ci.org/ExplorViz/explorviz-backend.svg?branch=master)](https://travis-ci.org/ExplorViz/explorviz-backend)
-[![Jenkins Build Status](https://build.se.informatik.uni-kiel.de/jenkins/job/explorviz-backend/badge/icon)](https://build.se.informatik.uni-kiel.de/jenkins/job/ExplorViz-backend/)
-[![Sonarcloud Status](https://sonarcloud.io/api/project_badges/measure?project=explorviz-backend&metric=alert_status)](https://sonarcloud.io/dashboard?id=explorviz-backend)
-[![Dockerhub Pulls](https://img.shields.io/docker/pulls/explorviz/explorviz-docker.svg)](https://hub.docker.com/r/explorviz/explorviz-docker)
 
 ## Project Description
 ExplorViz uses dynamic analysis techniques to provide live trace visualization of the communication in large software landscape. It targets system and program comprehension in those landscapes while still providing details on the communication within an application. A landscape perspective enriches current system visualizations with additional abstraction levels for efficient comprehension of communication between hundreds of applications which is often encountered in, for instance, Cloud environments. On the application level perspective, ExplorViz utilizes the 3D city metaphor combined with an interactive concept of showing only details that are in focus of the analysis. For best accessibility, ExplorViz is a web-based tool featuring cutting-edge technologies like WebGL and HTML 5.
@@ -22,21 +24,16 @@ This gradle project includes or installs every necessary dependency.
 The API documentation is available [here](https://explorviz.github.io/explorviz-backend/).
 
 ## Eclipse Setup
-1. Download the latest [**Eclipse IDE for Java Developers**](http://www.eclipse.org/downloads/eclipse-packages/) and [**Oracle Java SDK 8**](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html)
-2. Install **SpotBugs (formerly known as Findbugs)**
-    - `Start Eclipse -> Help -> Eclipse Marketplace*` - type in *Spotbugs* and install *SpotBugs Eclipse plugin 3.1.5*
-3. Install **PMD** and **Checkstyle** embedded in [qa-eclipse-plugin
-](https://github.com/ChristianWulf/qa-eclipse-plugin)
-    - `Help -> Install New Software`- type in `Work with` *https://build.se.informatik.uni-kiel.de/eus/qa/snapshot/* and install *Eclipse Plugins for QA Tools*
-    - Follow the configuration as listed [here](https://github.com/ChristianWulf/qa-eclipse-plugin)
-4. Show the respective tool views (`Window -> Show View -> Other` - check *Bug Explorer*, *Checkstyle Violations*, and *PMD Violations*)
+1. Download the latest [Eclipse IDE for Java Developers](http://www.eclipse.org/downloads/eclipse-packages/) (ExplorViz requires JDK 8 compliance)
+2. Follow the [CAU-SE guidelines for quality assurance](https://github.com/cau-se/code-quality-configurations/tree/master/java) (Only necessary if you contribute code)
 
-## Setup Development
-1. Follow the [Eclipse Setup](https://github.com/ExplorViz/explorviz-backend#eclipse-setup)
+## Setup Development (Docker and docker-compose are required)
+1. Follow the previous [Eclipse Setup](#eclipse-setup)
 2. Clone this repository
-3. Import project into eclipse: via `Import -> Gradle -> Existing Gradle project -> path/to/explorviz-backend`
-4. Start **explorviz-backend** via Eclipse Tab: `Gradle Tasks -> explorviz-backend -> gretty -> appStart`
-5. Setup and start [explorviz-frontend](https://github.com/ExplorViz/explorviz-frontend)
+3. Import project into Eclipse: via `Import -> Gradle -> Existing Gradle project -> path/to/explorviz-backend`
+4. Follow the instructions inside of the [docker-compose](docker-compose) folder to start mandatory docker-based services (e.g. MongoDB)
+5. Start **explorviz-backend** microservices via run configurations in the [run-configurations](run-configurations) folder: `Right click single config -> Run as -> ExplorViz-X` (where `X` is the name of a microservice)
+6. Setup and start [explorviz-frontend](https://github.com/ExplorViz/explorviz-frontend)
 
 ### Further Information
 * To force the download of newly added dependencies: `Right click on the project explorviz-backend -> Gradle -> Refresh Gradle Project`. You might need to uncomment the respective lines in the build.gradle file.

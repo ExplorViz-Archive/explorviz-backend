@@ -1,25 +1,49 @@
 language: java
 
-jdk:
-- oraclejdk8
-- oraclejdk9
-- openjdk8
+services:
+  - mongodb
+  - docker
 
-matrix:
+jobs:
   fast_finish: true
   allow_failures:
-  - jdk: oraclejdk9
+    - jdk: oraclejdk8
+  include:
+    - jdk: openjdk8
+    - jdk: oraclejdk8
+    - stage: deploy
+      name: "Docker Image: Analysis"
+      if: (branch = dev-1) OR (branch = master)
+      jdk: openjdk8
+      script: cd analysis && ../.travis/docker_push.sh
+    - stage: deploy
+      name: "Docker Image: Authentication"
+      if: (branch = dev-1) OR (branch = master)
+      jdk: openjdk8
+      script: cd authentication && ../.travis/docker_push.sh
+    - stage: deploy
+      name: "Docker Image: Discovery"
+      if: (branch = dev-1) OR (branch = master)
+      jdk: openjdk8
+      script: cd discovery && ../.travis/docker_push.sh
+    - stage: deploy
+      name: "Docker Image: Landscape"
+      if: (branch = dev-1) OR (branch = master)
+      jdk: openjdk8
+      script: cd landscape && ../.travis/docker_push.sh
 
 before_script:
-  - chmod +x .travis/push.sh
-  - chmod +x .travis/javadoc-push.sh
+  - chmod +x .travis/docker_push.sh
 
-script: gradle build javadoc
+#before_script:
+#  - chmod +x .travis/push.sh
+#  - chmod +x .travis/javadoc-push.sh
 
-after_success:
-  - .travis/javadoc-push.sh
-  - .travis/push.sh
+#after_success:
+#  - .travis/javadoc-push.sh
+#  - .travis/push.sh
 
 branches:
   only:
   - master
+  - dev-1

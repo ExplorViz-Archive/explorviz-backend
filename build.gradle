@@ -1,171 +1,101 @@
-apply plugin: 'war'
-apply plugin: 'org.akhikhl.gretty'
-apply plugin: 'java-library'
-apply plugin: 'eclipse'
-apply plugin: 'maven'
-apply plugin: 'pmd'
-apply plugin: 'checkstyle'
-apply plugin: 'findbugs'
-apply plugin: 'org.sonarqube'
-
-def loadProperties = {
-    def properties = new Properties()
-    file('src/main/webapp/WEB-INF/classes/explorviz.properties').withInputStream {
-        properties.load(it)
-    }
-    return properties
+allprojects {
+  apply plugin: 'java-library'
 }
 
-buildscript {
-  repositories {
-  	jcenter()
-    maven {
-    	url 'https://plugins.gradle.org/m2/'
-    	url 'https://jitpack.io'
-    }
-  }
+subprojects {
 
+  // BEGIN QA Tooling for subprojects
+  
+  buildscript {
+    repositories {
+        jcenter()
+        maven {
+          url "https://plugins.gradle.org/m2/"
+        }
+    }
     dependencies {
-      	classpath 'org.akhikhl.gretty:gretty:+'
-		classpath 'org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.6.1'
+        classpath "gradle.plugin.com.github.spotbugs:spotbugs-gradle-plugin:1.6.3"
     }
-}
-
-repositories {
-  jcenter()
-  maven {url 'https://oss.sonatype.org/content/repositories/snapshots'}
-  maven {url 'https://jitpack.io'}
-}
-
-dependencies {
-  // Any .jar in libs
-  compile fileTree(dir: 'libs', include: '*.jar')
+  }
   
-  // explorviz-kieker-adapter
-  compile project(':explorviz-backend-kiekeradapter')
+  apply plugin: 'pmd'
+  apply plugin: 'checkstyle'	
+	
+  pmd {
+    ruleSets = []
+    ruleSetFiles = files("../conf/pmd.xml")
+    ignoreFailures = true
+    toolVersion = "6.7.0"
+  }
+	
+  checkstyle {
+    configDir = file("../conf")
+    configFile = file("../conf/checkstyle.xml")
+    maxWarnings = 0
+    ignoreFailures = true
+    toolVersion = "8.12"
+  }	
+	
+  task checkstyle {
+    group 'Quality Assurance'
+    description 'Run Checkstyle'
     
-  // Jersey and Servlet
-  compile group: 'org.glassfish.jersey.containers', name: 'jersey-container-servlet', version:'2.26'
-  compile group: 'javax.servlet', name: 'javax.servlet-api', version:'3.0.1'
-  compile group: 'org.glassfish.jersey.inject', name: 'jersey-hk2', version:'2.26'
-  
-  // ExplorViz Discovery Classes
-  compile 'com.github.ExplorViz:explorviz-discovery-common:master-SNAPSHOT'
+    dependsOn 'checkstyleMain'
+    dependsOn 'checkstyleTest'
+  }
+	
+  task pmd {
+    group 'Quality Assurance'
+    description 'Run PMD'
     
-  // Database, ORM and Serialization
-  compile group: 'com.h2database', name: 'h2', version:'1.4.196'
-  compile group: 'de.ruedigermoeller', name: 'fst', version:'2.47'
-  compile group: 'org.hibernate', name: 'hibernate-core', version:'5.2.11.Final'
-  compile group: 'org.hibernate', name: 'hibernate-c3p0', version:'5.2.11.Final'
-  
-  // JSON + Parsing
-  compile group: 'com.github.jasminb', name: 'jsonapi-converter', version:'0.8'
-  compile group: 'org.glassfish.jersey.media', name: 'jersey-media-json-jackson', version:'2.23'
-  compile group: 'org.glassfish.jersey.media', name:'jersey-media-multipart', version:'2.26'
-  compile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version:'2.7.1'
-  compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version:'2.7.1'
-  compile group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version:'2.7.1'
-   
-  testImplementation 'junit:junit:4.12'
-}
+    dependsOn 'pmdMain'
+    dependsOn 'pmdTest'
+  }
+	
+  // END QA Tooling for subprojects
 
-// ##### BEGIN Jitpack section #####
-
-// War plugin typically disables jar build
-assemble.dependsOn jar
-
-// https://discuss.gradle.org/t/deploying-multiple-artifacts-war-jar-sources-to-artifactory/4239
-artifacts {
-  	archives file: file('libs/explorviz-common-1.0.jar'), name: 'explorviz-common', type: 'jar'
-  	archives file: file('libs/explorviz-worker-1.0.jar'), name: 'explorviz-worker', type: 'jar'
-  	archives jar
-  	archives war {
-        classifier = 'deployment'
-    }
-}
-
-jar {
-  baseName = project.name 
-}
-
-install {
   repositories {
-    mavenInstaller {
-      addFilter('explorviz-common') {artifact, file ->
-        artifact.name == 'explorviz-common'
-      }
-      addFilter('explorviz-worker') {artifact, file ->
-        artifact.name == 'explorviz-worker'
-      }
-      addFilter('explorviz-backend') {artifact, file ->
-        artifact.name == 'explorviz-backend'
-      }
-    }
+    // Order of declaration determines how Gradle will check for dependencies at runtime. 
+    jcenter()
+    mavenCentral()
   }
-}
-
-// ##### END Jitpack section #####
-
-// QS Tooling
-// will pass until fixing is done
-pmd {	
-	// Clear the rule set first. Otherwise we would have a lot of additional rules in our rule set.
-	ruleSets = []
-	ruleSetFiles = files("conf/pmd.xml")
-	consoleOutput = false
-	ignoreFailures = true
-}
     
-checkstyle {
-	showViolations = false
-	configFile = file("conf/checkstyle.xml")
-	ignoreFailures = true
-}
+  dependencies {
 
-findbugs {
-	reportLevel = "low"
-	effort = "max"
-	excludeFilter = file("conf/findbugs-exclude.xml")
-	ignoreFailures = true
-}
-
-tasks.withType(Pmd) {
-	reports {
-    	xml.enabled = true
-        html.enabled = false
-    }
-}
-
-tasks.withType(FindBugs) {
-	reports {
-    	xml.enabled = true
-        html.enabled = false
-    }
-}
-
-tasks.withType(Checkstyle) {
-  	reports {
-    	xml.enabled = true
-        html.enabled = false
+	// SL4J
+	implementation group: 'org.slf4j', name: 'slf4j-simple', version: '1.6.1'
+    
+    if (project.name == 'authentication' || project.name == 'landscape' || project.name == 'shared' || project.name == 'discovery') {
+    	// subprojects, which are supposed to be a JAX-RS-based microservice
+    
+    	// Jersey and Servlet
+		implementation group: 'org.glassfish.jersey.containers', name: 'jersey-container-servlet', version:'2.27'
+		implementation group: 'javax.servlet', name: 'javax.servlet-api', version:'3.0.1'
+		implementation group: 'org.glassfish.jersey.inject', name: 'jersey-hk2', version:'2.27'
+		// compile group: 'org.glassfish.jersey.test-framework.providers', name: 'jersey-test-framework-provider-jdk-http', version: '2.27'
+		testCompile group: 'org.glassfish.jersey.test-framework.providers', name: 'jersey-test-framework-provider-jetty', version: '2.27'
+		
+	  
+	    // JSON + Parsing
+	    implementation group: 'org.glassfish.jersey.media', name: 'jersey-media-json-jackson', version:'2.27'
+	    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-core', version:'2.9.6'
+	    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version:'2.9.6'
+	    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version:'2.9.6'
+	    
+	    // JSON-API parsing
+        implementation group: 'com.github.jasminb', name: 'jsonapi-converter', version:'0.9'
+            
+	    // Jetty servlet-container
+		implementation group: 'org.glassfish.jersey.containers', name: 'jersey-container-jetty-servlet', version: '2.27'
+		
+		// Database
+		compile group: 'org.mongodb', name: 'mongo-java-driver', version: '3.9.1'
+	}
+	
+	testImplementation 'junit:junit:4.12'
+	compile 'org.mockito:mockito-core:2.23.0'
+	
+	
   }
-}
-
-// Javadoc settings
-javadoc {
-	source = sourceSets.main.allJava
-	  destinationDir = file("./docs/")
-	  failOnError false
-}
-
-// Embedded Webserver
-gretty {
-	httpPort = loadProperties().httpPort.toInteger()
-	servletContainer = loadProperties().servletContainer
-	contextPath = loadProperties().contextPath
-	recompileOnSourceChange = false
-  	reloadOnClassChange = false
-  	reloadOnConfigChange = false
-  	reloadOnLibChange = false
-	// debugging JVM GC - for http://gceasy.io/
-	// jvmArgs = [ '-XX:+PrintGCDetails', '-XX:+PrintGCDateStamps', '-Xloggc:gc_jvm.log' ]
+    
 }

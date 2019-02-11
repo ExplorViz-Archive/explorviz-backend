@@ -1,0 +1,81 @@
+apply plugin: 'eclipse'
+apply plugin: 'maven'
+apply plugin: 'com.github.spotbugs'
+
+buildscript {
+  	repositories {
+      	jcenter()
+    } 
+}
+
+repositories {
+  	maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
+}
+
+dependencies {
+	// include libraries in lib, e.g. the ExplorViz monitoring component
+	implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+	// Teetime Pipe and Filter Framework
+	implementation group: 'net.sourceforge.teetime', name: 'teetime', version: '3.0-SNAPSHOT'	
+	implementation group: 'net.sourceforge.teetime-stages', name: 'teetime-stages', version: '3.0-SNAPSHOT'
+	
+	// Kieker Monitoring Framework
+	implementation group: 'net.kieker-monitoring', name: 'kieker', version: '1.14-SNAPSHOT'
+}
+
+configurations.all {
+    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+}
+
+// ##### BEGIN Jitpack section #####
+
+artifacts {
+	archives file: file('libs/explorviz-monitoring.jar'), name: 'explorviz-monitoring', type: 'jar'
+  	archives jar
+}
+
+jar {
+	baseName = project.name
+}
+
+install {
+  repositories {
+    mavenInstaller {
+      addFilter('explorviz-backend-kiekeradapter') {artifact, file ->
+        artifact.name == 'explorviz-backend-kiekeradapter'
+      }
+      addFilter('explorviz-monitoring') {artifact, file ->
+        artifact.name == 'explorviz-monitoring'
+      }
+    }
+  }
+}
+
+// ##### END Jitpack section #####
+
+spotbugs {
+  excludeFilter = file("../conf/spotbugs-exclude-filter.xml")
+  reportLevel = "low"
+  effort = "max"
+  ignoreFailures = true
+  toolVersion = '3.1.7'
+}
+
+// Per default XML reports for SpotBugs are generated
+// Include this to generate HTML reports
+tasks.withType(com.github.spotbugs.SpotBugsTask) {
+  reports {
+    // Either HTML or XML reports can be activated
+    html.enabled true
+    xml.enabled false
+  }
+}
+
+task spotbugs {
+  group 'Quality Assurance'
+  description 'Run SpotBugs'
+  
+  dependsOn 'spotbugsMain'
+  dependsOn 'spotbugsTest'
+}
