@@ -39,7 +39,7 @@ jobs:
     - stage: documentation
       name: "Publish documentation"
       if: (branch = master)
-      script: ./gradlew alljavadoc && chmod +x .travis/javadoc-push.sh && .travis/javadoc-push.sh
+      script: chmod +x .travis/javadoc-push.sh && .travis/javadoc-push.sh
     
 before_script:
   - chmod +x .travis/docker_push.sh

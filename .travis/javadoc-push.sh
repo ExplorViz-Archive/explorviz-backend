@@ -2,7 +2,8 @@
 
 echo -e "Publishing javadoc...\n"
 
-cp -R docs $HOME/javadoc-latest
+./gradlew alljavadoc 
+cp -R docs $HOME/docs
 
 cd $HOME
 git config --global user.email "travis@travis-ci.org"
@@ -11,7 +12,7 @@ git clone --quiet --branch=gh-pages https://$PersonalAccessToken@github.com/Expl
 
 cd gh-pages
 git rm -rf *
-cp -Rf $HOME/javadoc-latest/* .
+cp -Rf $HOME/docs/* .
 git add -f .
 git commit -m "Latest Javadoc on successful Travis build $TRAVIS_BUILD_NUMBER auto-pushed to gh-pages"
 git push -fq origin gh-pages > /dev/null
