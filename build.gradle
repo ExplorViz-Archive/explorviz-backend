@@ -2,8 +2,12 @@ allprojects {
   apply plugin: 'java-library'
 }
 
+// defining project properties
+def	projectVersion = 'v1.3.0'
+def projectURL= 'https://www.explorviz.net'
+def footerText = '<span>Copyright 2013 - 2019</span> by the <a href="https://www.explorviz.net" target="_blank">ExplorViz project</a>'
 
-// Aggregate Javadoc in multiproject Gradle build
+// BEGIN aggregated Javadoc in multiproject Gradle build
 def exportedProjects= [
 		':shared', 
 		':landscape',
@@ -16,9 +20,12 @@ def exportedProjects= [
 task alljavadoc(type: Javadoc) {
     source exportedProjects.collect { project(it).sourceSets.main.allJava }
     classpath = files(exportedProjects.collect { project(it).sourceSets.main.compileClasspath })
-    destinationDir = file("${buildDir}/docs/javadoc")
+    destinationDir = file("./docs")
+    title = 'explorviz-backend API ' + projectVersion
+    options.setFooter(footerText)
 }
 
+// END aggregated Javadoc in multiproject Gradle build
 subprojects {
 
   // BEGIN QA Tooling for subprojects
