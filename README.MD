@@ -46,4 +46,4 @@ The API documentation is available [here](https://explorviz.github.io/explorviz-
 3. Start the [TestApplication](https://github.com/czirkelbach/kiekerSampleApplication) as described [here](https://github.com/czirkelbach/kiekerSampleApplication/blob/master/README.md).
 4. Open [explorviz-frontend](https://github.com/ExplorViz/explorviz-frontend)
 
-**Important**: Changes that are related to dependency injections require a recompilation of the application. Use the gradle task `explorviz-backend -> gretty -> appRestart` to recompile and start the server. Then, start the monitoring again.
+**Important**: Changes that are related to dependency injections require a recompilation of the application. Thus, restart the microservices. Afterwards, start the monitoring again.
