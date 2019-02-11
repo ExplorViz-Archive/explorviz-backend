@@ -11,37 +11,39 @@ jobs:
   include:
     - jdk: openjdk8
     - jdk: oraclejdk8
+    
     - stage: deploy
       name: "Docker Image: Analysis"
       if: (branch = dev-1) OR (branch = master)
       jdk: openjdk8
       script: cd analysis && ../.travis/docker_push.sh
+      
     - stage: deploy
       name: "Docker Image: Authentication"
       if: (branch = dev-1) OR (branch = master)
       jdk: openjdk8
       script: cd authentication && ../.travis/docker_push.sh
+      
     - stage: deploy
       name: "Docker Image: Discovery"
       if: (branch = dev-1) OR (branch = master)
       jdk: openjdk8
       script: cd discovery && ../.travis/docker_push.sh
+      
     - stage: deploy
       name: "Docker Image: Landscape"
       if: (branch = dev-1) OR (branch = master)
       jdk: openjdk8
       script: cd landscape && ../.travis/docker_push.sh
-
+    
+    - stage: documentation
+      name: "Publish documentation"
+      if: (branch = master)
+      script: .travis/javadoc-push.sh
+    
 before_script:
   - chmod +x .travis/docker_push.sh
-
-#before_script:
-#  - chmod +x .travis/push.sh
-#  - chmod +x .travis/javadoc-push.sh
-
-#after_success:
-#  - .travis/javadoc-push.sh
-#  - .travis/push.sh
+  - chmod +x .travis/javadoc-push.sh
 
 branches:
   only:
