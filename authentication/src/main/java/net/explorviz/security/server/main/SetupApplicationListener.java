@@ -76,7 +76,10 @@ public class SetupApplicationListener implements ApplicationEventListener {
 
     final UserSettings settings = new UserSettings();
 
-    this.datastore.save(new User(id, ADMIN_NAME, pw, Arrays.asList(roleList.get(0)), settings));
+    if (this.datastore.get(User.class, id) == null) {
+      this.datastore.save(new User(id, ADMIN_NAME, pw, Arrays.asList(roleList.get(0)), settings));
+    }
+
   }
 
 }
