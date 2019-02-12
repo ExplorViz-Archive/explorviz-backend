@@ -73,19 +73,19 @@ public class UserSettings {
     this.id = id;
   }
 
-  public Boolean getBooleanAttribute(final String key) {
-    return this.booleanAttributes.get(key);
+
+
+  public Map<String, Boolean> getBooleanAttributes() {
+    return this.booleanAttributes;
   }
 
-  public Number getNumericAttribute(final String key) {
-    return this.numericAttributes.get(key);
+  public Map<String, Number> getNumericAttributes() {
+    return this.numericAttributes;
   }
 
-  public String getStringAttribute(final String key) {
-    return this.stringAttributes.get(key);
+  public Map<String, String> getStringAttributes() {
+    return this.stringAttributes;
   }
-
-
 
   /*
    * Checks if the settings are valid
@@ -94,11 +94,9 @@ public class UserSettings {
 
     // Check whether these settings contain unkown keys
     if (!this.numericAttributes.keySet().equals(DefaultSettings.numericDefaults().keySet())
-        || !this.booleanAttributes.keySet()
-            .equals(DefaultSettings.booleanDefaults().keySet())
-        || !this.stringAttributes.keySet()
-            .equals(DefaultSettings.stringDefaults().keySet())) {
-      throw new IllegalStateException("Contain unknown settings");
+        || !this.booleanAttributes.keySet().equals(DefaultSettings.booleanDefaults().keySet())
+        || !this.stringAttributes.keySet().equals(DefaultSettings.stringDefaults().keySet())) {
+      throw new IllegalStateException("Contains unknown settings");
     }
 
     if (this.numericAttributes.containsKey("appVizCommArrowSize")

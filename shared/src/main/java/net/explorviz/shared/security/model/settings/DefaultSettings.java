@@ -97,43 +97,48 @@ public class DefaultSettings {
 
 
   /**
-   * Adds default values to all missing settings in a given {@link UserSettings} object.
+   * Adds default values to all missing settings in a given {@link UserSettings} object. Removes all
+   * settings, that have no counterpart in the default settings.
    *
-   * TODO: Remove unknown setting values.
    *
    * @param settings the settings to process.
    * @return {@code true} if and only if the given settings were changed.
    */
-  public static boolean addMissingDefaults(final UserSettings settings) {
-    boolean changed = false;
+  public static void makeConform(final UserSettings settings) {
 
     final Map<String, Boolean> defaultBools = booleanDefaults();
     final Map<String, String> defaultStrings = stringDefaults();
     final Map<String, Number> defaultNum = numericDefaults();
 
     for (final String key : defaultBools.keySet()) {
-      if (settings.getBooleanAttribute(key) == null) {
+      if (settings.getBooleanAttributes().get(key) == null) {
         settings.put(key, defaultBools.get(key));
-        changed = true;
       }
     }
 
     for (final String key : defaultNum.keySet()) {
-      if (settings.getNumericAttribute(key) == null) {
+      if (settings.getNumericAttributes().get(key) == null) {
         settings.put(key, defaultNum.get(key));
-        changed = true;
       }
     }
 
     for (final String key : defaultStrings.keySet()) {
-      if (settings.getNumericAttribute(key) == null) {
+      if (settings.getNumericAttributes().get(key) == null) {
         settings.put(key, defaultStrings.get(key));
-        changed = true;
       }
     }
 
+    // Remove all keys that are not in defaults
+    settings.getBooleanAttributes().keySet().stream().filter(e -> !booleanSettings.containsKey(e))
+        .forEach(e -> settings.getBooleanAttributes().remove(e));
 
-    return changed;
+    settings.getNumericAttributes().keySet().stream().filter(e -> !numericSettings.containsKey(e))
+        .forEach(e -> settings.getNumericAttributes().remove(e));
+
+    settings.getStringAttributes().keySet().stream().filter(e -> !stringSettings.containsKey(e))
+        .forEach(e -> settings.getStringAttributes().remove(e));
+
+
   }
 
 }

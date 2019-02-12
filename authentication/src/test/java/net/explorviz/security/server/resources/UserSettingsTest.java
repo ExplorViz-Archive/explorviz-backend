@@ -51,7 +51,7 @@ public class UserSettingsTest {
   }
 
   @Test
-  public void testUpdateSettings() {
+  public void testUpdateNewSettings() {
 
     final User u = new User("testuser");
     u.setPassword("testPassword");
@@ -61,8 +61,9 @@ public class UserSettingsTest {
     this.userCrudService.saveNewEntity(u);
 
     final User u1 = this.userCrudService.getEntityById(u.getId()).orElse(null);
-    assertEquals(0.5, u1.getSettings().getNumericAttribute("appVizTransparencyIntensity"));
+    assertEquals(0.5, u1.getSettings().getNumericAttributes().get("appVizTransparencyIntensity"));
   }
+
 
 
   @Test(expected = IllegalArgumentException.class)

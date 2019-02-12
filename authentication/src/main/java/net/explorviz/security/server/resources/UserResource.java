@@ -298,9 +298,10 @@ public class UserResource {
     }
 
 
-    if (DefaultSettings.addMissingDefaults(foundUser.getSettings())) {
-      this.userCrudService.updateEntity(foundUser);
-    }
+    // Cleanup settings
+    DefaultSettings.makeConform(foundUser.getSettings());
+    this.userCrudService.updateEntity(foundUser);
+
 
     return foundUser;
 
@@ -357,12 +358,8 @@ public class UserResource {
 
     final UserSettings settings = u.getSettings();
 
-    final boolean changed = DefaultSettings.addMissingDefaults(settings);
+    DefaultSettings.makeConform(settings);
 
-    if (changed) {
-      // Update user with newer settings
-      this.userCrudService.updateEntity(u);
-    }
 
     return settings;
 
