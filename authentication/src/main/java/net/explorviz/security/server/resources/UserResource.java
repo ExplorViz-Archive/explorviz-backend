@@ -107,8 +107,12 @@ public class UserResource {
       throw new InternalServerErrorException(e);
     }
 
-    // Set default settings
-    user.setSettings(new UserSettings());
+    try {
+      user.getSettings().validate();
+
+    } catch (final IllegalStateException e) {
+      throw new BadRequestException(e.getMessage());
+    }
 
     try {
       return this.userCrudService.saveNewEntity(user)
