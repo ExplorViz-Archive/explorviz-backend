@@ -42,27 +42,15 @@ public class UserSettings {
   }
 
   public void put(final String attr, final boolean val) {
-    if (this.booleanAttributes.containsKey(attr)) {
-      this.booleanAttributes.put(attr, val);
-    } else {
-      throw new IllegalArgumentException(String.format("Setting with key %s not found", attr));
-    }
+    this.booleanAttributes.put(attr, val);
   }
 
   public void put(final String attr, final Number val) {
-    if (this.numericAttributes.containsKey(attr)) {
-      this.numericAttributes.put(attr, val);
-    } else {
-      throw new IllegalArgumentException(String.format("Setting with key %s not found", attr));
-    }
+    this.numericAttributes.put(attr, val);
   }
 
   public void put(final String attr, final String val) {
-    if (this.stringAttributes.containsKey(attr)) {
-      this.stringAttributes.put(attr, val);
-    } else {
-      throw new IllegalArgumentException(String.format("Setting with key %s not found", attr));
-    }
+    this.stringAttributes.put(attr, val);
   }
 
   public Long getId() {

@@ -2,6 +2,7 @@ package net.explorviz.shared.security.model.settings;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class DefaultSettings {
@@ -129,14 +130,21 @@ public class DefaultSettings {
     }
 
     // Remove all keys that are not in defaults
-    settings.getBooleanAttributes().keySet().stream().filter(e -> !booleanSettings.containsKey(e))
-        .forEach(e -> settings.getBooleanAttributes().remove(e));
+    final Set<String> unknownBoolKeys = settings.getBooleanAttributes().keySet().stream()
+        .filter(e -> !booleanSettings.containsKey(e)).collect(Collectors.toSet());
 
-    settings.getNumericAttributes().keySet().stream().filter(e -> !numericSettings.containsKey(e))
-        .forEach(e -> settings.getNumericAttributes().remove(e));
+    unknownBoolKeys.forEach(k -> settings.getBooleanAttributes().remove(k));
 
-    settings.getStringAttributes().keySet().stream().filter(e -> !stringSettings.containsKey(e))
-        .forEach(e -> settings.getStringAttributes().remove(e));
+    final Set<String> unkownNumKeys = settings.getNumericAttributes().keySet().stream()
+        .filter(e -> !numericSettings.containsKey(e)).collect(Collectors.toSet());
+
+    unkownNumKeys.forEach(k -> settings.getNumericAttributes().remove(k));
+
+    final Set<String> unkownStringkeys = settings.getStringAttributes().keySet().stream()
+        .filter(e -> !stringSettings.containsKey(e)).collect(Collectors.toSet());
+
+
+    unkownStringkeys.forEach(k -> settings.getStringAttributes().remove(k));
 
 
   }
