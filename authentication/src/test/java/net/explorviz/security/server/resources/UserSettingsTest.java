@@ -10,6 +10,7 @@ import net.explorviz.security.services.UserMongoCrudService;
 import net.explorviz.security.testutils.TestDatasourceFactory;
 import net.explorviz.shared.security.model.User;
 import net.explorviz.shared.security.model.settings.SettingDescriptor;
+import net.explorviz.shared.security.model.settings.UserSettings;
 import org.glassfish.hk2.api.ServiceLocator;
 import org.glassfish.hk2.utilities.ServiceLocatorUtilities;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
@@ -61,12 +62,13 @@ public class UserSettingsTest {
     this.userCrudService.saveNewEntity(u);
 
     final User u1 = this.userCrudService.getEntityById(u.getId()).orElse(null);
-    assertEquals(0.5, u1.getSettings().getNumericAttributes().get("appVizTransparencyIntensity"));
+    assertEquals(0.5, u1.getSettings().getNumericAttributes().get("appVizTransparencyIntensity"),
+        0.0001);
   }
 
 
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test(expected = IllegalStateException.class)
   public void testUnknownSetting() {
 
     final User u = new User("testuser");
@@ -74,19 +76,28 @@ public class UserSettingsTest {
 
 
     u.getSettings().put("unknownsetting", 0.5);
-    this.userCrudService.saveNewEntity(u);
+    u.getSettings().validate();
   }
 
 
   @Test
   public void testSettingsInfo() {
-    final SettingDescriptor<Number> info = this.settingsResource.settingsInfo("showFpsCounter");
+    final SettingDescriptor<Double> info = this.settingsResource.settingsInfo("showFpsCounter");
     assertEquals(false, info.getDefaultValue());
   }
 
   @Test(expected = NotFoundException.class)
   public void testUnknownSettingInfo() {
-    final SettingDescriptor<Number> info = this.settingsResource.settingsInfo("unknown");
+    final SettingDescriptor<Double> info = this.settingsResource.settingsInfo("unknown");
+  }
+
+
+  @Test(expected = IllegalStateException.class)
+  public void testNotInRange() {
+    final UserSettings u = new UserSettings();
+    // Must be between 0.1 and 0.5
+    u.getNumericAttributes().put("appVizTransparencyIntensity", 0.7);
+    u.validate();
   }
 
 }

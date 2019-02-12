@@ -6,9 +6,9 @@ import com.github.jasminb.jsonapi.annotations.Type;
 public class NumericSettingDescriptor extends SettingDescriptor<Double> {
 
 
-  private Number min = Long.MIN_VALUE;
+  private double min = Long.MIN_VALUE;
 
-  private Number max = Long.MAX_VALUE;
+  private double max = Long.MAX_VALUE;
 
 
 
@@ -18,19 +18,29 @@ public class NumericSettingDescriptor extends SettingDescriptor<Double> {
   }
 
 
+  /**
+   * Creates a new descriptor for a numeric (double) setting.
+   *
+   * @param id the id, which should resemble the name of the setting
+   * @param name the name of the setting
+   * @param description short description
+   * @param min the minimum value (inclusive), default is {@code Long.MIN_VALUE}
+   * @param max the maximum value (inclusive), default is {@code Long.MAX_VALUE}
+   * @param defaultValue
+   */
   public NumericSettingDescriptor(final String id, final String name, final String description,
-      final Number min, final Number max, final Double defaultValue) {
+      final double min, final double max, final Double defaultValue) {
     this(id, name, description, defaultValue);
     this.min = min;
     this.max = max;
   }
 
 
-  public Number getMin() {
+  public double getMin() {
     return this.min;
   }
 
-  public Number getMax() {
+  public double getMax() {
     return this.max;
   }
 

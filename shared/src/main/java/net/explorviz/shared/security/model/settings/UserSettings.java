@@ -6,13 +6,11 @@ import com.github.jasminb.jsonapi.LongIdHandler;
 import com.github.jasminb.jsonapi.annotations.Id;
 import com.github.jasminb.jsonapi.annotations.Type;
 import java.util.Map;
+import java.util.Map.Entry;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 /**
  * Model class for the user settings in the frontend.
- */
-/**
- * @author lotzk
  *
  */
 @Type("usersetting")
@@ -27,7 +25,7 @@ public class UserSettings {
 
   @JsonSerialize
   @JsonProperty("numericAttributes")
-  private final Map<String, Number> numericAttributes;
+  private final Map<String, Double> numericAttributes;
 
   @JsonSerialize
   @JsonProperty("stringAttributes")
@@ -45,7 +43,7 @@ public class UserSettings {
     this.booleanAttributes.put(attr, val);
   }
 
-  public void put(final String attr, final Number val) {
+  public void put(final String attr, final double val) {
     this.numericAttributes.put(attr, val);
   }
 
@@ -67,7 +65,7 @@ public class UserSettings {
     return this.booleanAttributes;
   }
 
-  public Map<String, Number> getNumericAttributes() {
+  public Map<String, Double> getNumericAttributes() {
     return this.numericAttributes;
   }
 
@@ -85,6 +83,22 @@ public class UserSettings {
         || !this.booleanAttributes.keySet().equals(DefaultSettings.booleanDefaults().keySet())
         || !this.stringAttributes.keySet().equals(DefaultSettings.stringDefaults().keySet())) {
       throw new IllegalStateException("Contains unknown settings");
+    }
+
+
+    // Check whether all numeric values are in range
+
+    for (final Entry<String, Double> e : this.numericAttributes.entrySet()) {
+      final double min = DefaultSettings.numericSettings().get(e.getKey()).getMin();
+      final double max = DefaultSettings.numericSettings().get(e.getKey()).getMax();
+      if (e.getValue() < min) {
+        throw new IllegalStateException(
+            String.format("Value of %s is smaller then minumum of %f", e.getKey(), min));
+      }
+      if (e.getValue() > max) {
+        throw new IllegalStateException(
+            String.format("Value of %s is greater then minumum of %f", e.getKey(), max));
+      }
     }
 
     if (this.numericAttributes.containsKey("appVizCommArrowSize")

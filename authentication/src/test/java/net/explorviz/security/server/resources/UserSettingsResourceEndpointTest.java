@@ -128,6 +128,8 @@ public class UserSettingsResourceEndpointTest extends JerseyTest {
         .get(String.class);
   }
 
+
+
   @Test
   @Ignore // User always knows its own settings
   public void getOwnSettings() {

@@ -276,5 +276,22 @@ public class UserResourceTest {
   }
 
 
+  @Test(expected = BadRequestException.class)
+  public void testUnknownSettings() {
+    final User u = new User("testuser");
+    u.setPassword("password");
+    u.getSettings().getBooleanAttributes().put("UnknownKey", false);
+    this.userResource.newUser(u);
+  }
+
+
+  @Test(expected = BadRequestException.class)
+  public void testSettingsNotInRange() {
+    final User u = new User("testuser");
+    u.setPassword("password");
+    u.getSettings().getNumericAttributes().put("appVizTransparencyIntensity", 0.7);
+    this.userResource.newUser(u);
+  }
+
 
 }

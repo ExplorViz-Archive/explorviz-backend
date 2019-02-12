@@ -167,6 +167,47 @@ public class UserResourceEndpointTest extends JerseyTest {
 
 
   @Test
+  public void createUserWithUnknownSettings() throws DocumentSerializationException {
+    final User user = new User("someuser");
+    user.setPassword("abc");
+    user.getSettings().getBooleanAttributes().put("unknownkey", false);
+    // Marshall to json api object
+    final JSONAPIDocument<User> userDoc = new JSONAPIDocument<>(user);
+    final byte[] converted = this.jsonApiConverter.writeDocument(userDoc);
+
+    final String s = new String(converted);
+
+    // Send request
+    final Entity<byte[]> userEntity = Entity.entity(converted, MEDIA_TYPE);
+    final Response response = this.target(BASE_URL).request()
+        .header(HttpHeader.AUTHORIZATION.asString(), this.adminToken).post(userEntity);
+
+    assertEquals(HttpStatus.BAD_REQUEST_400, response.getStatus());
+
+  }
+
+  @Test
+  public void createUserWithInvalidettingsRange() throws DocumentSerializationException {
+    final User user = new User("someuser");
+    user.setPassword("abc");
+    user.getSettings().getNumericAttributes().put("appVizTransparencyIntensity", 1.0);
+    // Marshall to json api object
+    final JSONAPIDocument<User> userDoc = new JSONAPIDocument<>(user);
+    final byte[] converted = this.jsonApiConverter.writeDocument(userDoc);
+
+    final String s = new String(converted);
+
+    // Send request
+    final Entity<byte[]> userEntity = Entity.entity(converted, MEDIA_TYPE);
+    final Response response = this.target(BASE_URL).request()
+        .header(HttpHeader.AUTHORIZATION.asString(), this.adminToken).post(userEntity);
+
+    assertEquals(HttpStatus.BAD_REQUEST_400, response.getStatus());
+
+  }
+
+
+  @Test
   public void createUserAsNormie() throws DocumentSerializationException {
     final User u = new User(null, "newuser", "pw", null);
 

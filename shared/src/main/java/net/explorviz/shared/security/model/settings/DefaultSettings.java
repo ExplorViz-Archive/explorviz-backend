@@ -35,7 +35,7 @@ public class DefaultSettings {
         new NumericSettingDescriptor("appVizCommArrowSize", "AppViz Arrow Size", "", 1.0));
     numericSettings.put("appVizTransparencyIntensity",
         new NumericSettingDescriptor("appVizTransparencyIntensity", "AppViz Transparency Intensity",
-            "Intesity of the transparency effect", 0.5, 0.1, 0.1));
+            "Intesity of the transparency effect", 0.1, 0.5, 0.1));
 
   }
 
@@ -79,7 +79,7 @@ public class DefaultSettings {
    *
    * @return the default numeric settings.
    */
-  public static Map<String, Number> numericDefaults() {
+  public static Map<String, Double> numericDefaults() {
 
     return numericSettings.entrySet().stream()
         .collect(Collectors.toMap(e -> e.getKey(), e -> e.getValue().getDefaultValue()));
@@ -109,7 +109,7 @@ public class DefaultSettings {
 
     final Map<String, Boolean> defaultBools = booleanDefaults();
     final Map<String, String> defaultStrings = stringDefaults();
-    final Map<String, Number> defaultNum = numericDefaults();
+    final Map<String, Double> defaultNum = numericDefaults();
 
     for (final String key : defaultBools.keySet()) {
       if (settings.getBooleanAttributes().get(key) == null) {
