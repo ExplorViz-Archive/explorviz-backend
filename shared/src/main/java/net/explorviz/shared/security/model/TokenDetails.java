@@ -13,6 +13,7 @@ public final class TokenDetails {
   private final String id;
   private final String username;
   private final List<Role> roles;
+  private final Long userid;
   private final ZonedDateTime issuedDate;
   private final ZonedDateTime expirationDate;
   private final int refreshCount;
@@ -20,7 +21,7 @@ public final class TokenDetails {
 
   private TokenDetails(final String id, final String username, final List<Role> roles,
       final ZonedDateTime issuedDate, final ZonedDateTime expirationDate, final int refreshCount,
-      final int refreshLimit) {
+      final int refreshLimit, final Long userid) {
     this.id = id;
     this.username = username;
     this.roles = roles;
@@ -28,6 +29,7 @@ public final class TokenDetails {
     this.expirationDate = expirationDate;
     this.refreshCount = refreshCount;
     this.refreshLimit = refreshLimit;
+    this.userid = userid;
   }
 
   public String getId() {
@@ -58,6 +60,11 @@ public final class TokenDetails {
     return this.refreshLimit;
   }
 
+
+  public long getUserId() {
+    return this.userid;
+  }
+
   /**
    * Check if the authentication token is eligible for refreshment.
    *
@@ -73,6 +80,7 @@ public final class TokenDetails {
   public static class Builder {
 
     private String id;
+    private Long userid;
     private String username;
     private List<Role> roles;
     private ZonedDateTime issuedDate;
@@ -115,10 +123,15 @@ public final class TokenDetails {
       return this;
     }
 
+    public Builder withUserId(final Long userid) {
+      this.userid = userid;
+      return this;
+    }
+
     public TokenDetails build() {
       return new TokenDetails(this.id, this.username, this.roles, this.issuedDate,
           this.expirationDate, // NOPMD
-          this.refreshCount, this.refreshLimit);
+          this.refreshCount, this.refreshLimit, this.userid);
     }
   }
 }

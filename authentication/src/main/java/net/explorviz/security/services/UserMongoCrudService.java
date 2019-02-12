@@ -1,7 +1,6 @@
 package net.explorviz.security.services;
 
 import com.mongodb.MongoException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -123,8 +122,6 @@ public class UserMongoCrudService implements MongoCrudService<User> {
     // TODO find smarter (MongoDB based) way to check for roles
 
     final Role role = this.datastore.createQuery(Role.class).filter("descriptor", roleName).get();
-
-    final List<User> listToBeReturned = new ArrayList<>();
 
     List<User> userList = this.datastore.createQuery(User.class).asList();
 

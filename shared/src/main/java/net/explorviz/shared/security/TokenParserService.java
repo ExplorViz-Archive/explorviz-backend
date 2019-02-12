@@ -67,6 +67,7 @@ public class TokenParserService {
           .withIssuedDate(this.extractIssuedDateFromClaims(claims))
           .withExpirationDate(this.extractExpirationDateFromClaims(claims))
           .withRefreshCount(this.extractRefreshCountFromClaims(claims))
+          .withUserId(this.extractUserId(claims))
           .withRefreshLimit(this.extractRefreshLimitFromClaims(claims)).build();
 
     } catch (UnsupportedJwtException | MalformedJwtException | IllegalArgumentException e) {
@@ -98,6 +99,11 @@ public class TokenParserService {
    */
   private String extractUsernameFromClaims(@NotNull final Claims claims) {
     return claims.getSubject();
+  }
+
+
+  private Long extractUserId(@NotNull final Claims claims) {
+    return claims.get("userid", Long.class);
   }
 
   /**

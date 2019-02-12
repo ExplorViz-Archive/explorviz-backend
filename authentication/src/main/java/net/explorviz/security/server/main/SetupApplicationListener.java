@@ -8,8 +8,8 @@ import net.explorviz.security.services.RoleService;
 import net.explorviz.security.util.PasswordStorage;
 import net.explorviz.security.util.PasswordStorage.CannotPerformOperationException;
 import net.explorviz.shared.security.model.User;
-import net.explorviz.shared.security.model.UserSettings;
 import net.explorviz.shared.security.model.roles.Role;
+import net.explorviz.shared.security.model.settings.UserSettings;
 import org.glassfish.jersey.server.monitoring.ApplicationEvent;
 import org.glassfish.jersey.server.monitoring.ApplicationEvent.Type;
 import org.glassfish.jersey.server.monitoring.ApplicationEventListener;
@@ -76,7 +76,10 @@ public class SetupApplicationListener implements ApplicationEventListener {
 
     final UserSettings settings = new UserSettings();
 
-    this.datastore.save(new User(id, ADMIN_NAME, pw, Arrays.asList(roleList.get(0)), settings));
+    if (this.datastore.get(User.class, id) == null) {
+      this.datastore.save(new User(id, ADMIN_NAME, pw, Arrays.asList(roleList.get(0)), settings));
+    }
+
   }
 
 }

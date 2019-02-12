@@ -67,7 +67,8 @@ public class JsonApiProvider<T> implements MessageBodyReader<T>, MessageBodyWrit
       entityStream.write(this.converter.writeDocument(document));
     } catch (final DocumentSerializationException e) {
       if (LOGGER.isErrorEnabled()) {
-        LOGGER.error("Error when serializing object of type" + t.getClass() + ": ", e);
+        LOGGER.error("Error when serializing object of type" + t.getClass() + ": ",
+            e.fillInStackTrace());
       }
     } finally {
       entityStream.flush();

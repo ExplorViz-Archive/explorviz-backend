@@ -4,8 +4,11 @@ import com.github.jasminb.jsonapi.DeserializationFeature;
 import com.github.jasminb.jsonapi.ResourceConverter;
 import com.github.jasminb.jsonapi.SerializationFeature;
 import net.explorviz.shared.security.model.User;
-import net.explorviz.shared.security.model.UserSettings;
 import net.explorviz.shared.security.model.roles.Role;
+import net.explorviz.shared.security.model.settings.BooleanSettingDescriptor;
+import net.explorviz.shared.security.model.settings.NumericSettingDescriptor;
+import net.explorviz.shared.security.model.settings.StringSettingDescriptor;
+import net.explorviz.shared.security.model.settings.UserSettings;
 import org.glassfish.hk2.api.Factory;
 
 /**
@@ -23,6 +26,11 @@ public class ResourceConverterFactory implements Factory<ResourceConverter> {
     resourceConverter.registerType(User.class);
     resourceConverter.registerType(Role.class);
     resourceConverter.registerType(UserSettings.class);
+    resourceConverter.registerType(BooleanSettingDescriptor.class);
+    resourceConverter.registerType(NumericSettingDescriptor.class);
+    resourceConverter.isRegisteredType(StringSettingDescriptor.class);
+    // resourceConverter.registerType(SettingDescriptor.class);
+
 
     this.converter = resourceConverter;
     this.converter.enableSerializationOption(SerializationFeature.INCLUDE_RELATIONSHIP_ATTRIBUTES);
