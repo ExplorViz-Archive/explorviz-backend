@@ -145,8 +145,6 @@ public class UserResourceEndpointTest extends JerseyTest {
     final JSONAPIDocument<User> userDoc = new JSONAPIDocument<>(u);
     final byte[] converted = this.jsonApiConverter.writeDocument(userDoc);
 
-    final String s = new String(converted);
-
     // Send request
     final Entity<byte[]> userEntity = Entity.entity(converted, MEDIA_TYPE);
     final Response response = this.target(BASE_URL).request()
@@ -175,8 +173,6 @@ public class UserResourceEndpointTest extends JerseyTest {
     final JSONAPIDocument<User> userDoc = new JSONAPIDocument<>(user);
     final byte[] converted = this.jsonApiConverter.writeDocument(userDoc);
 
-    final String s = new String(converted);
-
     // Send request
     final Entity<byte[]> userEntity = Entity.entity(converted, MEDIA_TYPE);
     final Response response = this.target(BASE_URL).request()
@@ -194,8 +190,6 @@ public class UserResourceEndpointTest extends JerseyTest {
     // Marshall to json api object
     final JSONAPIDocument<User> userDoc = new JSONAPIDocument<>(user);
     final byte[] converted = this.jsonApiConverter.writeDocument(userDoc);
-
-    final String s = new String(converted);
 
     // Send request
     final Entity<byte[]> userEntity = Entity.entity(converted, MEDIA_TYPE);
@@ -307,7 +301,6 @@ public class UserResourceEndpointTest extends JerseyTest {
     this.userCrudService.saveNewEntity(u);
 
     final long id = u.getId();
-    System.out.println(id);
 
     final byte[] rawResponseBody = this.target("v1/users/" + toIntExact(id)).request()
         .header(HttpHeader.AUTHORIZATION.asString(), this.adminToken).get(byte[].class);

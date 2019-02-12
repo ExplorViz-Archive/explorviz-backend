@@ -132,7 +132,7 @@ public class UserSettingsResourceEndpointTest extends JerseyTest {
 
   @Test
   @Ignore // User always knows its own settings
-  public void getOwnSettings() {
+  public void testOwnSettings() {
 
     final User user = new User("someuser");
     user.setPassword("abc");
@@ -140,8 +140,6 @@ public class UserSettingsResourceEndpointTest extends JerseyTest {
     this.userService.saveNewEntity(user);
 
     final String token = AUTH_METHOD + " " + this.tokenService.issueNewToken(user);
-
-    System.out.println(this.tokenService.parseToken(token.substring(7)).getUserId());
 
     final String path = URL_PATH + user.getId();
 

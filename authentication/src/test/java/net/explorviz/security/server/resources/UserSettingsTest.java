@@ -1,6 +1,7 @@
 package net.explorviz.security.server.resources;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -82,13 +83,13 @@ public class UserSettingsTest {
 
   @Test
   public void testSettingsInfo() {
-    final SettingDescriptor<Double> info = this.settingsResource.settingsInfo("showFpsCounter");
-    assertEquals(false, info.getDefaultValue());
+    final SettingDescriptor<Boolean> info = this.settingsResource.settingsInfo("showFpsCounter");
+    assertFalse("Unmatching descriptor", info.getDefaultValue());
   }
 
   @Test(expected = NotFoundException.class)
   public void testUnknownSettingInfo() {
-    final SettingDescriptor<Double> info = this.settingsResource.settingsInfo("unknown");
+    this.settingsResource.settingsInfo("unknown");
   }
 
 

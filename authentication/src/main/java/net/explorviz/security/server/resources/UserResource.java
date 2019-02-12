@@ -4,13 +4,11 @@ import com.mongodb.DuplicateKeyException;
 import com.mongodb.MongoException;
 import java.util.ArrayList;
 import java.util.List;
-import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.ws.rs.BadRequestException;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
-import javax.ws.rs.ForbiddenException;
 import javax.ws.rs.GET;
 import javax.ws.rs.InternalServerErrorException;
 import javax.ws.rs.NotFoundException;
@@ -20,19 +18,15 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import net.explorviz.security.services.RoleService;
 import net.explorviz.security.services.TokenService;
 import net.explorviz.security.services.UserMongoCrudService;
 import net.explorviz.security.util.PasswordStorage;
 import net.explorviz.security.util.PasswordStorage.CannotPerformOperationException;
-import net.explorviz.shared.security.model.TokenDetails;
 import net.explorviz.shared.security.model.User;
 import net.explorviz.shared.security.model.roles.Role;
 import net.explorviz.shared.security.model.settings.DefaultSettings;
-import net.explorviz.shared.security.model.settings.UserSettings;
 import org.eclipse.jetty.http.HttpStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -189,7 +183,7 @@ public class UserResource {
     }
 
 
-    if (updatedUser.getId() != null || updatedUser.getId() != id) { // NOPMD
+    if (updatedUser.getId() != null && !updatedUser.getId().equals(id)) { // NOPMD
       LOGGER.info("Won't update id");
     }
 
@@ -332,41 +326,5 @@ public class UserResource {
     return Response.status(HttpStatus.NO_CONTENT_204).build();
   }
 
-  /**
-   * Returns the settings of a user with a given id.
-   *
-   * Currently unused.
-   *
-   * @param id the user id
-   * @return the {@link UserSettings}
-   */
-  // @GET
-  @Path("settings/{id}")
-  @PermitAll
-  @Produces(MEDIA_TYPE)
-  public UserSettings getSettingsForUser(@PathParam("id") final long id,
-      @Context final HttpHeaders headers) {
-
-
-    final User u = this.userCrudService.getEntityById(id)
-        .orElseThrow(() -> new NotFoundException("User does not exist"));
-
-
-    final TokenDetails details = this.tokenService
-        .parseToken(headers.getHeaderString(HttpHeaders.AUTHORIZATION).substring(7));
-
-
-    if (details.getUserId() != id && !details.getRoles().contains(ADMIN_ROLE)) {
-      throw new ForbiddenException();
-    }
-
-    final UserSettings settings = u.getSettings();
-
-    DefaultSettings.makeConform(settings);
-
-
-    return settings;
-
-  }
 
 }
