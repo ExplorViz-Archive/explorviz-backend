@@ -27,11 +27,15 @@ buildscript {
 
 repositories {
 	maven {url 'https://oss.sonatype.org/content/repositories/snapshots'}
+	maven { url 'https://jitpack.io' }
 }
 
 dependencies {
   // Any .jar in libs
   implementation fileTree(dir: 'libs', include: '*.jar')
+  
+  // Common discovery files (e.g. model classes)
+  implementation 'com.github.explorviz.explorviz-backend-shared:landscape-model:master-SNAPSHOT'
   
   implementation project(':shared')
   

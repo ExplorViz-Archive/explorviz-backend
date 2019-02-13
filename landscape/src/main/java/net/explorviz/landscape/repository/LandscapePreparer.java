@@ -1,12 +1,13 @@
 package net.explorviz.landscape.repository;
 
-import net.explorviz.landscape.model.application.Application;
-import net.explorviz.landscape.model.application.ApplicationCommunication;
-import net.explorviz.landscape.model.application.Component;
-import net.explorviz.landscape.model.landscape.Landscape;
-import net.explorviz.landscape.model.landscape.Node;
-import net.explorviz.landscape.model.landscape.NodeGroup;
-import net.explorviz.landscape.model.landscape.System;
+import net.explorviz.shared.landscape.model.application.Application;
+import net.explorviz.shared.landscape.model.application.ApplicationCommunication;
+import net.explorviz.shared.landscape.model.application.Component;
+import net.explorviz.shared.landscape.model.landscape.Landscape;
+import net.explorviz.shared.landscape.model.landscape.Node;
+import net.explorviz.shared.landscape.model.landscape.NodeGroup;
+import net.explorviz.shared.landscape.model.landscape.System;
+
 
 public final class LandscapePreparer {
 

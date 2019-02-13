@@ -8,7 +8,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import net.explorviz.landscape.api.ExtensionApiImpl;
-import net.explorviz.landscape.model.store.Timestamp;
+import net.explorviz.shared.landscape.model.store.Timestamp;
 
 /**
  * REST resource providing {@link net.explorviz.landscape.model.store.Timestamp} data for the
@@ -43,7 +43,7 @@ public class TimestampResource {
 
   /**
    * Returns a List of all uploaded {@link net.explorviz.landscape.model.store.Timestamp}
-   * 
+   *
    * @return a list of all uploaded timestamps
    */
   @GET

@@ -1,18 +1,19 @@
 package net.explorviz.landscape.server.providers;
 
-import net.explorviz.landscape.model.application.AggregatedClazzCommunication;
-import net.explorviz.landscape.model.application.Application;
-import net.explorviz.landscape.model.application.ApplicationCommunication;
-import net.explorviz.landscape.model.application.Clazz;
-import net.explorviz.landscape.model.application.ClazzCommunication;
-import net.explorviz.landscape.model.application.Component;
-import net.explorviz.landscape.model.application.DatabaseQuery;
-import net.explorviz.landscape.model.application.Trace;
-import net.explorviz.landscape.model.application.TraceStep;
-import net.explorviz.landscape.model.landscape.Landscape;
-import net.explorviz.landscape.model.landscape.Node;
-import net.explorviz.landscape.model.landscape.NodeGroup;
-import net.explorviz.landscape.model.store.Timestamp;
+import net.explorviz.shared.landscape.model.application.AggregatedClazzCommunication;
+import net.explorviz.shared.landscape.model.application.Application;
+import net.explorviz.shared.landscape.model.application.ApplicationCommunication;
+import net.explorviz.shared.landscape.model.application.Clazz;
+import net.explorviz.shared.landscape.model.application.ClazzCommunication;
+import net.explorviz.shared.landscape.model.application.Component;
+import net.explorviz.shared.landscape.model.application.DatabaseQuery;
+import net.explorviz.shared.landscape.model.application.Trace;
+import net.explorviz.shared.landscape.model.application.TraceStep;
+import net.explorviz.shared.landscape.model.landscape.Landscape;
+import net.explorviz.shared.landscape.model.landscape.Node;
+import net.explorviz.shared.landscape.model.landscape.NodeGroup;
+import net.explorviz.shared.landscape.model.landscape.System;
+import net.explorviz.shared.landscape.model.store.Timestamp;
 import net.explorviz.shared.security.model.User;
 
 /**

@@ -4,8 +4,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
-import net.explorviz.landscape.model.landscape.Landscape;
-import net.explorviz.landscape.model.store.Timestamp;
+import net.explorviz.shared.landscape.model.landscape.Landscape;
+import net.explorviz.shared.landscape.model.store.Timestamp;
 
 /**
  * Interface for providing necessary information for the extension API.

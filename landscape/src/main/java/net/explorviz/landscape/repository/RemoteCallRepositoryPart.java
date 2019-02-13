@@ -9,12 +9,13 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.TimeUnit;
-import net.explorviz.landscape.model.application.Application;
-import net.explorviz.landscape.model.application.ApplicationCommunication;
-import net.explorviz.landscape.model.application.Clazz;
-import net.explorviz.landscape.model.landscape.Landscape;
-import net.explorviz.landscape.model.landscape.Node;
 import net.explorviz.landscape.repository.helper.RemoteRecordBuffer;
+import net.explorviz.shared.landscape.model.application.Application;
+import net.explorviz.shared.landscape.model.application.ApplicationCommunication;
+import net.explorviz.shared.landscape.model.application.Clazz;
+import net.explorviz.shared.landscape.model.landscape.Landscape;
+import net.explorviz.shared.landscape.model.landscape.Node;
+
 
 public class RemoteCallRepositoryPart {
 
@@ -26,7 +27,7 @@ public class RemoteCallRepositoryPart {
       new HashMap<>();
 
   protected void checkForTimedoutRemoteCalls() {
-    final long currentTime = System.nanoTime();
+    final long currentTime = java.lang.System.nanoTime(); // NOPMD
 
     final Iterator<Entry<BeforeReceivedRemoteCallRecord, RemoteRecordBuffer>> receivedIterator =
         this.receivedRemoteCallRecordCache.entrySet().iterator();

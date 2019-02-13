@@ -11,8 +11,8 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.sse.Sse;
 import net.explorviz.landscape.api.ExtensionApiImpl;
-import net.explorviz.landscape.model.landscape.Landscape;
 import net.explorviz.landscape.server.main.Configuration;
+import net.explorviz.shared.landscape.model.landscape.Landscape;
 
 /**
  * Resource providing {@link Landscape} data for the frontend.
