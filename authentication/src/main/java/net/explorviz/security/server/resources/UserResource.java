@@ -20,11 +20,13 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import net.explorviz.security.services.RoleService;
+import net.explorviz.security.services.TokenService;
 import net.explorviz.security.services.UserMongoCrudService;
 import net.explorviz.security.util.PasswordStorage;
 import net.explorviz.security.util.PasswordStorage.CannotPerformOperationException;
 import net.explorviz.shared.security.model.User;
 import net.explorviz.shared.security.model.roles.Role;
+import net.explorviz.shared.security.model.settings.DefaultSettings;
 import org.eclipse.jetty.http.HttpStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,6 +55,9 @@ public class UserResource {
 
   @Inject
   private RoleService roleService;
+
+  @Inject
+  private TokenService tokenService;
 
   // CHECKSTYLE.OFF: Cyclomatic
 
@@ -96,6 +101,12 @@ public class UserResource {
       throw new InternalServerErrorException(e);
     }
 
+    try {
+      user.getSettings().validate();
+
+    } catch (final IllegalStateException e) {
+      throw new BadRequestException(e.getMessage());
+    }
 
     try {
       return this.userCrudService.saveNewEntity(user)
@@ -171,7 +182,7 @@ public class UserResource {
     }
 
 
-    if (updatedUser.getId() != null || updatedUser.getId() != id) { // NOPMD
+    if (updatedUser.getId() != null && !updatedUser.getId().equals(id)) { // NOPMD
       LOGGER.info("Won't update id");
     }
 
@@ -207,7 +218,12 @@ public class UserResource {
     }
 
     if (updatedUser.getSettings() != null) {
-      updatedUser.getSettings().validate();
+
+      try {
+        updatedUser.getSettings().validate();
+      } catch (final IllegalStateException e) {
+        throw new BadRequestException(e.getMessage());
+      }
       targetUser.setSettings(updatedUser.getSettings());
     }
 
@@ -279,6 +295,11 @@ public class UserResource {
     }
 
 
+    // Cleanup settings
+    DefaultSettings.makeConform(foundUser.getSettings());
+    this.userCrudService.updateEntity(foundUser);
+
+
     return foundUser;
 
   }
@@ -304,5 +325,6 @@ public class UserResource {
 
     return Response.status(HttpStatus.NO_CONTENT_204).build();
   }
+
 
 }

@@ -20,8 +20,8 @@ import net.explorviz.security.services.TokenService;
 import net.explorviz.security.services.UserMongoCrudService;
 import net.explorviz.security.testutils.TestDatasourceFactory;
 import net.explorviz.shared.security.model.User;
-import net.explorviz.shared.security.model.UserSettings;
 import net.explorviz.shared.security.model.roles.Role;
+import net.explorviz.shared.security.model.settings.UserSettings;
 import org.eclipse.jetty.http.HttpHeader;
 import org.eclipse.jetty.http.HttpStatus;
 import org.glassfish.hk2.api.ServiceLocator;
@@ -145,8 +145,6 @@ public class UserResourceEndpointTest extends JerseyTest {
     final JSONAPIDocument<User> userDoc = new JSONAPIDocument<>(u);
     final byte[] converted = this.jsonApiConverter.writeDocument(userDoc);
 
-    final String s = new String(converted);
-
     // Send request
     final Entity<byte[]> userEntity = Entity.entity(converted, MEDIA_TYPE);
     final Response response = this.target(BASE_URL).request()
@@ -163,6 +161,43 @@ public class UserResourceEndpointTest extends JerseyTest {
     assertEquals(u.getRoles(), respuser.getRoles());
     // Id must be set
     assertTrue(respuser.getId() > 0);
+  }
+
+
+  @Test
+  public void createUserWithUnknownSettings() throws DocumentSerializationException {
+    final User user = new User("someuser");
+    user.setPassword("abc");
+    user.getSettings().getBooleanAttributes().put("unknownkey", false);
+    // Marshall to json api object
+    final JSONAPIDocument<User> userDoc = new JSONAPIDocument<>(user);
+    final byte[] converted = this.jsonApiConverter.writeDocument(userDoc);
+
+    // Send request
+    final Entity<byte[]> userEntity = Entity.entity(converted, MEDIA_TYPE);
+    final Response response = this.target(BASE_URL).request()
+        .header(HttpHeader.AUTHORIZATION.asString(), this.adminToken).post(userEntity);
+
+    assertEquals(HttpStatus.BAD_REQUEST_400, response.getStatus());
+
+  }
+
+  @Test
+  public void createUserWithInvalidettingsRange() throws DocumentSerializationException {
+    final User user = new User("someuser");
+    user.setPassword("abc");
+    user.getSettings().getNumericAttributes().put("appVizTransparencyIntensity", 1.0);
+    // Marshall to json api object
+    final JSONAPIDocument<User> userDoc = new JSONAPIDocument<>(user);
+    final byte[] converted = this.jsonApiConverter.writeDocument(userDoc);
+
+    // Send request
+    final Entity<byte[]> userEntity = Entity.entity(converted, MEDIA_TYPE);
+    final Response response = this.target(BASE_URL).request()
+        .header(HttpHeader.AUTHORIZATION.asString(), this.adminToken).post(userEntity);
+
+    assertEquals(HttpStatus.BAD_REQUEST_400, response.getStatus());
+
   }
 
 
@@ -266,7 +301,6 @@ public class UserResourceEndpointTest extends JerseyTest {
     this.userCrudService.saveNewEntity(u);
 
     final long id = u.getId();
-    System.out.println(id);
 
     final byte[] rawResponseBody = this.target("v1/users/" + toIntExact(id)).request()
         .header(HttpHeader.AUTHORIZATION.asString(), this.adminToken).get(byte[].class);

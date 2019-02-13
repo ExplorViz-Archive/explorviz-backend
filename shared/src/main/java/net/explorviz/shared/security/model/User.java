@@ -8,6 +8,7 @@ import com.github.jasminb.jsonapi.annotations.Type;
 import java.util.ArrayList;
 import java.util.List;
 import net.explorviz.shared.security.model.roles.Role;
+import net.explorviz.shared.security.model.settings.UserSettings;
 import xyz.morphia.annotations.Entity;
 import xyz.morphia.annotations.Id;
 import xyz.morphia.annotations.IndexOptions;
