@@ -9,11 +9,6 @@ net.explorviz.kiekeradapter.configuration.teetime
 net.explorviz.kiekeradapter.filter.teetime
 net.explorviz.kiekeradapter.main
 net.explorviz.landscape.api
-net.explorviz.landscape.model.application
-net.explorviz.landscape.model.helper
-net.explorviz.landscape.model.landscape
-net.explorviz.landscape.model.store
-net.explorviz.landscape.model.store.helper
 net.explorviz.landscape.repository
 net.explorviz.landscape.repository.helper
 net.explorviz.landscape.server.exceptions.mapper
