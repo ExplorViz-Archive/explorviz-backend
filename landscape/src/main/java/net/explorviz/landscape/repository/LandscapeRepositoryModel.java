@@ -10,7 +10,7 @@ import javax.inject.Singleton;
 import net.explorviz.landscape.repository.helper.DummyLandscapeHelper;
 import net.explorviz.landscape.server.helper.LandscapeBroadcastService;
 import net.explorviz.landscape.server.main.Configuration;
-import net.explorviz.shared.annotations.Config;
+import net.explorviz.shared.config.annotations.Config;
 import net.explorviz.shared.landscape.model.application.AggregatedClazzCommunication;
 import net.explorviz.shared.landscape.model.application.Application;
 import net.explorviz.shared.landscape.model.application.ApplicationCommunication;

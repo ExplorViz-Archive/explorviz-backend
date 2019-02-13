@@ -11,7 +11,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import net.explorviz.landscape.server.helper.FileSystemHelper;
 import net.explorviz.landscape.server.main.Configuration;
-import net.explorviz.shared.annotations.Config;
+import net.explorviz.shared.config.annotations.Config;
 import net.explorviz.shared.landscape.model.landscape.Landscape;
 import net.explorviz.shared.landscape.model.store.Timestamp;
 import org.jvnet.hk2.annotations.Service;

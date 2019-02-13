@@ -6,9 +6,9 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicLong;
 import javax.inject.Inject;
-import net.explorviz.discovery.model.Agent;
-import net.explorviz.discovery.model.Procezz;
 import net.explorviz.discovery.server.services.BroadcastService;
+import net.explorviz.shared.discovery.model.Agent;
+import net.explorviz.shared.discovery.model.Procezz;
 
 public class AgentRepository {
 

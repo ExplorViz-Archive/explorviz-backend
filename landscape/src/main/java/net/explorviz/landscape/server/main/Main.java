@@ -1,6 +1,6 @@
 package net.explorviz.landscape.server.main;
 
-import net.explorviz.shared.server.helper.PropertyHelper;
+import net.explorviz.shared.config.helper.PropertyHelper;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;

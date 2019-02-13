@@ -9,7 +9,6 @@ def footerText = '<span>Copyright 2013 - 2019</span> by the <a href="https://www
 
 // BEGIN aggregated Javadoc in multiproject Gradle build
 def exportedProjects= [
-		':shared', 
 		':landscape',
 		':kiekeradapter',
 		':authentication',
@@ -82,6 +81,7 @@ subprojects {
     // Order of declaration determines how Gradle will check for dependencies at runtime. 
     jcenter()
     mavenCentral()
+    maven { url 'https://jitpack.io' }
   }
     
   dependencies {
@@ -89,7 +89,7 @@ subprojects {
 	// SL4J
 	implementation group: 'org.slf4j', name: 'slf4j-simple', version: '1.6.1'
     
-    if (project.name == 'authentication' || project.name == 'landscape' || project.name == 'shared' || project.name == 'discovery') {
+    if (project.name == 'authentication' || project.name == 'landscape' || project.name == 'discovery') {
     	// subprojects, which are supposed to be a JAX-RS-based microservice
     
     	// Jersey and Servlet

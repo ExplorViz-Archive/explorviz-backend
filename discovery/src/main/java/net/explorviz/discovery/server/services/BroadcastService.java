@@ -8,7 +8,7 @@ import javax.ws.rs.sse.OutboundSseEvent;
 import javax.ws.rs.sse.Sse;
 import javax.ws.rs.sse.SseBroadcaster;
 import javax.ws.rs.sse.SseEventSink;
-import net.explorviz.discovery.model.Agent;
+import net.explorviz.shared.discovery.model.Agent;
 import org.jvnet.hk2.annotations.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

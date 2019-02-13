@@ -3,7 +3,7 @@ package net.explorviz.landscape.server.main;
 import javax.inject.Inject;
 import javax.servlet.annotation.WebListener;
 import net.explorviz.landscape.repository.LandscapeExchangeService;
-import net.explorviz.shared.annotations.Config;
+import net.explorviz.shared.config.annotations.Config;
 import org.glassfish.jersey.server.monitoring.ApplicationEvent;
 import org.glassfish.jersey.server.monitoring.ApplicationEvent.Type;
 import org.glassfish.jersey.server.monitoring.ApplicationEventListener;

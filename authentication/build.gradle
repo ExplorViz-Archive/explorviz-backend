@@ -14,7 +14,14 @@ buildscript {
 }
 
 dependencies {
-  implementation project(':shared')
+	// ExplorViz user matters
+  	implementation 'com.github.explorviz.explorviz-backend-shared:user:master-SNAPSHOT'
+
+	// ExplorViz security filters
+  	implementation 'com.github.explorviz.explorviz-backend-shared:security:master-SNAPSHOT'
+  	
+  	// ExplorViz common exception handling
+  	implementation 'com.github.explorviz.explorviz-backend-shared:exception-handling:master-SNAPSHOT'
 }
 
 assemble.dependsOn shadowJar

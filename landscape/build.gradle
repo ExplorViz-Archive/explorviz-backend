@@ -27,17 +27,23 @@ buildscript {
 
 repositories {
 	maven {url 'https://oss.sonatype.org/content/repositories/snapshots'}
-	maven { url 'https://jitpack.io' }
 }
 
 dependencies {
   // Any .jar in libs
   implementation fileTree(dir: 'libs', include: '*.jar')
   
-  // Common discovery files (e.g. model classes)
+  // ExplorViz landscape model
   implementation 'com.github.explorviz.explorviz-backend-shared:landscape-model:master-SNAPSHOT'
   
-  implementation project(':shared')
+  // ExplorViz config matters
+  implementation 'com.github.explorviz.explorviz-backend-shared:config-injection:master-SNAPSHOT'
+  
+  // ExplorViz security matters
+  implementation 'com.github.explorviz.explorviz-backend-shared:security:master-SNAPSHOT'
+  
+  // ExplorViz exception matters
+  implementation 'com.github.explorviz.explorviz-backend-shared:exception-handling:master-SNAPSHOT'
   
   // SSE context for injection
   implementation group: 'org.glassfish.jersey.media', name: 'jersey-media-sse', version: '2.27'

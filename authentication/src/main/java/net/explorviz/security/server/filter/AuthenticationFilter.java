@@ -16,9 +16,9 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.ext.Provider;
 import net.explorviz.security.services.TokenService;
-import net.explorviz.shared.annotations.Secured;
 import net.explorviz.shared.security.AuthenticatedUserDetails;
 import net.explorviz.shared.security.TokenBasedSecurityContext;
+import net.explorviz.shared.security.annotations.Secured;
 import net.explorviz.shared.security.model.TokenDetails;
 import net.explorviz.shared.security.model.User;
 

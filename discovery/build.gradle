@@ -18,17 +18,18 @@ configurations.all {
   resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
 }
 
-repositories {
-  maven {
-    url 'https://jitpack.io'
-  }
-}
-
 dependencies {
-  implementation project(':shared') 
+  // ExplorViz Discovery Classes
+  implementation 'com.github.explorviz.explorviz-backend-shared:config-injection:master-SNAPSHOT'
 
   // ExplorViz Discovery Classes
-  implementation 'com.github.ExplorViz:explorviz-discovery-common:master-SNAPSHOT'
+  implementation 'com.github.explorviz.explorviz-backend-shared:discovery-common:master-SNAPSHOT'
+  
+  // ExplorViz Discovery Classes
+  implementation 'com.github.explorviz.explorviz-backend-shared:security:master-SNAPSHOT'
+  
+  // ExplorViz common exception handling
+  implementation 'com.github.explorviz.explorviz-backend-shared:exception-handling:master-SNAPSHOT'
   
   // SSE context for injection
   implementation group: 'org.glassfish.jersey.media', name: 'jersey-media-sse', version: '2.27'  

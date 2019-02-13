@@ -18,8 +18,8 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.ext.MessageBodyReader;
 import javax.ws.rs.ext.MessageBodyWriter;
 import javax.ws.rs.ext.Provider;
-import net.explorviz.discovery.model.Agent;
-import net.explorviz.discovery.model.Procezz;
+import net.explorviz.shared.discovery.model.Agent;
+import net.explorviz.shared.discovery.model.Procezz;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
