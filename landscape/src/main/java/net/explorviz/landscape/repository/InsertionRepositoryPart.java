@@ -165,7 +165,7 @@ public class InsertionRepositoryPart {
     while (timestampsOfEvents.contains(currentMillis)) {
       currentMillis++;
     }
-    landscape.getEvents().add(new Event(landscape, currentMillis, eventType, event));
+    landscape.getEvents().add(new Event(currentMillis, eventType, event));
   }
 
   private void addToErrors(final Landscape landscape, final String cause) {
@@ -178,7 +178,7 @@ public class InsertionRepositoryPart {
     while (timestampsOfExceptionEvents.contains(currentMillis)) {
       currentMillis++;
     }
-    landscape.getEvents().add(new Event(landscape, currentMillis, EEventType.EXCEPTION, cause));
+    landscape.getEvents().add(new Event(currentMillis, EEventType.EXCEPTION, cause));
   }
 
   protected Node seekOrCreateNode(final HostApplicationMetaDataRecord hostApplicationRecord,

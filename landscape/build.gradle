@@ -11,6 +11,11 @@ def loadProperties = {
     return properties
 }
 
+// Force new Dependencies on 
+configurations.all {
+    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+}
+
 buildscript {
 	repositories {
 		jcenter()	
