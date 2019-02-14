@@ -20,11 +20,12 @@ services:
   mongo-landscape:
     image: mongo
     container_name: explorviz-landscape-mongo
+    command: mongod --port 27018
+    ports:
+       - 27018:27018
     volumes:
        - explorviz-landscape-mongo-data:/data/db
        - explorviz-landscape-mongo-configdb:/data/configdb
-    ports:
-      - 27018:27017
 
 volumes:
   explorviz-auth-mongo-data:
