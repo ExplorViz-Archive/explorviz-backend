@@ -41,6 +41,9 @@ dependencies {
   // ExplorViz landscape model
   implementation 'com.github.explorviz.explorviz-backend-shared:landscape-model:master-SNAPSHOT'
   
+  // Use local project
+  //implementation project(':landscape-model')
+  
   // ExplorViz config matters
   implementation 'com.github.explorviz.explorviz-backend-shared:config-injection:master-SNAPSHOT'
   
