@@ -3,11 +3,13 @@ package net.explorviz.landscape.repository;
 import explorviz.live_trace_processing.reader.IPeriodicTimeSignalReceiver;
 import explorviz.live_trace_processing.reader.TimeSignalReader;
 import explorviz.live_trace_processing.record.IRecord;
-import java.io.FileNotFoundException;
 import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import net.explorviz.landscape.repository.helper.DummyLandscapeHelper;
+import net.explorviz.landscape.repository.persistence.FstHelper;
+import net.explorviz.landscape.repository.persistence.LandscapeRepository;
+import net.explorviz.landscape.repository.persistence.ReplayRepository;
 import net.explorviz.landscape.server.helper.LandscapeBroadcastService;
 import net.explorviz.landscape.server.main.Configuration;
 import net.explorviz.shared.config.annotations.Config;
@@ -18,6 +20,7 @@ import net.explorviz.shared.landscape.model.landscape.Landscape;
 import net.explorviz.shared.landscape.model.landscape.Node;
 import net.explorviz.shared.landscape.model.landscape.NodeGroup;
 import net.explorviz.shared.landscape.model.landscape.System;
+import net.explorviz.shared.landscape.model.store.Timestamp;
 import org.jvnet.hk2.annotations.Service;
 import org.nustaq.serialization.FSTConfiguration;
 import org.slf4j.Logger;
@@ -42,16 +45,26 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
   private boolean useDummyMode;
 
   @Inject
+  private LandscapeRepository<Landscape> landscapeRepository;
+
+  @Inject
+  private ReplayRepository<Landscape> replayRepository;
+
+  @Inject
   public LandscapeRepositoryModel(final LandscapeBroadcastService broadcastService) {
 
-    this.fstConf = this.initFSTConf();
+    this.fstConf = this.initFstConf();
 
     this.broadcastService = broadcastService;
 
     if (LOAD_LAST_LANDSCAPE_ON_LOAD) {
 
-      final Landscape readLandscape = RepositoryStorage
-          .readFromFile(java.lang.System.currentTimeMillis(), Configuration.LANDSCAPE_REPOSITORY);
+      // final Landscape readLandscape =
+      // RepositoryFileStorage.readFromFile(System.currentTimeMillis(),
+      // Configuration.LANDSCAPE_REPOSITORY);
+
+      final Landscape readLandscape =
+          this.landscapeRepository.getByTimestamp(java.lang.System.currentTimeMillis());
 
       this.internalLandscape = readLandscape;
     } else {
@@ -73,9 +86,6 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
         .start();
   }
 
-  public FSTConfiguration initFSTConf() {
-    return RepositoryStorage.createFSTConfiguration();
-  }
 
   public Landscape getLastPeriodLandscape() {
     synchronized (this.lastPeriodLandscape) {
@@ -83,15 +93,17 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
     }
   }
 
-  public Landscape getLandscape(final long timestamp, final String folderName)
-      throws FileNotFoundException {
-
-    final Landscape loadedLandscape = RepositoryStorage.readFromFile(timestamp, folderName);
-
-    return LandscapePreparer.prepareLandscape(loadedLandscape);
+  public Landscape getLandscape(final long timestamp) {
+    return LandscapePreparer.prepareLandscape(this.landscapeRepository.getByTimestamp(timestamp));
   }
 
+  public Landscape getReplay(final long timestamp) {
+    return LandscapePreparer.prepareLandscape(this.replayRepository.getByTimestamp(timestamp));
+  }
+
+
   static {
+    // TODO: Unused
     Configuration.DATABASE_NAMES.add("hsqldb");
     Configuration.DATABASE_NAMES.add("postgres");
     Configuration.DATABASE_NAMES.add("db2");
@@ -100,6 +112,11 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
     Configuration.DATABASE_NAMES.add("database");
     Configuration.DATABASE_NAMES.add("hypersql");
   }
+
+  public FSTConfiguration initFstConf() {
+    return FstHelper.createFstConfiguration();
+  }
+
 
   public void reset() {
     synchronized (this.internalLandscape) {
@@ -129,18 +146,16 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
           calculatedTotalRequests = DummyLandscapeHelper.getRandomNum(500, 25000);
           dummyLandscape.getTimestamp().setTotalRequests(calculatedTotalRequests);
 
-          RepositoryStorage.writeToFile(dummyLandscape, milliseconds, calculatedTotalRequests,
-              Configuration.LANDSCAPE_REPOSITORY);
+          this.landscapeRepository.save(milliseconds, dummyLandscape, calculatedTotalRequests);
           this.lastPeriodLandscape = dummyLandscape;
         } else {
 
           calculatedTotalRequests = calculateTotalRequests(this.internalLandscape);
           this.internalLandscape.getTimestamp().setTotalRequests(calculatedTotalRequests);
-          this.internalLandscape.getTimestamp().setTimestamp(milliseconds);
+          this.internalLandscape.setTimestamp(new Timestamp(milliseconds, 0));
 
-          RepositoryStorage.writeToFile(this.internalLandscape, milliseconds,
-              calculatedTotalRequests, Configuration.LANDSCAPE_REPOSITORY);
-
+          this.landscapeRepository.save(milliseconds, this.internalLandscape,
+              calculatedTotalRequests);
           try {
             final Landscape l = this.fstConf.deepCopy(this.internalLandscape);
             this.lastPeriodLandscape = LandscapePreparer.prepareLandscape(l);
@@ -157,14 +172,14 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
       }
     }
 
-    RepositoryStorage.cleanUpTooOldFiles(java.lang.System.currentTimeMillis(),
-        Configuration.LANDSCAPE_REPOSITORY);
+
+    this.landscapeRepository.cleanup();
   }
 
   /**
-   * Calculates all requests contained in a Landscape
+   * Calculates all requests contained in a Landscape.
    *
-   * @param landscape
+   * @param landscape the landscape
    */
   private static int calculateTotalRequests(final Landscape landscape) {
 

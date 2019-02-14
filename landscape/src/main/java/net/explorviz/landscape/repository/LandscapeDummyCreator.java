@@ -365,13 +365,13 @@ final class LandscapeDummyCreator {
   }
 
   /**
-   * Creating a communication between two clazzes within the dummy landscape
+   * Creating a communication between two clazzes within the dummy landscape.
    *
-   * @param traceId
-   * @param requests
-   * @param sourceClazz
-   * @param targetClazz
-   * @param application
+   * @param traceId the id of the trace
+   * @param requests the request
+   * @param sourceClazz the source class
+   * @param targetClazz the target class
+   * @param application the appliaction
    */
   private static void createClazzCommunication(final String traceId, final int tracePosition,
       final int requests, final Clazz sourceClazz, final Clazz targetClazz,
