@@ -1,17 +1,20 @@
 version: "3.2"
 services:
+
   reverse-proxy:
     image: explorviz/reverse-proxy
     container_name: explorviz-reverse-proxy
     network_mode: "host"
-  mongo:
+
+  mongo-auth:
     image: mongo
     container_name: explorviz-auth-mongo
     volumes:
        - explorviz-auth-mongo-data:/data/db
        - explorviz-auth-mongo-configdb:/data/configdb
     network_mode: "host"
-  mongo:
+
+  mongo-landscape:
     image: mongo
     container_name: explorviz-landscape-mongo
     volumes:
