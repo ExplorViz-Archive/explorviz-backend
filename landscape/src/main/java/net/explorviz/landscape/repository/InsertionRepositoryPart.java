@@ -45,7 +45,7 @@ public class InsertionRepositoryPart {
   private final Map<Application, Map<String, Clazz>> clazzCache = new HashMap<>();
 
   /**
-   * TODODescr.
+   * Inserts a record into the data model (landscape)
    *
    * @param inputIRecord - Record that will be inserted into the passed landscape
    * @param landscape - Target for the insertion of records
@@ -296,7 +296,6 @@ public class InsertionRepositoryPart {
       // create a new event
       LandscapeHelper.createEvent(landscape, EEventType.NEWAPPLICATION,
           "New application '" + applicationName + "' on node '" + node.getName() + "' detected");
-
     }
 
     application.setLastUsage(java.lang.System.currentTimeMillis());

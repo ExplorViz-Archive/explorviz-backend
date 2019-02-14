@@ -16,7 +16,7 @@ import net.explorviz.shared.landscape.model.landscape.Node;
 import net.explorviz.shared.landscape.model.landscape.NodeGroup;
 import net.explorviz.shared.landscape.model.landscape.System;
 import net.explorviz.shared.landscape.model.store.Timestamp;
-import org.eclipse.jetty.server.Authentication.User;
+import net.explorviz.shared.security.model.User;
 
 /**
  * Handles the registration of (core) model types for the JSONAPI provider.

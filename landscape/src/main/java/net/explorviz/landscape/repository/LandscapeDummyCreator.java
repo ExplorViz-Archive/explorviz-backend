@@ -312,10 +312,20 @@ public final class LandscapeDummyCreator {
   }
 
   /**
+<<<<<<< HEAD
    * Creates a dummy webshop application within the dummy landscape
    *
    * @param application
    * @return webshop application
+=======
+   * Creating a communication between two clazzes within the dummy landscape.
+   *
+   * @param traceId the id of the trace
+   * @param requests the request
+   * @param sourceClazz the source class
+   * @param targetClazz the target class
+   * @param application the appliaction
+>>>>>>> dev-1
    */
   private static Application createWebshopApplication(final Application application) {
 

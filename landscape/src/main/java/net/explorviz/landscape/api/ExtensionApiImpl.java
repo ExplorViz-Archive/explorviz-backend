@@ -4,12 +4,9 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
-import java.util.NoSuchElementException;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import net.explorviz.landscape.repository.LandscapeExchangeService;
-import net.explorviz.landscape.repository.RepositoryStorage;
-import net.explorviz.landscape.server.main.Configuration;
 import net.explorviz.landscape.server.providers.CoreModelHandler;
 import net.explorviz.landscape.server.providers.GenericTypeFinder;
 import net.explorviz.shared.config.helper.PropertyHelper;
@@ -17,8 +14,6 @@ import net.explorviz.shared.landscape.model.landscape.Landscape;
 import net.explorviz.shared.landscape.model.store.Timestamp;
 import net.explorviz.shared.landscape.model.store.helper.TimestampHelper;
 import org.jvnet.hk2.annotations.Service;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Interface implementation of the extension API - Offers version information and provides
@@ -28,7 +23,7 @@ import org.slf4j.LoggerFactory;
 @Singleton
 public final class ExtensionApiImpl implements IExtensionApi {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(ExtensionApiImpl.class);
+
 
   private static final String VERSION_NUMBER = "1.3.0";
   private final LandscapeExchangeService service;
@@ -62,13 +57,8 @@ public final class ExtensionApiImpl implements IExtensionApi {
    * @param timestamp - As configured in Kieker
    */
   @Override
-  public Landscape getLandscape(final long timestamp, final String folderName) {
-    try {
-      return this.service.getLandscape(timestamp, folderName);
-    } catch (final FileNotFoundException e) {
-      LOGGER.debug("Specific landscape not found!", e.getMessage());
-      throw new NoSuchElementException("The requested landscape could not be found"); // NOPMD
-    }
+  public Landscape getLandscape(final long timestamp) {
+    return this.service.getLandscape(timestamp);
   }
 
   /**
@@ -81,8 +71,7 @@ public final class ExtensionApiImpl implements IExtensionApi {
   @Override
   public List<Timestamp> getSubsequentTimestamps(final long afterTimestamp,
       final int intervalSize) {
-    final List<Timestamp> allTimestamps =
-        this.service.getTimestampObjectsInRepo(Configuration.LANDSCAPE_REPOSITORY);
+    final List<Timestamp> allTimestamps = this.service.getLandscapeTimestamps();
     return TimestampHelper.filterTimestampsAfterTimestamp(allTimestamps, afterTimestamp,
         intervalSize);
   }
@@ -92,7 +81,7 @@ public final class ExtensionApiImpl implements IExtensionApi {
    */
   @Override
   public List<Timestamp> getUploadedTimestamps() {
-    return this.service.getTimestampObjectsInRepo(Configuration.REPLAY_REPOSITORY);
+    return this.service.getReplayTimestamps();
   }
 
   /**
@@ -138,11 +127,5 @@ public final class ExtensionApiImpl implements IExtensionApi {
     PropertyHelper.setBooleanProperty("useDummyMode", value);
   }
 
-  @Override
-  public void saveLandscapeToFile(final Landscape landscape, final long totalRequests,
-      final String folderName) {
-    RepositoryStorage.writeToFile(landscape, landscape.getTimestamp().getTimestamp(), totalRequests,
-        folderName);
-  }
 
 }
