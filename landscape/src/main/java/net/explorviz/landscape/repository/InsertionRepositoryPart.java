@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
+import net.explorviz.landscape.repository.helper.LandscapeHelper;
 import net.explorviz.landscape.repository.helper.Signature;
 import net.explorviz.landscape.repository.helper.SignatureParser;
 import net.explorviz.shared.landscape.model.application.Application;
@@ -25,7 +26,6 @@ import net.explorviz.shared.landscape.model.application.Clazz;
 import net.explorviz.shared.landscape.model.application.Component;
 import net.explorviz.shared.landscape.model.application.DatabaseQuery;
 import net.explorviz.shared.landscape.model.event.EEventType;
-import net.explorviz.shared.landscape.model.event.Event;
 import net.explorviz.shared.landscape.model.helper.EProgrammingLanguage;
 import net.explorviz.shared.landscape.model.helper.ModelHelper;
 import net.explorviz.shared.landscape.model.landscape.Landscape;
@@ -150,24 +150,10 @@ public class InsertionRepositoryPart {
     landscape.getSystems().add(system);
 
     // create a new event
-    this.addEvent(landscape, EEventType.NEWSYSTEM, "New system '" + systemname + "' detected");
+    LandscapeHelper.createEvent(landscape, EEventType.NEWSYSTEM,
+        "New system '" + systemname + "' detected");
 
     return system;
-  }
-
-  /**
-   * Creates a new event which occurs in the landscape during monitoring to the landscape
-   *
-   * @param landscape - the related landscape
-   * @param timestamp - timestamp the event occurred
-   * @param eventType - the type of the event
-   * @param eventMessage - a concrete message for the user
-   */
-  private void addEvent(final Landscape landscape, final EEventType eventType,
-      final String eventMessage) {
-    final long currentMillis = java.lang.System.currentTimeMillis();
-    final Event newEvent = new Event(landscape, currentMillis, eventType, eventMessage);
-    landscape.getEvents().add(newEvent);
   }
 
   /**
@@ -194,7 +180,7 @@ public class InsertionRepositoryPart {
       this.nodeCache.put(nodeName, node);
 
       // create a new event
-      this.addEvent(landscape, EEventType.NEWNODE,
+      LandscapeHelper.createEvent(landscape, EEventType.NEWNODE,
           "New node '" + hostApplicationRecord.getHostname() + "' in system '"
               + hostApplicationRecord.getSystemname() + "' detected");
     }
@@ -308,7 +294,7 @@ public class InsertionRepositoryPart {
       this.applicationCache.put(node.getName() + "_" + applicationName, application);
 
       // create a new event
-      this.addEvent(landscape, EEventType.NEWAPPLICATION,
+      LandscapeHelper.createEvent(landscape, EEventType.NEWAPPLICATION,
           "New application '" + applicationName + "' on node '" + node.getName() + "' detected");
 
     }
@@ -421,7 +407,7 @@ public class InsertionRepositoryPart {
           }
 
           // creates a new event
-          this.addEvent(landscape, EEventType.EXCEPTION,
+          LandscapeHelper.createEvent(landscape, EEventType.EXCEPTION,
               "Exception thrown in application '" + currentApplication.getName() + "' by class '"
                   + callerClazz.getFullQualifiedName() + "':\n " + cause);
         }
