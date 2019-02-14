@@ -132,6 +132,13 @@ public class InsertionRepositoryPart {
 
   }
 
+  /**
+   * Seeks or creates a new system
+   * 
+   * @param landscape - passed landscape
+   * @param systemname - name of the system
+   * @return the retrieved or created system
+   */
   private System seekOrCreateSystem(final Landscape landscape, final String systemname) {
     for (final System system : landscape.getSystems()) {
       if (system.getName().equalsIgnoreCase(systemname)) {
@@ -149,8 +156,8 @@ public class InsertionRepositoryPart {
     system.setParent(landscape);
     landscape.getSystems().add(system);
 
-    // create a new event
-    LandscapeHelper.createEvent(landscape, EEventType.NEWSYSTEM,
+    // create a new system event
+    LandscapeHelper.addNewEvent(landscape, EEventType.NEWSYSTEM,
         "New system '" + systemname + "' detected");
 
     return system;
@@ -179,8 +186,8 @@ public class InsertionRepositoryPart {
       node.setName(hostApplicationRecord.getHostname());
       this.nodeCache.put(nodeName, node);
 
-      // create a new event
-      LandscapeHelper.createEvent(landscape, EEventType.NEWNODE,
+      // creates a new node event
+      LandscapeHelper.addNewEvent(landscape, EEventType.NEWNODE,
           "New node '" + hostApplicationRecord.getHostname() + "' in system '"
               + hostApplicationRecord.getSystemname() + "' detected");
     }
@@ -293,8 +300,8 @@ public class InsertionRepositoryPart {
       node.getApplications().add(application);
       this.applicationCache.put(node.getName() + "_" + applicationName, application);
 
-      // create a new event
-      LandscapeHelper.createEvent(landscape, EEventType.NEWAPPLICATION,
+      // creates a new application event
+      LandscapeHelper.addNewEvent(landscape, EEventType.NEWAPPLICATION,
           "New application '" + applicationName + "' on node '" + node.getName() + "' detected");
     }
 
@@ -405,8 +412,8 @@ public class InsertionRepositoryPart {
                 + splitCause[3] + "\n" + splitCause[4] + "\n" + splitCause[5] + "\n" + "\t ...";
           }
 
-          // creates a new event
-          LandscapeHelper.createEvent(landscape, EEventType.EXCEPTION,
+          // creates an exception event
+          LandscapeHelper.addNewException(landscape,
               "Exception thrown in application '" + currentApplication.getName() + "' by class '"
                   + callerClazz.getFullQualifiedName() + "':\n " + cause);
         }

@@ -1,5 +1,6 @@
 package net.explorviz.landscape.repository.persistence;
 
+import java.awt.Event;
 import net.explorviz.shared.landscape.model.application.AggregatedClazzCommunication;
 import net.explorviz.shared.landscape.model.application.Application;
 import net.explorviz.shared.landscape.model.application.ApplicationCommunication;
@@ -12,6 +13,7 @@ import net.explorviz.shared.landscape.model.helper.EProgrammingLanguage;
 import net.explorviz.shared.landscape.model.landscape.Landscape;
 import net.explorviz.shared.landscape.model.landscape.Node;
 import net.explorviz.shared.landscape.model.landscape.NodeGroup;
+import net.explorviz.shared.landscape.model.landscape.System;
 import org.nustaq.serialization.FSTConfiguration;
 
 /**
@@ -29,6 +31,7 @@ public final class FstHelper {
   public static FSTConfiguration createFstConfiguration() {
     final FSTConfiguration result = FSTConfiguration.createDefaultConfiguration();
     result.registerClass(Landscape.class);
+    result.registerClass(Event.class);
     result.registerClass(System.class);
     result.registerClass(NodeGroup.class);
     result.registerClass(Node.class);
@@ -45,8 +48,8 @@ public final class FstHelper {
     return result;
   }
 
-
-  private FstHelper() {}
+  private FstHelper() {
+  }
 
   /**
    * Converts a landscape object to bytes.

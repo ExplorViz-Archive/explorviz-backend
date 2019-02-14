@@ -1,12 +1,14 @@
 # Windows Version 18.06.1-ce-win73 (or newer)
 version: "3.2"
 services:
+
   reverse-proxy:
     image: explorviz/reverse-proxy:macos
     container_name: explorviz-reverse-proxy
     ports:
       - 8080:8080
-  mongo:
+
+  mongo-auth:
     image: mongo
     container_name: explorviz-auth-mongo
     ports:
@@ -15,6 +17,18 @@ services:
        - explorviz-auth-mongo-data:/data/db
        - explorviz-auth-mongo-configdb:/data/configdb
 
+  mongo-landscape:
+    image: mongo
+    container_name: explorviz-landscape-mongo
+    command: mongod --port 27018
+    ports:
+       - 27018:27018
+    volumes:
+       - explorviz-landscape-mongo-data:/data/db
+       - explorviz-landscape-mongo-configdb:/data/configdb
+
 volumes:
   explorviz-auth-mongo-data:
   explorviz-auth-mongo-configdb:
+  explorviz-landscape-mongo-data:
+  explorviz-landscape-mongo-configdb:
