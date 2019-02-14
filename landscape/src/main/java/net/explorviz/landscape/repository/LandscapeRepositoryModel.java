@@ -152,7 +152,7 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
 
           calculatedTotalRequests = calculateTotalRequests(this.internalLandscape);
           this.internalLandscape.getTimestamp().setTotalRequests(calculatedTotalRequests);
-          this.internalLandscape.setTimestamp(new Timestamp(milliseconds, 0));
+          this.internalLandscape.setTimestamp(new Timestamp(milliseconds, calculatedTotalRequests));
 
           this.landscapeRepository.save(milliseconds, this.internalLandscape,
               calculatedTotalRequests);

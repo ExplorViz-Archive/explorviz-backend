@@ -79,8 +79,8 @@ public class MongoLandscapeJsonApiRepository implements LandscapeRepository<Stri
         LOGGER.error("No document saved.");
       }
     } else if (LOGGER.isInfoEnabled()) {
-      LOGGER.info(
-          String.format("Saved landscape {timestamp: %d, id: %d}", timestamp, landscape.getId()));
+      LOGGER.info(String.format("Saved landscape {timestamp: %d, id: %d, totalRequests: %d}",
+          timestamp, landscape.getId(), totalRequests));
     }
   }
 
