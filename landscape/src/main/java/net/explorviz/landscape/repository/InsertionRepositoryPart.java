@@ -18,12 +18,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
+import java.util.stream.Collectors;
 import net.explorviz.landscape.repository.helper.Signature;
 import net.explorviz.landscape.repository.helper.SignatureParser;
 import net.explorviz.shared.landscape.model.application.Application;
 import net.explorviz.shared.landscape.model.application.Clazz;
 import net.explorviz.shared.landscape.model.application.Component;
 import net.explorviz.shared.landscape.model.application.DatabaseQuery;
+import net.explorviz.shared.landscape.model.event.EEventType;
+import net.explorviz.shared.landscape.model.event.Event;
 import net.explorviz.shared.landscape.model.helper.EProgrammingLanguage;
 import net.explorviz.shared.landscape.model.helper.ModelHelper;
 import net.explorviz.shared.landscape.model.landscape.Landscape;
@@ -146,25 +149,36 @@ public class InsertionRepositoryPart {
     system.setName(systemname);
     system.setParent(landscape);
     landscape.getSystems().add(system);
-    this.addToEvents(landscape, "New system '" + systemname + "' detected"); // NOCS
+    this.addToEvents(landscape, EEventType.NEWSYSTEM, "New system '" + systemname + "' detected"); // NOCS
 
     return system;
   }
 
-  private void addToEvents(final Landscape landscape, final String event) {
+  private void addToEvents(final Landscape landscape, final EEventType eventType,
+      final String event) {
     long currentMillis = java.lang.System.currentTimeMillis();
-    while (landscape.getEvents().containsKey(currentMillis)) {
+
+    final List<Long> timestampsOfEvents =
+        landscape.getEvents().stream().filter(e -> !e.getEventType().equals(EEventType.EXCEPTION))
+            .map(Event::getTimestamp).collect(Collectors.toList());
+
+    while (timestampsOfEvents.contains(currentMillis)) {
       currentMillis++;
     }
-    landscape.getEvents().put(currentMillis, event);
+    landscape.getEvents().add(new Event(landscape, currentMillis, eventType, event));
   }
 
   private void addToErrors(final Landscape landscape, final String cause) {
     long currentMillis = java.lang.System.currentTimeMillis();
-    while (landscape.getExceptions().containsKey(currentMillis)) {
+
+    final List<Long> timestampsOfExceptionEvents =
+        landscape.getEvents().stream().filter(e -> e.getEventType().equals(EEventType.EXCEPTION))
+            .map(Event::getTimestamp).collect(Collectors.toList());
+
+    while (timestampsOfExceptionEvents.contains(currentMillis)) {
       currentMillis++;
     }
-    landscape.getExceptions().put(currentMillis, cause);
+    landscape.getEvents().add(new Event(landscape, currentMillis, EEventType.EXCEPTION, cause));
   }
 
   protected Node seekOrCreateNode(final HostApplicationMetaDataRecord hostApplicationRecord,
@@ -183,8 +197,9 @@ public class InsertionRepositoryPart {
       node.setName(hostApplicationRecord.getHostname());
       this.nodeCache.put(nodeName, node);
 
-      this.addToEvents(landscape, "New node '" + hostApplicationRecord.getHostname()
-          + "' in system '" + hostApplicationRecord.getSystemname() + "' detected");
+      this.addToEvents(landscape, EEventType.NEWNODE,
+          "New node '" + hostApplicationRecord.getHostname() + "' in system '"
+              + hostApplicationRecord.getSystemname() + "' detected");
     }
 
     return node;
@@ -273,7 +288,7 @@ public class InsertionRepositoryPart {
       node.getApplications().add(application);
       this.applicationCache.put(node.getName() + "_" + applicationName, application);
 
-      this.addToEvents(landscape,
+      this.addToEvents(landscape, EEventType.NEWAPPLICATION,
           "New application '" + applicationName + "' on node '" + node.getName() + "' detected");
     }
     application.setLastUsage(java.lang.System.currentTimeMillis());
