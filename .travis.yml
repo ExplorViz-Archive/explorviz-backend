@@ -1,5 +1,9 @@
 language: java
 
+env:
+  global:
+    - MONGODB_VERSION=4.0.6
+
 services:
   - mongodb
   - docker
@@ -44,6 +48,10 @@ jobs:
 before_script:
   - chmod +x .travis/docker_push.sh
 
+before_install:
+  - chmod +x .travis/mongoDB_setup.sh
+  - .travis/mongoDB_setup.sh
+  
 branches:
   only:
   - master
