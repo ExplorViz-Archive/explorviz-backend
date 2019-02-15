@@ -12,12 +12,12 @@ import net.explorviz.shared.landscape.model.landscape.Landscape;
 public class LandscapeHelper {
 
   /**
-   * Adds a new exception event to the list of events in the landscape
+   * Creates a new exception event to the list of events in the landscape
    *
    * @param landscape - related landscape
    * @param cause - cause of the exception
    */
-  public static void addNewException(final Landscape landscape, final String cause) {
+  public static void createNewException(final Landscape landscape, final String cause) {
     long currentMillis = java.lang.System.currentTimeMillis();
 
     final List<Long> timestampsOfExceptionEvents =
@@ -32,13 +32,13 @@ public class LandscapeHelper {
   }
 
   /**
-   * Adds a new event to the list of events in the landscape
+   * Creates a new event to the list of events in the landscape
    *
    * @param landscape - related landscape
    * @param eventType - type of event
    * @param eventMesssage - message of the event
    */
-  public static void addNewEvent(final Landscape landscape, final EEventType eventType,
+  public static void createNewEvent(final Landscape landscape, final EEventType eventType,
       final String eventMesssage) {
     long currentMillis = java.lang.System.currentTimeMillis();
 

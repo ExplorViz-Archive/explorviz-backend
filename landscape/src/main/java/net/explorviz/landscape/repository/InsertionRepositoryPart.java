@@ -157,7 +157,7 @@ public class InsertionRepositoryPart {
     landscape.getSystems().add(system);
 
     // create a new system event
-    LandscapeHelper.addNewEvent(landscape, EEventType.NEWSYSTEM,
+    LandscapeHelper.createNewEvent(landscape, EEventType.NEWSYSTEM,
         "New system '" + systemname + "' detected");
 
     return system;
@@ -187,7 +187,7 @@ public class InsertionRepositoryPart {
       this.nodeCache.put(nodeName, node);
 
       // creates a new node event
-      LandscapeHelper.addNewEvent(landscape, EEventType.NEWNODE,
+      LandscapeHelper.createNewEvent(landscape, EEventType.NEWNODE,
           "New node '" + hostApplicationRecord.getHostname() + "' in system '"
               + hostApplicationRecord.getSystemname() + "' detected");
     }
@@ -301,7 +301,7 @@ public class InsertionRepositoryPart {
       this.applicationCache.put(node.getName() + "_" + applicationName, application);
 
       // creates a new application event
-      LandscapeHelper.addNewEvent(landscape, EEventType.NEWAPPLICATION,
+      LandscapeHelper.createNewEvent(landscape, EEventType.NEWAPPLICATION,
           "New application '" + applicationName + "' on node '" + node.getName() + "' detected");
     }
 
@@ -413,7 +413,7 @@ public class InsertionRepositoryPart {
           }
 
           // creates an exception event
-          LandscapeHelper.addNewException(landscape,
+          LandscapeHelper.createNewException(landscape,
               "Exception thrown in application '" + currentApplication.getName() + "' by class '"
                   + callerClazz.getFullQualifiedName() + "':\n " + cause);
         }

@@ -62,7 +62,7 @@ public final class DummyLandscapeHelper {
     system.setParent(parentLandscape);
 
     // create new system event
-    LandscapeHelper.addNewEvent(parentLandscape, EEventType.NEWSYSTEM,
+    LandscapeHelper.createNewEvent(parentLandscape, EEventType.NEWSYSTEM,
         "New system '" + system.getName() + "' detected");
 
     return system;
@@ -103,7 +103,7 @@ public final class DummyLandscapeHelper {
     node.setUsedRAM((long) getRandomNum(1, 4) * LandscapeDummyCreator.formatFactor);
 
     // create a new node event
-    LandscapeHelper.addNewEvent(landscape, EEventType.NEWNODE, "New node '" + node.getIpAddress()
+    LandscapeHelper.createNewEvent(landscape, EEventType.NEWNODE, "New node '" + node.getIpAddress()
         + "' in system '" + parentNodeGroup.getParent().getName() + "' detected");
 
     return node;
@@ -136,7 +136,7 @@ public final class DummyLandscapeHelper {
     parentNode.getApplications().add(application);
 
     // create a new application event
-    LandscapeHelper.addNewEvent(landscape, EEventType.NEWNODE, "New node '" + application.getName()
+    LandscapeHelper.createNewEvent(landscape, EEventType.NEWNODE, "New node '" + application.getName()
         + "' in system '" + parentNode.getName() + "' detected");
 
     return application;
