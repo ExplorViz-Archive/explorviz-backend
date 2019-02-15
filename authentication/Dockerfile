@@ -1,6 +1,6 @@
 FROM openjdk:8-alpine
 
-ENV MONGO_IP 127.0.0.1
+ENV MONGO_HOST 127.0.0.1
 
 RUN mkdir /explorviz
 WORKDIR /explorviz

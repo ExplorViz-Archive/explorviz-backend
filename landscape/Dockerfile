@@ -1,7 +1,7 @@
 FROM openjdk:8-alpine
 
 ENV DUMMY_MODE false
-ENV MONGO_IP 127.0.0.1
+ENV MONGO_HOST 127.0.0.1
 ENV MONGO_PORT 27018
 
 RUN mkdir /explorviz
