@@ -15,7 +15,7 @@ public class DatastoreFactory implements Factory<Datastore> {
 
   private final Datastore datastore;
 
-  @Config("mongo.ip")
+  @Config("mongo.host")
   @Config("mongo.port")
   public DatastoreFactory(final String host, final String port) {
 
