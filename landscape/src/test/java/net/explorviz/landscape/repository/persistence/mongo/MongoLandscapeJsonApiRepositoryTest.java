@@ -6,7 +6,6 @@ import static org.junit.Assert.assertTrue;
 import java.util.Random;
 import javax.inject.Inject;
 import net.explorviz.landscape.repository.LandscapeDummyCreator;
-import net.explorviz.landscape.repository.persistence.mongo.MongoLandscapeJsonApiRepository;
 import net.explorviz.landscape.server.main.DependencyInjectionBinder;
 import net.explorviz.landscape.server.providers.CoreModelHandler;
 import net.explorviz.shared.landscape.model.landscape.Landscape;
@@ -23,7 +22,6 @@ import org.junit.Test;
  */
 public class MongoLandscapeJsonApiRepositoryTest {
 
-
   @Inject
   private MongoLandscapeJsonApiRepository repo;
 
@@ -32,9 +30,8 @@ public class MongoLandscapeJsonApiRepositoryTest {
     CoreModelHandler.registerAllCoreModels();
   }
 
-
   /**
-   * Injects depedencies.
+   * Injects dependencies.
    */
   @Before
   public void setUp() {
@@ -53,7 +50,6 @@ public class MongoLandscapeJsonApiRepositoryTest {
   }
 
 
-
   @Test
   public void findByTimestamp() {
     final long ts = System.currentTimeMillis();
@@ -62,14 +58,11 @@ public class MongoLandscapeJsonApiRepositoryTest {
 
     final String rawLandscape = this.repo.getByTimestamp(ts);
 
-
-
     assertTrue("Invalid landscape", rawLandscape.startsWith("{\"data\":{\"type\":\"landscape\""));
   }
 
   @Test
   public void testFindById() {
-
     final Landscape landscape = LandscapeDummyCreator.createDummyLandscape();
     final long ts = System.currentTimeMillis();
     final Landscape landscape2 = LandscapeDummyCreator.createDummyLandscape();
@@ -82,10 +75,7 @@ public class MongoLandscapeJsonApiRepositoryTest {
 
     assertTrue("Ivalid landscape or wrong id",
         rawLandscape.startsWith("{\"data\":{\"type\":\"landscape\",\"id\":\"" + id + "\""));
-
   }
-
-
 
   @Test
   public void testTotalRequestsLandscape() {
@@ -99,7 +89,6 @@ public class MongoLandscapeJsonApiRepositoryTest {
     assertEquals("Requests not matching", requests, retrievedRequests);
   }
 
-
   @Test
   public void testAllTimestamps() {
     final Landscape landscape = LandscapeDummyCreator.createDummyLandscape();
@@ -111,6 +100,25 @@ public class MongoLandscapeJsonApiRepositoryTest {
 
     final int timestamps = this.repo.getAllTimestamps().size();
     assertEquals("Amount of objects don't match", 2, timestamps);
+  }
+
+  @Test
+  public void testCleanup() {
+
+    final Landscape landscapeOld = LandscapeDummyCreator.createDummyLandscape();
+    final long ts1 = 1546300800L;
+
+    final Landscape landscapeNew = LandscapeDummyCreator.createDummyLandscape();
+    final long ts2 = System.currentTimeMillis();
+
+    this.repo.save(ts1, landscapeOld, 0);
+    this.repo.save(ts2, landscapeNew, 0);
+
+    // cleanup old landscape based on configuration
+    this.repo.cleanup();
+
+    final int timestamps = this.repo.getAllTimestamps().size();
+    assertEquals("Amount of objects don't match", 1, timestamps);
   }
 
 }

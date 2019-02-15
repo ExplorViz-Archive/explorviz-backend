@@ -6,7 +6,6 @@ import static org.junit.Assert.assertTrue;
 import java.util.Random;
 import javax.inject.Inject;
 import net.explorviz.landscape.repository.LandscapeDummyCreator;
-import net.explorviz.landscape.repository.persistence.mongo.MongoReplayJsonApiRepository;
 import net.explorviz.landscape.server.main.DependencyInjectionBinder;
 import net.explorviz.landscape.server.providers.CoreModelHandler;
 import net.explorviz.shared.landscape.model.landscape.Landscape;
@@ -19,8 +18,6 @@ import org.junit.Test;
 
 public class MongoReplayJsonApiRepositoryTest {
 
-
-
   @Inject
   private MongoReplayJsonApiRepository repo;
 
@@ -28,7 +25,6 @@ public class MongoReplayJsonApiRepositoryTest {
   public static void setUpAll() {
     CoreModelHandler.registerAllCoreModels();
   }
-
 
   /**
    * Injects depedencies.
@@ -43,12 +39,10 @@ public class MongoReplayJsonApiRepositoryTest {
     this.repo.clear();
   }
 
-
   @After
   public void tearDown() {
     this.repo.clear();
   }
-
 
   @Test
   public void findReplayByTimestamp() {
@@ -58,11 +52,8 @@ public class MongoReplayJsonApiRepositoryTest {
 
     final String rawLandscape = this.repo.getByTimestamp(ts);
 
-
-
     assertTrue("Invalid landscape", rawLandscape.startsWith("{\"data\":{\"type\":\"landscape\""));
   }
-
 
   @Test
   public void findReplayById() {
@@ -77,7 +68,6 @@ public class MongoReplayJsonApiRepositoryTest {
 
     assertTrue("Ivalid landscape or wrong id",
         rawLandscape.startsWith("{\"data\":{\"type\":\"landscape\",\"id\":\"" + id + "\""));
-
   }
 
   @Test
@@ -105,5 +95,23 @@ public class MongoReplayJsonApiRepositoryTest {
     assertEquals("Amount of objects don't match", 2, timestamps);
   }
 
+  @Test
+  public void testCleanup() {
+
+    final Landscape landscapeOld = LandscapeDummyCreator.createDummyLandscape();
+    final long ts1 = 1546300800L;
+
+    final Landscape landscapeNew = LandscapeDummyCreator.createDummyLandscape();
+    final long ts2 = System.currentTimeMillis();
+
+    this.repo.save(ts1, landscapeOld, 0);
+    this.repo.save(ts2, landscapeNew, 0);
+
+    // cleanup old landscape based on configuration
+    this.repo.cleanup();
+
+    final int timestamps = this.repo.getAllTimestamps().size();
+    assertEquals("Amount of objects don't match", 1, timestamps);
+  }
 
 }

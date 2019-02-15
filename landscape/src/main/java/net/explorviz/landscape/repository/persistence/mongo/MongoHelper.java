@@ -1,15 +1,18 @@
 package net.explorviz.landscape.repository.persistence.mongo;
 
-import com.mongodb.DB;
-import com.mongodb.DBCollection;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
+import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import net.explorviz.shared.config.annotations.Config;
+import org.bson.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
+/**
+ * Helper class providing methods for mongoDB persistence.
+ */
 public final class MongoHelper { // NOPMD
 
   private static final String DEFAULT_HOST = "localhost";
@@ -24,10 +27,7 @@ public final class MongoHelper { // NOPMD
 
   private static final Logger LOGGER = LoggerFactory.getLogger(MongoHelper.class.getSimpleName());
 
-
   private static MongoClient client; // NOPMD
-
-
 
   @Config("mongo.host")
   private String host;
@@ -37,8 +37,6 @@ public final class MongoHelper { // NOPMD
 
   @Config("mongo.db")
   private String dbName;
-
-
 
   /*
    * From mongo documentation: "It is important to limit the number of MongoClient instances in your
@@ -68,13 +66,11 @@ public final class MongoHelper { // NOPMD
     return MongoHelper.client;
   }
 
-
-
   /**
    * Returns the {@link MongoDatabase} given in the configuration file.
    *
    */
-  public DB getDatabase() {
+  public MongoDatabase getDatabase() {
 
     String dbName = this.dbName;
 
@@ -85,17 +81,17 @@ public final class MongoHelper { // NOPMD
       dbName = DEFAULT_DB;
     }
 
-    return this.getClient().getDB(dbName);
+    return this.getClient().getDatabase(dbName);
   }
 
   /**
    * Returns a connection to the landscape collection.
    */
-  public DBCollection getLandscapeCollection() {
+  public MongoCollection<Document> getLandscapeCollection() {
     return this.getDatabase().getCollection(LANDSCAPE_COLLECTION);
   }
 
-  public DBCollection getReplayCollection() {
+  public MongoCollection<Document> getReplayCollection() {
     return this.getDatabase().getCollection(REPLAY_COLLECTION);
   }
 
