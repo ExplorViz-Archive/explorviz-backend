@@ -38,13 +38,9 @@ public class MongoLandscapeJsonApiRepository implements LandscapeRepository<Stri
   private static final Logger LOGGER =
       LoggerFactory.getLogger(MongoLandscapeJsonApiRepository.class.getSimpleName());
 
-
-
   private final MongoHelper mongoHelper;
 
-
   private final LandscapeSerializationHelper serializationHelper;
-
 
   @Inject
   public MongoLandscapeJsonApiRepository(final MongoHelper mongoHelper,
@@ -52,8 +48,6 @@ public class MongoLandscapeJsonApiRepository implements LandscapeRepository<Stri
     this.mongoHelper = mongoHelper;
     this.serializationHelper = helper;
   }
-
-
 
   @Override
   public void save(final Long timestamp, final Landscape landscape, final int totalRequests) {
@@ -79,8 +73,8 @@ public class MongoLandscapeJsonApiRepository implements LandscapeRepository<Stri
         LOGGER.error("No document saved.");
       }
     } else if (LOGGER.isInfoEnabled()) {
-      LOGGER.info(
-          String.format("Saved landscape {timestamp: %d, id: %d}", timestamp, landscape.getId()));
+      LOGGER.info(String.format("Saved landscape {timestamp: %d, id: %d, totalRequests: %d}",
+          timestamp, landscape.getId(), totalRequests));
     }
   }
 
@@ -115,8 +109,6 @@ public class MongoLandscapeJsonApiRepository implements LandscapeRepository<Stri
     }
   }
 
-
-
   @Override
   public void cleanup(final long from) {
     final long enddate =
@@ -144,8 +136,6 @@ public class MongoLandscapeJsonApiRepository implements LandscapeRepository<Stri
     replayCollection.remove(new BasicDBObject());
   }
 
-
-
   @Override
   public int getTotalRequests(final long timestamp) {
     final DBCollection landCollection = this.mongoHelper.getLandscapeCollection();
@@ -159,8 +149,6 @@ public class MongoLandscapeJsonApiRepository implements LandscapeRepository<Stri
     }
   }
 
-
-
   @Override
   public List<Long> getAllTimestamps() {
     final DBCollection landCollection = this.mongoHelper.getLandscapeCollection();
@@ -172,7 +160,5 @@ public class MongoLandscapeJsonApiRepository implements LandscapeRepository<Stri
     }
     return result;
   }
-
-
 
 }

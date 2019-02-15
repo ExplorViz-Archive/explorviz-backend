@@ -18,7 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
-import java.util.stream.Collectors;
+import net.explorviz.landscape.repository.helper.LandscapeHelper;
 import net.explorviz.landscape.repository.helper.Signature;
 import net.explorviz.landscape.repository.helper.SignatureParser;
 import net.explorviz.shared.landscape.model.application.Application;
@@ -26,7 +26,6 @@ import net.explorviz.shared.landscape.model.application.Clazz;
 import net.explorviz.shared.landscape.model.application.Component;
 import net.explorviz.shared.landscape.model.application.DatabaseQuery;
 import net.explorviz.shared.landscape.model.event.EEventType;
-import net.explorviz.shared.landscape.model.event.Event;
 import net.explorviz.shared.landscape.model.helper.EProgrammingLanguage;
 import net.explorviz.shared.landscape.model.helper.ModelHelper;
 import net.explorviz.shared.landscape.model.landscape.Landscape;
@@ -46,7 +45,7 @@ public class InsertionRepositoryPart {
   private final Map<Application, Map<String, Clazz>> clazzCache = new HashMap<>();
 
   /**
-   * TODODescr.
+   * Inserts a record into the data model (landscape)
    *
    * @param inputIRecord - Record that will be inserted into the passed landscape
    * @param landscape - Target for the insertion of records
@@ -133,6 +132,13 @@ public class InsertionRepositoryPart {
 
   }
 
+  /**
+   * Seeks or creates a new system
+   * 
+   * @param landscape - passed landscape
+   * @param systemname - name of the system
+   * @return the retrieved or created system
+   */
   private System seekOrCreateSystem(final Landscape landscape, final String systemname) {
     for (final System system : landscape.getSystems()) {
       if (system.getName().equalsIgnoreCase(systemname)) {
@@ -149,38 +155,21 @@ public class InsertionRepositoryPart {
     system.setName(systemname);
     system.setParent(landscape);
     landscape.getSystems().add(system);
-    this.addToEvents(landscape, EEventType.NEWSYSTEM, "New system '" + systemname + "' detected"); // NOCS
+
+    // create a new system event
+    LandscapeHelper.createNewEvent(landscape, EEventType.NEWSYSTEM,
+        "New system '" + systemname + "' detected");
 
     return system;
   }
 
-  private void addToEvents(final Landscape landscape, final EEventType eventType,
-      final String event) {
-    long currentMillis = java.lang.System.currentTimeMillis();
-
-    final List<Long> timestampsOfEvents =
-        landscape.getEvents().stream().filter(e -> !e.getEventType().equals(EEventType.EXCEPTION))
-            .map(Event::getTimestamp).collect(Collectors.toList());
-
-    while (timestampsOfEvents.contains(currentMillis)) {
-      currentMillis++;
-    }
-    landscape.getEvents().add(new Event(currentMillis, eventType, event));
-  }
-
-  private void addToErrors(final Landscape landscape, final String cause) {
-    long currentMillis = java.lang.System.currentTimeMillis();
-
-    final List<Long> timestampsOfExceptionEvents =
-        landscape.getEvents().stream().filter(e -> e.getEventType().equals(EEventType.EXCEPTION))
-            .map(Event::getTimestamp).collect(Collectors.toList());
-
-    while (timestampsOfExceptionEvents.contains(currentMillis)) {
-      currentMillis++;
-    }
-    landscape.getEvents().add(new Event(currentMillis, EEventType.EXCEPTION, cause));
-  }
-
+  /**
+   * Seeks or creates a new node
+   *
+   * @param hostApplicationRecord - monitoring information about the host
+   * @param landscape - the passed landscape
+   * @return the retrieved or created node
+   */
   protected Node seekOrCreateNode(final HostApplicationMetaDataRecord hostApplicationRecord,
       final Landscape landscape) {
     final String nodeName =
@@ -197,7 +186,8 @@ public class InsertionRepositoryPart {
       node.setName(hostApplicationRecord.getHostname());
       this.nodeCache.put(nodeName, node);
 
-      this.addToEvents(landscape, EEventType.NEWNODE,
+      // creates a new node event
+      LandscapeHelper.createNewEvent(landscape, EEventType.NEWNODE,
           "New node '" + hostApplicationRecord.getHostname() + "' in system '"
               + hostApplicationRecord.getSystemname() + "' detected");
     }
@@ -205,6 +195,13 @@ public class InsertionRepositoryPart {
     return node;
   }
 
+  /**
+   * Seeks or creates a new nodeGroup
+   *
+   * @param system - the related system
+   * @param node - the related node
+   * @return the retrieved or created nodeGroup
+   */
   private NodeGroup seekOrCreateNodeGroup(final System system, final Node node) {
     for (final NodeGroup existingNodeGroup : system.getNodeGroups()) {
       if (!existingNodeGroup.getNodes().isEmpty()
@@ -225,6 +222,13 @@ public class InsertionRepositoryPart {
     return nodeGroup;
   }
 
+  /**
+   * Check whether two nodes are similar or not
+   *
+   * @param node - the first node
+   * @param node2 - the second node
+   * @return if the node is similar or not
+   */
   private boolean nodeMatchesNodeType(final Node node, final Node node2) {
     if (node.getApplications().size() != node2.getApplications().size()) {
       return false;
@@ -245,6 +249,14 @@ public class InsertionRepositoryPart {
     return true;
   }
 
+  /**
+   * Seeks or creates an application
+   *
+   * @param node - the related node
+   * @param hostMetaDataRecord - monitoring information about the host
+   * @param landscape - the related landscape
+   * @return the retrieved or created application
+   */
   Application seekOrCreateApplication(final Node node,
       final HostApplicationMetaDataRecord hostMetaDataRecord, final Landscape landscape) {
     final String applicationName = hostMetaDataRecord.getApplication();
@@ -288,9 +300,11 @@ public class InsertionRepositoryPart {
       node.getApplications().add(application);
       this.applicationCache.put(node.getName() + "_" + applicationName, application);
 
-      this.addToEvents(landscape, EEventType.NEWAPPLICATION,
+      // creates a new application event
+      LandscapeHelper.createNewEvent(landscape, EEventType.NEWAPPLICATION,
           "New application '" + applicationName + "' on node '" + node.getName() + "' detected");
     }
+
     application.setLastUsage(java.lang.System.currentTimeMillis());
     return application;
   }
@@ -298,12 +312,12 @@ public class InsertionRepositoryPart {
   /**
    * Communication between clazzes within a single application.
    *
-   * @param trace - TODOa
-   * @param currentHostname - TODOa
-   * @param currentApplication - TODOa
-   * @param landscape - TODOa
-   * @param remoteCallRepositoryPart - TODOa
-   * @param runtimeIndex - TODOa
+   * @param trace - the related trace
+   * @param currentHostname - the current hostname
+   * @param currentApplication - the current application
+   * @param landscape - the related landscape
+   * @param remoteCallRepositoryPart - the RemoteCallRepositoryPart
+   * @param runtimeIndex - the position within the trace
    */
   private void createCommuInApp(final Trace trace, final String currentHostname,
       final Application currentApplication, final Landscape landscape,
@@ -387,6 +401,7 @@ public class InsertionRepositoryPart {
 
         callerClazz = currentClazz;
         callerClazzesHistory.push(currentClazz);
+
       } else if (event instanceof AbstractAfterEventRecord
           || event instanceof AbstractAfterFailedEventRecord) {
         if (event instanceof AbstractAfterFailedEventRecord && callerClazz != null) {
@@ -396,7 +411,9 @@ public class InsertionRepositoryPart {
             cause = splitCause[0] + "\n" + splitCause[1] + "\n" + splitCause[2] + "\n"
                 + splitCause[3] + "\n" + splitCause[4] + "\n" + splitCause[5] + "\n" + "\t ...";
           }
-          this.addToErrors(landscape,
+
+          // creates an exception event
+          LandscapeHelper.createNewException(landscape,
               "Exception thrown in application '" + currentApplication.getName() + "' by class '"
                   + callerClazz.getFullQualifiedName() + "':\n " + cause);
         }

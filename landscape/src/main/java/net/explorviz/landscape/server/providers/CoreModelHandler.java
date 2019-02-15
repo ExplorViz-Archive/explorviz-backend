@@ -9,6 +9,8 @@ import net.explorviz.shared.landscape.model.application.Component;
 import net.explorviz.shared.landscape.model.application.DatabaseQuery;
 import net.explorviz.shared.landscape.model.application.Trace;
 import net.explorviz.shared.landscape.model.application.TraceStep;
+import net.explorviz.shared.landscape.model.event.EEventType;
+import net.explorviz.shared.landscape.model.event.Event;
 import net.explorviz.shared.landscape.model.landscape.Landscape;
 import net.explorviz.shared.landscape.model.landscape.Node;
 import net.explorviz.shared.landscape.model.landscape.NodeGroup;
@@ -30,6 +32,8 @@ public final class CoreModelHandler {
    */
   public static void registerAllCoreModels() {
     GenericTypeFinder.getTypeMap().putIfAbsent("Timestamp", Timestamp.class);
+    GenericTypeFinder.getTypeMap().putIfAbsent("Event", Event.class);
+    GenericTypeFinder.getTypeMap().putIfAbsent("EEventType", EEventType.class);
     GenericTypeFinder.getTypeMap().putIfAbsent("Landscape", Landscape.class);
     GenericTypeFinder.getTypeMap().putIfAbsent("System", System.class);
     GenericTypeFinder.getTypeMap().putIfAbsent("NodeGroup", NodeGroup.class);
