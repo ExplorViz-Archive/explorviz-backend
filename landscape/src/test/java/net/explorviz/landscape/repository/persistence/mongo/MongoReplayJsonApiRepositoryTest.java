@@ -1,10 +1,12 @@
-package net.explorviz.landscape.repository;
+package net.explorviz.landscape.repository.persistence.mongo;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Random;
 import javax.inject.Inject;
-import net.explorviz.landscape.repository.persistence.mongo.MongoReplayRepository;
+import net.explorviz.landscape.repository.LandscapeDummyCreator;
+import net.explorviz.landscape.repository.persistence.mongo.MongoReplayJsonApiRepository;
 import net.explorviz.landscape.server.main.DependencyInjectionBinder;
 import net.explorviz.landscape.server.providers.CoreModelHandler;
 import net.explorviz.shared.landscape.model.landscape.Landscape;
@@ -15,12 +17,12 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class MongoReplayRepositoryTest {
+public class MongoReplayJsonApiRepositoryTest {
 
 
 
   @Inject
-  private MongoReplayRepository repo;
+  private MongoReplayJsonApiRepository repo;
 
   @BeforeClass
   public static void setUpAll() {
@@ -54,12 +56,13 @@ public class MongoReplayRepositoryTest {
     final Landscape landscape = LandscapeDummyCreator.createDummyLandscape();
     this.repo.save(ts, landscape, 0);
 
-    final Landscape landscapeRetrieved = this.repo.getByTimestamp(ts);
+    final String rawLandscape = this.repo.getByTimestamp(ts);
 
 
 
-    assertEquals("Ids don't match", landscape.getId(), landscapeRetrieved.getId());
+    assertTrue("Invalid landscape", rawLandscape.startsWith("{\"data\":{\"type\":\"landscape\""));
   }
+
 
   @Test
   public void findReplayById() {
@@ -70,9 +73,10 @@ public class MongoReplayRepositoryTest {
     this.repo.save(ts, landscape2, 0);
 
     final long id = landscape.getId();
-    final Landscape landscapeRetrieved = this.repo.getById(id);
+    final String rawLandscape = this.repo.getById(id);
 
-    assertEquals("Ids don't match", id, (long) landscapeRetrieved.getId());
+    assertTrue("Ivalid landscape or wrong id",
+        rawLandscape.startsWith("{\"data\":{\"type\":\"landscape\",\"id\":\"" + id + "\""));
 
   }
 
@@ -100,5 +104,6 @@ public class MongoReplayRepositoryTest {
     final int timestamps = this.repo.getAllTimestamps().size();
     assertEquals("Amount of objects don't match", 2, timestamps);
   }
+
 
 }

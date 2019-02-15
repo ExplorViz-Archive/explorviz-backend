@@ -1,10 +1,11 @@
-package net.explorviz.landscape.repository;
+package net.explorviz.landscape.repository.persistence.mongo;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Random;
 import javax.inject.Inject;
+import net.explorviz.landscape.repository.LandscapeDummyCreator;
 import net.explorviz.landscape.repository.persistence.mongo.MongoLandscapeJsonApiRepository;
 import net.explorviz.landscape.server.main.DependencyInjectionBinder;
 import net.explorviz.landscape.server.providers.CoreModelHandler;

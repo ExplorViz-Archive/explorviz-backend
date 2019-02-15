@@ -1,10 +1,11 @@
-package net.explorviz.landscape.repository;
+package net.explorviz.landscape.repository.persistence.mongo;
 
 import static org.junit.Assert.assertEquals;
 
 import java.util.Random;
 import javax.inject.Inject;
-import net.explorviz.landscape.repository.persistence.mongo.MongoLandscapeRepository;
+import net.explorviz.landscape.repository.LandscapeDummyCreator;
+import net.explorviz.landscape.repository.persistence.mongo.MongoReplayRepository;
 import net.explorviz.landscape.server.main.DependencyInjectionBinder;
 import net.explorviz.landscape.server.providers.CoreModelHandler;
 import net.explorviz.shared.landscape.model.landscape.Landscape;
@@ -15,10 +16,12 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class MongoLandscapeRepositoryTest {
+public class MongoReplayRepositoryTest {
+
+
 
   @Inject
-  private MongoLandscapeRepository repo;
+  private MongoReplayRepository repo;
 
   @BeforeClass
   public static void setUpAll() {
@@ -27,7 +30,7 @@ public class MongoLandscapeRepositoryTest {
 
 
   /**
-   * Perform DI.
+   * Injects depedencies.
    */
   @Before
   public void setUp() {
@@ -46,33 +49,21 @@ public class MongoLandscapeRepositoryTest {
   }
 
 
-
   @Test
-  public void findByTimestamp() {
+  public void findReplayByTimestamp() {
     final long ts = System.currentTimeMillis();
     final Landscape landscape = LandscapeDummyCreator.createDummyLandscape();
     this.repo.save(ts, landscape, 0);
 
     final Landscape landscapeRetrieved = this.repo.getByTimestamp(ts);
 
-    assertEquals("Ids don't match", landscape.getId(), landscapeRetrieved.getId()); // NOPMD
-
-  }
 
 
-  @Test
-  public void testTotalRequets() {
-    final long ts = System.currentTimeMillis();
-    final Landscape landscape = LandscapeDummyCreator.createDummyLandscape();
-    this.repo.save(ts, landscape, 0);
-
-    final Landscape landscapeRetrieved = this.repo.getByTimestamp(ts);
-
-    assertEquals("Requests don't match", landscape.getId(), landscapeRetrieved.getId()); // NOPMD
+    assertEquals("Ids don't match", landscape.getId(), landscapeRetrieved.getId());
   }
 
   @Test
-  public void testFindById() {
+  public void findReplayById() {
     final long ts = System.currentTimeMillis();
     final Landscape landscape = LandscapeDummyCreator.createDummyLandscape();
     final Landscape landscape2 = LandscapeDummyCreator.createDummyLandscape();
@@ -80,17 +71,14 @@ public class MongoLandscapeRepositoryTest {
     this.repo.save(ts, landscape2, 0);
 
     final long id = landscape.getId();
-
     final Landscape landscapeRetrieved = this.repo.getById(id);
 
     assertEquals("Ids don't match", id, (long) landscapeRetrieved.getId());
 
   }
 
-
-
   @Test
-  public void testTotalRequestsLandscape() {
+  public void testTotalRequestsReplay() {
     final Random rand = new Random();
     final long ts = System.currentTimeMillis();
     final int requests = rand.nextInt(Integer.MAX_VALUE) + 1;
