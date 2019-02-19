@@ -1,5 +1,6 @@
 package net.explorviz.landscape.server.providers;
 
+import net.explorviz.shared.common.provider.GenericTypeFinder;
 import net.explorviz.shared.landscape.model.application.AggregatedClazzCommunication;
 import net.explorviz.shared.landscape.model.application.Application;
 import net.explorviz.shared.landscape.model.application.ApplicationCommunication;

@@ -39,19 +39,21 @@ dependencies {
   implementation fileTree(dir: 'libs', include: '*.jar')
   
   // ExplorViz landscape model
-  implementation 'com.github.explorviz.explorviz-backend-shared:landscape-model:master-SNAPSHOT'
+  implementation 'com.github.explorviz.explorviz-backend-shared:landscape-model:004af3df44'
   
   // Use local project
   //implementation project(':landscape-model')
   
   // ExplorViz config matters
-  implementation 'com.github.explorviz.explorviz-backend-shared:config-injection:master-SNAPSHOT'
+  implementation 'com.github.explorviz.explorviz-backend-shared:config-injection:004af3df44'
+  
+  implementation 'com.github.explorviz.explorviz-backend-shared:common-concerns:004af3df44'
   
   // ExplorViz security matters
-  implementation 'com.github.explorviz.explorviz-backend-shared:security:master-SNAPSHOT'
+  implementation 'com.github.explorviz.explorviz-backend-shared:security:004af3df44'
   
   // ExplorViz exception matters
-  implementation 'com.github.explorviz.explorviz-backend-shared:exception-handling:master-SNAPSHOT'
+  implementation 'com.github.explorviz.explorviz-backend-shared:exception-handling:004af3df44'
   
   // SSE context for injection
   implementation group: 'org.glassfish.jersey.media', name: 'jersey-media-sse', version: '2.27'

@@ -8,7 +8,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import net.explorviz.landscape.repository.LandscapeExchangeService;
 import net.explorviz.landscape.server.providers.CoreModelHandler;
-import net.explorviz.landscape.server.providers.GenericTypeFinder;
+import net.explorviz.shared.common.provider.GenericTypeFinder;
 import net.explorviz.shared.config.helper.PropertyHelper;
 import net.explorviz.shared.landscape.model.landscape.Landscape;
 import net.explorviz.shared.landscape.model.store.Timestamp;
