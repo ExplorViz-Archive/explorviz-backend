@@ -1,6 +1,6 @@
 rootProject.name = 'explorviz-backend'
 
-include ':landscape', ':kiekeradapter', ':authentication', ':analysis', ':discovery', ':landscape-model'
+include ':landscape', ':kiekeradapter', ':authentication', ':analysis', ':discovery'
 
 // Comment out the 'include' statement above and use the 'include' and 'project' statement below
 // to use a local available 'explorviz-backend-shared' project. Finally, see 'build.gradle' of
