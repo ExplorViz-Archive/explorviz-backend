@@ -5,6 +5,7 @@ import com.mongodb.MongoClientURI;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import net.explorviz.shared.config.annotations.Config;
+import net.explorviz.shared.config.annotations.ConfigValues;
 import org.bson.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,14 +30,11 @@ public final class MongoHelper { // NOPMD
 
   private static MongoClient client; // NOPMD
 
-  @Config("mongo.host")
-  private String host;
+  private final String host;
 
-  @Config("mongo.port")
-  private String port;
+  private final String port;
 
-  @Config("mongo.db")
-  private String dbName;
+  private final String dbName;
 
   /*
    * From mongo documentation: "It is important to limit the number of MongoClient instances in your
@@ -48,7 +46,13 @@ public final class MongoHelper { // NOPMD
    *
    * @throws IllegalStateException If an instance already exists.
    */
-  public MongoHelper() {
+  @ConfigValues({@Config("mongo.host"), @Config("mongo.port"), @Config("mongo.db")})
+  public MongoHelper(final String host, final String port, final String dbName) {
+
+    this.host = host;
+    this.port = port;
+    this.dbName = dbName;
+
     if (MongoHelper.client == null) {
       MongoHelper.client = new MongoClient(new MongoClientURI(this.getUri()));
     } else {
