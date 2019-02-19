@@ -24,7 +24,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.sse.Sse;
 import net.explorviz.discovery.repository.discovery.AgentRepository;
-import net.explorviz.discovery.server.providers.JsonApiProvider;
+import net.explorviz.shared.common.provider.JsonApiProvider;
 import net.explorviz.shared.config.helper.PropertyHelper;
 import net.explorviz.shared.discovery.exceptions.agent.AgentInternalErrorException;
 import net.explorviz.shared.discovery.exceptions.agent.AgentNoConnectionException;

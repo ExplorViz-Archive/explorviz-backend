@@ -20,16 +20,18 @@ configurations.all {
 
 dependencies {
   // ExplorViz Discovery Classes
-  implementation 'com.github.explorviz.explorviz-backend-shared:config-injection:master-SNAPSHOT'
+  implementation 'com.github.explorviz.explorviz-backend-shared:config-injection:004af3df44'
 
   // ExplorViz Discovery Classes
-  implementation 'com.github.explorviz.explorviz-backend-shared:discovery-common:master-SNAPSHOT'
+  implementation 'com.github.explorviz.explorviz-backend-shared:discovery-common:004af3df44'
   
   // ExplorViz Discovery Classes
-  implementation 'com.github.explorviz.explorviz-backend-shared:security:master-SNAPSHOT'
+  implementation 'com.github.explorviz.explorviz-backend-shared:security:004af3df44'
   
   // ExplorViz common exception handling
-  implementation 'com.github.explorviz.explorviz-backend-shared:exception-handling:master-SNAPSHOT'
+  implementation 'com.github.explorviz.explorviz-backend-shared:exception-handling:004af3df44'
+  
+  implementation 'com.github.explorviz.explorviz-backend-shared:common-concerns:004af3df44'
   
   // SSE context for injection
   implementation group: 'org.glassfish.jersey.media', name: 'jersey-media-sse', version: '2.27'  
