@@ -15,13 +15,15 @@ buildscript {
 
 dependencies {
 	// ExplorViz user matters
-  	implementation 'com.github.explorviz.explorviz-backend-shared:user:master-SNAPSHOT'
+  	implementation 'com.github.explorviz.explorviz-backend-shared:user:004af3df44'
 
 	// ExplorViz security filters
-  	implementation 'com.github.explorviz.explorviz-backend-shared:security:master-SNAPSHOT'
+  	implementation 'com.github.explorviz.explorviz-backend-shared:security:004af3df44'
+  	
+  	implementation 'com.github.explorviz.explorviz-backend-shared:common-concerns:004af3df44'
   	
   	// ExplorViz common exception handling
-  	implementation 'com.github.explorviz.explorviz-backend-shared:exception-handling:master-SNAPSHOT'
+  	implementation 'com.github.explorviz.explorviz-backend-shared:exception-handling:004af3df44'
 }
 
 assemble.dependsOn shadowJar
