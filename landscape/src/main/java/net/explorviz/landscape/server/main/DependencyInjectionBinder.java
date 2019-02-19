@@ -25,6 +25,9 @@ public class DependencyInjectionBinder extends CommonDependencyInjectionBinder {
 
   @Override
   public void configure() {
+
+    super.configure();
+
     this.bind(LandscapeRepositoryModel.class).to(LandscapeRepositoryModel.class)
         .in(Singleton.class);
     this.bind(LandscapeExchangeService.class).to(LandscapeExchangeService.class)

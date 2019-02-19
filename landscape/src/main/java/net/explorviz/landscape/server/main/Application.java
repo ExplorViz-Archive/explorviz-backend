@@ -23,17 +23,20 @@ import org.glassfish.jersey.server.ResourceConfig;
 class Application extends ResourceConfig {
   public Application() {
 
-    super();
-
     // register model types for JSONAPI provider
     CoreModelHandler.registerAllCoreModels();
+
+    this.register(new DependencyInjectionBinder());
+
+    // easy (de-)serializing models for HTTP Requests
+    this.register(JsonApiProvider.class);
+    this.register(JsonApiListProvider.class);
 
     // https://stackoverflow.com/questions/30653012/
     // multipart-form-data-no-injection-source-found-for-a-parameter-of-type-public-ja/30656345
     // register for uploading landscapes
     this.register(MultiPartFeature.class);
 
-    this.register(new DependencyInjectionBinder());
     // register(JacksonFeature)
 
     // register filters, e.g., authentication
@@ -53,9 +56,5 @@ class Application extends ResourceConfig {
     this.register(GeneralExceptionMapper.class);
 
     this.register(SetupApplicationListener.class);
-
-    // easy (de-)serializing models for HTTP Requests
-    this.register(JsonApiProvider.class);
-    this.register(JsonApiListProvider.class);
   }
 }
