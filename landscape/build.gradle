@@ -1,39 +1,14 @@
-buildscript {
-	repositories {
-		jcenter()	
-    	maven {
-    		url 'https://plugins.gradle.org/m2/'
-    	}
-  	}
-
-    dependencies {
-		classpath 'org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.6.1'
-		classpath 'com.github.jengelman.gradle.plugins:shadow:2.0.4'
-    }
-}
-
 plugins {
 	id "application"
-	id "eclipse"
 	id "org.sonarqube" version "2.7"
 	id "com.github.johnrengelman.shadow" version "4.0.4"
 	id "com.github.spotbugs" version "1.6.10"
 }
 
-
-def loadProperties = {
-    def properties = new Properties()
-    file('src/main/resources/explorviz.properties').withInputStream {
-        properties.load(it)
-    }
-    return properties
-}
-
-// Force new Dependencies on 
+// Force new Dependencies 
 configurations.all {
     resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
 }
-
 
 repositories {
 	maven {url 'https://oss.sonatype.org/content/repositories/snapshots'}
@@ -44,21 +19,21 @@ dependencies {
   implementation fileTree(dir: 'libs', include: '*.jar')
   
   // ExplorViz landscape model
-  implementation 'com.github.explorviz.explorviz-backend-shared:landscape-model:004af3df44'
+  implementation 'com.github.explorviz.explorviz-backend-shared:landscape-model:-SNAPSHOT'
   
   // Use local project
   //implementation project(':landscape-model')
   
   // ExplorViz config matters
-  implementation 'com.github.explorviz.explorviz-backend-shared:config-injection:004af3df44'
+  implementation 'com.github.explorviz.explorviz-backend-shared:config-injection:-SNAPSHOT'
   
-  implementation 'com.github.explorviz.explorviz-backend-shared:common-concerns:004af3df44'
+  implementation 'com.github.explorviz.explorviz-backend-shared:common-concerns:-SNAPSHOT'
   
   // ExplorViz security matters
-  implementation 'com.github.explorviz.explorviz-backend-shared:security:004af3df44'
+  implementation 'com.github.explorviz.explorviz-backend-shared:security:-SNAPSHOT'
   
   // ExplorViz exception matters
-  implementation 'com.github.explorviz.explorviz-backend-shared:exception-handling:004af3df44'
+  implementation 'com.github.explorviz.explorviz-backend-shared:exception-handling:-SNAPSHOT'
   
   // SSE context for injection
   implementation group: 'org.glassfish.jersey.media', name: 'jersey-media-sse', version: '2.27'

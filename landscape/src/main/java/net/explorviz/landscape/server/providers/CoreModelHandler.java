@@ -17,7 +17,6 @@ import net.explorviz.shared.landscape.model.landscape.Node;
 import net.explorviz.shared.landscape.model.landscape.NodeGroup;
 import net.explorviz.shared.landscape.model.landscape.System;
 import net.explorviz.shared.landscape.model.store.Timestamp;
-import net.explorviz.shared.security.model.User;
 
 /**
  * Handles the registration of (core) model types for the JSONAPI provider.
@@ -50,6 +49,5 @@ public final class CoreModelHandler {
     GenericTypeFinder.getTypeMap().putIfAbsent("AggregatedClazzCommunication",
         AggregatedClazzCommunication.class);
     GenericTypeFinder.getTypeMap().putIfAbsent("DatabaseQuery", DatabaseQuery.class);
-    GenericTypeFinder.getTypeMap().putIfAbsent("User", User.class);
   }
 }
