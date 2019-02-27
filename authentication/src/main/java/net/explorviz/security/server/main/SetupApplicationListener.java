@@ -69,8 +69,8 @@ public class SetupApplicationListener implements ApplicationEventListener {
       this.datastore.save(r);
     }
 
-    // start at size + 2, because of hard-coded UserSettings id
-    final long id = roleList.size() + 2;
+    // Default admin has fixed id 1
+    final long id = 1L;
 
     final String pw = PasswordStorage.createHash("password");
 
