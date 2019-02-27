@@ -86,7 +86,7 @@ public class UserResourceEndpointTest extends JerseyTest {
 
     // Create tokens for random users
     final User admin = new User("Admin");
-    admin.setRoles(Arrays.asList(new Role(1L, "admin")));
+    admin.setRoles(Arrays.asList(new Role("admin")));
     final User normie = new User("Normie");
 
     this.adminToken = "Bearer " + this.tokenService.issueNewToken(admin);
@@ -343,7 +343,7 @@ public class UserResourceEndpointTest extends JerseyTest {
 
   @Test
   public void removeUser() throws DocumentSerializationException {
-    final User u = new User(1L, "user1", "pw", Arrays.asList(new Role(2L, "admin")));
+    final User u = new User(1L, "user1", "pw", Arrays.asList(new Role("admin")));
 
     this.userCrudService.saveNewEntity(u);
 

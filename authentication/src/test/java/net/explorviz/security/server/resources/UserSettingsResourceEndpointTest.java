@@ -73,7 +73,7 @@ public class UserSettingsResourceEndpointTest extends JerseyTest {
 
     // Create tokens for random users
     final User admin = new User("Admin");
-    admin.setRoles(Arrays.asList(new Role(1L, "admin")));
+    admin.setRoles(Arrays.asList(new Role("admin")));
     final User normie = new User("Normie");
 
     this.adminToken = AUTH_METHOD + " " + this.tokenService.issueNewToken(admin);
