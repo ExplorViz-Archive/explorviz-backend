@@ -9,6 +9,16 @@ configurations.all {
   resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
 }
 
+repositories {
+	maven {url 'https://oss.sonatype.org/content/repositories/snapshots'}
+	mavenLocal()
+}
+
+// Force new Dependencies on 
+configurations.all {
+    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+}
+
 dependencies {
   	implementation 'com.github.explorviz.explorviz-backend-shared:security:-SNAPSHOT'
   	
@@ -19,6 +29,10 @@ dependencies {
   	implementation 'com.github.explorviz.explorviz-backend-shared:exception-handling:-SNAPSHOT'
 
   	implementation 'com.github.explorviz.explorviz-backend-shared:user:-SNAPSHOT'
+  	
+  	// implementation project(':common-concerns')
+  	
+  	
 }
 
 assemble.dependsOn shadowJar

@@ -6,6 +6,7 @@ import net.explorviz.security.services.RoleService;
 import net.explorviz.security.services.TokenService;
 import net.explorviz.security.services.UserMongoCrudService;
 import net.explorviz.security.services.UserValidationService;
+import net.explorviz.shared.common.idgen.IdGenerator;
 import net.explorviz.shared.common.injection.CommonDependencyInjectionBinder;
 import xyz.morphia.Datastore;
 
@@ -27,5 +28,7 @@ public class DependencyInjectionBinder extends CommonDependencyInjectionBinder {
     this.bind(UserMongoCrudService.class).to(UserMongoCrudService.class).in(Singleton.class);
 
     this.bind(RoleService.class).to(RoleService.class).in(Singleton.class);
+
+    this.bind(IdGenerator.class).to(IdGenerator.class).in(Singleton.class);
   }
 }
