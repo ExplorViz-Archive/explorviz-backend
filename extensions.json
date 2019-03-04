@@ -1,11 +1,7 @@
 {
-      "name": "backend",
-      "desc": "ExplorViz uses dynamic analysis techniques to provide live trace visualization of the communication in large software landscape. It targets system and program comprehension in those landscapes while still providing details on the communication within an application. A landscape perspective enriches current system visualizations with additional abstraction levels for efficient comprehension of communication between hundreds of applications which is often encountered in, for instance, Cloud environments. On the application level perspective, ExplorViz utilizes the 3D city metaphor combined with an interactive concept of showing only details that are in focus of the analysis. For best accessibility, ExplorViz is a web-based tool featuring cutting-edge technologies like WebGL and HTML 5.",
       "imgUrl": "img/logo-be.png",
       "requiredExtensions": [
         "frontend"
       ],
-      "incompatibleExtensions": [],
-      "url": "https://github.com/ExplorViz/explorviz-backend",
-      "version": "1.0"
+      "incompatibleExtensions": []
 }
