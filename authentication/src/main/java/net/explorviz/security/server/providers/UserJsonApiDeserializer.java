@@ -47,7 +47,7 @@ public class UserJsonApiDeserializer implements MessageBodyReader<User> {
     final List<Role> obtainedRolelist = new ArrayList<>();
 
     for (final Role roleWithoutContent : user.getRoles()) {
-      final Role dbRole = this.datastore.get(Role.class, roleWithoutContent.getId());
+      final Role dbRole = this.datastore.get(Role.class, roleWithoutContent.getDescriptor());
 
       if (dbRole != null) {
         obtainedRolelist.add(dbRole);

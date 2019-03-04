@@ -151,8 +151,8 @@ public class UserResourceTest {
 
   @Test
   public void testListOfNewUsers() {
-    this.roles.add(new Role(1L, "role"));
-    final List<Role> roles = Arrays.asList(new Role(1L, "role"));
+    this.roles.add(new Role("role"));
+    final List<Role> roles = Arrays.asList(new Role("role"));
     final User u1 = new User(null, "u1", "pw", roles);
     final User u2 = new User(null, "u2", "pw", roles);
     final User u3 = new User(null, "u3", "pw", roles);
@@ -167,8 +167,8 @@ public class UserResourceTest {
 
   @Test
   public void testListOfNewUsersWithInvalidUser() {
-    this.roles.add(new Role(1L, "role"));
-    final List<Role> roles = Arrays.asList(new Role(1L, "role"));
+    this.roles.add(new Role("role"));
+    final List<Role> roles = Arrays.asList(new Role("role"));
     final User u1 = new User(null, "u1", "", roles);
     final User u2 = new User(null, "u2", "pw", roles);
     final User u3 = new User(null, "u3", "pw", roles);
@@ -184,17 +184,17 @@ public class UserResourceTest {
   @Test
   public void testUserByRole() {
 
-    this.roles.add(new Role(1L, "role1"));
-    this.roles.add(new Role(2L, "role2"));
-    this.roles.add(new Role(3L, "role3"));
+    this.roles.add(new Role("role1"));
+    this.roles.add(new Role("role2"));
+    this.roles.add(new Role("role3"));
 
     final User u1 = new User("testuser");
     u1.setPassword("password");
-    u1.setRoles(Arrays.asList(new Role(1L, "role1"), new Role(2L, "role2")));
+    u1.setRoles(Arrays.asList(new Role("role1"), new Role("role2")));
 
     final User u2 = new User("testuser2");
     u2.setPassword("password");
-    u2.setRoles(Arrays.asList(new Role(1L, "role1")));
+    u2.setRoles(Arrays.asList(new Role("role1")));
 
     this.userResource.newUser(u1);
     this.userResource.newUser(u2);
@@ -265,8 +265,8 @@ public class UserResourceTest {
 
     final long uid = newUser.getId();
 
-    final User update = new User(null, null, null, Arrays.asList(new Role(3L, "newrole")));
-    this.roles.add(new Role(3L, "newrole"));
+    final User update = new User(null, null, null, Arrays.asList(new Role("newrole")));
+    this.roles.add(new Role("newrole"));
     final User updatedUser = this.userResource.updateUser(uid, update);
 
     assertTrue(updatedUser.getRoles().stream().anyMatch(r -> r.getDescriptor().equals("newrole")));
