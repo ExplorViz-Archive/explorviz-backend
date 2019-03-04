@@ -9,16 +9,20 @@ configurations.all {
   resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
 }
 
-dependencies {
-  	implementation 'com.github.explorviz.explorviz-backend-shared:security:-SNAPSHOT'
-  	
-  	implementation 'com.github.explorviz.explorviz-backend-shared:config-injection:-SNAPSHOT'
-  	
-  	implementation 'com.github.explorviz.explorviz-backend-shared:common-concerns:-SNAPSHOT'
-  	
-  	implementation 'com.github.explorviz.explorviz-backend-shared:exception-handling:-SNAPSHOT'
+ext {	
+	expSharedVersion = "${rootProject.ext.explorvizSharedVersion}"
+}
 
-  	implementation 'com.github.explorviz.explorviz-backend-shared:user:-SNAPSHOT'
+dependencies {
+  	implementation "com.github.explorviz.explorviz-backend-shared:security:${expSharedVersion}"
+  	
+  	implementation "com.github.explorviz.explorviz-backend-shared:config-injection:${expSharedVersion}"
+  	
+  	implementation "com.github.explorviz.explorviz-backend-shared:common-concerns:${expSharedVersion}"
+  	
+  	implementation "com.github.explorviz.explorviz-backend-shared:exception-handling:${expSharedVersion}"
+
+  	implementation "com.github.explorviz.explorviz-backend-shared:user:${expSharedVersion}"
 }
 
 assemble.dependsOn shadowJar

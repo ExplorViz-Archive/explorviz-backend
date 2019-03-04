@@ -14,26 +14,29 @@ repositories {
 	maven {url 'https://oss.sonatype.org/content/repositories/snapshots'}
 }
 
+ext {	
+	expSharedVersion = "${rootProject.ext.explorvizSharedVersion}"
+}
 dependencies {
   // Any .jar in libs
   implementation fileTree(dir: 'libs', include: '*.jar')
   
   // ExplorViz landscape model
-  implementation 'com.github.explorviz.explorviz-backend-shared:landscape-model:-SNAPSHOT'
+  implementation "com.github.explorviz.explorviz-backend-shared:landscape-model:${expSharedVersion}"
   
   // Use local project
   //implementation project(':landscape-model')
   
   // ExplorViz config matters
-  implementation 'com.github.explorviz.explorviz-backend-shared:config-injection:-SNAPSHOT'
+  implementation "com.github.explorviz.explorviz-backend-shared:config-injection:${expSharedVersion}"
   
-  implementation 'com.github.explorviz.explorviz-backend-shared:common-concerns:-SNAPSHOT'
+  implementation "com.github.explorviz.explorviz-backend-shared:common-concerns:${expSharedVersion}"
   
   // ExplorViz security matters
-  implementation 'com.github.explorviz.explorviz-backend-shared:security:-SNAPSHOT'
+  implementation "com.github.explorviz.explorviz-backend-shared:security:${expSharedVersion}"
   
   // ExplorViz exception matters
-  implementation 'com.github.explorviz.explorviz-backend-shared:exception-handling:-SNAPSHOT'
+  implementation "com.github.explorviz.explorviz-backend-shared:exception-handling:${expSharedVersion}"
   
   // SSE context for injection
   implementation group: 'org.glassfish.jersey.media', name: 'jersey-media-sse', version: '2.27'

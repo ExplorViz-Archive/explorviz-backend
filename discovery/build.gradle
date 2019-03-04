@@ -9,20 +9,24 @@ configurations.all {
   resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
 }
 
+ext {	
+	expSharedVersion = "${rootProject.ext.explorvizSharedVersion}"
+}
+
 dependencies {
   // ExplorViz Discovery Classes
-  implementation 'com.github.explorviz.explorviz-backend-shared:config-injection:-SNAPSHOT'
+  implementation "com.github.explorviz.explorviz-backend-shared:config-injection:${expSharedVersion}"
 
   // ExplorViz Discovery Classes
-  implementation 'com.github.explorviz.explorviz-backend-shared:discovery-common:-SNAPSHOT'
+  implementation "com.github.explorviz.explorviz-backend-shared:discovery-common:${expSharedVersion}"
   
   // ExplorViz Discovery Classes
-  implementation 'com.github.explorviz.explorviz-backend-shared:security:-SNAPSHOT'
+  implementation "com.github.explorviz.explorviz-backend-shared:security:${expSharedVersion}"
   
   // ExplorViz common exception handling
-  implementation 'com.github.explorviz.explorviz-backend-shared:exception-handling:-SNAPSHOT'
+  implementation "com.github.explorviz.explorviz-backend-shared:exception-handling:${expSharedVersion}"
   
-  implementation 'com.github.explorviz.explorviz-backend-shared:common-concerns:-SNAPSHOT'
+  implementation "com.github.explorviz.explorviz-backend-shared:common-concerns:${expSharedVersion}"
   
   // SSE context for injection
   implementation group: 'org.glassfish.jersey.media', name: 'jersey-media-sse', version: '2.27'  
