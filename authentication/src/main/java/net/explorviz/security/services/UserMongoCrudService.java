@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.inject.Inject;
+import net.explorviz.shared.common.idgen.IdGenerator;
 import net.explorviz.shared.security.model.User;
 import net.explorviz.shared.security.model.roles.Role;
 import org.jvnet.hk2.annotations.Service;
@@ -34,7 +35,7 @@ public class UserMongoCrudService implements MongoCrudService<User> {
 
 
   @Inject
-  private net.explorviz.shared.common.idgen.IdGenerator idGenerator;
+  private IdGenerator idGenerator;
 
   /**
    * Creates a new UserMongoDB
@@ -62,7 +63,7 @@ public class UserMongoCrudService implements MongoCrudService<User> {
    */
   public Optional<User> saveNewEntity(final User user) throws MongoException {
     // Generate an id
-    user.setId(this.idGenerator.getUniqueIdAsLong());
+    user.setId(this.idGenerator.generateId());
 
     this.datastore.save(user);
 
@@ -78,7 +79,7 @@ public class UserMongoCrudService implements MongoCrudService<User> {
   }
 
   @Override
-  public Optional<User> getEntityById(final Long id) throws MongoException {
+  public Optional<User> getEntityById(final String id) throws MongoException {
 
     final User userObject = this.datastore.get(User.class, id);
 
@@ -86,7 +87,7 @@ public class UserMongoCrudService implements MongoCrudService<User> {
   }
 
   @Override
-  public void deleteEntityById(final Long id) throws MongoException {
+  public void deleteEntityById(final String id) throws MongoException {
 
     this.datastore.delete(User.class, id);
 

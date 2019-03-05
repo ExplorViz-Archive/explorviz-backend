@@ -1,7 +1,7 @@
 package net.explorviz.security.server.resources;
 
-import static java.lang.Math.toIntExact;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import com.github.jasminb.jsonapi.JSONAPIDocument;
@@ -26,7 +26,6 @@ import org.eclipse.jetty.http.HttpHeader;
 import org.eclipse.jetty.http.HttpStatus;
 import org.glassfish.hk2.api.ServiceLocator;
 import org.glassfish.hk2.utilities.ServiceLocatorUtilities;
-import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.client.HttpUrlConnectorProvider;
 import org.glassfish.jersey.server.ResourceConfig;
@@ -121,9 +120,9 @@ public class UserResourceEndpointTest extends JerseyTest {
 
     // Use the in-memory user db instead of mongo to avoid connection to an actual database.
     // Could also use a mock-object instead
-    c.register(new AbstractBinder() {
+    c.register(new DependencyInjectionBinder() {
       @Override
-      protected void configure() {
+      public void configure() {
         this.bind(UserMongoCrudService.class).to(UserMongoCrudService.class).in(Singleton.class)
             .ranked(10);
         this.bindFactory(TestDatasourceFactory.class).to(Datastore.class).in(Singleton.class)
@@ -160,7 +159,7 @@ public class UserResourceEndpointTest extends JerseyTest {
     assertEquals(null, respuser.getPassword());
     assertEquals(u.getRoles(), respuser.getRoles());
     // Id must be set
-    assertTrue(respuser.getId() > 0);
+    assertFalse(respuser.getId().equals("0"));
   }
 
 
@@ -255,7 +254,8 @@ public class UserResourceEndpointTest extends JerseyTest {
         this.jsonApiConverter.readDocumentCollection(rawResponseBody, User.class).get();
 
     assertEquals(2, responseBody.size());
-    assertTrue(responseBody.get(0).getId() > 0 && responseBody.get(1).getId() > 0);
+    assertTrue(Long.parseLong(responseBody.get(0).getId()) > 0
+        && Long.parseLong(responseBody.get(1).getId()) > 0);
   }
 
 
@@ -300,14 +300,14 @@ public class UserResourceEndpointTest extends JerseyTest {
 
     this.userCrudService.saveNewEntity(u);
 
-    final long id = u.getId();
+    final String id = u.getId();
 
-    final byte[] rawResponseBody = this.target("v1/users/" + toIntExact(id)).request()
+    final byte[] rawResponseBody = this.target("v1/users/" + id).request()
         .header(HttpHeader.AUTHORIZATION.asString(), this.adminToken).get(byte[].class);
 
     final User foundUser = this.jsonApiConverter.readDocument(rawResponseBody, User.class).get();
 
-    assertEquals(id, (long) foundUser.getId());
+    assertEquals(id, foundUser.getId());
     assertEquals("name", foundUser.getUsername());
     assertTrue(foundUser.getRoles().stream().anyMatch(
         r -> r.getDescriptor().equals(this.roleService.getAllRoles().get(0).getDescriptor())));
@@ -322,10 +322,10 @@ public class UserResourceEndpointTest extends JerseyTest {
     this.datastore.getCollection(User.class).drop();
 
     final User u1 =
-        new User(1L, "user1", "pw", Arrays.asList(this.roleService.getAllRoles().get(0)));
+        new User("1", "user1", "pw", Arrays.asList(this.roleService.getAllRoles().get(0)));
     final User u2 =
-        new User(2L, "user2", "pw", Arrays.asList(this.roleService.getAllRoles().get(0)));
-    final User u3 = new User(3L, "user3", "pw", null);
+        new User("2", "user2", "pw", Arrays.asList(this.roleService.getAllRoles().get(0)));
+    final User u3 = new User("3", "user3", "pw", null);
 
     this.userCrudService.saveNewEntity(u1);
     this.userCrudService.saveNewEntity(u2);
@@ -343,7 +343,7 @@ public class UserResourceEndpointTest extends JerseyTest {
 
   @Test
   public void removeUser() throws DocumentSerializationException {
-    final User u = new User(1L, "user1", "pw", Arrays.asList(new Role("admin")));
+    final User u = new User("1", "user1", "pw", Arrays.asList(new Role("admin")));
 
     this.userCrudService.saveNewEntity(u);
 
@@ -359,7 +359,7 @@ public class UserResourceEndpointTest extends JerseyTest {
   @Test
   public void testRetrieveSettings() throws DocumentSerializationException {
     final UserSettings settings = new UserSettings();
-    final User u = new User(1L, "user1", "pw", null, settings);
+    final User u = new User("1", "user1", "pw", null, settings);
 
     this.userCrudService.saveNewEntity(u);
 

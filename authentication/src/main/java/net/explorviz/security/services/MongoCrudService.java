@@ -33,7 +33,7 @@ public interface MongoCrudService<T> {
    * @param id - the id of the entity to find
    * @return optional the entity with the given id
    */
-  Optional<T> getEntityById(final Long id);
+  Optional<T> getEntityById(final String id);
 
 
   /**
@@ -49,7 +49,7 @@ public interface MongoCrudService<T> {
    *
    * @param id - the id of the entity to delete
    */
-  void deleteEntityById(final Long id);
+  void deleteEntityById(final String id);
 
 
   /**
