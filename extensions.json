@@ -1,5 +1,5 @@
 {
-      "imgUrl": "img/logo-be.png",
+      "imgName": "logo-be.png",
       "requiredExtensions": [
         "frontend"
       ],
