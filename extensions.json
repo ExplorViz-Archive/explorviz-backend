@@ -1,7 +1,7 @@
 {
       "imgSrc": "logo-be.png",
       "requiredExtensions": [
-        "frontend"
+        "frontend_master"
       ],
       "incompatibleExtensions": []
 }
