@@ -76,6 +76,8 @@ public class InsertionRepositoryPart {
           final Application application =
               this.seekOrCreateApplication(node, hostApplicationRecord, landscape);
 
+          // TODO send to Discovery Kafka Topic the name of the found application
+
           if (isNewNode) {
             final NodeGroup nodeGroup = this.seekOrCreateNodeGroup(system, node);
             nodeGroup.getNodes().add(node);
@@ -134,7 +136,7 @@ public class InsertionRepositoryPart {
 
   /**
    * Seeks or creates a new system
-   * 
+   *
    * @param landscape - passed landscape
    * @param systemname - name of the system
    * @return the retrieved or created system
