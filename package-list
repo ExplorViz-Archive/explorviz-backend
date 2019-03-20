@@ -1,7 +1,6 @@
 net.explorviz.analysis
 net.explorviz.discovery.repository.discovery
 net.explorviz.discovery.server.main
-net.explorviz.discovery.server.providers
 net.explorviz.discovery.server.resources
 net.explorviz.discovery.server.services
 net.explorviz.kiekeradapter.configuration
@@ -11,13 +10,13 @@ net.explorviz.kiekeradapter.main
 net.explorviz.landscape.api
 net.explorviz.landscape.repository
 net.explorviz.landscape.repository.helper
+net.explorviz.landscape.repository.persistence
+net.explorviz.landscape.repository.persistence.mongo
 net.explorviz.landscape.server.exceptions.mapper
 net.explorviz.landscape.server.helper
-net.explorviz.landscape.server.injection
 net.explorviz.landscape.server.main
 net.explorviz.landscape.server.providers
 net.explorviz.landscape.server.resources
-net.explorviz.landscape.server.security
 net.explorviz.security.model
 net.explorviz.security.server.filter
 net.explorviz.security.server.injection
@@ -26,12 +25,3 @@ net.explorviz.security.server.providers
 net.explorviz.security.server.resources
 net.explorviz.security.services
 net.explorviz.security.util
-net.explorviz.shared.annotations
-net.explorviz.shared.annotations.injection
-net.explorviz.shared.exceptions
-net.explorviz.shared.exceptions.mapper
-net.explorviz.shared.security
-net.explorviz.shared.security.filters
-net.explorviz.shared.security.model
-net.explorviz.shared.security.model.roles
-net.explorviz.shared.server.helper
