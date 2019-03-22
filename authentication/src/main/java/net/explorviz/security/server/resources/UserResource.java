@@ -32,7 +32,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Provides endpoints for user management.
+ * Provides several endpoints for user management.
  *
  */
 @Path("v1/users")

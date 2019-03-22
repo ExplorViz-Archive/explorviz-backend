@@ -9,6 +9,10 @@ import javax.ws.rs.Produces;
 import net.explorviz.security.services.RoleService;
 import net.explorviz.shared.security.model.roles.Role;
 
+/**
+ * Provides endpoints for user roles.
+ *
+ */
 @Path("v1/roles")
 public class RoleResource {
 

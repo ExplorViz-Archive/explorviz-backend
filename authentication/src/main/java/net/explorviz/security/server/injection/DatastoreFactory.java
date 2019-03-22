@@ -8,6 +8,10 @@ import org.glassfish.hk2.api.Factory;
 import xyz.morphia.Datastore;
 import xyz.morphia.Morphia;
 
+/**
+ * Handles the creation of {@link Datastore} for DI.
+ *
+ */
 public class DatastoreFactory implements Factory<Datastore> {
 
   // @Config("mongo.port")
@@ -15,6 +19,12 @@ public class DatastoreFactory implements Factory<Datastore> {
 
   private final Datastore datastore;
 
+  /**
+   * Creates new Datastore, which will be used for injection.
+   *
+   * @param host
+   * @param port
+   */
   @Config("mongo.host")
   @Config("mongo.port")
   public DatastoreFactory(final String host, final String port) {

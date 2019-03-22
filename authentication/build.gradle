@@ -20,18 +20,22 @@ configurations.all {
 }
 
 dependencies {
+  	
   	implementation 'com.github.explorviz.explorviz-backend-shared:security:-SNAPSHOT'
-  	
   	implementation 'com.github.explorviz.explorviz-backend-shared:config-injection:-SNAPSHOT'
-  	
   	implementation 'com.github.explorviz.explorviz-backend-shared:common-concerns:-SNAPSHOT'
-  	
   	implementation 'com.github.explorviz.explorviz-backend-shared:exception-handling:-SNAPSHOT'
-
   	implementation 'com.github.explorviz.explorviz-backend-shared:user:-SNAPSHOT'
   	
-  	// implementation project(':common-concerns')
+  	// Comment above and umcomment below to work locally
+  	/*
   	
+  	implementation project(':security')
+  	implementation project(':common-concerns')
+  	implementation project(':exception-handling')
+  	implementation project(':user')
+  	
+  	*/
   	
 }
 
