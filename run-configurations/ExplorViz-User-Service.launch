@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <launchConfiguration type="org.eclipse.jdt.launching.localJavaApplication">
 <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
-<listEntry value="/authentication/src/main/java/net/explorviz/security/server/main/Main.java"/>
+<listEntry value="/user-service/src/main/java/net/explorviz/security/server/main/Main.java"/>
 </listAttribute>
 <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_TYPES">
 <listEntry value="1"/>
@@ -10,5 +10,5 @@
 <booleanAttribute key="org.eclipse.jdt.launching.ATTR_USE_START_ON_FIRST_THREAD" value="true"/>
 <stringAttribute key="org.eclipse.jdt.launching.CLASSPATH_PROVIDER" value="org.eclipse.buildship.core.classpathprovider"/>
 <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="net.explorviz.security.server.main.Main"/>
-<stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="authentication"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="user-service"/>
 </launchConfiguration>
