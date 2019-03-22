@@ -5,7 +5,6 @@ import static org.junit.Assert.assertEquals;
 import java.util.Random;
 import javax.inject.Inject;
 import net.explorviz.landscape.repository.LandscapeDummyCreator;
-import net.explorviz.landscape.repository.persistence.mongo.MongoLandscapeRepository;
 import net.explorviz.landscape.server.main.DependencyInjectionBinder;
 import net.explorviz.landscape.server.providers.CoreModelHandler;
 import net.explorviz.shared.landscape.model.landscape.Landscape;
@@ -80,11 +79,11 @@ public class MongoLandscapeRepositoryTest {
     this.repo.save(ts, landscape, 0);
     this.repo.save(ts, landscape2, 0);
 
-    final long id = landscape.getId();
+    final String id = landscape.getId();
 
     final Landscape landscapeRetrieved = this.repo.getById(id);
 
-    assertEquals("Ids don't match", id, (long) landscapeRetrieved.getId());
+    assertEquals("Ids don't match", id, landscapeRetrieved.getId());
 
   }
 

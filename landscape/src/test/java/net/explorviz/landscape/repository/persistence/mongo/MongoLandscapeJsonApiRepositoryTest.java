@@ -25,10 +25,14 @@ public class MongoLandscapeJsonApiRepositoryTest {
   @Inject
   private MongoLandscapeJsonApiRepository repo;
 
+
+
   @BeforeClass
   public static void setUpAll() {
     CoreModelHandler.registerAllCoreModels();
   }
+
+
 
   /**
    * Injects dependencies.
@@ -70,7 +74,7 @@ public class MongoLandscapeJsonApiRepositoryTest {
     this.repo.save(ts, landscape, 0);
     this.repo.save(ts2, landscape2, 0);
 
-    final long id = landscape.getId();
+    final String id = landscape.getId();
     final String rawLandscape = this.repo.getById(id);
 
     assertTrue("Ivalid landscape or wrong id",

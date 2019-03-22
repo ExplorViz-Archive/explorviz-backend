@@ -32,7 +32,7 @@ public class MongoReplayRepository implements ReplayRepository<Landscape> {
   }
 
   @Override
-  public Landscape getById(final long id) {
+  public Landscape getById(final String id) {
     final String jsonLandscape = this.repo.getById(id);
     try {
       return this.serializationHelper.deserialize(jsonLandscape);

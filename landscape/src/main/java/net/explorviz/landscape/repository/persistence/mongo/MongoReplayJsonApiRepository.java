@@ -78,7 +78,7 @@ public class MongoReplayJsonApiRepository implements ReplayRepository<String> {
   }
 
   @Override
-  public String getById(final long id) {
+  public String getById(final String id) {
     final String regexQuery = "\\{\"data\":\\{\"type\":\"landscape\",\"id\":\"" + id;
 
     final Pattern pat = Pattern.compile(regexQuery, Pattern.CASE_INSENSITIVE);

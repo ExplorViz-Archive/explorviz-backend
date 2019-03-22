@@ -63,7 +63,7 @@ public class MongoReplayJsonApiRepositoryTest {
     this.repo.save(ts, landscape, 0);
     this.repo.save(ts, landscape2, 0);
 
-    final long id = landscape.getId();
+    final String id = landscape.getId();
     final String rawLandscape = this.repo.getById(id);
 
     assertTrue("Ivalid landscape or wrong id",

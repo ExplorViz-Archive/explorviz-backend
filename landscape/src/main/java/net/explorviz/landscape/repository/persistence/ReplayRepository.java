@@ -48,7 +48,7 @@ public interface ReplayRepository<T> {
    *
    * @return the replay object
    */
-  T getById(final long id);
+  T getById(final String id);
 
   /**
    * Removes all landscapes that have exceeded their lifespan.
