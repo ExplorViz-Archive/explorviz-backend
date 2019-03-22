@@ -2,15 +2,9 @@ package net.explorviz.security.server.resources;
 
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
-import javax.inject.Inject;
 import javax.ws.rs.GET;
-import javax.ws.rs.NotFoundException;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import net.explorviz.security.services.TokenService;
-import net.explorviz.shared.security.model.settings.DefaultSettings;
-import net.explorviz.shared.security.model.settings.SettingDescriptor;
 import net.explorviz.shared.security.model.settings.UserSettings;
 
 /**
@@ -26,8 +20,6 @@ public class UserSettingsResource {
   private static final String ADMIN_ROLE = "admin";
 
 
-  @Inject
-  private TokenService tokenService;
 
   /**
    * Finds the descriptor of the setting with the given id.
@@ -39,21 +31,8 @@ public class UserSettingsResource {
   @Path("{id}")
   @PermitAll
   @Produces(MEDIA_TYPE)
-  public SettingDescriptor settingsInfo(@PathParam("id") final String id) {
-
-    if (DefaultSettings.booleanSettings().containsKey(id)) {
-      return DefaultSettings.booleanSettings().get(id);
-    }
-
-    if (DefaultSettings.numericSettings().containsKey(id)) {
-      return DefaultSettings.numericSettings().get(id);
-    }
-
-    if (DefaultSettings.stringSettings().containsKey(id)) {
-      return DefaultSettings.stringSettings().get(id);
-    }
-
-    throw new NotFoundException(String.format("Setting with id %s does not exist", id));
+  public SettingsDescriptorResource settingsInfo() {
+    return new SettingsDescriptorResource();
 
   }
 
