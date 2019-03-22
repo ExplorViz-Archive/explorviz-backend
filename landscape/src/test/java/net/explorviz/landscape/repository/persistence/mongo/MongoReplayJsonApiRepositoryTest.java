@@ -8,6 +8,8 @@ import javax.inject.Inject;
 import net.explorviz.landscape.repository.LandscapeDummyCreator;
 import net.explorviz.landscape.server.main.DependencyInjectionBinder;
 import net.explorviz.landscape.server.providers.CoreModelHandler;
+import net.explorviz.shared.common.idgen.IdGenerator;
+import net.explorviz.shared.landscape.model.helper.BaseEntity;
 import net.explorviz.shared.landscape.model.landscape.Landscape;
 import org.glassfish.hk2.api.ServiceLocator;
 import org.glassfish.hk2.utilities.ServiceLocatorUtilities;
@@ -20,6 +22,9 @@ public class MongoReplayJsonApiRepositoryTest {
 
   @Inject
   private MongoReplayJsonApiRepository repo;
+
+  @Inject
+  private IdGenerator idGenerator;
 
   @BeforeClass
   public static void setUpAll() {
@@ -37,6 +42,7 @@ public class MongoReplayJsonApiRepositoryTest {
       locator.inject(this);
     }
     this.repo.clear();
+    BaseEntity.initialize(this.idGenerator);
   }
 
   @After

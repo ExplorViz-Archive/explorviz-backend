@@ -55,7 +55,7 @@ public class MongoReplayJsonApiRepository implements ReplayRepository<String> {
       }
     }
     if (LOGGER.isInfoEnabled()) {
-      LOGGER.info(String.format("Saved landscape {timestamp: %d, id: %d, totalRequests: %d}",
+      LOGGER.info(String.format("Saved landscape {timestamp: %d, id: %s, totalRequests: %d}",
           timestamp, replayLandscape.getId(), totalRequests));
     }
   }
