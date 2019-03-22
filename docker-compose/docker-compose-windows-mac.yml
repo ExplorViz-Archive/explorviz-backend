@@ -27,8 +27,18 @@ services:
        - explorviz-landscape-mongo-data:/data/db
        - explorviz-landscape-mongo-configdb:/data/configdb
 
+   ids-redis:
+    image: redis
+    container_name: explorviz-ids-redis
+    command: ["redis-server", "--appendonly", "yes"]
+    ports:
+        - 6379:6379
+    volumes:
+        - explorviz-ids-redis:/data
+
 volumes:
   explorviz-auth-mongo-data:
   explorviz-auth-mongo-configdb:
   explorviz-landscape-mongo-data:
   explorviz-landscape-mongo-configdb:
+  explorviz-ids-redis:
