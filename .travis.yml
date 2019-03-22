@@ -7,6 +7,7 @@ env:
 services:
   - mongodb
   - docker
+  - redis-server
 
 jobs:
   fast_finish: true
