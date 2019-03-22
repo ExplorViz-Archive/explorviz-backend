@@ -32,7 +32,7 @@ public class SetupApplicationListener implements ApplicationEventListener {
   @Inject
   private ServiceLocator serviceLocator;
 
-  @Inject
+
   private LandscapeExchangeService exchangeService;
 
   @Inject
@@ -49,10 +49,15 @@ public class SetupApplicationListener implements ApplicationEventListener {
     final Type t = Type.INITIALIZATION_FINISHED;
 
     if (event.getType().equals(t)) {
+      BaseEntity.initialize(this.idGenerator);
       SetupApplicationListener.LOCATOR = this.serviceLocator;
+
+      // Workaround: Can't be injected directly since BaseEntity.initialize(..) must be called
+      // first.
+      this.exchangeService = this.serviceLocator.create(LandscapeExchangeService.class);
+
       this.startExplorVizBackend();
       this.startDatabase();
-      BaseEntity.initialize(this.idGenerator);
     }
   }
 
