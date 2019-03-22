@@ -20,25 +20,25 @@ jobs:
       name: "Docker Image: Analysis"
       if: (type = push) AND ((branch = dev-1) OR (branch = master))
       jdk: openjdk8
-      script: cd analysis && ../.travis/docker_push.sh
+      script: cd analysis-service && ../.travis/docker_push.sh
       
     - stage: deploy
       name: "Docker Image: Authentication"
       if: (type = push) AND ((branch = dev-1) OR (branch = master))
       jdk: openjdk8
-      script: cd authentication && ../.travis/docker_push.sh
+      script: cd authentication-service && ../.travis/docker_push.sh
       
     - stage: deploy
       name: "Docker Image: Discovery"
       if: (type = push) AND ((branch = dev-1) OR (branch = master))
       jdk: openjdk8
-      script: cd discovery && ../.travis/docker_push.sh
+      script: cd discovery-service && ../.travis/docker_push.sh
       
     - stage: deploy
       name: "Docker Image: Landscape"
       if: (type = push) AND ((branch = dev-1) OR (branch = master))
       jdk: openjdk8
-      script: cd landscape && ../.travis/docker_push.sh
+      script: cd landscape-service && ../.travis/docker_push.sh
     
     - stage: documentation
       name: "Publish documentation"
