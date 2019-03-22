@@ -5,9 +5,10 @@ import static org.junit.Assert.assertEquals;
 import java.util.Random;
 import javax.inject.Inject;
 import net.explorviz.landscape.repository.LandscapeDummyCreator;
-import net.explorviz.landscape.repository.persistence.mongo.MongoReplayRepository;
 import net.explorviz.landscape.server.main.DependencyInjectionBinder;
 import net.explorviz.landscape.server.providers.CoreModelHandler;
+import net.explorviz.shared.common.idgen.IdGenerator;
+import net.explorviz.shared.landscape.model.helper.BaseEntity;
 import net.explorviz.shared.landscape.model.landscape.Landscape;
 import org.glassfish.hk2.api.ServiceLocator;
 import org.glassfish.hk2.utilities.ServiceLocatorUtilities;
@@ -23,10 +24,14 @@ public class MongoReplayRepositoryTest {
   @Inject
   private MongoReplayRepository repo;
 
+  @Inject
+  private IdGenerator idGenerator;
+
   @BeforeClass
   public static void setUpAll() {
     CoreModelHandler.registerAllCoreModels();
   }
+
 
 
   /**
@@ -40,6 +45,7 @@ public class MongoReplayRepositoryTest {
       locator.inject(this);
     }
     this.repo.clear();
+    BaseEntity.initialize(this.idGenerator);
   }
 
 
@@ -70,10 +76,10 @@ public class MongoReplayRepositoryTest {
     this.repo.save(ts, landscape, 0);
     this.repo.save(ts, landscape2, 0);
 
-    final long id = landscape.getId();
+    final String id = landscape.getId();
     final Landscape landscapeRetrieved = this.repo.getById(id);
 
-    assertEquals("Ids don't match", id, (long) landscapeRetrieved.getId());
+    assertEquals("Ids don't match", id, landscapeRetrieved.getId());
 
   }
 

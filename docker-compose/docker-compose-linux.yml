@@ -1,12 +1,12 @@
 version: "3.2"
 services:
 
-  reverse-proxy:
+   reverse-proxy:
     image: explorviz/reverse-proxy
     container_name: explorviz-reverse-proxy
     network_mode: "host"
 
-  mongo-auth:
+   mongo-auth:
     image: mongo
     container_name: explorviz-auth-mongo
     ports:
@@ -16,7 +16,7 @@ services:
        - explorviz-auth-mongo-configdb:/data/configdb
     network_mode: "host"
 
-  mongo-landscape:
+   mongo-landscape:
     image: mongo
     container_name: explorviz-landscape-mongo
     command: mongod --port 27018
@@ -27,9 +27,20 @@ services:
        - explorviz-landscape-mongo-configdb:/data/configdb
     network_mode: "host"
     
+   ids-redis:
+      image: redis
+      container_name: explorviz-ids-redis
+      command: ["redis-server", "--appendonly", "yes"]
+      ports:
+         - 6379:6379
+      volumes:
+         - explorviz-ids-redis:/data
+
+
 
 volumes:
   explorviz-auth-mongo-data:
   explorviz-auth-mongo-configdb:
   explorviz-landscape-mongo-data:
   explorviz-landscape-mongo-configdb:
+  explorviz-ids-redis:

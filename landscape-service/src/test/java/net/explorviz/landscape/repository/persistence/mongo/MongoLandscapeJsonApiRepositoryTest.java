@@ -8,6 +8,8 @@ import javax.inject.Inject;
 import net.explorviz.landscape.repository.LandscapeDummyCreator;
 import net.explorviz.landscape.server.main.DependencyInjectionBinder;
 import net.explorviz.landscape.server.providers.CoreModelHandler;
+import net.explorviz.shared.common.idgen.IdGenerator;
+import net.explorviz.shared.landscape.model.helper.BaseEntity;
 import net.explorviz.shared.landscape.model.landscape.Landscape;
 import org.glassfish.hk2.api.ServiceLocator;
 import org.glassfish.hk2.utilities.ServiceLocatorUtilities;
@@ -25,10 +27,15 @@ public class MongoLandscapeJsonApiRepositoryTest {
   @Inject
   private MongoLandscapeJsonApiRepository repo;
 
+  @Inject
+  private IdGenerator idGenerator;
+
   @BeforeClass
   public static void setUpAll() {
     CoreModelHandler.registerAllCoreModels();
   }
+
+
 
   /**
    * Injects dependencies.
@@ -41,6 +48,7 @@ public class MongoLandscapeJsonApiRepositoryTest {
       locator.inject(this);
     }
     this.repo.clear();
+    BaseEntity.initialize(this.idGenerator);
   }
 
 
@@ -70,7 +78,7 @@ public class MongoLandscapeJsonApiRepositoryTest {
     this.repo.save(ts, landscape, 0);
     this.repo.save(ts2, landscape2, 0);
 
-    final long id = landscape.getId();
+    final String id = landscape.getId();
     final String rawLandscape = this.repo.getById(id);
 
     assertTrue("Ivalid landscape or wrong id",

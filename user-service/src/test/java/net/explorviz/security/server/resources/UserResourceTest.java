@@ -49,7 +49,7 @@ public class UserResourceTest {
   private RoleService roleService;
 
 
-  private final Map<Long, User> users = new HashMap<>();
+  private final Map<String, User> users = new HashMap<>();
 
   private final List<Role> roles = new ArrayList<>();
 
@@ -65,7 +65,7 @@ public class UserResourceTest {
 
     when(this.userCrudService.saveNewEntity(any())).thenAnswer(inv -> {
       final User u = (User) inv.getArgument(0);
-      final long id = ++this.lastId;
+      final String id = Long.toString(++this.lastId);
       final User newUser = new User(id, u.getUsername(), u.getPassword(), u.getRoles());
       this.users.put(id, newUser);
       return Optional.ofNullable(newUser);
@@ -125,7 +125,7 @@ public class UserResourceTest {
     final User newUser = this.userResource.newUser(u);
 
     assertNotNull(newUser.getId());
-    assertTrue(newUser.getId() > 0);
+    assertTrue(Long.parseLong(newUser.getId()) > 0);
   }
 
 
@@ -144,7 +144,7 @@ public class UserResourceTest {
 
   @Test(expected = BadRequestException.class)
   public void testInvalidId() {
-    final User u = new User(12L, "name", "pw", new ArrayList<>());
+    final User u = new User("12", "name", "pw", new ArrayList<>());
     this.userResource.newUser(u);
   }
 
@@ -227,7 +227,7 @@ public class UserResourceTest {
     final User u1 = new User("testuser");
     u1.setPassword("password");
     final User newUser = this.userResource.newUser(u1);
-    final long uid = newUser.getId();
+    final String uid = newUser.getId();
 
     final User update = new User(null, null, "newpw", null);
 
@@ -245,7 +245,7 @@ public class UserResourceTest {
     final User u1 = new User("testuser");
     u1.setPassword("password");
     final User newUser = this.userResource.newUser(u1);
-    final long uid = newUser.getId();
+    final String uid = newUser.getId();
 
     final User update = new User(null, "newname", null, null);
     final User updatedUser = this.userResource.updateUser(uid, update);
@@ -263,7 +263,7 @@ public class UserResourceTest {
     u1.setPassword("password");
     final User newUser = this.userResource.newUser(u1);
 
-    final long uid = newUser.getId();
+    final String uid = newUser.getId();
 
     final User update = new User(null, null, null, Arrays.asList(new Role("newrole")));
     this.roles.add(new Role("newrole"));

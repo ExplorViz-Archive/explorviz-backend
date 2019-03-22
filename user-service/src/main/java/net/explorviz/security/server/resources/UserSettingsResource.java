@@ -9,11 +9,14 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import net.explorviz.security.services.TokenService;
-import net.explorviz.security.services.UserMongoCrudService;
 import net.explorviz.shared.security.model.settings.DefaultSettings;
 import net.explorviz.shared.security.model.settings.SettingDescriptor;
 import net.explorviz.shared.security.model.settings.UserSettings;
 
+/**
+ * Handle user settings.
+ *
+ */
 @Path("v1/settings")
 public class UserSettingsResource {
 
@@ -24,13 +27,14 @@ public class UserSettingsResource {
 
 
   @Inject
-  private UserMongoCrudService userService;
+  private TokenService tokenService;
 
-  @Inject
-  TokenService tokenService;
-
-
-
+  /**
+   * Finds the descriptor of the setting with the given id.
+   *
+   * @param id id of the setting
+   * @return the descriptor
+   */
   @GET
   @Path("{id}")
   @PermitAll
@@ -55,7 +59,7 @@ public class UserSettingsResource {
 
 
   /**
-   * Returns the default settings
+   * Returns the default settings.
    */
   @GET
   @RolesAllowed({ADMIN_ROLE})

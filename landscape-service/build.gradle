@@ -12,6 +12,7 @@ configurations.all {
 
 repositories {
 	maven {url 'https://oss.sonatype.org/content/repositories/snapshots'}
+	mavenLocal()
 }
 
 ext {	
@@ -24,8 +25,7 @@ dependencies {
   // ExplorViz landscape model
   implementation "com.github.explorviz.explorviz-backend-shared:landscape-model:${expSharedVersion}"
   
-  // Use local project
-  //implementation project(':landscape-model')
+  // implementation project(':landscape-model')
   
   // ExplorViz config matters
   implementation "com.github.explorviz.explorviz-backend-shared:config-injection:${expSharedVersion}"
@@ -46,6 +46,9 @@ dependencies {
    
   // multipart/form-data type
   implementation group: 'org.glassfish.jersey.media', name:'jersey-media-multipart', version:'2.26'
+  
+  
+  
 }
 
 assemble.dependsOn shadowJar

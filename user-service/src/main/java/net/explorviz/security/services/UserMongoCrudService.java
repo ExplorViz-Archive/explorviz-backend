@@ -5,8 +5,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.inject.Inject;
-import net.explorviz.security.util.CountingIdGenerator;
-import net.explorviz.security.util.IdGenerator;
+import net.explorviz.shared.common.idgen.IdGenerator;
 import net.explorviz.shared.security.model.User;
 import net.explorviz.shared.security.model.roles.Role;
 import org.jvnet.hk2.annotations.Service;
@@ -30,10 +29,13 @@ public class UserMongoCrudService implements MongoCrudService<User> {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(UserMongoCrudService.class);
 
-  private final IdGenerator<Long> idGen;
+
 
   private final Datastore datastore;
 
+
+  @Inject
+  private IdGenerator idGenerator;
 
   /**
    * Creates a new UserMongoDB
@@ -44,17 +46,6 @@ public class UserMongoCrudService implements MongoCrudService<User> {
   public UserMongoCrudService(final Datastore datastore) {
 
     this.datastore = datastore;
-
-    final User userWithMaxId = this.datastore.createQuery(User.class).order("-id").get();
-
-    // Create a new id generator, which will count upwards beginning from the max id
-    long counterInitValue = 0L;
-
-    if (userWithMaxId != null) {
-      counterInitValue = userWithMaxId.getId();
-    }
-
-    this.idGen = new CountingIdGenerator(counterInitValue);
   }
 
 
@@ -72,7 +63,7 @@ public class UserMongoCrudService implements MongoCrudService<User> {
    */
   public Optional<User> saveNewEntity(final User user) throws MongoException {
     // Generate an id
-    user.setId(this.idGen.next());
+    user.setId(this.idGenerator.generateId());
 
     this.datastore.save(user);
 
@@ -88,7 +79,7 @@ public class UserMongoCrudService implements MongoCrudService<User> {
   }
 
   @Override
-  public Optional<User> getEntityById(final Long id) throws MongoException {
+  public Optional<User> getEntityById(final String id) throws MongoException {
 
     final User userObject = this.datastore.get(User.class, id);
 
@@ -96,7 +87,7 @@ public class UserMongoCrudService implements MongoCrudService<User> {
   }
 
   @Override
-  public void deleteEntityById(final Long id) throws MongoException {
+  public void deleteEntityById(final String id) throws MongoException {
 
     this.datastore.delete(User.class, id);
 

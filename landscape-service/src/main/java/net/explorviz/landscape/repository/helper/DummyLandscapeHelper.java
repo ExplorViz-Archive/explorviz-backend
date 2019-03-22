@@ -57,7 +57,6 @@ public final class DummyLandscapeHelper {
    */
   public static System createSystem(final String name, final Landscape parentLandscape) {
     final System system = new System();
-    system.initializeId();
     system.setName(name);
     system.setParent(parentLandscape);
 
@@ -77,7 +76,6 @@ public final class DummyLandscapeHelper {
    */
   public static NodeGroup createNodeGroup(final String name, final System system) {
     final NodeGroup nodeGroup = new NodeGroup();
-    nodeGroup.initializeId();
     nodeGroup.setName(name);
     nodeGroup.setParent(system);
     return nodeGroup;
@@ -93,7 +91,6 @@ public final class DummyLandscapeHelper {
   public static Node createNode(final String ipAddress, final NodeGroup parentNodeGroup,
       final Landscape landscape) {
     final Node node = new Node();
-    node.initializeId();
     node.setIpAddress(ipAddress);
     node.setParent(parentNodeGroup);
 
@@ -120,7 +117,6 @@ public final class DummyLandscapeHelper {
   public static Application createApplication(final String name, final Node parentNode,
       final Landscape landscape) {
     final Application application = new Application();
-    application.initializeId();
 
     LandscapeDummyCreator.applicationId = LandscapeDummyCreator.applicationId + 1;
     application.setParent(parentNode);
@@ -136,8 +132,8 @@ public final class DummyLandscapeHelper {
     parentNode.getApplications().add(application);
 
     // create a new application event
-    LandscapeHelper.createNewEvent(landscape, EEventType.NEWNODE, "New node '" + application.getName()
-        + "' in system '" + parentNode.getName() + "' detected");
+    LandscapeHelper.createNewEvent(landscape, EEventType.NEWNODE, "New node '"
+        + application.getName() + "' in system '" + parentNode.getName() + "' detected");
 
     return application;
   }
@@ -154,7 +150,6 @@ public final class DummyLandscapeHelper {
   public static ApplicationCommunication createApplicationCommunication(final Application source,
       final Application target, final Landscape landscape, final int requests) {
     final ApplicationCommunication communication = new ApplicationCommunication();
-    communication.initializeId();
     communication.setSourceApplication(source);
     communication.setTargetApplication(target);
     communication.setRequests(requests);
@@ -179,7 +174,6 @@ public final class DummyLandscapeHelper {
   public static Component createComponent(final String name, final Component parent,
       final Application app) {
     final Component component = new Component();
-    component.initializeId();
     component.setName(name);
     component.setParentComponent(parent);
     component.setBelongingApplication(app);
@@ -203,7 +197,6 @@ public final class DummyLandscapeHelper {
   public static Clazz createClazz(final String name, final Component component,
       final int instanceCount) {
     final Clazz clazz = new Clazz();
-    clazz.initializeId();
     clazz.setName(name);
     clazz.setFullQualifiedName(component.getFullQualifiedName() + "." + name);
     clazz.setInstanceCount(instanceCount);

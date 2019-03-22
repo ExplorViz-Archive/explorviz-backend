@@ -9,6 +9,7 @@ configurations.all {
   resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
 }
 
+
 ext {	
 	expSharedVersion = "${rootProject.ext.explorvizSharedVersion}"
 }

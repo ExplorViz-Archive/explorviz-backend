@@ -32,7 +32,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Provides endpoints for user management.
+ * Provides several endpoints for user management.
  *
  */
 @Path("v1/users")
@@ -168,7 +168,7 @@ public class UserResource {
   @RolesAllowed({ADMIN_ROLE})
   @Produces(MEDIA_TYPE)
   @Consumes(MEDIA_TYPE)
-  public User updateUser(@PathParam("id") final Long id, final User updatedUser) { // NOPMD
+  public User updateUser(@PathParam("id") final String id, final User updatedUser) { // NOPMD
 
     User targetUser = null;
     try {
@@ -278,9 +278,9 @@ public class UserResource {
   @Path("{id}")
   @RolesAllowed({ADMIN_ROLE})
   @Produces(MEDIA_TYPE)
-  public User userById(@PathParam("id") final Long id) {
-    if (id == null || id <= 0) {
-      throw new BadRequestException("Id must be positive integer");
+  public User userById(@PathParam("id") final String id) {
+    if (id == null || "".equals(id)) {
+      throw new BadRequestException("Invalid id");
     }
 
     User foundUser = null;
@@ -313,7 +313,7 @@ public class UserResource {
   @DELETE
   @Path("{id}")
   @RolesAllowed({ADMIN_ROLE})
-  public Response removeUser(@PathParam("id") final Long id) {
+  public Response removeUser(@PathParam("id") final String id) {
     try {
       this.userCrudService.deleteEntityById(id);
     } catch (final MongoException ex) {

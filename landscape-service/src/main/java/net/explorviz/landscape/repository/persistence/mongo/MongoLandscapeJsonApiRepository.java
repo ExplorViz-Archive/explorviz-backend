@@ -75,7 +75,7 @@ public class MongoLandscapeJsonApiRepository implements LandscapeRepository<Stri
       }
     }
     if (LOGGER.isInfoEnabled()) {
-      LOGGER.info(String.format("Saved landscape {timestamp: %d, id: %d, totalRequests: %d}",
+      LOGGER.info(String.format("Saved landscape {timestamp: %d, id: %s, totalRequests: %d}",
           timestamp, landscape.getId(), totalRequests));
     }
   }
@@ -98,7 +98,7 @@ public class MongoLandscapeJsonApiRepository implements LandscapeRepository<Stri
   }
 
   @Override
-  public String getById(final long id) {
+  public String getById(final String id) {
     final String regexQuery = "\\{\"data\":\\{\"type\":\"landscape\",\"id\":\"" + id;
 
     final Pattern pat = Pattern.compile(regexQuery, Pattern.CASE_INSENSITIVE);

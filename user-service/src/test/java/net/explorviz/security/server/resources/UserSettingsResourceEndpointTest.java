@@ -18,7 +18,6 @@ import net.explorviz.shared.security.model.settings.UserSettings;
 import org.eclipse.jetty.http.HttpHeader;
 import org.glassfish.hk2.api.ServiceLocator;
 import org.glassfish.hk2.utilities.ServiceLocatorUtilities;
-import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
 import org.junit.Ignore;
@@ -93,9 +92,10 @@ public class UserSettingsResourceEndpointTest extends JerseyTest {
   protected Application configure() {
     final ResourceConfig c =
         new ResourceConfig(new net.explorviz.security.server.main.Application());
-    c.register(new AbstractBinder() {
+    c.register(new DependencyInjectionBinder() {
       @Override
-      protected void configure() {
+      public void configure() {
+        super.configure();
         this.bind(UserMongoCrudService.class).to(UserMongoCrudService.class).in(Singleton.class)
             .ranked(10);
         this.bindFactory(TestDatasourceFactory.class).to(Datastore.class).in(Singleton.class)

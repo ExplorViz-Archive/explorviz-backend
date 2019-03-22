@@ -54,7 +54,7 @@ public interface LandscapeRepository<T> {
    *
    * @throws ClientErrorException if the landscape could not be found.
    */
-  T getById(final long id);
+  T getById(final String id);
 
 
   /**

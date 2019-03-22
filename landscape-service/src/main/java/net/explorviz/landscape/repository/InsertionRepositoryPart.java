@@ -152,8 +152,6 @@ public class InsertionRepositoryPart {
 
     // New system, add to internalLandscape
     final System system = new System();
-    system.initializeId();
-
     system.setName(systemname);
     system.setParent(landscape);
     landscape.getSystems().add(system);
@@ -182,7 +180,7 @@ public class InsertionRepositoryPart {
       // new node, add to nodeCache for the moment
       // eventual, put in NodeGroup
       node = new Node();
-      node.initializeId();
+
 
       node.setIpAddress(hostApplicationRecord.getIpaddress());
       node.setName(hostApplicationRecord.getHostname());
@@ -215,7 +213,7 @@ public class InsertionRepositoryPart {
 
     // new NodeGroup, add to system, therefore, internalLandscape
     final NodeGroup nodeGroup = new NodeGroup();
-    nodeGroup.initializeId();
+
 
     nodeGroup.setName(node.getIpAddress());
     system.getNodeGroups().add(nodeGroup);
@@ -268,7 +266,6 @@ public class InsertionRepositoryPart {
       // new application, put in applicationCache for the moment
       // eventually, parent Node must not be in the old NodeGroup
       application = new Application();
-      application.initializeId();
       // application.setId((node.getName() + "_" + applicationName).hashCode());
       application.setLastUsage(java.lang.System.currentTimeMillis());
       application.setName(applicationName);
@@ -386,7 +383,6 @@ public class InsertionRepositoryPart {
             final BeforeJDBCOperationEventRecord jdbcOperationEventRecord =
                 (BeforeJDBCOperationEventRecord) abstractBeforeEventRecord;
             final DatabaseQuery databaseQuery = new DatabaseQuery(); // NOPMD
-            databaseQuery.initializeId();
 
             // parse type of Statement, e.g. Statement or PreparedStatement
             final String operationSignature = jdbcOperationEventRecord.getOperationSignature();
@@ -563,7 +559,6 @@ public class InsertionRepositoryPart {
         }
       }
       final Component component = new Component();
-      component.initializeId();
 
       String fullQNameComponent = "";
       for (int i = 0; i <= index; i++) {
@@ -588,7 +583,6 @@ public class InsertionRepositoryPart {
 
         if (potentialParent == null) {
           final Component component = new Component();
-          component.initializeId();
 
           component.setFullQualifiedName(DEFAULT_COMPONENT_NAME);
           component.setName(DEFAULT_COMPONENT_NAME);
@@ -608,7 +602,6 @@ public class InsertionRepositoryPart {
 
       // new clazz
       final Clazz clazz = new Clazz();
-      clazz.initializeId();
 
       clazz.setName(currentPart);
       clazz.setFullQualifiedName(fullQName);

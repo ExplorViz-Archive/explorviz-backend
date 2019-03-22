@@ -3,7 +3,10 @@ package net.explorviz.landscape.server.main;
 import javax.inject.Inject;
 import javax.servlet.annotation.WebListener;
 import net.explorviz.landscape.repository.LandscapeExchangeService;
+import net.explorviz.shared.common.idgen.IdGenerator;
 import net.explorviz.shared.config.annotations.Config;
+import net.explorviz.shared.landscape.model.helper.BaseEntity;
+import org.glassfish.hk2.api.ServiceLocator;
 import org.glassfish.jersey.server.monitoring.ApplicationEvent;
 import org.glassfish.jersey.server.monitoring.ApplicationEvent.Type;
 import org.glassfish.jersey.server.monitoring.ApplicationEventListener;
@@ -20,8 +23,20 @@ public class SetupApplicationListener implements ApplicationEventListener {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(SetupApplicationListener.class);
 
+  private static ServiceLocator LOCATOR;
+
+  public static ServiceLocator getServiceLocator() {
+    return LOCATOR;
+  }
+
+  @Inject
+  private ServiceLocator serviceLocator;
+
   @Inject
   private LandscapeExchangeService exchangeService;
+
+  @Inject
+  private IdGenerator idGenerator;
 
   @Config("repository.useDummyMode")
   private boolean useDummyMode;
@@ -34,8 +49,10 @@ public class SetupApplicationListener implements ApplicationEventListener {
     final Type t = Type.INITIALIZATION_FINISHED;
 
     if (event.getType().equals(t)) {
+      SetupApplicationListener.LOCATOR = this.serviceLocator;
       this.startExplorVizBackend();
       this.startDatabase();
+      BaseEntity.initialize(this.idGenerator);
     }
   }
 

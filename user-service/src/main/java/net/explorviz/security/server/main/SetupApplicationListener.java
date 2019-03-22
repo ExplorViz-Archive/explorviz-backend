@@ -5,6 +5,7 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.servlet.annotation.WebListener;
 import net.explorviz.security.services.RoleService;
+import net.explorviz.security.services.UserMongoCrudService;
 import net.explorviz.security.util.PasswordStorage;
 import net.explorviz.security.util.PasswordStorage.CannotPerformOperationException;
 import net.explorviz.shared.security.model.User;
@@ -34,6 +35,9 @@ public class SetupApplicationListener implements ApplicationEventListener {
 
   @Inject
   private RoleService roleService;
+
+  @Inject
+  private UserMongoCrudService userService;
 
   @Override
   public void onEvent(final ApplicationEvent event) {
@@ -69,15 +73,16 @@ public class SetupApplicationListener implements ApplicationEventListener {
       this.datastore.save(r);
     }
 
-    // start at size + 2, because of hard-coded UserSettings id
-    final long id = roleList.size() + 2;
 
     final String pw = PasswordStorage.createHash("password");
-
     final UserSettings settings = new UserSettings();
 
-    if (this.datastore.get(User.class, id) == null) {
-      this.datastore.save(new User(id, ADMIN_NAME, pw, Arrays.asList(roleList.get(0)), settings));
+    if (this.datastore.getCount(User.class) == 0) {
+      this.userService
+          .saveNewEntity(new User(null, ADMIN_NAME, pw, Arrays.asList(roleList.get(0))));
+      if (LOGGER.isInfoEnabled()) {
+        LOGGER.info("Created default admin");
+      }
     }
 
   }
