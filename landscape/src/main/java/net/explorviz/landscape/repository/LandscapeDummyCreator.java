@@ -43,7 +43,6 @@ public final class LandscapeDummyCreator {
     }
 
     final Landscape landscape = new Landscape();
-    landscape.initializeId();
     landscape.getTimestamp().setTotalRequests(DummyLandscapeHelper.getRandomNum(500, 25000));
 
     final System requestSystem = DummyLandscapeHelper.createSystem("Requests", landscape);
@@ -102,7 +101,6 @@ public final class LandscapeDummyCreator {
     ocnDatabase.getNodeGroups().add(ocnDatabaseNodeGroup2);
 
     final System kielprints = new System();
-    kielprints.initializeId();
 
     kielprints.setName("OceanRep");
     kielprints.setParent(landscape);
@@ -168,7 +166,7 @@ public final class LandscapeDummyCreator {
     pangea.getNodeGroups().add(pangeaNodeGroup2);
 
     final System pubflow = new System();
-    pubflow.initializeId();
+
     pubflow.setName("PubFlow");
     pubflow.setParent(landscape);
     landscape.getSystems().add(pubflow);
@@ -312,20 +310,17 @@ public final class LandscapeDummyCreator {
   }
 
   /**
-<<<<<<< HEAD
-   * Creates a dummy webshop application within the dummy landscape
+   * <<<<<<< HEAD Creates a dummy webshop application within the dummy landscape
    *
    * @param application
-   * @return webshop application
-=======
-   * Creating a communication between two clazzes within the dummy landscape.
+   * @return webshop application ======= Creating a communication between two clazzes within the
+   *         dummy landscape.
    *
    * @param traceId the id of the trace
    * @param requests the request
    * @param sourceClazz the source class
    * @param targetClazz the target class
-   * @param application the appliaction
->>>>>>> dev-1
+   * @param application the appliaction >>>>>>> dev-1
    */
   private static Application createWebshopApplication(final Application application) {
 
@@ -458,7 +453,7 @@ public final class LandscapeDummyCreator {
 
   /**
    * Creates a dummy database-query including application within the dummy landscape
-   * 
+   *
    * @param application
    * @return database connector application
    */
@@ -475,7 +470,6 @@ public final class LandscapeDummyCreator {
     final int maxIterations = 25;
     for (int i = 0; i < maxIterations; i++) {
       DatabaseQuery dbQueryTmp = new DatabaseQuery();
-      dbQueryTmp.initializeId();
       dbQueryTmp.setStatementType("Statement");
       dbQueryTmp.setSqlStatement(
           "CREATE TABLE IF NOT EXISTS `order` (oid integer PRIMARY KEY, name text NOT NULL, "
@@ -487,7 +481,6 @@ public final class LandscapeDummyCreator {
       dbQueryList.add(dbQueryTmp);
 
       dbQueryTmp = new DatabaseQuery();
-      dbQueryTmp.initializeId();
       dbQueryTmp.setStatementType("Statement");
       dbQueryTmp.setParentApplication(application);
       dbQueryTmp.setSqlStatement("INSERT INTO `order` (oid, name, email, odate, itemid) "
@@ -500,7 +493,6 @@ public final class LandscapeDummyCreator {
       dbQueryList.add(dbQueryTmp);
 
       dbQueryTmp = new DatabaseQuery();
-      dbQueryTmp.initializeId();
       dbQueryTmp.setStatementType("Statement");
       dbQueryTmp.setSqlStatement("INSERT INTO `order` (oid, name, email, odate, itemid) "
           + "VALUES('" + DummyLandscapeHelper.getNextSequenceId()
@@ -512,7 +504,6 @@ public final class LandscapeDummyCreator {
       dbQueryList.add(dbQueryTmp);
 
       dbQueryTmp = new DatabaseQuery();
-      dbQueryTmp.initializeId();
       dbQueryTmp.setStatementType("Statement");
       dbQueryTmp.setSqlStatement("INSERT INTO `order` (oid, name, email, odate, itemid) "
           + "VALUES('" + DummyLandscapeHelper.getNextSequenceId()
@@ -524,7 +515,6 @@ public final class LandscapeDummyCreator {
       dbQueryList.add(dbQueryTmp);
 
       dbQueryTmp = new DatabaseQuery();
-      dbQueryTmp.initializeId();
       dbQueryTmp.setStatementType("Statement");
       dbQueryTmp.setSqlStatement("SELECT * FROM `order` WHERE name = Carol K. Durham");
       dbQueryTmp.setReturnValue(String.valueOf(DummyLandscapeHelper.getRandomNum(5, 100)));
@@ -534,7 +524,6 @@ public final class LandscapeDummyCreator {
       dbQueryList.add(dbQueryTmp);
 
       dbQueryTmp = new DatabaseQuery();
-      dbQueryTmp.initializeId();
       dbQueryTmp.setStatementType("Statement");
       dbQueryTmp.setSqlStatement("SELECT * FROM `order` WHERE name = Tom B. Erichsen");
       dbQueryTmp.setReturnValue(String.valueOf(DummyLandscapeHelper.getRandomNum(5, 100)));
