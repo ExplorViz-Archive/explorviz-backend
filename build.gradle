@@ -9,11 +9,11 @@ def footerText = '<span>Copyright 2013 - 2019</span> by the <a href="https://www
 
 // BEGIN aggregated Javadoc in multiproject Gradle build
 def exportedProjects= [
-		':landscape',
+		':landscape-service',
 		':kiekeradapter',
-		':authentication',
-		':analysis',
-		':discovery'
+		':user-service',
+		':analysis-service',
+		':discovery-service'
 ]
 
 task alljavadoc(type: Javadoc) {
@@ -95,7 +95,7 @@ subprojects {
 	// SL4J
 	implementation group: 'org.slf4j', name: 'slf4j-simple', version: '1.6.1'
     
-    if (project.name == 'authentication' || project.name == 'landscape' || project.name == 'discovery') {
+    if (project.name == 'user-service' || project.name == 'landscape-service' || project.name == 'discovery-service') {
     	// subprojects, which are supposed to be a JAX-RS-based microservice
     
     	// Jersey and Servlet
