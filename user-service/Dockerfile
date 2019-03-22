@@ -3,6 +3,7 @@ FROM openjdk:8-alpine
 ENV MONGO_HOST 127.0.0.1
 ENV MONGO_PORT 27017
 ENV REDIS_HOST 127.0.0.1
+ENV SERVICE_PREFIX auth
 
 RUN mkdir /explorviz
 WORKDIR /explorviz
