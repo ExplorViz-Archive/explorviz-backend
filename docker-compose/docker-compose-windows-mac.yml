@@ -27,7 +27,7 @@ services:
        - explorviz-landscape-mongo-data:/data/db
        - explorviz-landscape-mongo-configdb:/data/configdb
 
-   ids-redis:
+  ids-redis:
     image: redis
     container_name: explorviz-ids-redis
     command: ["redis-server", "--appendonly", "yes"]
