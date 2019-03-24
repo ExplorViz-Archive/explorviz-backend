@@ -26,6 +26,10 @@ public class DependencyInjectionBinder extends CommonDependencyInjectionBinder {
   @Override
   public void configure() {
 
+    // TODO read properties file service.generator.redis=boolean
+
+    // this.bind(RedisServiceIdGenerator.class).to(ServiceIdGenerator.class).in(Singleton.class);
+
     super.configure();
 
     this.bind(LandscapeRepositoryModel.class).to(LandscapeRepositoryModel.class)
