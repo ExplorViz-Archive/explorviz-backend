@@ -3,6 +3,8 @@ FROM openjdk:8-alpine
 ENV DUMMY_MODE false
 ENV MONGO_HOST 127.0.0.1
 ENV MONGO_PORT 27018
+ENV REDIS_HOST 127.0.0.1
+ENV SERVICE_PREFIX landscape
 
 RUN mkdir /explorviz
 WORKDIR /explorviz
