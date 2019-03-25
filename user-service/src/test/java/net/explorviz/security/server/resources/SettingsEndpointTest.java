@@ -11,6 +11,7 @@ import net.explorviz.security.server.main.DependencyInjectionBinder;
 import net.explorviz.security.services.TokenService;
 import net.explorviz.shared.security.model.User;
 import net.explorviz.shared.security.model.roles.Role;
+import net.explorviz.shared.security.model.settings.BooleanSettingDescriptor;
 import net.explorviz.shared.security.model.settings.UserSettings;
 import org.eclipse.jetty.http.HttpHeader;
 import org.glassfish.hk2.api.ServiceLocator;
@@ -22,7 +23,7 @@ import org.glassfish.jersey.test.JerseyTest;
 import org.junit.Test;
 
 /**
- * Endpoint test for {@link UserSettingsResource} as well as {@link SettingsDescriptorResource}.
+ * Endpoint test for {@link SettingsResource} as well as {@link SettingsDescriptorResource}.
  */
 public class SettingsEndpointTest extends JerseyTest {
   private static final String MEDIA_TYPE = "application/vnd.api+json";
@@ -78,6 +79,26 @@ public class SettingsEndpointTest extends JerseyTest {
         .readDocument(response.readEntity(byte[].class), UserSettings.class).get();
 
     assertEquals("Did not return default user settings", new UserSettings(), retrieved);
-
   }
+
+  @Test
+  public void testSettingDescriptor() {
+    final String settingId = "showFpsCounter";
+    final Response response = this.target(BASE_URL + settingId + "/info").request()
+        .header(HttpHeader.AUTHORIZATION.asString(), this.adminToken).get();
+
+    this.jsonApiConverter.registerType(BooleanSettingDescriptor.class);
+
+
+    // Requires default constructors in shared
+    /*
+     * final SettingDescriptor retrieved = this.jsonApiConverter
+     * .readDocument(response.readEntity(byte[].class), SettingDescriptor.class).get();
+     */
+
+    assertEquals("Did not retrieve setting descriptor", 200, response.getStatus());
+  }
+
+
+
 }
