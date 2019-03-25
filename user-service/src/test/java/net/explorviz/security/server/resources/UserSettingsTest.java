@@ -1,16 +1,13 @@
 package net.explorviz.security.server.resources;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import javax.ws.rs.NotFoundException;
 import net.explorviz.security.server.main.DependencyInjectionBinder;
 import net.explorviz.security.services.UserMongoCrudService;
 import net.explorviz.security.testutils.TestDatasourceFactory;
 import net.explorviz.shared.security.model.User;
-import net.explorviz.shared.security.model.settings.SettingDescriptor;
 import net.explorviz.shared.security.model.settings.UserSettings;
 import org.glassfish.hk2.api.ServiceLocator;
 import org.glassfish.hk2.utilities.ServiceLocatorUtilities;
@@ -33,8 +30,6 @@ public class UserSettingsTest {
   private Datastore datastore;
 
 
-  private UserSettingsResource settingsResource;
-
 
   @Before
   public void setUp() {
@@ -42,9 +37,6 @@ public class UserSettingsTest {
     b.bindFactory(TestDatasourceFactory.class).to(Datastore.class).in(Singleton.class).ranked(2);
     final ServiceLocator locator = ServiceLocatorUtilities.bind(b);
     locator.inject(this);
-
-    this.settingsResource = new UserSettingsResource();
-
   }
 
   @After
@@ -80,17 +72,6 @@ public class UserSettingsTest {
     u.getSettings().validate();
   }
 
-
-  @Test
-  public void testSettingsInfo() {
-    final SettingDescriptor<Boolean> info = this.settingsResource.settingsInfo("showFpsCounter");
-    assertFalse("Unmatching descriptor", info.getDefaultValue());
-  }
-
-  @Test(expected = NotFoundException.class)
-  public void testUnknownSettingInfo() {
-    this.settingsResource.settingsInfo("unknown");
-  }
 
 
   @Test(expected = IllegalStateException.class)

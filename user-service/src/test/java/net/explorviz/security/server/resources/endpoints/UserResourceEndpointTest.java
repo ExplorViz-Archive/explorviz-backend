@@ -1,22 +1,20 @@
-package net.explorviz.security.server.resources;
+package net.explorviz.security.server.resources.endpoints;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import com.github.jasminb.jsonapi.JSONAPIDocument;
-import com.github.jasminb.jsonapi.ResourceConverter;
 import com.github.jasminb.jsonapi.exceptions.DocumentSerializationException;
 import java.util.Arrays;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.ws.rs.client.Entity;
-import javax.ws.rs.core.Application;
 import javax.ws.rs.core.Response;
 import net.explorviz.security.server.main.DependencyInjectionBinder;
+import net.explorviz.security.server.resources.UserResource;
 import net.explorviz.security.services.RoleService;
-import net.explorviz.security.services.TokenService;
 import net.explorviz.security.services.UserMongoCrudService;
 import net.explorviz.security.testutils.TestDatasourceFactory;
 import net.explorviz.shared.security.model.User;
@@ -24,12 +22,7 @@ import net.explorviz.shared.security.model.roles.Role;
 import net.explorviz.shared.security.model.settings.UserSettings;
 import org.eclipse.jetty.http.HttpHeader;
 import org.eclipse.jetty.http.HttpStatus;
-import org.glassfish.hk2.api.ServiceLocator;
-import org.glassfish.hk2.utilities.ServiceLocatorUtilities;
-import org.glassfish.jersey.client.ClientConfig;
-import org.glassfish.jersey.client.HttpUrlConnectorProvider;
-import org.glassfish.jersey.server.ResourceConfig;
-import org.glassfish.jersey.test.JerseyTest;
+import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.junit.Test;
 import xyz.morphia.Datastore;
 
@@ -39,16 +32,10 @@ import xyz.morphia.Datastore;
  *
  */
 @SuppressWarnings("PMD")
-public class UserResourceEndpointTest extends JerseyTest {
+public class UserResourceEndpointTest extends EndpointTest {
 
   private static final String MEDIA_TYPE = "application/vnd.api+json";
   private static final String BASE_URL = "v1/users/";
-
-  @Inject
-  private TokenService tokenService;
-
-  @Inject
-  private ResourceConverter jsonApiConverter;
 
   @Inject
   private UserMongoCrudService userCrudService;
@@ -59,39 +46,41 @@ public class UserResourceEndpointTest extends JerseyTest {
   @Inject
   private Datastore datastore;
 
-  private String adminToken;
-  private String normieToken;
-
 
 
   @Override
   public void setUp() throws Exception {
-    final DependencyInjectionBinder binder = new DependencyInjectionBinder();
-    binder.bindFactory(TestDatasourceFactory.class).to(Datastore.class).in(Singleton.class)
-        .ranked(2);
-    // Inject dependencies
-    final ServiceLocator locator = ServiceLocatorUtilities.bind(binder);
-
-    locator.inject(this);
-
+    super.setUp();
     this.datastore.getCollection(User.class).drop();
     this.datastore.getCollection(Role.class).drop();
 
     for (final Role r : this.roleService.getAllRoles()) {
       this.datastore.save(r);
     }
+  }
 
 
 
-    // Create tokens for random users
-    final User admin = new User("Admin");
-    admin.setRoles(Arrays.asList(new Role("admin")));
-    final User normie = new User("Normie");
+  @Override
+  protected void overrideTestBindings(final DependencyInjectionBinder binder) {
+    binder.bindFactory(TestDatasourceFactory.class).to(Datastore.class).in(Singleton.class)
+        .ranked(2);
+  }
 
-    this.adminToken = "Bearer " + this.tokenService.issueNewToken(admin);
-    this.normieToken = "Bearer " + this.tokenService.issueNewToken(normie);
 
-    super.setUp();
+
+  @Override
+  protected AbstractBinder overrideApplicationBindings() {
+    return new DependencyInjectionBinder() {
+      @Override
+      public void configure() {
+        this.bind(UserMongoCrudService.class).to(UserMongoCrudService.class).in(Singleton.class)
+            .ranked(10);
+        this.bindFactory(TestDatasourceFactory.class).to(Datastore.class).in(Singleton.class)
+            .ranked(2);
+      }
+    };
+
   }
 
 
@@ -105,33 +94,6 @@ public class UserResourceEndpointTest extends JerseyTest {
 
 
 
-  @Override
-  protected void configureClient(final ClientConfig config) {
-    // Otherwise we can't send PATCH-Requests
-    config.property(HttpUrlConnectorProvider.SET_METHOD_WORKAROUND, true);
-  }
-
-
-  @Override
-  protected Application configure() {
-
-    final ResourceConfig c =
-        new ResourceConfig(new net.explorviz.security.server.main.Application());
-
-    // Use the in-memory user db instead of mongo to avoid connection to an actual database.
-    // Could also use a mock-object instead
-    c.register(new DependencyInjectionBinder() {
-      @Override
-      public void configure() {
-        this.bind(UserMongoCrudService.class).to(UserMongoCrudService.class).in(Singleton.class)
-            .ranked(10);
-        this.bindFactory(TestDatasourceFactory.class).to(Datastore.class).in(Singleton.class)
-            .ranked(2);
-      }
-    });
-    return c;
-  }
-
   @Test
   @org.junit.Ignore // Nees User class without restricted access rights to password, otherwise the
                     // password
@@ -142,18 +104,18 @@ public class UserResourceEndpointTest extends JerseyTest {
 
     // Marshall to json api object
     final JSONAPIDocument<User> userDoc = new JSONAPIDocument<>(u);
-    final byte[] converted = this.jsonApiConverter.writeDocument(userDoc);
+    final byte[] converted = this.getJsonApiConverter().writeDocument(userDoc);
 
     // Send request
     final Entity<byte[]> userEntity = Entity.entity(converted, MEDIA_TYPE);
     final Response response = this.target(BASE_URL).request()
-        .header(HttpHeader.AUTHORIZATION.asString(), this.adminToken).post(userEntity);
+        .header(HttpHeader.AUTHORIZATION.asString(), this.getAdminToken()).post(userEntity);
 
 
     assertEquals(HttpStatus.OK_200, response.getStatus());
 
-    final User respuser =
-        this.jsonApiConverter.readDocument(response.readEntity(byte[].class), User.class).get();
+    final User respuser = this.getJsonApiConverter()
+        .readDocument(response.readEntity(byte[].class), User.class).get();
     assertEquals(u.getUsername(), respuser.getUsername());
     // No passwords should be sent back
     assertEquals(null, respuser.getPassword());
@@ -170,12 +132,12 @@ public class UserResourceEndpointTest extends JerseyTest {
     user.getSettings().getBooleanAttributes().put("unknownkey", false);
     // Marshall to json api object
     final JSONAPIDocument<User> userDoc = new JSONAPIDocument<>(user);
-    final byte[] converted = this.jsonApiConverter.writeDocument(userDoc);
+    final byte[] converted = this.getJsonApiConverter().writeDocument(userDoc);
 
     // Send request
     final Entity<byte[]> userEntity = Entity.entity(converted, MEDIA_TYPE);
     final Response response = this.target(BASE_URL).request()
-        .header(HttpHeader.AUTHORIZATION.asString(), this.adminToken).post(userEntity);
+        .header(HttpHeader.AUTHORIZATION.asString(), this.getAdminToken()).post(userEntity);
 
     assertEquals(HttpStatus.BAD_REQUEST_400, response.getStatus());
 
@@ -188,12 +150,12 @@ public class UserResourceEndpointTest extends JerseyTest {
     user.getSettings().getNumericAttributes().put("appVizTransparencyIntensity", 1.0);
     // Marshall to json api object
     final JSONAPIDocument<User> userDoc = new JSONAPIDocument<>(user);
-    final byte[] converted = this.jsonApiConverter.writeDocument(userDoc);
+    final byte[] converted = this.getJsonApiConverter().writeDocument(userDoc);
 
     // Send request
     final Entity<byte[]> userEntity = Entity.entity(converted, MEDIA_TYPE);
     final Response response = this.target(BASE_URL).request()
-        .header(HttpHeader.AUTHORIZATION.asString(), this.adminToken).post(userEntity);
+        .header(HttpHeader.AUTHORIZATION.asString(), this.getAdminToken()).post(userEntity);
 
     assertEquals(HttpStatus.BAD_REQUEST_400, response.getStatus());
 
@@ -206,12 +168,12 @@ public class UserResourceEndpointTest extends JerseyTest {
 
     // Marshall to json api object
     final JSONAPIDocument<User> userDoc = new JSONAPIDocument<>(u);
-    final byte[] converted = this.jsonApiConverter.writeDocument(userDoc);
+    final byte[] converted = this.getJsonApiConverter().writeDocument(userDoc);
 
     // Send request
     final Entity<byte[]> userEntity = Entity.entity(converted, MEDIA_TYPE);
     final Response response = this.target(BASE_URL).request()
-        .header(HttpHeader.AUTHORIZATION.asString(), this.normieToken).post(userEntity);
+        .header(HttpHeader.AUTHORIZATION.asString(), this.getNormieToken()).post(userEntity);
 
     assertEquals(HttpStatus.FORBIDDEN_403, response.getStatus());
   }
@@ -222,7 +184,7 @@ public class UserResourceEndpointTest extends JerseyTest {
 
     // Marshall to json api object
     final JSONAPIDocument<User> userDoc = new JSONAPIDocument<>(u);
-    final byte[] converted = this.jsonApiConverter.writeDocument(userDoc);
+    final byte[] converted = this.getJsonApiConverter().writeDocument(userDoc);
 
     // Send request
     final Entity<byte[]> body = Entity.entity(converted, MEDIA_TYPE);
@@ -238,20 +200,20 @@ public class UserResourceEndpointTest extends JerseyTest {
     final User u1 = new User(null, "u1", "pw", null);
     final User u2 = new User(null, "u2", "pw", null);
 
-    final byte[] document =
-        this.jsonApiConverter.writeDocumentCollection(new JSONAPIDocument<>(Arrays.asList(u1, u2)));
+    final byte[] document = this.getJsonApiConverter()
+        .writeDocumentCollection(new JSONAPIDocument<>(Arrays.asList(u1, u2)));
 
     final Entity<byte[]> body = Entity.entity(document, MEDIA_TYPE);
 
     final Response response = this.target("v1/users/batch").request()
-        .header(HttpHeader.AUTHORIZATION.asString(), this.adminToken).post(body);
+        .header(HttpHeader.AUTHORIZATION.asString(), this.getAdminToken()).post(body);
 
     assertEquals(HttpStatus.OK_200, response.getStatus());
 
     final byte[] rawResponseBody = response.readEntity(byte[].class);
 
     final List<User> responseBody =
-        this.jsonApiConverter.readDocumentCollection(rawResponseBody, User.class).get();
+        this.getJsonApiConverter().readDocumentCollection(rawResponseBody, User.class).get();
 
     assertEquals(2, responseBody.size());
     assertTrue(Long.parseLong(responseBody.get(0).getId()) > 0
@@ -272,15 +234,16 @@ public class UserResourceEndpointTest extends JerseyTest {
     createdUser.setUsername("newname");
     createdUser.setRoles(Arrays.asList(this.roleService.getAllRoles().get(0)));
 
-    final byte[] body = this.jsonApiConverter.writeDocument(new JSONAPIDocument<>(createdUser));
+    final byte[] body =
+        this.getJsonApiConverter().writeDocument(new JSONAPIDocument<>(createdUser));
 
 
     final Response rawResponseBody = this.target("v1/users/" + createdUser.getId()).request()
-        .header(HttpHeader.AUTHORIZATION.asString(), this.adminToken)
+        .header(HttpHeader.AUTHORIZATION.asString(), this.getAdminToken())
         .method("PATCH", Entity.entity(body, MEDIA_TYPE));
 
 
-    final User responseBody = this.jsonApiConverter
+    final User responseBody = this.getJsonApiConverter()
         .readDocument(rawResponseBody.readEntity(byte[].class), User.class).get();
 
     assertEquals(createdUser.getId(), responseBody.getId());
@@ -303,9 +266,10 @@ public class UserResourceEndpointTest extends JerseyTest {
     final String id = u.getId();
 
     final byte[] rawResponseBody = this.target("v1/users/" + id).request()
-        .header(HttpHeader.AUTHORIZATION.asString(), this.adminToken).get(byte[].class);
+        .header(HttpHeader.AUTHORIZATION.asString(), this.getAdminToken()).get(byte[].class);
 
-    final User foundUser = this.jsonApiConverter.readDocument(rawResponseBody, User.class).get();
+    final User foundUser =
+        this.getJsonApiConverter().readDocument(rawResponseBody, User.class).get();
 
     assertEquals(id, foundUser.getId());
     assertEquals("name", foundUser.getUsername());
@@ -332,10 +296,10 @@ public class UserResourceEndpointTest extends JerseyTest {
     this.userCrudService.saveNewEntity(u3);
 
     final byte[] rawResponseBody = this.target(BASE_URL).queryParam("role", "admin").request()
-        .header(HttpHeader.AUTHORIZATION.asString(), this.adminToken).get(byte[].class);
+        .header(HttpHeader.AUTHORIZATION.asString(), this.getAdminToken()).get(byte[].class);
 
     final List<User> adminUsers =
-        this.jsonApiConverter.readDocumentCollection(rawResponseBody, User.class).get();
+        this.getJsonApiConverter().readDocumentCollection(rawResponseBody, User.class).get();
 
     assertEquals("Did not found all admin users", 2L, adminUsers.size());
   }
@@ -349,9 +313,9 @@ public class UserResourceEndpointTest extends JerseyTest {
     this.userCrudService.saveNewEntity(u);
 
     final Response deleteResponse = this.target("v1/users/" + u.getId()).request()
-        .header(HttpHeader.AUTHORIZATION.asString(), this.adminToken).delete();
+        .header(HttpHeader.AUTHORIZATION.asString(), this.getAdminToken()).delete();
     final Response getResponse = this.target("v1/users/" + u.getId()).request()
-        .header(HttpHeader.AUTHORIZATION.asString(), this.adminToken).get();
+        .header(HttpHeader.AUTHORIZATION.asString(), this.getAdminToken()).get();
 
     assertEquals(HttpStatus.NO_CONTENT_204, deleteResponse.getStatus());
     assertEquals(HttpStatus.NOT_FOUND_404, getResponse.getStatus());
@@ -365,10 +329,10 @@ public class UserResourceEndpointTest extends JerseyTest {
     this.userCrudService.saveNewEntity(u);
 
     final byte[] retrievedUserRaw = this.target("v1/users/" + u.getId()).request()
-        .header(HttpHeader.AUTHORIZATION.asString(), this.adminToken).get(byte[].class);
+        .header(HttpHeader.AUTHORIZATION.asString(), this.getAdminToken()).get(byte[].class);
 
     final User retrievedUser =
-        this.jsonApiConverter.readDocument(retrievedUserRaw, User.class).get();
+        this.getJsonApiConverter().readDocument(retrievedUserRaw, User.class).get();
 
     assertEquals("Settings do not match", settings, retrievedUser.getSettings());
 
