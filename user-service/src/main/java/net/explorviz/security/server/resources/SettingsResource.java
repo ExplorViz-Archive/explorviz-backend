@@ -1,9 +1,9 @@
 package net.explorviz.security.server.resources;
 
-import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import net.explorviz.shared.security.model.settings.UserSettings;
 
@@ -12,7 +12,7 @@ import net.explorviz.shared.security.model.settings.UserSettings;
  *
  */
 @Path("v1/settings")
-public class UserSettingsResource {
+public class SettingsResource {
 
   // private static final Logger LOGGER = LoggerFactory.getLogger(RoleResource.class); // NOPMD
 
@@ -27,12 +27,9 @@ public class UserSettingsResource {
    * @param id id of the setting
    * @return the descriptor
    */
-  @GET
-  @Path("{id}")
-  @PermitAll
-  @Produces(MEDIA_TYPE)
-  public SettingsDescriptorResource settingsInfo() {
-    return new SettingsDescriptorResource();
+  @Path("{id}/info")
+  public SettingsDescriptorResource settingsInfo(@PathParam("id") final String id) {
+    return new SettingsDescriptorResource(id);
 
   }
 
