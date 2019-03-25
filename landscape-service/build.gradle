@@ -25,7 +25,7 @@ dependencies {
   // ExplorViz landscape model
   implementation "com.github.explorviz.explorviz-backend-shared:landscape-model:${expSharedVersion}"
   
-  // implementation project(':landscape-model')
+  //implementation project(':config-injection')
   
   // ExplorViz config matters
   implementation "com.github.explorviz.explorviz-backend-shared:config-injection:${expSharedVersion}"

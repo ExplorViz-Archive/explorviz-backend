@@ -7,8 +7,8 @@ include ':landscape-service', ':kiekeradapter', ':user-service', ':analysis-serv
 // to use a local available 'explorviz-backend-shared' project. Finally, see 'build.gradle' of
 // backend
 
-/*
-include ':landscape-service', ':kiekeradapter', ':user'-service, ':analysis-service', ':discovery-service', ':landscape-model', ':config-injection', ':common-concerns', ':security', ':exception-handling', ':user'
+
+/*include ':landscape-service', ':kiekeradapter', ':user-service', ':analysis-service', ':discovery-service', ':landscape-model', ':config-injection', ':common-concerns', ':security', ':exception-handling', ':user'
 
 
 

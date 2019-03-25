@@ -14,7 +14,10 @@ import net.explorviz.landscape.repository.persistence.mongo.MongoReplayJsonApiRe
 import net.explorviz.landscape.repository.persistence.mongo.MongoReplayRepository;
 import net.explorviz.landscape.server.helper.LandscapeBroadcastService;
 import net.explorviz.landscape.server.resources.LandscapeBroadcastSubResource;
+import net.explorviz.shared.common.idgen.RedisServiceIdGenerator;
+import net.explorviz.shared.common.idgen.ServiceIdGenerator;
 import net.explorviz.shared.common.injection.CommonDependencyInjectionBinder;
+import net.explorviz.shared.config.helper.PropertyHelper;
 import net.explorviz.shared.landscape.model.landscape.Landscape;
 import org.glassfish.hk2.api.TypeLiteral;
 
@@ -26,11 +29,15 @@ public class DependencyInjectionBinder extends CommonDependencyInjectionBinder {
   @Override
   public void configure() {
 
-    // TODO read properties file service.generator.redis=boolean
-
-    // this.bind(RedisServiceIdGenerator.class).to(ServiceIdGenerator.class).in(Singleton.class);
-
     super.configure();
+
+    final boolean useRedisForIdGeneration =
+        PropertyHelper.getBooleanProperty("service.generator.id.redis");
+
+    if (useRedisForIdGeneration) {
+      this.bind(RedisServiceIdGenerator.class).to(ServiceIdGenerator.class).in(Singleton.class)
+          .ranked(1000);
+    }
 
     this.bind(LandscapeRepositoryModel.class).to(LandscapeRepositoryModel.class)
         .in(Singleton.class);
