@@ -32,6 +32,50 @@ dependencies {
   implementation group: 'org.glassfish.jersey.media', name: 'jersey-media-sse', version: '2.27'  
 }
 
+/*task run (type: JavaExec, dependsOn: classes){
+	doLast {
+        if (project.hasProperty("environment")) {
+        	alex = project.hasProperty("environment")
+            println("Performing release actions")
+            println(alex)
+        } else {
+        	println("Using default properties file")
+        }
+    }
+}*/
+
+
+task updateDeploymentEnvironmentProperties {
+
+	// run with:
+	
+	// .././gradlew run -Penvironment=production
+  	
+	doLast {
+	    if (project.hasProperty("environment")) {
+        	def environment = project.findProperty("environment")
+        	
+        	if(environment.equals("production")) {
+        		println("Using the production properties file")
+        		delete("${buildDir}/resources/main/explorviz.properties")
+        		
+        		copy { 
+        			from "${buildDir}/resources/main" 
+        			into "${buildDir}/resources/main"
+        			rename "explorviz.production.properties", "explorviz.properties" 
+        		}
+        		
+        		delete("${buildDir}/resources/main/explorviz.production.properties")        		
+        	}
+        } else {
+        	println("Using default properties file")
+        }
+	}
+}
+
+run.dependsOn updateDeploymentEnvironmentProperties
+updateDeploymentEnvironmentProperties.shouldRunAfter classes
+
 assemble.dependsOn shadowJar
 jar.enabled = false
 
