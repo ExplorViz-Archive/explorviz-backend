@@ -18,6 +18,7 @@ import net.explorviz.shared.landscape.model.landscape.Landscape;
 import org.bson.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import redis.clients.jedis.Jedis;
 
 /**
  * Stores and retrieves landscapes from a mongodb, which is given in the
@@ -42,11 +43,14 @@ public class MongoLandscapeJsonApiRepository implements LandscapeRepository<Stri
 
   private final LandscapeSerializationHelper serializationHelper;
 
+  private final Jedis jedis;
+
   @Inject
   public MongoLandscapeJsonApiRepository(final MongoHelper mongoHelper,
-      final LandscapeSerializationHelper helper) {
+      final LandscapeSerializationHelper helper, final Jedis jedis) {
     this.mongoHelper = mongoHelper;
     this.serializationHelper = helper;
+    this.jedis = jedis;
   }
 
   @Override
@@ -58,6 +62,8 @@ public class MongoLandscapeJsonApiRepository implements LandscapeRepository<Stri
     } catch (final DocumentSerializationException e) {
       throw new InternalServerErrorException("Error serializing: " + e.getMessage(), e);
     }
+
+    this.jedis.set(String.valueOf(timestamp), landscapeJsonApi);
 
     final MongoCollection<Document> landscapeCollection = this.mongoHelper.getLandscapeCollection();
 

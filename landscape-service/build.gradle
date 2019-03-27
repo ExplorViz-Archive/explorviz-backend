@@ -47,7 +47,7 @@ dependencies {
   // multipart/form-data type
   implementation group: 'org.glassfish.jersey.media', name:'jersey-media-multipart', version:'2.26'
   
-  
+  implementation group: 'redis.clients', name: 'jedis', version: '3.0.1'
   
 }
 

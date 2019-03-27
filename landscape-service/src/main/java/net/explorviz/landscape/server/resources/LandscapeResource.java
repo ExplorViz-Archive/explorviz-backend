@@ -11,7 +11,11 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.sse.Sse;
 import net.explorviz.landscape.api.ExtensionApiImpl;
+import net.explorviz.landscape.repository.persistence.mongo.MongoLandscapeJsonApiRepository;
 import net.explorviz.shared.landscape.model.landscape.Landscape;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import redis.clients.jedis.Jedis;
 
 /**
  * Resource providing {@link Landscape} data for the frontend.
@@ -20,21 +24,40 @@ import net.explorviz.shared.landscape.model.landscape.Landscape;
 @RolesAllowed({"admin"})
 public class LandscapeResource {
 
+  private static final Logger LOGGER = LoggerFactory.getLogger(LandscapeResource.class);
   private static final String MEDIA_TYPE = "application/vnd.api+json";
 
   private final ExtensionApiImpl api;
 
+  private final Jedis jedis;
+
+  private final MongoLandscapeJsonApiRepository landscapeJsonApiRepo;
+
+
 
   @Inject
-  public LandscapeResource(final ExtensionApiImpl api) {
+  public LandscapeResource(final ExtensionApiImpl api, final Jedis jedis,
+      final MongoLandscapeJsonApiRepository landscapeJsonApiRepo) {
     this.api = api;
+    this.jedis = jedis;
+    this.landscapeJsonApiRepo = landscapeJsonApiRepo;
   }
 
   @GET
   @Path("/by-timestamp")
   @Produces(MEDIA_TYPE)
-  public Landscape getLandscapeByTimestamp(@QueryParam("timestamp") final long timestamp) {
-    return this.api.getLandscape(timestamp);
+  public String getLandscapeByTimestamp(@QueryParam("timestamp") final long timestamp) {
+    final String potentialCachedLandscape = this.jedis.get(String.valueOf(timestamp));
+
+    if (potentialCachedLandscape == null) {
+      LOGGER.info("Used mongodb");
+      return this.landscapeJsonApiRepo.getByTimestamp(timestamp);
+    } else {
+      LOGGER.info("Used cache");
+      return potentialCachedLandscape;
+    }
+
+
   }
 
   @Path("/broadcast")

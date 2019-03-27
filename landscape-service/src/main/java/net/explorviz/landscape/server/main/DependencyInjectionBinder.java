@@ -20,6 +20,7 @@ import net.explorviz.shared.common.injection.CommonDependencyInjectionBinder;
 import net.explorviz.shared.config.helper.PropertyHelper;
 import net.explorviz.shared.landscape.model.landscape.Landscape;
 import org.glassfish.hk2.api.TypeLiteral;
+import redis.clients.jedis.Jedis;
 
 /**
  * Configures the dependency binding setup for inject during runtime.
@@ -38,6 +39,8 @@ public class DependencyInjectionBinder extends CommonDependencyInjectionBinder {
       this.bind(RedisServiceIdGenerator.class).to(ServiceIdGenerator.class).in(Singleton.class)
           .ranked(1000);
     }
+
+    this.bind(new Jedis("localhost")).to(Jedis.class);
 
     this.bind(LandscapeRepositoryModel.class).to(LandscapeRepositoryModel.class)
         .in(Singleton.class);
