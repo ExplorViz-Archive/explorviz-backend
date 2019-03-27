@@ -76,7 +76,8 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
 
     try {
       final Landscape l = this.fstConf.deepCopy(this.internalLandscape);
-      this.lastPeriodLandscape = LandscapePreparer.prepareLandscape(l);
+      l.createOutgoingApplicationCommunication();
+      this.lastPeriodLandscape = l;
     } catch (final Exception e) {
       LOGGER.error("Error when deep-copying landscape.", e);
     }
@@ -93,11 +94,15 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
   }
 
   public Landscape getLandscape(final long timestamp) {
-    return LandscapePreparer.prepareLandscape(this.landscapeRepository.getByTimestamp(timestamp));
+    final Landscape l = this.landscapeRepository.getByTimestamp(timestamp);
+    l.createOutgoingApplicationCommunication();
+    return l;
   }
 
   public Landscape getReplay(final long timestamp) {
-    return LandscapePreparer.prepareLandscape(this.replayRepository.getByTimestamp(timestamp));
+    final Landscape l = this.replayRepository.getByTimestamp(timestamp);
+    l.createOutgoingApplicationCommunication();
+    return l;
   }
 
 
@@ -157,7 +162,8 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
               calculatedTotalRequests);
           try {
             final Landscape l = this.fstConf.deepCopy(this.internalLandscape);
-            this.lastPeriodLandscape = LandscapePreparer.prepareLandscape(l);
+            l.createOutgoingApplicationCommunication();
+            this.lastPeriodLandscape = l;
           } catch (final Exception e) {
             LOGGER.error("Error when deep-copying landscape.", e);
           }
