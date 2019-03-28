@@ -9,12 +9,14 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import javax.inject.Inject;
 import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.InternalServerErrorException;
 import net.explorviz.landscape.repository.persistence.ReplayRepository;
 import net.explorviz.shared.config.annotations.Config;
 import net.explorviz.shared.landscape.model.landscape.Landscape;
+import net.explorviz.shared.landscape.model.store.Timestamp;
 import org.bson.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -147,17 +149,25 @@ public class MongoReplayJsonApiRepository implements ReplayRepository<String> {
   }
 
   @Override
-  public List<Long> getAllTimestamps() {
+  public List<Timestamp> getAllTimestamps() {
     final MongoCollection<Document> landscapeCollection = this.mongoHelper.getReplayCollection();
-    final List<Long> result = new LinkedList<>();
+    final List<Long> rawTimestamps = new LinkedList<>();
 
     final FindIterable<Document> documents = landscapeCollection.find();
 
     for (final Document doc : documents) {
-      result.add((long) doc.get(MongoHelper.FIELD_ID));
+      rawTimestamps.add((long) doc.get(MongoHelper.FIELD_ID));
     }
 
-    return result;
+    final List<Timestamp> timestamps = rawTimestamps.stream()
+        .map(t -> new Timestamp(t, this.getTotalRequests(t))).collect(Collectors.toList());
+
+    return timestamps;
+  }
+
+  @Override
+  public String getByTimestamp(final Timestamp timestamp) {
+    return this.getByTimestamp(timestamp.getTimestamp());
   }
 
 }

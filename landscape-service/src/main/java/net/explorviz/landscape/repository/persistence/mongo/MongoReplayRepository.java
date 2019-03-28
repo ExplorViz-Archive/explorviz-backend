@@ -6,6 +6,7 @@ import javax.inject.Inject;
 import javax.ws.rs.InternalServerErrorException;
 import net.explorviz.landscape.repository.persistence.ReplayRepository;
 import net.explorviz.shared.landscape.model.landscape.Landscape;
+import net.explorviz.shared.landscape.model.store.Timestamp;
 
 public class MongoReplayRepository implements ReplayRepository<Landscape> {
 
@@ -59,8 +60,13 @@ public class MongoReplayRepository implements ReplayRepository<Landscape> {
   }
 
   @Override
-  public List<Long> getAllTimestamps() {
+  public List<Timestamp> getAllTimestamps() {
     return this.repo.getAllTimestamps();
+  }
+
+  @Override
+  public Landscape getByTimestamp(final Timestamp timestamp) {
+    return this.getByTimestamp(timestamp.getTimestamp());
   }
 
 }

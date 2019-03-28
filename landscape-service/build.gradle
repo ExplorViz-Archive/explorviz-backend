@@ -41,8 +41,6 @@ dependencies {
   // SSE context for injection
   implementation group: 'org.glassfish.jersey.media', name: 'jersey-media-sse', version: '2.27'
   
-  // Serialization
-  implementation group: 'de.ruedigermoeller', name: 'fst', version: '2.56' 
    
   // multipart/form-data type
   implementation group: 'org.glassfish.jersey.media', name:'jersey-media-multipart', version:'2.26'

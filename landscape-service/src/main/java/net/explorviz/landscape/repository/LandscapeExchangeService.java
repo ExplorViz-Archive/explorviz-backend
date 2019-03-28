@@ -1,14 +1,11 @@
 package net.explorviz.landscape.repository;
 
-import java.util.List;
-import java.util.stream.Collectors;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import net.explorviz.landscape.repository.persistence.LandscapeRepository;
 import net.explorviz.landscape.repository.persistence.ReplayRepository;
 import net.explorviz.shared.config.annotations.Config;
 import net.explorviz.shared.landscape.model.landscape.Landscape;
-import net.explorviz.shared.landscape.model.store.Timestamp;
 import org.jvnet.hk2.annotations.Service;
 
 /**
@@ -43,25 +40,6 @@ public class LandscapeExchangeService {
 
   public Landscape getCurrentLandscape() {
     return this.model.getLastPeriodLandscape();
-  }
-
-
-  public List<Timestamp> getLandscapeTimestamps() {
-    final List<Long> rawTimestamps = this.landscapeRepo.getAllTimestamps();
-    final List<Timestamp> timestamps =
-        rawTimestamps.stream().map(t -> new Timestamp(t, this.landscapeRepo.getTotalRequests(t)))
-            .collect(Collectors.toList());
-
-    return timestamps;
-  }
-
-  public List<Timestamp> getReplayTimestamps() {
-    final List<Long> rawTimestamps = this.replayRepo.getAllTimestamps();
-    final List<Timestamp> timestamps =
-        rawTimestamps.stream().map(t -> new Timestamp(t, this.replayRepo.getTotalRequests(t)))
-            .collect(Collectors.toList());
-
-    return timestamps;
   }
 
 

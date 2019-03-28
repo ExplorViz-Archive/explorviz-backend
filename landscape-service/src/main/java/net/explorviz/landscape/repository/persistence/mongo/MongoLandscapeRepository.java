@@ -6,6 +6,7 @@ import javax.inject.Inject;
 import javax.ws.rs.InternalServerErrorException;
 import net.explorviz.landscape.repository.persistence.LandscapeRepository;
 import net.explorviz.shared.landscape.model.landscape.Landscape;
+import net.explorviz.shared.landscape.model.store.Timestamp;
 
 /**
  * Stores and retrieves landscapes from a mongodb, which is given in the
@@ -81,8 +82,13 @@ public class MongoLandscapeRepository implements LandscapeRepository<Landscape> 
   }
 
   @Override
-  public List<Long> getAllTimestamps() {
+  public List<Timestamp> getAllTimestamps() {
     return this.repo.getAllTimestamps();
+  }
+
+  @Override
+  public Landscape getByTimestamp(final Timestamp timestamp) {
+    return this.getByTimestamp(timestamp.getTimestamp());
   }
 
 
