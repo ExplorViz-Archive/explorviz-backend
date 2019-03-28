@@ -2,7 +2,6 @@ package net.explorviz.landscape.api;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -11,8 +10,6 @@ import net.explorviz.landscape.server.providers.CoreModelHandler;
 import net.explorviz.shared.common.provider.GenericTypeFinder;
 import net.explorviz.shared.config.helper.PropertyHelper;
 import net.explorviz.shared.landscape.model.landscape.Landscape;
-import net.explorviz.shared.landscape.model.store.Timestamp;
-import net.explorviz.shared.landscape.model.store.helper.TimestampHelper;
 import org.jvnet.hk2.annotations.Service;
 
 /**
@@ -59,29 +56,6 @@ public final class ExtensionApiImpl implements IExtensionApi {
   @Override
   public Landscape getLandscape(final long timestamp) {
     return this.service.getLandscape(timestamp);
-  }
-
-  /**
-   * Provides the "intervalSize" timestamps after a passed "afterTimestamp" within the server.
-   *
-   * @param afterTimestamp - Timestamp that sets the limit
-   * @param intervalSize - Number of to-be retrieved timestamps
-   * @return List of timestamps
-   */
-  @Override
-  public List<Timestamp> getSubsequentTimestamps(final long afterTimestamp,
-      final int intervalSize) {
-    final List<Timestamp> allTimestamps = this.service.getLandscapeTimestamps();
-    return TimestampHelper.filterTimestampsAfterTimestamp(allTimestamps, afterTimestamp,
-        intervalSize);
-  }
-
-  /**
-   * Provides a list of all uploaded timestamps.
-   */
-  @Override
-  public List<Timestamp> getUploadedTimestamps() {
-    return this.service.getReplayTimestamps();
   }
 
   /**

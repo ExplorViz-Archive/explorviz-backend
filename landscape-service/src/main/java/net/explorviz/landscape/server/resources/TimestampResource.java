@@ -1,5 +1,7 @@
 package net.explorviz.landscape.server.resources;
 
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
@@ -7,7 +9,11 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.WebApplicationException;
 import net.explorviz.landscape.api.ExtensionApiImpl;
+import net.explorviz.landscape.repository.persistence.LandscapeRepository;
+import net.explorviz.landscape.repository.persistence.ReplayRepository;
+import net.explorviz.shared.landscape.model.landscape.Landscape;
 import net.explorviz.shared.landscape.model.store.Timestamp;
 
 /**
@@ -18,12 +24,18 @@ import net.explorviz.shared.landscape.model.store.Timestamp;
 @RolesAllowed({"admin"})
 public class TimestampResource {
 
-  private final ExtensionApiImpl api;
+  private final LandscapeRepository<Landscape> landscapeRepo;
+  private final ReplayRepository<Landscape> replayRepo;
 
   @Inject
-  public TimestampResource(final ExtensionApiImpl api) {
-    this.api = api;
+  public TimestampResource(final ExtensionApiImpl api,
+      final LandscapeRepository<Landscape> landscapeRepo,
+      final ReplayRepository<Landscape> replayRepo) {
+    this.landscapeRepo = landscapeRepo;
+    this.replayRepo = replayRepo;
   }
+
+
 
   /**
    * Returns an List of {@link net.explorviz.landscape.model.store.Timestamp} interval of
@@ -38,7 +50,9 @@ public class TimestampResource {
   @Produces("application/vnd.api+json")
   public List<Timestamp> getSubsequentTimestamps(@QueryParam("after") final long afterTimestamp,
       @QueryParam("intervalSize") final int intervalSize) {
-    return this.api.getSubsequentTimestamps(afterTimestamp, intervalSize);
+    final List<Timestamp> timestamps = this.landscapeRepo.getAllTimestamps();
+
+    return this.filterTimestampsAfterTimestamp(timestamps, afterTimestamp, intervalSize);
   }
 
   /**
@@ -50,7 +64,7 @@ public class TimestampResource {
   @Path("/all-uploaded")
   @Produces("application/vnd.api+json")
   public List<Timestamp> getUploadedTimestamps() {
-    return this.api.getUploadedTimestamps();
+    return this.replayRepo.getAllTimestamps();
   }
 
 
