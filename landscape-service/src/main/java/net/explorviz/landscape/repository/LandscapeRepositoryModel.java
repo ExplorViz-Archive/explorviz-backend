@@ -1,5 +1,6 @@
 package net.explorviz.landscape.repository;
 
+import com.github.jasminb.jsonapi.exceptions.DocumentSerializationException;
 import explorviz.live_trace_processing.reader.IPeriodicTimeSignalReceiver;
 import explorviz.live_trace_processing.reader.TimeSignalReader;
 import explorviz.live_trace_processing.record.IRecord;
@@ -10,6 +11,7 @@ import net.explorviz.landscape.repository.helper.DummyLandscapeHelper;
 import net.explorviz.landscape.repository.persistence.FstHelper;
 import net.explorviz.landscape.repository.persistence.LandscapeRepository;
 import net.explorviz.landscape.repository.persistence.ReplayRepository;
+import net.explorviz.landscape.repository.persistence.mongo.LandscapeSerializationHelper;
 import net.explorviz.landscape.server.helper.LandscapeBroadcastService;
 import net.explorviz.shared.config.annotations.Config;
 import net.explorviz.shared.config.annotations.ConfigValues;
@@ -47,6 +49,10 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
 
   @Inject
   private ReplayRepository<Landscape> replayRepository;
+
+
+  @Inject
+  private LandscapeSerializationHelper serializationHelper;
 
   private final boolean useDummyMode;
 
@@ -117,6 +123,11 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
     }
   }
 
+  private Landscape deepCopy(final Landscape original) throws DocumentSerializationException {
+    final String serialized = this.serializationHelper.serialize(original);
+    return this.serializationHelper.deserialize(serialized);
+  }
+
   /**
    * Key function for the backend. Handles the persistence of a landscape every 10 seconds passed
    * timestamp format is 'milliseconds' since 1970, as defined in Kieker.
@@ -150,11 +161,12 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
           this.landscapeRepository.save(milliseconds, this.internalLandscape,
               calculatedTotalRequests);
           try {
-            final Landscape l = this.fstConf.deepCopy(this.internalLandscape);
+            // final Landscape l = this.fstConf.deepCopy(this.internalLandscape);
+            final Landscape l = this.deepCopy(this.internalLandscape);
             l.createOutgoingApplicationCommunication();
             this.lastPeriodLandscape = l;
           } catch (final Exception e) {
-            LOGGER.error("Error when deep-copying landscape.", e);
+            LOGGER.error("Error while deep-copying landscape.", e);
           }
         }
 
