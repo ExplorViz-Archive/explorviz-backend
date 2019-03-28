@@ -2,6 +2,7 @@ package net.explorviz.landscape.repository.persistence;
 
 import java.util.List;
 import net.explorviz.shared.landscape.model.landscape.Landscape;
+import net.explorviz.shared.landscape.model.store.Timestamp;
 
 public interface ReplayRepository<T> {
 
@@ -30,7 +31,7 @@ public interface ReplayRepository<T> {
    *
    * @return list of all timestamps
    */
-  List<Long> getAllTimestamps();
+  List<Timestamp> getAllTimestamps();
 
   /**
    * Retrieves a replay landscape object with a specific timestamp from the repository.
@@ -40,6 +41,16 @@ public interface ReplayRepository<T> {
    * @return the landscape object
    */
   T getByTimestamp(final long timestamp);
+
+
+  /**
+   * Retrieves a replay landscape object with a specific timestamp from the repository.
+   *
+   * @param timestamp the timestamp of the replay
+   *
+   * @return the landscape object
+   */
+  T getByTimestamp(final Timestamp timestamp);
 
   /**
    * Retrieves a replay object with a specific, unique identifier.
