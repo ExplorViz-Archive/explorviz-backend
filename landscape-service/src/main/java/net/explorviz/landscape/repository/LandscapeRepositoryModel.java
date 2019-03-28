@@ -11,8 +11,8 @@ import net.explorviz.landscape.repository.persistence.FstHelper;
 import net.explorviz.landscape.repository.persistence.LandscapeRepository;
 import net.explorviz.landscape.repository.persistence.ReplayRepository;
 import net.explorviz.landscape.server.helper.LandscapeBroadcastService;
-import net.explorviz.landscape.server.main.Configuration;
 import net.explorviz.shared.config.annotations.Config;
+import net.explorviz.shared.config.annotations.ConfigValues;
 import net.explorviz.shared.landscape.model.application.AggregatedClazzCommunication;
 import net.explorviz.shared.landscape.model.application.Application;
 import net.explorviz.shared.landscape.model.application.ApplicationCommunication;
@@ -39,10 +39,8 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
   private final InsertionRepositoryPart insertionRepositoryPart;
   private final RemoteCallRepositoryPart remoteCallRepositoryPart;
 
-  private final LandscapeBroadcastService broadcastService;
-
-  @Config("repository.useDummyMode")
-  private boolean useDummyMode;
+  @Inject
+  private LandscapeBroadcastService broadcastService;
 
   @Inject
   private LandscapeRepository<Landscape> landscapeRepository;
@@ -50,12 +48,13 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
   @Inject
   private ReplayRepository<Landscape> replayRepository;
 
-  @Inject
-  public LandscapeRepositoryModel(final LandscapeBroadcastService broadcastService) {
+  private final boolean useDummyMode;
 
+  @ConfigValues({@Config("repository.useDummyMode"), @Config("repository.outputIntervalSeconds")})
+  public LandscapeRepositoryModel(final boolean useDummyMode, final int outputIntervalSeconds) {
+
+    this.useDummyMode = useDummyMode;
     this.fstConf = this.initFstConf();
-
-    this.broadcastService = broadcastService;
 
     if (LOAD_LAST_LANDSCAPE_ON_LOAD) {
 
@@ -82,8 +81,10 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
       LOGGER.error("Error when deep-copying landscape.", e);
     }
 
-    new TimeSignalReader(TimeUnit.SECONDS.toMillis(Configuration.outputIntervalSeconds), this)
-        .start();
+    java.lang.System.out.println(this.useDummyMode);
+    java.lang.System.out.println(outputIntervalSeconds);
+
+    new TimeSignalReader(TimeUnit.SECONDS.toMillis(outputIntervalSeconds), this).start();
   }
 
 
@@ -103,18 +104,6 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
     final Landscape l = this.replayRepository.getByTimestamp(timestamp);
     l.createOutgoingApplicationCommunication();
     return l;
-  }
-
-
-  static {
-    // TODO: Unused
-    Configuration.DATABASE_NAMES.add("hsqldb");
-    Configuration.DATABASE_NAMES.add("postgres");
-    Configuration.DATABASE_NAMES.add("db2");
-    Configuration.DATABASE_NAMES.add("mysql");
-    Configuration.DATABASE_NAMES.add("neo4j");
-    Configuration.DATABASE_NAMES.add("database");
-    Configuration.DATABASE_NAMES.add("hypersql");
   }
 
   public FSTConfiguration initFstConf() {

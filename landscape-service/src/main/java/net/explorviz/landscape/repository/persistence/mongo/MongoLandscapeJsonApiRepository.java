@@ -13,7 +13,7 @@ import javax.inject.Inject;
 import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.InternalServerErrorException;
 import net.explorviz.landscape.repository.persistence.LandscapeRepository;
-import net.explorviz.landscape.server.main.Configuration;
+import net.explorviz.shared.config.annotations.Config;
 import net.explorviz.shared.landscape.model.landscape.Landscape;
 import org.bson.Document;
 import org.slf4j.Logger;
@@ -41,6 +41,9 @@ public class MongoLandscapeJsonApiRepository implements LandscapeRepository<Stri
   private final MongoHelper mongoHelper;
 
   private final LandscapeSerializationHelper serializationHelper;
+
+  @Config("repository.history.intervalInMinutes")
+  private int intervalInMinutes;
 
   @Inject
   public MongoLandscapeJsonApiRepository(final MongoHelper mongoHelper,
@@ -120,8 +123,7 @@ public class MongoLandscapeJsonApiRepository implements LandscapeRepository<Stri
 
   @Override
   public void cleanup(final long from) {
-    final long enddate =
-        from - TimeUnit.MINUTES.toMillis(Configuration.HISTORY_INTERVAL_IN_MINUTES);
+    final long enddate = from - TimeUnit.MINUTES.toMillis(this.intervalInMinutes);
 
     final MongoCollection<Document> landscapeCollection = this.mongoHelper.getLandscapeCollection();
     final MongoCollection<Document> replayCollection = this.mongoHelper.getReplayCollection();
