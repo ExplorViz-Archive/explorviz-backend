@@ -8,7 +8,6 @@ import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import net.explorviz.landscape.repository.helper.DummyLandscapeHelper;
-import net.explorviz.landscape.repository.persistence.FstHelper;
 import net.explorviz.landscape.repository.persistence.LandscapeRepository;
 import net.explorviz.landscape.repository.persistence.ReplayRepository;
 import net.explorviz.landscape.repository.persistence.mongo.LandscapeSerializationHelper;
@@ -24,7 +23,6 @@ import net.explorviz.shared.landscape.model.landscape.NodeGroup;
 import net.explorviz.shared.landscape.model.landscape.System;
 import net.explorviz.shared.landscape.model.store.Timestamp;
 import org.jvnet.hk2.annotations.Service;
-import org.nustaq.serialization.FSTConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,7 +35,6 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
   private static final boolean LOAD_LAST_LANDSCAPE_ON_LOAD = false;
   private volatile Landscape lastPeriodLandscape;
   private final Landscape internalLandscape;
-  private final FSTConfiguration fstConf;
   private final InsertionRepositoryPart insertionRepositoryPart;
   private final RemoteCallRepositoryPart remoteCallRepositoryPart;
 
@@ -60,7 +57,6 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
   public LandscapeRepositoryModel(final boolean useDummyMode, final int outputIntervalSeconds) {
 
     this.useDummyMode = useDummyMode;
-    this.fstConf = this.initFstConf();
 
     if (LOAD_LAST_LANDSCAPE_ON_LOAD) {
 
@@ -80,7 +76,7 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
     this.remoteCallRepositoryPart = new RemoteCallRepositoryPart();
 
     try {
-      final Landscape l = this.fstConf.deepCopy(this.internalLandscape);
+      final Landscape l = this.deepCopy(this.internalLandscape);
       l.createOutgoingApplicationCommunication();
       this.lastPeriodLandscape = l;
     } catch (final Exception e) {
@@ -110,10 +106,6 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
     final Landscape l = this.replayRepository.getByTimestamp(timestamp);
     l.createOutgoingApplicationCommunication();
     return l;
-  }
-
-  public FSTConfiguration initFstConf() {
-    return FstHelper.createFstConfiguration();
   }
 
 
@@ -161,7 +153,6 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
           this.landscapeRepository.save(milliseconds, this.internalLandscape,
               calculatedTotalRequests);
           try {
-            // final Landscape l = this.fstConf.deepCopy(this.internalLandscape);
             final Landscape l = this.deepCopy(this.internalLandscape);
             l.createOutgoingApplicationCommunication();
             this.lastPeriodLandscape = l;
