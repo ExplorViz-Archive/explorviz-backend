@@ -22,21 +22,21 @@ dependencies {
   // Any .jar in libs
   implementation fileTree(dir: 'libs', include: '*.jar')
   
-  // ExplorViz landscape model
-  implementation "com.github.explorviz.explorviz-backend-shared:landscape-model:${expSharedVersion}"
-  
-  //implementation project(':config-injection')
-  
-  // ExplorViz config matters
-  implementation "com.github.explorviz.explorviz-backend-shared:config-injection:${expSharedVersion}"
-  
-  implementation "com.github.explorviz.explorviz-backend-shared:common-concerns:${expSharedVersion}"
-  
-  // ExplorViz security matters
-  implementation "com.github.explorviz.explorviz-backend-shared:security:${expSharedVersion}"
-  
-  // ExplorViz exception matters
-  implementation "com.github.explorviz.explorviz-backend-shared:exception-handling:${expSharedVersion}"
+  // ExplorViz Shared Dependencies
+  if("${expUseLocalSharedProject}" == "true") {
+    implementation project(':landscape-model')
+    implementation project(':config-injection')
+   	implementation project(':security')
+   	implementation project(':exception-handling')
+   	implementation project(':common-concerns')
+  }
+  else {
+    implementation "com.github.explorviz.explorviz-backend-shared:landscape-model:${expSharedVersion}"
+    implementation "com.github.explorviz.explorviz-backend-shared:config-injection:${expSharedVersion}"
+    implementation "com.github.explorviz.explorviz-backend-shared:security:${expSharedVersion}"
+    implementation "com.github.explorviz.explorviz-backend-shared:exception-handling:${expSharedVersion}"
+    implementation "com.github.explorviz.explorviz-backend-shared:common-concerns:${expSharedVersion}" 
+  }
   
   // SSE context for injection
   implementation group: 'org.glassfish.jersey.media', name: 'jersey-media-sse', version: '2.27'

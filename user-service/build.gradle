@@ -12,18 +12,26 @@ configurations.all {
 
 ext {	
 	expSharedVersion = "${rootProject.ext.explorvizSharedVersion}"
+	expUseLocalSharedProject = "${rootProject.ext.expUseLocalSharedProject}"
 }
 
 dependencies {
-  	implementation "com.github.explorviz.explorviz-backend-shared:security:${expSharedVersion}"
-  	
-  	implementation "com.github.explorviz.explorviz-backend-shared:config-injection:${expSharedVersion}"
-  	
-  	implementation "com.github.explorviz.explorviz-backend-shared:common-concerns:${expSharedVersion}"
-  	
-  	implementation "com.github.explorviz.explorviz-backend-shared:exception-handling:${expSharedVersion}"
-
-  	implementation "com.github.explorviz.explorviz-backend-shared:user:${expSharedVersion}"
+	
+	// ExplorViz Shared Dependencies
+	if("${expUseLocalSharedProject}" == "true") {
+		implementation project(':user')
+    	implementation project(':config-injection')
+    	implementation project(':security')
+    	implementation project(':exception-handling')
+    	implementation project(':common-concerns')
+  	}
+  	else {
+	    implementation "com.github.explorviz.explorviz-backend-shared:user:${expSharedVersion}"
+    	implementation "com.github.explorviz.explorviz-backend-shared:config-injection:${expSharedVersion}"
+		implementation "com.github.explorviz.explorviz-backend-shared:security:${expSharedVersion}"
+		implementation "com.github.explorviz.explorviz-backend-shared:exception-handling:${expSharedVersion}"
+		implementation "com.github.explorviz.explorviz-backend-shared:common-concerns:${expSharedVersion}" 
+  }
 }
 
 assemble.dependsOn shadowJar

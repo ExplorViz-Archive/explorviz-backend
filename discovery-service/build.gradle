@@ -11,22 +11,26 @@ configurations.all {
 
 ext {	
 	expSharedVersion = "${rootProject.ext.explorvizSharedVersion}"
+	expUseLocalSharedProject = "${rootProject.ext.expUseLocalSharedProject}"
 }
 
 dependencies {
-  // ExplorViz Discovery Classes
-  implementation "com.github.explorviz.explorviz-backend-shared:config-injection:${expSharedVersion}"
 
-  // ExplorViz Discovery Classes
-  implementation "com.github.explorviz.explorviz-backend-shared:discovery-common:${expSharedVersion}"
-  
-  // ExplorViz Discovery Classes
-  implementation "com.github.explorviz.explorviz-backend-shared:security:${expSharedVersion}"
-  
-  // ExplorViz common exception handling
-  implementation "com.github.explorviz.explorviz-backend-shared:exception-handling:${expSharedVersion}"
-  
-  implementation "com.github.explorviz.explorviz-backend-shared:common-concerns:${expSharedVersion}"
+  // ExplorViz Shared Dependencies
+  if("${expUseLocalSharedProject}" == "true") {
+    implementation project(':config-injection')
+    implementation project(':discovery-common')
+    implementation project(':security')
+    implementation project(':exception-handling')
+    implementation project(':common-concerns')
+  }
+  else {
+    implementation "com.github.explorviz.explorviz-backend-shared:config-injection:${expSharedVersion}"
+    implementation "com.github.explorviz.explorviz-backend-shared:discovery-common:${expSharedVersion}"
+    implementation "com.github.explorviz.explorviz-backend-shared:security:${expSharedVersion}"
+    implementation "com.github.explorviz.explorviz-backend-shared:exception-handling:${expSharedVersion}"
+    implementation "com.github.explorviz.explorviz-backend-shared:common-concerns:${expSharedVersion}" 
+  } 
   
   // SSE context for injection
   implementation group: 'org.glassfish.jersey.media', name: 'jersey-media-sse', version: '2.27'  

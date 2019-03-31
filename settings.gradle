@@ -8,7 +8,7 @@ include ':landscape-service', ':kiekeradapter', ':user-service', ':analysis-serv
 // backend
 
 
-/*include ':landscape-service', ':kiekeradapter', ':user-service', ':analysis-service', ':discovery-service', ':landscape-model', ':config-injection', ':common-concerns', ':security', ':exception-handling', ':user'
+/*include ':landscape-service', ':kiekeradapter', ':user-service', ':analysis-service', ':discovery-service', ':landscape-model', ':config-injection', ':common-concerns', ':security', ':exception-handling', ':user', ':discovery-common'
 
 
 
@@ -18,4 +18,5 @@ project(':common-concerns').projectDir = new File("../explorviz-backend-shared/c
 project(':security').projectDir = new File("../explorviz-backend-shared/security")
 project(':exception-handling').projectDir = new File("../explorviz-backend-shared/exception-handling")
 project(':user').projectDir = new File("../explorviz-backend-shared/user")
+project(':discovery-common').projectDir = new File("../explorviz-backend-shared/discovery-common")
 */
