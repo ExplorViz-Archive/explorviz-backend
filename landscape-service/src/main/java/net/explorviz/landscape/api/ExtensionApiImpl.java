@@ -6,7 +6,7 @@ import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import net.explorviz.landscape.repository.LandscapeExchangeService;
-import net.explorviz.landscape.server.providers.CoreModelHandler;
+import net.explorviz.landscape.server.main.Application;
 import net.explorviz.shared.common.provider.GenericTypeFinder;
 import net.explorviz.shared.config.helper.PropertyHelper;
 import net.explorviz.shared.landscape.model.landscape.Landscape;
@@ -86,8 +86,7 @@ public final class ExtensionApiImpl implements IExtensionApi {
    */
   @Override
   public void registerAllCoreModels() {
-    CoreModelHandler.registerAllCoreModels();
-
+    Application.registerLandscapeModels();
   }
 
   /**

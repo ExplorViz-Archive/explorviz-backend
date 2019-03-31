@@ -22,7 +22,8 @@ public class SettingDescriptorResourceTest {
 
   @Test
   public void testUnknownSettingInfo() {
-    assertThrows(NotFoundException.class, () -> new SettingsDescriptorResource("showFpsCounter"));
+    assertThrows(NotFoundException.class,
+        () -> new SettingsDescriptorResource("UnknownSetting").settingDescriptor());
   }
 
 }

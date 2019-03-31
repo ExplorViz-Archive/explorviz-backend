@@ -17,6 +17,8 @@ import net.explorviz.security.server.resources.UserResource;
 import net.explorviz.security.services.RoleService;
 import net.explorviz.security.services.UserMongoCrudService;
 import net.explorviz.security.testutils.TestDatasourceFactory;
+import net.explorviz.shared.exceptions.ErrorObjectHelper;
+import net.explorviz.shared.exceptions.JsonApiErrorObjectHelper;
 import net.explorviz.shared.security.model.User;
 import net.explorviz.shared.security.model.roles.Role;
 import net.explorviz.shared.security.model.settings.UserSettings;
@@ -74,6 +76,8 @@ public class UserResourceEndpointTest extends EndpointTest {
     return new DependencyInjectionBinder() {
       @Override
       public void configure() {
+        this.bind(JsonApiErrorObjectHelper.class).to(ErrorObjectHelper.class).in(Singleton.class);
+
         this.bind(UserMongoCrudService.class).to(UserMongoCrudService.class).in(Singleton.class)
             .ranked(10);
         this.bindFactory(TestDatasourceFactory.class).to(Datastore.class).in(Singleton.class)

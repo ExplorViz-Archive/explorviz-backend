@@ -5,8 +5,8 @@ import static org.junit.Assert.assertEquals;
 import java.util.Random;
 import javax.inject.Inject;
 import net.explorviz.landscape.repository.LandscapeDummyCreator;
+import net.explorviz.landscape.server.main.Application;
 import net.explorviz.landscape.server.main.DependencyInjectionBinder;
-import net.explorviz.landscape.server.providers.CoreModelHandler;
 import net.explorviz.shared.common.idgen.IdGenerator;
 import net.explorviz.shared.landscape.model.helper.BaseEntity;
 import net.explorviz.shared.landscape.model.landscape.Landscape;
@@ -24,7 +24,7 @@ public class MongoLandscapeRepositoryTest {
 
   @BeforeClass
   public static void setUpAll() {
-    CoreModelHandler.registerAllCoreModels();
+    Application.registerLandscapeModels();
   }
 
   @Inject
