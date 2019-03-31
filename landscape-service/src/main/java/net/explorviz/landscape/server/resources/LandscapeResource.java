@@ -10,7 +10,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.sse.Sse;
-import net.explorviz.landscape.api.ExtensionApiImpl;
+import net.explorviz.landscape.repository.persistence.LandscapeRepository;
+import net.explorviz.landscape.repository.persistence.ReplayRepository;
 import net.explorviz.shared.landscape.model.landscape.Landscape;
 
 /**
@@ -22,19 +23,22 @@ public class LandscapeResource {
 
   private static final String MEDIA_TYPE = "application/vnd.api+json";
 
-  private final ExtensionApiImpl api;
+  private final LandscapeRepository<Landscape> landscapeRepo;
+  private final ReplayRepository<Landscape> replayRepo;
 
 
   @Inject
-  public LandscapeResource(final ExtensionApiImpl api) {
-    this.api = api;
+  public LandscapeResource(final LandscapeRepository<Landscape> landscapeRepo,
+      final ReplayRepository<Landscape> replayRepo) {
+    this.landscapeRepo = landscapeRepo;
+    this.replayRepo = replayRepo;
   }
 
   @GET
   @Path("/by-timestamp")
   @Produces(MEDIA_TYPE)
   public Landscape getLandscapeByTimestamp(@QueryParam("timestamp") final long timestamp) {
-    return this.api.getLandscape(timestamp);
+    return this.landscapeRepo.getByTimestamp(timestamp);
   }
 
   @Path("/broadcast")
@@ -52,7 +56,7 @@ public class LandscapeResource {
   @Produces(MEDIA_TYPE)
   public Landscape getReplayLandscape(@PathParam("timestamp") final long timestamp)
       throws FileNotFoundException {
-    return this.api.getLandscape(timestamp);
+    return this.replayRepo.getByTimestamp(timestamp);
   }
 
 }

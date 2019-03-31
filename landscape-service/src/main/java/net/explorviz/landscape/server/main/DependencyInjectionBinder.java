@@ -1,7 +1,6 @@
 package net.explorviz.landscape.server.main;
 
 import javax.inject.Singleton;
-import net.explorviz.landscape.api.ExtensionApiImpl;
 import net.explorviz.landscape.repository.LandscapeExchangeService;
 import net.explorviz.landscape.repository.LandscapeRepositoryModel;
 import net.explorviz.landscape.repository.persistence.LandscapeRepository;
@@ -43,8 +42,6 @@ public class DependencyInjectionBinder extends CommonDependencyInjectionBinder {
         .in(Singleton.class);
     this.bind(LandscapeExchangeService.class).to(LandscapeExchangeService.class)
         .in(Singleton.class);
-
-    this.bind(ExtensionApiImpl.class).to(ExtensionApiImpl.class).in(Singleton.class);
 
     // Persistence
     this.bind(MongoHelper.class).to(MongoHelper.class).in(Singleton.class);
