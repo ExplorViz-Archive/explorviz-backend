@@ -1,7 +1,7 @@
 package net.explorviz.security.services;
 
-import com.mongodb.MongoException;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.inject.Inject;
@@ -61,7 +61,7 @@ public class UserMongoCrudService implements MongoCrudService<User> {
    * @param user - a user entity
    * @return an Optional, which contains a User or is empty
    */
-  public Optional<User> saveNewEntity(final User user) throws MongoException {
+  public Optional<User> saveNewEntity(final User user) {
     // Generate an id
     user.setId(this.idGenerator.generateId());
 
@@ -74,12 +74,12 @@ public class UserMongoCrudService implements MongoCrudService<User> {
   }
 
   @Override
-  public void updateEntity(final User user) throws MongoException {
+  public void updateEntity(final User user) {
     this.datastore.save(user);
   }
 
   @Override
-  public Optional<User> getEntityById(final String id) throws MongoException {
+  public Optional<User> getEntityById(final String id) {
 
     final User userObject = this.datastore.get(User.class, id);
 
@@ -148,7 +148,7 @@ public class UserMongoCrudService implements MongoCrudService<User> {
    * @param roleName role to search for
    * @return a list of all users, that have the given role assigned
    */
-  public List<User> getUsersByRole(final String roleName) throws MongoException {
+  public List<User> getUsersByRole(final String roleName) {
 
     // TODO find smarter (MongoDB based) way to check for roles
 

@@ -1,5 +1,6 @@
 package net.explorviz.security.services;
 
+import com.mongodb.MongoException;
 import java.util.List;
 import java.util.Optional;
 import org.jvnet.hk2.annotations.Service;
@@ -48,8 +49,10 @@ public interface MongoCrudService<T> {
    * Deletes an entity.
    *
    * @param id - the id of the entity to delete
+   * @throws UserCrudException if the user could not be deleted
+   * @throws MongoException
    */
-  void deleteEntityById(final String id);
+  void deleteEntityById(final String id) throws UserCrudException;
 
 
   /**

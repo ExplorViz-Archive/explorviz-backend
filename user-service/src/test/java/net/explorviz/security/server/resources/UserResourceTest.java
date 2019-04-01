@@ -6,7 +6,6 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.when;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -17,6 +16,7 @@ import java.util.stream.Collectors;
 import javax.ws.rs.BadRequestException;
 import net.explorviz.security.server.resources.endpoints.UserResourceEndpointTest;
 import net.explorviz.security.services.RoleService;
+import net.explorviz.security.services.UserCrudException;
 import net.explorviz.security.services.UserMongoCrudService;
 import net.explorviz.security.util.PasswordStorage;
 import net.explorviz.security.util.PasswordStorage.CannotPerformOperationException;
@@ -57,7 +57,7 @@ public class UserResourceTest {
   private Long lastId = 0L;
 
   @Before
-  public void setUp() {
+  public void setUp() throws UserCrudException {
 
 
 
@@ -83,7 +83,8 @@ public class UserResourceTest {
 
     when(this.userCrudService.getUsersByRole(any())).thenAnswer(inv -> {
       final String role = inv.getArgument(0);
-      return this.users.values().stream()
+      return this.users.values()
+          .stream()
           .filter(u -> u.getRoles().stream().anyMatch(r -> r.getDescriptor().equals(role)))
           .collect(Collectors.toList());
 
