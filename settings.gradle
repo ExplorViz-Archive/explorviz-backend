@@ -8,13 +8,15 @@ if(useRemoteSharedProject) {
 	':kiekeradapter', 
 	':user-service', 
 	':analysis-service', 
-	':discovery-service'
+	':discovery-service',
+	':settings-service'
 } else {
 	// use local linked shared project, set 
 	// expUseLocalSharedProject = true in build.gradle
 	include ':landscape-service', 
 	':kiekeradapter', 
 	':user-service', 
+	':settings-service',
 	':analysis-service', 
 	':discovery-service', 
 	':landscape-model', 
