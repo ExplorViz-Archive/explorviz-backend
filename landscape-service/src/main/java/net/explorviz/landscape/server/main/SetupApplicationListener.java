@@ -2,7 +2,8 @@ package net.explorviz.landscape.server.main;
 
 import javax.inject.Inject;
 import javax.servlet.annotation.WebListener;
-import net.explorviz.landscape.repository.LandscapeExchangeService;
+import net.explorviz.landscape.repository.LandscapeRepositoryModel;
+import net.explorviz.landscape.repository.RepositoryStarter;
 import net.explorviz.shared.common.idgen.IdGenerator;
 import net.explorviz.shared.config.annotations.Config;
 import net.explorviz.shared.landscape.model.helper.BaseEntity;
@@ -33,10 +34,10 @@ public class SetupApplicationListener implements ApplicationEventListener {
   private ServiceLocator serviceLocator;
 
 
-  private LandscapeExchangeService exchangeService;
-
   @Inject
   private IdGenerator idGenerator;
+
+  LandscapeRepositoryModel model;
 
   @Config("repository.useDummyMode")
   private boolean useDummyMode;
@@ -54,7 +55,9 @@ public class SetupApplicationListener implements ApplicationEventListener {
 
       // Workaround: Can't be injected directly since BaseEntity.initialize(..) must be called
       // first.
-      this.exchangeService = this.serviceLocator.create(LandscapeExchangeService.class);
+      this.model = this.serviceLocator.create(LandscapeRepositoryModel.class);
+
+      System.out.println(this.model);
 
       this.startExplorVizBackend();
       this.startDatabase();
@@ -78,7 +81,13 @@ public class SetupApplicationListener implements ApplicationEventListener {
 
   private void startExplorVizBackend() {
     // Start ExplorViz Listener
-    this.exchangeService.startRepository();
+    new Thread(new Runnable() {
+
+      @Override
+      public void run() {
+        new RepositoryStarter().start(SetupApplicationListener.this.model);
+      }
+    }).start();
 
     LOGGER.info("\n");
     LOGGER.info("* * * * * * * * * * * * * * * * * * *\n"); // NOCS

@@ -1,7 +1,6 @@
 package net.explorviz.landscape.server.main;
 
 import javax.inject.Singleton;
-import net.explorviz.landscape.repository.LandscapeExchangeService;
 import net.explorviz.landscape.repository.LandscapeRepositoryModel;
 import net.explorviz.landscape.repository.persistence.LandscapeRepository;
 import net.explorviz.landscape.repository.persistence.ReplayRepository;
@@ -39,8 +38,6 @@ public class DependencyInjectionBinder extends CommonDependencyInjectionBinder {
     }
 
     this.bind(LandscapeRepositoryModel.class).to(LandscapeRepositoryModel.class)
-        .in(Singleton.class);
-    this.bind(LandscapeExchangeService.class).to(LandscapeExchangeService.class)
         .in(Singleton.class);
 
     // Persistence
