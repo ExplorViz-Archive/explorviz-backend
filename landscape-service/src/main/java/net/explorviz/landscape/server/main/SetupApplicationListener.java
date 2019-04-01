@@ -55,7 +55,7 @@ public class SetupApplicationListener implements ApplicationEventListener {
 
       // Workaround: Can't be injected directly since BaseEntity.initialize(..) must be called
       // first.
-      this.model = this.serviceLocator.create(LandscapeRepositoryModel.class);
+      this.model = this.serviceLocator.createAndInitialize(LandscapeRepositoryModel.class);
 
       System.out.println(this.model);
 

@@ -5,6 +5,7 @@ import explorviz.live_trace_processing.reader.IPeriodicTimeSignalReceiver;
 import explorviz.live_trace_processing.reader.TimeSignalReader;
 import explorviz.live_trace_processing.record.IRecord;
 import java.util.concurrent.TimeUnit;
+import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import net.explorviz.landscape.repository.helper.DummyLandscapeHelper;
@@ -34,9 +35,10 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
 
   private static final boolean LOAD_LAST_LANDSCAPE_ON_LOAD = false;
   private volatile Landscape lastPeriodLandscape;
-  private final Landscape internalLandscape;
+  private Landscape internalLandscape;
   private final InsertionRepositoryPart insertionRepositoryPart;
   private final RemoteCallRepositoryPart remoteCallRepositoryPart;
+  private final int outputIntervalSeconds;
 
   @Inject
   private LandscapeBroadcastService broadcastService;
@@ -53,11 +55,17 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
 
   private final boolean useDummyMode;
 
+
   @ConfigValues({@Config("repository.useDummyMode"), @Config("repository.outputIntervalSeconds")})
   public LandscapeRepositoryModel(final boolean useDummyMode, final int outputIntervalSeconds) {
-
     this.useDummyMode = useDummyMode;
+    this.insertionRepositoryPart = new InsertionRepositoryPart();
+    this.remoteCallRepositoryPart = new RemoteCallRepositoryPart();
+    this.outputIntervalSeconds = outputIntervalSeconds;
+  }
 
+  @PostConstruct
+  public void init() {
     if (LOAD_LAST_LANDSCAPE_ON_LOAD) {
 
       // final Landscape readLandscape =
@@ -72,9 +80,6 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
       this.internalLandscape = new Landscape();
     }
 
-    this.insertionRepositoryPart = new InsertionRepositoryPart();
-    this.remoteCallRepositoryPart = new RemoteCallRepositoryPart();
-
     try {
       final Landscape l = this.deepCopy(this.internalLandscape);
       l.createOutgoingApplicationCommunication();
@@ -83,10 +88,7 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
       LOGGER.error("Error when deep-copying landscape.", e);
     }
 
-    java.lang.System.out.println(this.useDummyMode);
-    java.lang.System.out.println(outputIntervalSeconds);
-
-    new TimeSignalReader(TimeUnit.SECONDS.toMillis(outputIntervalSeconds), this).start();
+    new TimeSignalReader(TimeUnit.SECONDS.toMillis(this.outputIntervalSeconds), this).start();
   }
 
 
