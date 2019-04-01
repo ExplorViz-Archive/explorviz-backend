@@ -312,17 +312,33 @@ public class UserResourceEndpointTest extends EndpointTest {
   @Test
   public void removeUser() throws DocumentSerializationException {
 
-    final User u = new User("1", "user1", "pw", Arrays.asList(new Role("admin")));
+    final User u = new User("1", "user1", "pw", null);
 
     this.userCrudService.saveNewEntity(u);
 
-    final Response deleteResponse = this.target("v1/users/" + u.getId()).request()
-        .header(HttpHeader.AUTHORIZATION.asString(), this.getAdminToken()).delete();
-    final Response getResponse = this.target("v1/users/" + u.getId()).request()
-        .header(HttpHeader.AUTHORIZATION.asString(), this.getAdminToken()).get();
+    final Response deleteResponse = this.target("v1/users/" + u.getId())
+        .request()
+        .header(HttpHeader.AUTHORIZATION.asString(), this.getAdminToken())
+        .delete();
+    final Response getResponse = this.target("v1/users/" + u.getId())
+        .request()
+        .header(HttpHeader.AUTHORIZATION.asString(), this.getAdminToken())
+        .get();
 
     assertEquals(HttpStatus.NO_CONTENT_204, deleteResponse.getStatus());
     assertEquals(HttpStatus.NOT_FOUND_404, getResponse.getStatus());
+  }
+
+  @Test
+  public void removeLastAdmin() {
+    final User u = new User(null, "admin", "pw", Arrays.asList(new Role("admin")));
+    this.userCrudService.saveNewEntity(u);
+    final Response deleteResponse = this.target("v1/users/" + u.getId())
+        .request()
+        .header(HttpHeader.AUTHORIZATION.asString(), this.getAdminToken())
+        .delete();
+
+    assertEquals("Last admin was deleted", 400, deleteResponse.getStatus());
   }
 
   @Test

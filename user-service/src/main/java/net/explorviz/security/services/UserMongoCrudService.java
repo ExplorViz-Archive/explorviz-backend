@@ -87,7 +87,11 @@ public class UserMongoCrudService implements MongoCrudService<User> {
   }
 
   @Override
-  public void deleteEntityById(final String id) throws MongoException {
+  public void deleteEntityById(final String id) throws UserCrudException {
+
+    if (this.isLastAdmin(id)) {
+      throw new UserCrudException("Can not delete last admin");
+    }
 
     this.datastore.delete(User.class, id);
 
@@ -97,6 +101,38 @@ public class UserMongoCrudService implements MongoCrudService<User> {
 
   }
 
+  /**
+   * Helper method to check whether the user with the given id is the only admin.
+   *
+   * @param id user id
+   * @return {@code true} iff the user with the given id has the role "admin" and there is no other
+   *         user with this role.
+   */
+  private boolean isLastAdmin(final String id) {
+    User user;
+    try {
+      user = this.getEntityById(id).get();
+    } catch (final NoSuchElementException e) {
+      return false;
+    }
+
+    final boolean isadmin =
+        user.getRoles().stream().filter(r -> r.getDescriptor().equals("admin")).count() == 1;
+
+    final boolean otheradmin = this.getAll()
+        .stream()
+        .filter(u -> u.getRoles()
+            .stream()
+            .map(r -> r.getDescriptor())
+            .collect(Collectors.toList())
+            .contains("admin"))
+        .filter(u -> !u.getId().equals(id))
+        .count() > 0;
+
+
+    return isadmin && !otheradmin;
+
+  }
 
   @Override
   public Optional<User> findEntityByFieldValue(final String field, final Object value) {
