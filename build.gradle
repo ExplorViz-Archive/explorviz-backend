@@ -24,13 +24,6 @@ task alljavadoc(type: Javadoc) {
     options.setFooter(footerText)
 }
 
-ext {
-	// Version tag for the Explorviz-Backend-Shared project dependency
-	// https://github.com/ExplorViz/explorviz-backend-shared
-    explorvizSharedVersion = 'v1.3.12'
-    
-    expUseLocalSharedProject = false
-  }
 
 // END aggregated Javadoc in multiproject Gradle build
 subprojects {

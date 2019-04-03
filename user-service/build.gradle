@@ -9,28 +9,23 @@ configurations.all {
   resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
 }
 
-
-ext {	
-	expSharedVersion = "${rootProject.ext.explorvizSharedVersion}"
-	expUseLocalSharedProject = "${rootProject.ext.expUseLocalSharedProject}"
-}
-
 dependencies {
 	
 	// ExplorViz Shared Dependencies
-	if("${expUseLocalSharedProject}" == "true") {
-		implementation project(':user')
+	if(useRemoteSharedProject.toBoolean()) {
+		implementation "com.github.explorviz.explorviz-backend-shared:user:${sharedProjectVersion}"
+    	implementation "com.github.explorviz.explorviz-backend-shared:config-injection:${sharedProjectVersion}"
+		implementation "com.github.explorviz.explorviz-backend-shared:security:${sharedProjectVersion}"
+		implementation "com.github.explorviz.explorviz-backend-shared:exception-handling:${sharedProjectVersion}"
+		implementation "com.github.explorviz.explorviz-backend-shared:common-concerns:${sharedProjectVersion}"
+  	}
+  	else {
+	     
+  		implementation project(':user')
     	implementation project(':config-injection')
     	implementation project(':security')
     	implementation project(':exception-handling')
     	implementation project(':common-concerns')
-  	}
-  	else {
-	    implementation "com.github.explorviz.explorviz-backend-shared:user:${expSharedVersion}"
-    	implementation "com.github.explorviz.explorviz-backend-shared:config-injection:${expSharedVersion}"
-		implementation "com.github.explorviz.explorviz-backend-shared:security:${expSharedVersion}"
-		implementation "com.github.explorviz.explorviz-backend-shared:exception-handling:${expSharedVersion}"
-		implementation "com.github.explorviz.explorviz-backend-shared:common-concerns:${expSharedVersion}" 
   }
 }
 
