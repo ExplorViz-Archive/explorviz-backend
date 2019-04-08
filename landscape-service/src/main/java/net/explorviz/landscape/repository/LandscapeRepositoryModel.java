@@ -14,7 +14,6 @@ import net.explorviz.landscape.repository.persistence.ReplayRepository;
 import net.explorviz.landscape.repository.persistence.mongo.LandscapeSerializationHelper;
 import net.explorviz.landscape.server.helper.LandscapeBroadcastService;
 import net.explorviz.shared.config.annotations.Config;
-import net.explorviz.shared.config.annotations.ConfigValues;
 import net.explorviz.shared.landscape.model.application.AggregatedClazzCommunication;
 import net.explorviz.shared.landscape.model.application.Application;
 import net.explorviz.shared.landscape.model.application.ApplicationCommunication;
@@ -40,24 +39,30 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
   private final RemoteCallRepositoryPart remoteCallRepositoryPart;
   private final int outputIntervalSeconds;
 
-  @Inject
-  private LandscapeBroadcastService broadcastService;
+  private final LandscapeBroadcastService broadcastService;
 
-  @Inject
-  private LandscapeRepository<Landscape> landscapeRepository;
+  private final LandscapeRepository<Landscape> landscapeRepository;
 
-  @Inject
-  private ReplayRepository<Landscape> replayRepository;
+  private final ReplayRepository<Landscape> replayRepository;
 
-
-  @Inject
-  private LandscapeSerializationHelper serializationHelper;
+  private final LandscapeSerializationHelper serializationHelper;
 
   private final boolean useDummyMode;
 
 
-  @ConfigValues({@Config("repository.useDummyMode"), @Config("repository.outputIntervalSeconds")})
-  public LandscapeRepositoryModel(final boolean useDummyMode, final int outputIntervalSeconds) {
+  @Inject
+  public LandscapeRepositoryModel(final LandscapeBroadcastService broadcastService,
+      final LandscapeRepository<Landscape> landscapeRepository,
+      final ReplayRepository<Landscape> replayRepository,
+      final LandscapeSerializationHelper serializationHelper,
+      @Config("repository.outputIntervalSeconds") final int outputIntervalSeconds,
+      @Config("repository.useDummyMode") final boolean useDummyMode) {
+
+    this.broadcastService = broadcastService;
+    this.landscapeRepository = landscapeRepository;
+    this.replayRepository = replayRepository;
+    this.serializationHelper = serializationHelper;
+
     this.useDummyMode = useDummyMode;
     this.insertionRepositoryPart = new InsertionRepositoryPart();
     this.remoteCallRepositoryPart = new RemoteCallRepositoryPart();
@@ -152,8 +157,8 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
           this.internalLandscape.getTimestamp().setTotalRequests(calculatedTotalRequests);
           this.internalLandscape.setTimestamp(new Timestamp(milliseconds, calculatedTotalRequests));
 
-          this.landscapeRepository.save(milliseconds, this.internalLandscape,
-              calculatedTotalRequests);
+          this.landscapeRepository
+              .save(milliseconds, this.internalLandscape, calculatedTotalRequests);
           try {
             final Landscape l = this.deepCopy(this.internalLandscape);
             l.createOutgoingApplicationCommunication();
@@ -212,7 +217,7 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
 
   public void insertIntoModel(final IRecord inputIRecord) {
     // called every second
-    this.insertionRepositoryPart.insertIntoModel(inputIRecord, this.internalLandscape,
-        this.remoteCallRepositoryPart);
+    this.insertionRepositoryPart
+        .insertIntoModel(inputIRecord, this.internalLandscape, this.remoteCallRepositoryPart);
   }
 }
