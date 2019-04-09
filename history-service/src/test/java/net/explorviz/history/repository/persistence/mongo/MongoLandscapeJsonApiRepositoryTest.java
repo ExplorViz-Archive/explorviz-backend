@@ -1,13 +1,12 @@
-package net.explorviz.landscape.repository.persistence.mongo;
+package net.explorviz.history.repository.persistence.mongo;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Random;
 import javax.inject.Inject;
-import net.explorviz.landscape.repository.LandscapeDummyCreator;
-import net.explorviz.landscape.server.main.Application;
-import net.explorviz.landscape.server.main.DependencyInjectionBinder;
+import net.explorviz.history.server.main.Application;
+import net.explorviz.history.server.main.DependencyInjectionBinder;
 import net.explorviz.shared.common.idgen.IdGenerator;
 import net.explorviz.shared.landscape.model.helper.BaseEntity;
 import net.explorviz.shared.landscape.model.landscape.Landscape;
@@ -18,10 +17,14 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class MongoReplayJsonApiRepositoryTest {
+/**
+ * Tests the {@link MongoLandscapeJsonApiRepository}. Expects a running mongodb server.
+ *
+ */
+public class MongoLandscapeJsonApiRepositoryTest {
 
   @Inject
-  private MongoReplayJsonApiRepository repo;
+  private MongoLandscapeJsonApiRepository repo;
 
   @Inject
   private IdGenerator idGenerator;
@@ -31,8 +34,10 @@ public class MongoReplayJsonApiRepositoryTest {
     Application.registerLandscapeModels();
   }
 
+
+
   /**
-   * Injects depedencies.
+   * Injects dependencies.
    */
   @Before
   public void setUp() {
@@ -45,13 +50,15 @@ public class MongoReplayJsonApiRepositoryTest {
     BaseEntity.initialize(this.idGenerator);
   }
 
+
   @After
   public void tearDown() {
     this.repo.clear();
   }
 
+
   @Test
-  public void findReplayByTimestamp() {
+  public void findByTimestamp() {
     final long ts = System.currentTimeMillis();
     final Landscape landscape = LandscapeDummyCreator.createDummyLandscape();
     this.repo.save(ts, landscape, 0);
@@ -62,12 +69,13 @@ public class MongoReplayJsonApiRepositoryTest {
   }
 
   @Test
-  public void findReplayById() {
-    final long ts = System.currentTimeMillis();
+  public void testFindById() {
     final Landscape landscape = LandscapeDummyCreator.createDummyLandscape();
+    final long ts = System.currentTimeMillis();
     final Landscape landscape2 = LandscapeDummyCreator.createDummyLandscape();
+    final long ts2 = ts + 1;
     this.repo.save(ts, landscape, 0);
-    this.repo.save(ts, landscape2, 0);
+    this.repo.save(ts2, landscape2, 0);
 
     final String id = landscape.getId();
     final String rawLandscape = this.repo.getById(id);
@@ -77,7 +85,7 @@ public class MongoReplayJsonApiRepositoryTest {
   }
 
   @Test
-  public void testTotalRequestsReplay() {
+  public void testTotalRequestsLandscape() {
     final Random rand = new Random();
     final long ts = System.currentTimeMillis();
     final int requests = rand.nextInt(Integer.MAX_VALUE) + 1;

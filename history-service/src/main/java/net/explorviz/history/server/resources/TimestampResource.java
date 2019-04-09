@@ -1,4 +1,4 @@
-package net.explorviz.landscape.server.resources;
+package net.explorviz.history.server.resources;
 
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -10,8 +10,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
-import net.explorviz.landscape.repository.persistence.LandscapeRepository;
-import net.explorviz.landscape.repository.persistence.ReplayRepository;
+import net.explorviz.history.repository.persistence.LandscapeRepository;
+import net.explorviz.history.repository.persistence.ReplayRepository;
 import net.explorviz.shared.landscape.model.landscape.Landscape;
 import net.explorviz.shared.landscape.model.store.Timestamp;
 

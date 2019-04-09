@@ -1,4 +1,4 @@
-package net.explorviz.landscape.repository.persistence.mongo;
+package net.explorviz.landscape.repository.helper;
 
 import com.github.jasminb.jsonapi.JSONAPIDocument;
 import com.github.jasminb.jsonapi.ResourceConverter;

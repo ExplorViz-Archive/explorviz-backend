@@ -1,12 +1,12 @@
-package net.explorviz.landscape.repository.persistence.mongo;
+package net.explorviz.history.repository.persistence.mongo;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Random;
 import javax.inject.Inject;
-import net.explorviz.landscape.repository.LandscapeDummyCreator;
-import net.explorviz.landscape.server.main.Application;
-import net.explorviz.landscape.server.main.DependencyInjectionBinder;
+import net.explorviz.history.server.main.Application;
+import net.explorviz.history.server.main.DependencyInjectionBinder;
 import net.explorviz.shared.common.idgen.IdGenerator;
 import net.explorviz.shared.landscape.model.helper.BaseEntity;
 import net.explorviz.shared.landscape.model.landscape.Landscape;
@@ -17,12 +17,10 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class MongoReplayRepositoryTest {
-
-
+public class MongoReplayJsonApiRepositoryTest {
 
   @Inject
-  private MongoReplayRepository repo;
+  private MongoReplayJsonApiRepository repo;
 
   @Inject
   private IdGenerator idGenerator;
@@ -31,8 +29,6 @@ public class MongoReplayRepositoryTest {
   public static void setUpAll() {
     Application.registerLandscapeModels();
   }
-
-
 
   /**
    * Injects depedencies.
@@ -48,12 +44,10 @@ public class MongoReplayRepositoryTest {
     BaseEntity.initialize(this.idGenerator);
   }
 
-
   @After
   public void tearDown() {
     this.repo.clear();
   }
-
 
   @Test
   public void findReplayByTimestamp() {
@@ -61,11 +55,9 @@ public class MongoReplayRepositoryTest {
     final Landscape landscape = LandscapeDummyCreator.createDummyLandscape();
     this.repo.save(ts, landscape, 0);
 
-    final Landscape landscapeRetrieved = this.repo.getByTimestamp(ts);
+    final String rawLandscape = this.repo.getByTimestamp(ts);
 
-
-
-    assertEquals("Ids don't match", landscape.getId(), landscapeRetrieved.getId());
+    assertTrue("Invalid landscape", rawLandscape.startsWith("{\"data\":{\"type\":\"landscape\""));
   }
 
   @Test
@@ -77,10 +69,10 @@ public class MongoReplayRepositoryTest {
     this.repo.save(ts, landscape2, 0);
 
     final String id = landscape.getId();
-    final Landscape landscapeRetrieved = this.repo.getById(id);
+    final String rawLandscape = this.repo.getById(id);
 
-    assertEquals("Ids don't match", id, landscapeRetrieved.getId());
-
+    assertTrue("Ivalid landscape or wrong id",
+        rawLandscape.startsWith("{\"data\":{\"type\":\"landscape\",\"id\":\"" + id + "\""));
   }
 
   @Test
@@ -106,6 +98,25 @@ public class MongoReplayRepositoryTest {
 
     final int timestamps = this.repo.getAllTimestamps().size();
     assertEquals("Amount of objects don't match", 2, timestamps);
+  }
+
+  @Test
+  public void testCleanup() {
+
+    final Landscape landscapeOld = LandscapeDummyCreator.createDummyLandscape();
+    final long ts1 = 1546300800L;
+
+    final Landscape landscapeNew = LandscapeDummyCreator.createDummyLandscape();
+    final long ts2 = System.currentTimeMillis();
+
+    this.repo.save(ts1, landscapeOld, 0);
+    this.repo.save(ts2, landscapeNew, 0);
+
+    // cleanup old landscape based on configuration
+    this.repo.cleanup();
+
+    final int timestamps = this.repo.getAllTimestamps().size();
+    assertEquals("Amount of objects don't match", 1, timestamps);
   }
 
 }

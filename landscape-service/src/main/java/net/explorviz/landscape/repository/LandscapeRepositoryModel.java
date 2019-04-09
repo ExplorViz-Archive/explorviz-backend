@@ -9,9 +9,7 @@ import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import net.explorviz.landscape.repository.helper.DummyLandscapeHelper;
-import net.explorviz.landscape.repository.persistence.LandscapeRepository;
-import net.explorviz.landscape.repository.persistence.ReplayRepository;
-import net.explorviz.landscape.repository.persistence.mongo.LandscapeSerializationHelper;
+import net.explorviz.landscape.repository.helper.LandscapeSerializationHelper;
 import net.explorviz.landscape.server.helper.LandscapeBroadcastService;
 import net.explorviz.shared.config.annotations.Config;
 import net.explorviz.shared.landscape.model.application.AggregatedClazzCommunication;
@@ -32,7 +30,6 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
 
   private static final Logger LOGGER = LoggerFactory.getLogger(LandscapeRepositoryModel.class);
 
-  private static final boolean LOAD_LAST_LANDSCAPE_ON_LOAD = false;
   private volatile Landscape lastPeriodLandscape;
   private Landscape internalLandscape;
   private final InsertionRepositoryPart insertionRepositoryPart;
@@ -40,11 +37,6 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
   private final int outputIntervalSeconds;
 
   private final LandscapeBroadcastService broadcastService;
-
-  private final LandscapeRepository<Landscape> landscapeRepository;
-
-  private final ReplayRepository<Landscape> replayRepository;
-
   private final LandscapeSerializationHelper serializationHelper;
 
   private final boolean useDummyMode;
@@ -52,17 +44,12 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
 
   @Inject
   public LandscapeRepositoryModel(final LandscapeBroadcastService broadcastService,
-      final LandscapeRepository<Landscape> landscapeRepository,
-      final ReplayRepository<Landscape> replayRepository,
       final LandscapeSerializationHelper serializationHelper,
       @Config("repository.outputIntervalSeconds") final int outputIntervalSeconds,
       @Config("repository.useDummyMode") final boolean useDummyMode) {
 
     this.broadcastService = broadcastService;
-    this.landscapeRepository = landscapeRepository;
-    this.replayRepository = replayRepository;
     this.serializationHelper = serializationHelper;
-
     this.useDummyMode = useDummyMode;
     this.insertionRepositoryPart = new InsertionRepositoryPart();
     this.remoteCallRepositoryPart = new RemoteCallRepositoryPart();
@@ -71,19 +58,8 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
 
   @PostConstruct
   public void init() {
-    if (LOAD_LAST_LANDSCAPE_ON_LOAD) {
 
-      // final Landscape readLandscape =
-      // RepositoryFileStorage.readFromFile(System.currentTimeMillis(),
-      // Configuration.LANDSCAPE_REPOSITORY);
-
-      final Landscape readLandscape =
-          this.landscapeRepository.getByTimestamp(java.lang.System.currentTimeMillis());
-
-      this.internalLandscape = readLandscape;
-    } else {
-      this.internalLandscape = new Landscape();
-    }
+    this.internalLandscape = new Landscape();
 
     try {
       final Landscape l = this.deepCopy(this.internalLandscape);
@@ -95,26 +71,6 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
 
     new TimeSignalReader(TimeUnit.SECONDS.toMillis(this.outputIntervalSeconds), this).start();
   }
-
-
-  public Landscape getLastPeriodLandscape() {
-    synchronized (this.lastPeriodLandscape) {
-      return this.lastPeriodLandscape;
-    }
-  }
-
-  public Landscape getLandscape(final long timestamp) {
-    final Landscape l = this.landscapeRepository.getByTimestamp(timestamp);
-    l.createOutgoingApplicationCommunication();
-    return l;
-  }
-
-  public Landscape getReplay(final long timestamp) {
-    final Landscape l = this.replayRepository.getByTimestamp(timestamp);
-    l.createOutgoingApplicationCommunication();
-    return l;
-  }
-
 
   public void reset() {
     synchronized (this.internalLandscape) {
@@ -149,7 +105,9 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
           calculatedTotalRequests = DummyLandscapeHelper.getRandomNum(500, 25000);
           dummyLandscape.getTimestamp().setTotalRequests(calculatedTotalRequests);
 
-          this.landscapeRepository.save(milliseconds, dummyLandscape, calculatedTotalRequests);
+          // TODO send to Kafka topic
+          // this.landscapeRepository.save(milliseconds, dummyLandscape, calculatedTotalRequests);
+
           this.lastPeriodLandscape = dummyLandscape;
         } else {
 
@@ -157,8 +115,10 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
           this.internalLandscape.getTimestamp().setTotalRequests(calculatedTotalRequests);
           this.internalLandscape.setTimestamp(new Timestamp(milliseconds, calculatedTotalRequests));
 
-          this.landscapeRepository
-              .save(milliseconds, this.internalLandscape, calculatedTotalRequests);
+          // TODO send to Kafka topic
+          // this.landscapeRepository
+          // .save(milliseconds, this.internalLandscape, calculatedTotalRequests);
+
           try {
             final Landscape l = this.deepCopy(this.internalLandscape);
             l.createOutgoingApplicationCommunication();
@@ -175,9 +135,6 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
         this.resetCommunication();
       }
     }
-
-
-    this.landscapeRepository.cleanup();
   }
 
   /**

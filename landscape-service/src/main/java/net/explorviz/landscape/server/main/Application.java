@@ -1,8 +1,6 @@
 package net.explorviz.landscape.server.main;
 
 import net.explorviz.landscape.server.resources.LandscapeBroadcastSubResource;
-import net.explorviz.landscape.server.resources.LandscapeResource;
-import net.explorviz.landscape.server.resources.TimestampResource;
 import net.explorviz.shared.common.provider.GenericTypeFinder;
 import net.explorviz.shared.common.provider.JsonApiListProvider;
 import net.explorviz.shared.common.provider.JsonApiProvider;
@@ -57,8 +55,6 @@ public class Application extends ResourceConfig {
     this.register(CorsResponseFilter.class);
 
     // resources
-    this.register(LandscapeResource.class);
-    this.register(TimestampResource.class);
     this.register(LandscapeBroadcastSubResource.class);
 
     // exception handling (mind the order !)
@@ -77,15 +73,15 @@ public class Application extends ResourceConfig {
     GenericTypeFinder.getTypeMap().putIfAbsent("NodeGroup", NodeGroup.class);
     GenericTypeFinder.getTypeMap().putIfAbsent("Node", Node.class);
     GenericTypeFinder.getTypeMap().putIfAbsent("Application", Application.class);
-    GenericTypeFinder.getTypeMap().putIfAbsent("ApplicationCommunication",
-        ApplicationCommunication.class);
+    GenericTypeFinder.getTypeMap()
+        .putIfAbsent("ApplicationCommunication", ApplicationCommunication.class);
     GenericTypeFinder.getTypeMap().putIfAbsent("Component", Component.class);
     GenericTypeFinder.getTypeMap().putIfAbsent("Clazz", Clazz.class);
     GenericTypeFinder.getTypeMap().putIfAbsent("ClazzCommunication", ClazzCommunication.class);
     GenericTypeFinder.getTypeMap().putIfAbsent("Trace", Trace.class);
     GenericTypeFinder.getTypeMap().putIfAbsent("TraceStep", TraceStep.class);
-    GenericTypeFinder.getTypeMap().putIfAbsent("AggregatedClazzCommunication",
-        AggregatedClazzCommunication.class);
+    GenericTypeFinder.getTypeMap()
+        .putIfAbsent("AggregatedClazzCommunication", AggregatedClazzCommunication.class);
     GenericTypeFinder.getTypeMap().putIfAbsent("DatabaseQuery", DatabaseQuery.class);
   }
 }

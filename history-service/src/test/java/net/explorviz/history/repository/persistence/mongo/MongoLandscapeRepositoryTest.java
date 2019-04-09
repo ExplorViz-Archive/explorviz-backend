@@ -1,12 +1,11 @@
-package net.explorviz.landscape.repository.persistence.mongo;
+package net.explorviz.history.repository.persistence.mongo;
 
 import static org.junit.Assert.assertEquals;
 
 import java.util.Random;
 import javax.inject.Inject;
-import net.explorviz.landscape.repository.LandscapeDummyCreator;
-import net.explorviz.landscape.server.main.Application;
-import net.explorviz.landscape.server.main.DependencyInjectionBinder;
+import net.explorviz.history.server.main.Application;
+import net.explorviz.history.server.main.DependencyInjectionBinder;
 import net.explorviz.shared.common.idgen.IdGenerator;
 import net.explorviz.shared.landscape.model.helper.BaseEntity;
 import net.explorviz.shared.landscape.model.landscape.Landscape;

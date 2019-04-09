@@ -1,16 +1,18 @@
 package net.explorviz.landscape.server.resources;
 
+import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
-import javax.inject.Singleton;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.GET;
+import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.sse.SseEventSink;
 import net.explorviz.landscape.server.helper.LandscapeBroadcastService;
 
-@Singleton
+@Path("v1/landscapes/broadcast")
+@RolesAllowed({"admin"})
 public class LandscapeBroadcastSubResource {
 
   private final LandscapeBroadcastService broadcastService;
