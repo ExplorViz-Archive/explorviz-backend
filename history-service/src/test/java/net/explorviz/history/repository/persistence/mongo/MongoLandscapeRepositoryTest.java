@@ -4,7 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.Random;
 import javax.inject.Inject;
-import net.explorviz.history.server.main.Application;
+import net.explorviz.history.server.main.HistoryApplication;
 import net.explorviz.history.server.main.DependencyInjectionBinder;
 import net.explorviz.shared.common.idgen.IdGenerator;
 import net.explorviz.shared.landscape.model.helper.BaseEntity;
@@ -23,7 +23,7 @@ public class MongoLandscapeRepositoryTest {
 
   @BeforeClass
   public static void setUpAll() {
-    Application.registerLandscapeModels();
+    HistoryApplication.registerLandscapeModels();
   }
 
   @Inject
