@@ -1,13 +1,15 @@
 package net.explorviz.settings.model;
 
-public class DoubleSettings extends Setting<Double>{
+import org.apache.commons.lang3.builder.ToStringBuilder;
+
+public class DoubleSetting extends Setting<Double>{
 
   private final double min, max;
   
   /**
    * {@inheritDoc}
    */
-  public DoubleSettings(String id, String name, String description, Double defaultValue) {
+  public DoubleSetting(String id, String name, String description, Double defaultValue) {
     this(id, name, description, defaultValue, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
   }
   
@@ -17,7 +19,7 @@ public class DoubleSettings extends Setting<Double>{
    * @param minValue the minimal acceptable value for this setting
    * @param maxValue the maximal acceptable value for this setting
    */
-  public DoubleSettings(String id, String name, String description, Double defaultValue, double minValue, double maxValue) {
+  public DoubleSetting(String id, String name, String description, Double defaultValue, double minValue, double maxValue) {
     super(id, name, description, defaultValue);
     min = minValue;
     max = maxValue;
@@ -37,6 +39,17 @@ public class DoubleSettings extends Setting<Double>{
    */
   public double getMaxValue() {
     return max;
+  }
+  
+  @Override
+  public String toString() {
+    return new ToStringBuilder(this).append(this.getId())
+        .append(this.getName())
+        .append(this.getDescription())
+        .append("default", this.getDefaultValue())
+        .append("min", getMinValue())
+        .append("max", getMaxValue())
+        .build();
   }
 
 }

@@ -17,6 +17,8 @@ ext {
 
 dependencies {
 	
+	testCompile group: 'org.mockito', name: 'mockito-junit-jupiter', version: '2.26.0'
+	
 	// ExplorViz Shared Dependencies
 	if("${expUseLocalSharedProject}" == "true") {
 		implementation project(':user')
