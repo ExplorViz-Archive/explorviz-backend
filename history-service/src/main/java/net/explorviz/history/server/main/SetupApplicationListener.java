@@ -10,13 +10,13 @@ import net.explorviz.history.repository.persistence.mongo.LandscapeSerialization
 import net.explorviz.history.repository.persistence.mongo.MongoLandscapeJsonApiRepository;
 import net.explorviz.shared.common.idgen.IdGenerator;
 import net.explorviz.shared.landscape.model.application.AggregatedClazzCommunication;
+import net.explorviz.shared.landscape.model.application.Application;
 import net.explorviz.shared.landscape.model.application.ApplicationCommunication;
 import net.explorviz.shared.landscape.model.helper.BaseEntity;
 import net.explorviz.shared.landscape.model.landscape.Landscape;
 import net.explorviz.shared.landscape.model.landscape.Node;
 import net.explorviz.shared.landscape.model.landscape.NodeGroup;
 import net.explorviz.shared.landscape.model.landscape.System;
-import net.explorviz.shared.landscape.model.application.Application;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
@@ -27,7 +27,6 @@ import org.glassfish.jersey.server.monitoring.RequestEvent;
 import org.glassfish.jersey.server.monitoring.RequestEventListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import xyz.morphia.annotations.Id;
 
 /**
  * Primary starting class - executed, when the servlet context is started.
