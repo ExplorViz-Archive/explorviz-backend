@@ -1,5 +1,6 @@
 package net.explorviz.history.server.main;
 
+import java.util.Properties;
 import javax.inject.Singleton;
 import net.explorviz.history.repository.persistence.LandscapeRepository;
 import net.explorviz.history.repository.persistence.ReplayRepository;
@@ -11,6 +12,7 @@ import net.explorviz.history.repository.persistence.mongo.MongoReplayJsonApiRepo
 import net.explorviz.history.repository.persistence.mongo.MongoReplayRepository;
 import net.explorviz.shared.common.injection.CommonDependencyInjectionBinder;
 import net.explorviz.shared.landscape.model.landscape.Landscape;
+import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.glassfish.hk2.api.TypeLiteral;
 
 /**
@@ -22,6 +24,18 @@ public class DependencyInjectionBinder extends CommonDependencyInjectionBinder {
   public void configure() {
 
     super.configure();
+
+    Properties properties = new Properties();
+    properties.put("bootstrap.servers", "localhost:9092");
+    properties.put("group.id", "test");
+    properties.put("enable.auto.commit", "true");
+    properties.put("auto.commit.interval.ms", "1000");
+    properties.put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
+    properties.put("value.deserializer",
+        "org.apache.kafka.common.serialization.StringDeserializer");
+
+    this.bind(new KafkaConsumer<String, String>(properties))
+        .to(new TypeLiteral<KafkaConsumer<String, String>>() {});
 
     // Persistence
     this.bind(MongoHelper.class).to(MongoHelper.class).in(Singleton.class);

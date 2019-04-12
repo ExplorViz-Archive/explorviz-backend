@@ -29,6 +29,8 @@ dependencies {
     implementation project(':exception-handling')
     implementation project(':common-concerns')
   } 
+  
+  implementation group: 'org.apache.kafka', name: 'kafka_2.12', version: '2.2.0'
 }
 
 assemble.dependsOn shadowJar

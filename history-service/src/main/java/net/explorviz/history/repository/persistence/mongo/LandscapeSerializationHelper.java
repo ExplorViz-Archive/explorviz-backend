@@ -37,6 +37,7 @@ public class LandscapeSerializationHelper {
    * @throws DocumentSerializationException if the given string can't be deserialized to a landscape
    */
   public Landscape deserialize(final String jsonApi) throws DocumentSerializationException {
+
     final JSONAPIDocument<Landscape> landscapeDoc =
         this.jsonApiConverter.readDocument(jsonApi.getBytes(), Landscape.class);
 
