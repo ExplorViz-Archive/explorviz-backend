@@ -2,6 +2,8 @@ package net.explorviz.settings.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import xyz.morphia.annotations.Entity;
+import xyz.morphia.annotations.Id;
+import xyz.morphia.annotations.Property;
 import xyz.morphia.annotations.Reference;
 
 /**
@@ -10,13 +12,8 @@ import xyz.morphia.annotations.Reference;
 @Entity("UserSetting")
 public class UserSetting<T> {
 
-  // the setting
-  @Reference("Setting")
-  @JsonIgnore
-  private final String settingId;
-  
-  // the user id
-  private final String userId;
+  @Id
+  private final UserSetting.UserSettingId id;
   
   // the value
   private final T value;
@@ -29,19 +26,18 @@ public class UserSetting<T> {
    * @param value the value for this setting
    */
   public UserSetting(String userId, String settingId, T value) {
-    this.settingId = settingId;
-    this.userId = userId;
+    this.id = new UserSettingId(settingId, userId);
     this.value = value;
   }
 
 
   public String getSettingId() {
-    return settingId;
+    return id.settingId;
   }
 
 
   public String getUserId() {
-    return userId;
+    return id.userId;
   }
 
 
@@ -49,8 +45,29 @@ public class UserSetting<T> {
     return value;
   }
 
-  
+  /**
+   * 
+   * A user setting is identified by both by the id of the user and the id of the setting.
+   * This class functions as a composite key
+   *
+   */
+  @Entity(noClassnameStored = true)
   private class UserSettingId {
+    
+    @Property("settingId")
+    private String settingId;
+    @Property("userId")
+    private String userId;
+    
+    private UserSettingId(String settingId, String userId) {
+      this.settingId = settingId;
+      this.userId = userId;
+    }
+
+    
+    public UserSettingId() {
+      // Serializing
+    }
     
     
     
