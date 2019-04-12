@@ -1,6 +1,7 @@
 package net.explorviz.settings.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.apache.commons.lang3.builder.EqualsBuilder;
 import xyz.morphia.annotations.Entity;
 import xyz.morphia.annotations.Id;
 import xyz.morphia.annotations.Property;
@@ -31,13 +32,8 @@ public class UserSetting<T> {
   }
 
 
-  public String getSettingId() {
-    return id.settingId;
-  }
-
-
-  public String getUserId() {
-    return id.userId;
+  public UserSettingId getId() {
+    return id;
   }
 
 
@@ -52,14 +48,14 @@ public class UserSetting<T> {
    *
    */
   @Entity(noClassnameStored = true)
-  private class UserSettingId {
+  public static class UserSettingId {
     
     @Property("settingId")
     private String settingId;
     @Property("userId")
     private String userId;
     
-    private UserSettingId(String settingId, String userId) {
+    public UserSettingId(String userId, String settingId) {
       this.settingId = settingId;
       this.userId = userId;
     }
@@ -68,6 +64,50 @@ public class UserSetting<T> {
     public UserSettingId() {
       // Serializing
     }
+
+
+    public String getSettingId() {
+      return settingId;
+    }
+
+
+    public void setSettingId(String settingId) {
+      this.settingId = settingId;
+    }
+
+
+    public String getUserId() {
+      return userId;
+    }
+
+
+    public void setUserId(String userId) {
+      this.userId = userId;
+    }
+
+
+    @Override
+    public boolean equals(Object obj) {
+      if (obj == null) {
+        return false;
+      }
+      
+      if (!(obj instanceof UserSetting.UserSettingId)) {
+        return false;
+      }
+      
+      UserSetting.UserSettingId rhs = (UserSetting.UserSettingId) obj;
+      
+      return new EqualsBuilder()
+          .append(this.settingId, rhs.settingId)
+          .append(this.userId, rhs.userId)
+          .build();
+    }
+    
+    
+    
+    
+    
     
     
     

@@ -1,6 +1,7 @@
 package net.explorviz.settings.services;
 
 import java.util.List;
+import java.util.Optional;
 import javax.inject.Inject;
 import net.explorviz.settings.model.Setting;
 import net.explorviz.settings.model.UserSetting;
@@ -30,7 +31,7 @@ public class UserSettingsService {
     
   }
   
-  public UserSetting findById(String userId, String settingId) {
+  public Optional<UserSetting> findById(String userId, String settingId) {
     return null;
   }
   

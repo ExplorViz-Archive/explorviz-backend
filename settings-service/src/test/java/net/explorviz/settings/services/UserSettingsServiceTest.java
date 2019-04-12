@@ -63,41 +63,42 @@ public class UserSettingsServiceTest {
   
   @Test
   public void testFindById() {
-    when(ds.get(UserSetting.class, "bid")).thenReturn(settings.get(0));
+    when(ds.get(UserSetting.class, userSettings.get(0).getId())).thenReturn(userSettings.get(0));
     
-    Setting retrieved = sps.findById("bid").get();
+    UserSetting retrieved = uss.findById("1", "bid").get();
     
     assertEquals(settings.get(0), retrieved);
   }
   
   @Test
   public void testRemove() {
-    when(ds.delete(Setting.class, settings.get(0).getId())).then(new Answer<WriteResult>() {
+    when(ds.delete(UserSetting.class, userSettings.get(0).getId())).then(new Answer<WriteResult>() {
       @Override
       public WriteResult answer(InvocationOnMock invocation) throws Throwable {
-         settings.remove(0);
+         userSettings.remove(0);
          return new WriteResult(1,false, null);
       }});
     
-    sps.delete(settings.get(0).getId());
-    assertNull(sps.findById("bid").orElse(null));
+    uss.delete(userSettings.get(0).getId().getUserId(), userSettings.get(0).getId().getSettingId());
+    assertNull(uss.findById(userSettings.get(0).getId().getUserId(), userSettings.get(0).getId().getSettingId()).orElse(null));
   }
   
   @Test
   public void testCreate() {
-    Setting<String> s = new StringSetting("test", "testname", "a test setting", "default");
-    when(ds.save(s)).then(new Answer<Key<Setting<String>>>() {
+    UserSetting<Boolean> uset = new UserSetting<Boolean>("1", "test", false);
+    when(ds.save(uset)).then(new Answer<Key<Setting<String>>>() {
 
       @Override
       public Key<Setting<String>> answer(InvocationOnMock invocation) throws Throwable {
-        settings.add(s);
+        userSettings.add(uset);
         return null;
       }
 
     });
-    sps.save(s);
     
-    assertNotNull(sps.findById(s.getId()));
+    uss.save(uset);
+    
+    assertNotNull(uss.findById("1", "test"));
   }
 
 
