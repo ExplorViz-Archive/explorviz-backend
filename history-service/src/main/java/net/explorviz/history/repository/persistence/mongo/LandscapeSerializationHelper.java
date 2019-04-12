@@ -1,9 +1,15 @@
 package net.explorviz.history.repository.persistence.mongo;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.jasminb.jsonapi.JSONAPIDocument;
 import com.github.jasminb.jsonapi.ResourceConverter;
 import com.github.jasminb.jsonapi.exceptions.DocumentSerializationException;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import javax.inject.Inject;
+import net.explorviz.shared.common.idgen.IdGenerator;
+import net.explorviz.shared.landscape.model.helper.BaseEntity;
 import net.explorviz.shared.landscape.model.landscape.Landscape;
 
 /**
@@ -38,9 +44,9 @@ public class LandscapeSerializationHelper {
    */
   public Landscape deserialize(final String jsonApi) throws DocumentSerializationException {
 
-    final JSONAPIDocument<Landscape> landscapeDoc =
-        this.jsonApiConverter.readDocument(jsonApi.getBytes(), Landscape.class);
-
+    byte[] b = jsonApi.getBytes();    
+    final JSONAPIDocument<Landscape> landscapeDoc =  this.jsonApiConverter.readDocument(b, Landscape.class);
+    
     return landscapeDoc.get();
   }
 

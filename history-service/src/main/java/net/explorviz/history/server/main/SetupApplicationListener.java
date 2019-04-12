@@ -8,8 +8,10 @@ import javax.inject.Inject;
 import javax.servlet.annotation.WebListener;
 import net.explorviz.history.repository.persistence.mongo.LandscapeSerializationHelper;
 import net.explorviz.history.repository.persistence.mongo.MongoLandscapeJsonApiRepository;
+import net.explorviz.shared.common.idgen.IdGenerator;
 import net.explorviz.shared.landscape.model.application.AggregatedClazzCommunication;
 import net.explorviz.shared.landscape.model.application.ApplicationCommunication;
+import net.explorviz.shared.landscape.model.helper.BaseEntity;
 import net.explorviz.shared.landscape.model.landscape.Landscape;
 import net.explorviz.shared.landscape.model.landscape.Node;
 import net.explorviz.shared.landscape.model.landscape.NodeGroup;
@@ -25,6 +27,7 @@ import org.glassfish.jersey.server.monitoring.RequestEvent;
 import org.glassfish.jersey.server.monitoring.RequestEventListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import xyz.morphia.annotations.Id;
 
 /**
  * Primary starting class - executed, when the servlet context is started.
@@ -42,6 +45,9 @@ public class SetupApplicationListener implements ApplicationEventListener {
 
   @Inject
   private MongoLandscapeJsonApiRepository mongoLandscapeRepo;
+  
+  @Inject
+  private IdGenerator idGenerator;
 
   @Override
   public void onEvent(final ApplicationEvent event) {
@@ -51,6 +57,7 @@ public class SetupApplicationListener implements ApplicationEventListener {
     final Type t = Type.INITIALIZATION_FINISHED;
 
     if (event.getType().equals(t)) {
+      BaseEntity.initialize(idGenerator);
       this.startHistoryBackend();
     }
   }
@@ -65,7 +72,7 @@ public class SetupApplicationListener implements ApplicationEventListener {
     LOGGER.info("* * * * * * * * * * * * * * * * * * *\n"); // NOCS
     LOGGER.info("Server (ExplorViz History) sucessfully started.\n");
     LOGGER.info("* * * * * * * * * * * * * * * * * * *\n");
-
+    
     ExecutorService executor = Executors.newSingleThreadExecutor();
     executor.submit(() -> {
       LOGGER.info("Starting Kafka Exchange \n");
@@ -78,12 +85,17 @@ public class SetupApplicationListener implements ApplicationEventListener {
         for (ConsumerRecord<String, String> record : records) {
 
           LOGGER.info("Recevied landscape Kafka record: {}", record.value());
+          java.lang.System.out.println("Size history: " +  record.value().getBytes().length);
 
           String serializedLandscape = record.value();
           java.lang.System.out.println(serializedLandscape);
+          
           final Landscape l = this.serializationHelper
               .deserialize(serializedLandscape.replaceAll("(?U)\\p{Cntrl}|\\p{Gc=Cf}", ""));
+          
+          
           mongoLandscapeRepo.save(l.getTimestamp().getTimestamp(), l, calculateTotalRequests(l));
+        
         }
       }
     });
