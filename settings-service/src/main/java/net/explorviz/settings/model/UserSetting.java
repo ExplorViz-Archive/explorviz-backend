@@ -8,18 +8,18 @@ import xyz.morphia.annotations.Reference;
  * Represents a specific setting a user has set a value other than the default value for 
  */
 @Entity("UserSetting")
-public class UserSetting {
+public class UserSetting<T> {
 
   // the setting
   @Reference("Setting")
   @JsonIgnore
-  private final Setting setting;
+  private final String settingId;
   
   // the user id
   private final String userId;
   
   // the value
-  private final Object value;
+  private final T value;
   
   
   /**
@@ -28,15 +28,15 @@ public class UserSetting {
    * @param setting the setting object
    * @param value the value for this setting
    */
-  public UserSetting(String userId, Setting setting, Object value) {
-    this.setting = setting;
+  public UserSetting(String userId, String settingId, T value) {
+    this.settingId = settingId;
     this.userId = userId;
     this.value = value;
   }
 
 
   public String getSettingId() {
-    return setting.getId();
+    return settingId;
   }
 
 
@@ -50,7 +50,11 @@ public class UserSetting {
   }
 
   
-
+  private class UserSettingId {
+    
+    
+    
+  }
 
   
 }

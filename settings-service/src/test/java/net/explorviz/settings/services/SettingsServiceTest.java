@@ -27,18 +27,18 @@ import xyz.morphia.query.FindOptions;
 import xyz.morphia.query.Query;
 
 @ExtendWith(MockitoExtension.class)
-public class SettingsPersistenceServiceTest {
+public class SettingsServiceTest {
 
   @Mock private Datastore ds;
   
-  private SettingsPersistenceService sps;
+  private SettingsService sps;
   
   private List<Setting> settings;
   
   @BeforeEach
   public void setUp() {
     assert ds != null;
-    sps = new SettingsPersistenceService(ds);
+    sps = new SettingsService(ds);
     settings = new ArrayList<>(Arrays.asList(
         new BooleanSetting("bid", "Boolean Setting", "Boolean Setting Description", false),
         new StringSetting("sid", "Boolean Setting", "Boolean Setting Description", "def"),
@@ -53,7 +53,7 @@ public class SettingsPersistenceServiceTest {
     when(ds.find(Setting.class)).thenReturn(q);
     when(q.asList()).thenReturn(settings);
     
-    List<Setting> retrievedSettings = sps.getAll();
+    List<Setting> retrievedSettings = sps.findAll();
     for (Setting s: retrievedSettings) {
       System.out.println(s);
     }
@@ -65,7 +65,7 @@ public class SettingsPersistenceServiceTest {
   public void testFindById() {
     when(ds.get(Setting.class, "bid")).thenReturn(settings.get(0));
     
-    Setting retrieved = sps.getById("bid").get();
+    Setting retrieved = sps.findById("bid").get();
     
     assertEquals(settings.get(0), retrieved);
   }
@@ -79,8 +79,8 @@ public class SettingsPersistenceServiceTest {
          return new WriteResult(1,false, null);
       }});
     
-    sps.remove(settings.get(0).getId());
-    assertNull(sps.getById("bid").orElse(null));
+    sps.delete(settings.get(0).getId());
+    assertNull(sps.findById("bid").orElse(null));
   }
   
   @Test
@@ -95,9 +95,9 @@ public class SettingsPersistenceServiceTest {
       }
 
     });
-    sps.create(s);
+    sps.save(s);
     
-    assertNotNull(sps.getById(s.getId()));
+    assertNotNull(sps.findById(s.getId()));
   }
 
   
