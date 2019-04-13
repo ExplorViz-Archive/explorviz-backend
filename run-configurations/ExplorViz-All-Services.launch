@@ -20,4 +20,9 @@
 <booleanAttribute key="org.eclipse.debug.core.launchGroup.3.enabled" value="true"/>
 <stringAttribute key="org.eclipse.debug.core.launchGroup.3.mode" value="inherit"/>
 <stringAttribute key="org.eclipse.debug.core.launchGroup.3.name" value="ExplorViz-User-Service"/>
+<stringAttribute key="org.eclipse.debug.core.launchGroup.4.action" value="NONE"/>
+<booleanAttribute key="org.eclipse.debug.core.launchGroup.4.adoptIfRunning" value="false"/>
+<booleanAttribute key="org.eclipse.debug.core.launchGroup.4.enabled" value="true"/>
+<stringAttribute key="org.eclipse.debug.core.launchGroup.4.mode" value="inherit"/>
+<stringAttribute key="org.eclipse.debug.core.launchGroup.4.name" value="ExplorViz-History-Service"/>
 </launchConfiguration>

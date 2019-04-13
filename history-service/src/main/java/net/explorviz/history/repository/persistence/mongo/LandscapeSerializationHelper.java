@@ -1,15 +1,9 @@
 package net.explorviz.history.repository.persistence.mongo;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.jasminb.jsonapi.JSONAPIDocument;
 import com.github.jasminb.jsonapi.ResourceConverter;
 import com.github.jasminb.jsonapi.exceptions.DocumentSerializationException;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import javax.inject.Inject;
-import net.explorviz.shared.common.idgen.IdGenerator;
-import net.explorviz.shared.landscape.model.helper.BaseEntity;
 import net.explorviz.shared.landscape.model.landscape.Landscape;
 
 /**
