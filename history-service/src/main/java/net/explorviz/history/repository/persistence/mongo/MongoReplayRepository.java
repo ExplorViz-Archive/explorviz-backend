@@ -8,6 +8,19 @@ import net.explorviz.history.repository.persistence.ReplayRepository;
 import net.explorviz.shared.landscape.model.landscape.Landscape;
 import net.explorviz.shared.landscape.model.store.Timestamp;
 
+/**
+ * Stores and retrieves landscapes from a MongoDb instance used for replay landscapes. MongoDb
+ * information is given in the {@code explorviz.properties} resource.
+ *
+ * <p>
+ *
+ * This repository will return all requested landscapes as actual java objects. Since landscapes are
+ * stored in json api format, this requires costy deserialization. If you don't need the actual
+ * object but rather just their strin representation, use {@link MongoReplayJsonApiRepository}
+ *
+ * </p>
+ *
+ */
 public class MongoReplayRepository implements ReplayRepository<Landscape> {
 
 
@@ -28,8 +41,13 @@ public class MongoReplayRepository implements ReplayRepository<Landscape> {
     try {
       return this.serializationHelper.deserialize(jsonLandscape);
     } catch (final DocumentSerializationException e) {
-      throw new InternalServerErrorException("Error serializing: " + e.getMessage(), e);
+      throw new InternalServerErrorException("Error serializing: " + e.getMessage(), e); // NOCS
     }
+  }
+
+  @Override
+  public Landscape getByTimestamp(final Timestamp timestamp) {
+    return this.getByTimestamp(timestamp.getTimestamp());
   }
 
   @Override
@@ -64,9 +82,6 @@ public class MongoReplayRepository implements ReplayRepository<Landscape> {
     return this.repo.getAllTimestamps();
   }
 
-  @Override
-  public Landscape getByTimestamp(final Timestamp timestamp) {
-    return this.getByTimestamp(timestamp.getTimestamp());
-  }
+
 
 }

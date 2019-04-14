@@ -16,19 +16,19 @@ import org.slf4j.LoggerFactory;
  */
 public final class MongoHelper { // NOPMD
 
+  public static final String FIELD_LANDSCAPE = "landscape"; // NOCS
+  public static final String FIELD_ID = "_id";
+  public static final String FIELD_REQUESTS = "totalRequests";
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(MongoHelper.class);
+
   private static final String DEFAULT_HOST = "localhost";
   private static final String DEFAULT_PORT = "27018";
   private static final String DEFAULT_DB = "explorviz";
   private static final String LANDSCAPE_COLLECTION = "landscape";
   private static final String REPLAY_COLLECTION = "replay";
 
-  public static final String FIELD_LANDSCAPE = "landscape";
-  public static final String FIELD_ID = "_id";
-  public static final String FIELD_REQUESTS = "totalRequests";
-
-  private static final Logger LOGGER = LoggerFactory.getLogger(MongoHelper.class.getSimpleName());
-
-  private static MongoClient client; // NOPMD
+  private MongoClient client;
 
   private final String host;
 
@@ -53,10 +53,10 @@ public final class MongoHelper { // NOPMD
     this.port = port;
     this.dbName = dbName;
 
-    if (MongoHelper.client == null) {
-      MongoHelper.client = new MongoClient(new MongoClientURI(this.getUri()));
+    if (this.client == null) {
+      this.client = new MongoClient(new MongoClientURI(this.getUri()));
     } else {
-      throw new IllegalStateException("Only one instance allowed");
+      throw new IllegalStateException("Onl y one instance allowed");
     }
   }
 
@@ -67,7 +67,7 @@ public final class MongoHelper { // NOPMD
    * @see #close()
    */
   private MongoClient getClient() {
-    return MongoHelper.client;
+    return this.client;
   }
 
   /**

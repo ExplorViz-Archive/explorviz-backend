@@ -4,8 +4,8 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.Random;
 import javax.inject.Inject;
-import net.explorviz.history.server.main.HistoryApplication;
 import net.explorviz.history.server.main.DependencyInjectionBinder;
+import net.explorviz.history.server.main.HistoryApplication;
 import net.explorviz.shared.common.idgen.IdGenerator;
 import net.explorviz.shared.landscape.model.helper.BaseEntity;
 import net.explorviz.shared.landscape.model.landscape.Landscape;
@@ -16,18 +16,22 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+/**
+ * Tests the {@link MongoLandscapeRepositoryTest}. Expects a running mongodb server.
+ *
+ */
 public class MongoLandscapeRepositoryTest {
 
   @Inject
   private MongoLandscapeRepository repo;
 
+  @Inject
+  private IdGenerator idGenerator;
+
   @BeforeClass
   public static void setUpAll() {
     HistoryApplication.registerLandscapeModels();
   }
-
-  @Inject
-  private IdGenerator idGenerator;
 
   /**
    * Perform DI.
@@ -59,7 +63,7 @@ public class MongoLandscapeRepositoryTest {
 
     final Landscape landscapeRetrieved = this.repo.getByTimestamp(ts);
 
-    assertEquals("Ids don't match", landscape.getId(), landscapeRetrieved.getId()); // NOPMD
+    assertEquals("Ids don't match", landscape.getId(), landscapeRetrieved.getId()); // NOPMD NOCS
 
   }
 

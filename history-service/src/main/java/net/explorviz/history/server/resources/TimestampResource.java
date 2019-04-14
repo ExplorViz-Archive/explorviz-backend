@@ -37,7 +37,7 @@ public class TimestampResource {
 
   /**
    * Returns an List of {@link net.explorviz.landscape.model.store.Timestamp} interval of
-   * "intervalSize" after a specific passed "timestamp"
+   * "intervalSize" after a specific passed "timestamp".
    *
    * @param afterTimestamp - a starting timestamp for the returned interval
    * @param intervalSize - the size of the interval
@@ -54,7 +54,7 @@ public class TimestampResource {
   }
 
   /**
-   * Returns a List of all uploaded {@link net.explorviz.landscape.model.store.Timestamp}
+   * Returns a List of all uploaded {@link net.explorviz.landscape.model.store.Timestamp}.
    *
    * @return a list of all uploaded timestamps
    */
@@ -126,9 +126,9 @@ public class TimestampResource {
       // searched timestamp found
       if (currentTimestamp.getTimestamp() == searchedTimestamp) {
         return currentTimestamp;
-      }
-      // next timestamp later than searched timestamp found
-      else if (currentTimestamp.getTimestamp() > searchedTimestamp) {
+
+        // next timestamp later than searched timestamp found
+      } else if (currentTimestamp.getTimestamp() > searchedTimestamp) {
         return currentTimestamp;
       }
     }

@@ -12,9 +12,16 @@ import net.explorviz.shared.landscape.model.landscape.Landscape;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
+import org.jvnet.hk2.annotations.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Exchange service for consuming landscape objects via Kafka topics. Started by @see
+ * SetupApplicationListener on application startup.
+ *
+ */
+@Service
 public class KafkaLandscapeExchangeService implements Runnable {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(KafkaLandscapeExchangeService.class);
@@ -27,27 +34,32 @@ public class KafkaLandscapeExchangeService implements Runnable {
 
   private final String kafkaTopic;
 
+  /**
+   * Exchange service for consuming landscape objects via Kafka topics. Started by @see
+   * SetupApplicationListener on application startup.
+   *
+   */
   @Inject
-  public KafkaLandscapeExchangeService(LandscapeSerializationHelper serializationHelper,
-      MongoLandscapeJsonApiRepository mongoLandscapeRepo,
-      @Config("exchange.kafka.topic.name") String kafkaTopic,
-      @Config("exchange.kafka.group.id") String kafkaGroupId,
-      @Config("exchange.kafka.bootstrap.servers") String kafkaBootStrapServerList) {
+  public KafkaLandscapeExchangeService(final LandscapeSerializationHelper serializationHelper,
+      final MongoLandscapeJsonApiRepository mongoLandscapeRepo,
+      @Config("exchange.kafka.topic.name") final String kafkaTopic,
+      @Config("exchange.kafka.group.id") final String kafkaGroupId,
+      @Config("exchange.kafka.bootstrap.servers") final String kafkaBootStrapServerList) {
 
     this.serializationHelper = serializationHelper;
     this.mongoLandscapeRepo = mongoLandscapeRepo;
     this.kafkaTopic = kafkaTopic;
 
-    Properties properties = new Properties();
+    final Properties properties = new Properties();
     properties.put("bootstrap.servers", kafkaBootStrapServerList);
     properties.put("group.id", kafkaGroupId);
     properties.put("enable.auto.commit", "true");
     properties.put("auto.commit.interval.ms", "1000");
-    properties.put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
+    properties.put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");// NOCS
     properties.put("value.deserializer",
         "org.apache.kafka.common.serialization.StringDeserializer");
 
-    this.kafkaConsumer = new KafkaConsumer<String, String>(properties);
+    this.kafkaConsumer = new KafkaConsumer<>(properties);
   }
 
   @Override
@@ -57,18 +69,18 @@ public class KafkaLandscapeExchangeService implements Runnable {
     kafkaConsumer.subscribe(Arrays.asList(kafkaTopic));
 
     while (true) {
-      ConsumerRecords<String, String> records = kafkaConsumer.poll(Duration.ofMillis(100));
+      final ConsumerRecords<String, String> records = kafkaConsumer.poll(Duration.ofMillis(100));
 
-      for (ConsumerRecord<String, String> record : records) {
+      for (final ConsumerRecord<String, String> record : records) {
 
         LOGGER.debug("Recevied landscape Kafka record: {}", record.value());
 
-        String serializedLandscape = record.value();
+        final String serializedLandscape = record.value();
 
         Landscape l;
         try {
           l = this.serializationHelper.deserialize(serializedLandscape);
-        } catch (DocumentSerializationException e) {
+        } catch (final DocumentSerializationException e) {
           LOGGER.error("Could not deserialize landscape with value {}", serializedLandscape, e);
           continue;
         }

@@ -2,6 +2,7 @@ package net.explorviz.history.repository.persistence.mongo;
 
 import com.github.jasminb.jsonapi.exceptions.DocumentSerializationException;
 import com.mongodb.BasicDBObject;
+import com.mongodb.MongoException;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.result.DeleteResult;
@@ -13,6 +14,7 @@ import java.util.stream.Collectors;
 import javax.inject.Inject;
 import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.InternalServerErrorException;
+import javax.ws.rs.core.Response;
 import net.explorviz.history.repository.persistence.LandscapeRepository;
 import net.explorviz.shared.config.annotations.Config;
 import net.explorviz.shared.landscape.model.landscape.Landscape;
@@ -73,7 +75,7 @@ public class MongoLandscapeJsonApiRepository implements LandscapeRepository<Stri
 
     try {
       landscapeCollection.insertOne(landscapeDocument);
-    } catch (final Exception e) {
+    } catch (final MongoException e) {
       if (LOGGER.isErrorEnabled()) {
         LOGGER.error("No document saved.");
         return;
@@ -94,16 +96,16 @@ public class MongoLandscapeJsonApiRepository implements LandscapeRepository<Stri
 
     final FindIterable<Document> result = landscapeCollection.find(landscapeDocument);
 
-    if (result.first() != null) {
-      return (String) result.first().get(MongoHelper.FIELD_LANDSCAPE);
+    if (result.first() == null) {
+      throw new ClientErrorException("Landscape not found for provided timestamp " + timestamp, // NOCS
+          Response.Status.NOT_FOUND);
     } else {
-      throw new ClientErrorException("Landscape not found for provided timestamp " + timestamp,
-          404);
+      return (String) result.first().get(MongoHelper.FIELD_LANDSCAPE);
     }
   }
-  
+
   @Override
-  public String getByTimestamp(Timestamp timestamp) {
+  public String getByTimestamp(final Timestamp timestamp) {
     return this.getByTimestamp(timestamp.getTimestamp());
   }
 
@@ -122,7 +124,7 @@ public class MongoLandscapeJsonApiRepository implements LandscapeRepository<Stri
 
     if (result.first() == null) {
       throw new ClientErrorException(String.format("Landscape with provided id %d not found", id),
-          404);
+          Response.Status.NOT_FOUND);
     } else {
       return (String) result.first().get(MongoHelper.FIELD_LANDSCAPE);
     }
@@ -167,7 +169,7 @@ public class MongoLandscapeJsonApiRepository implements LandscapeRepository<Stri
 
     if (result.first() == null) {
       throw new ClientErrorException("Landscape not found for provided timestamp " + timestamp,
-          404);
+          Response.Status.NOT_FOUND);
     } else {
       return (int) result.first().get(MongoHelper.FIELD_REQUESTS);
     }
@@ -184,12 +186,10 @@ public class MongoLandscapeJsonApiRepository implements LandscapeRepository<Stri
       rawTimestamps.add((long) doc.get(MongoHelper.FIELD_ID));
     }
 
-    final List<Timestamp> timestamps = rawTimestamps.stream()
-        .map(t -> new Timestamp(t, this.getTotalRequests(t))).collect(Collectors.toList());
-
-    return timestamps;
+    return rawTimestamps.stream().map(t -> new Timestamp(t, this.getTotalRequests(t)))
+        .collect(Collectors.toList());
   }
 
-  
+
 
 }

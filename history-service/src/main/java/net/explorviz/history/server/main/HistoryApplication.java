@@ -1,4 +1,4 @@
-package net.explorviz.history.server.main;
+package net.explorviz.history.server.main; // NOPMD
 
 import net.explorviz.history.server.resources.LandscapeResource;
 import net.explorviz.history.server.resources.TimestampResource;
@@ -29,12 +29,18 @@ import net.explorviz.shared.security.filters.CorsResponseFilter;
 import org.glassfish.jersey.server.ResourceConfig;
 
 /**
- * Starting configuration for the backend - includes registring models, resources, exception
- * handers, providers, and embedds extensions.
+ * Starting configuration for the history service - includes registring models, resources, exception
+ * handers, providers.
  */
 public class HistoryApplication extends ResourceConfig {
 
+  /**
+   * Starting configuration for the history service - includes registring models, resources,
+   * exception handers, providers.
+   */
   public HistoryApplication() {
+
+    super();
 
     HistoryApplication.registerLandscapeModels();
 
@@ -59,6 +65,10 @@ public class HistoryApplication extends ResourceConfig {
     this.register(TimestampResource.class);
   }
 
+  /**
+   * Registers ExplorViz's meta model classes for the {@link GenericTypeFinder} workaround for
+   * {@link JsonApiListProvider} (de)serialization.
+   */
   public static void registerLandscapeModels() {
     GenericTypeFinder.getTypeMap().putIfAbsent("Timestamp", Timestamp.class);
     GenericTypeFinder.getTypeMap().putIfAbsent("Event", Event.class);

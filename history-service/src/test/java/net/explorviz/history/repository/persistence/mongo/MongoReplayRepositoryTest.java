@@ -4,8 +4,8 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.Random;
 import javax.inject.Inject;
-import net.explorviz.history.server.main.HistoryApplication;
 import net.explorviz.history.server.main.DependencyInjectionBinder;
+import net.explorviz.history.server.main.HistoryApplication;
 import net.explorviz.shared.common.idgen.IdGenerator;
 import net.explorviz.shared.landscape.model.helper.BaseEntity;
 import net.explorviz.shared.landscape.model.landscape.Landscape;
@@ -16,9 +16,12 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+
+/**
+ * Tests the {@link MongoReplayRepositoryTest}. Expects a running mongodb server.
+ *
+ */
 public class MongoReplayRepositoryTest {
-
-
 
   @Inject
   private MongoReplayRepository repo;
@@ -64,7 +67,7 @@ public class MongoReplayRepositoryTest {
 
 
 
-    assertEquals("Ids don't match", landscape.getId(), landscapeRetrieved.getId());
+    assertEquals("Ids don't match", landscape.getId(), landscapeRetrieved.getId()); // NOCS
   }
 
   @Test

@@ -8,8 +8,7 @@ import net.explorviz.shared.landscape.model.store.Timestamp;
 /**
  * Represents a repository to store {@link Landscape} objects persistently.
  *
- * @param T the return type of landscapes.
- * @param I the type of the id.
+ * @param <T> the return type of landscapes.
  *
  */
 public interface LandscapeRepository<T> {

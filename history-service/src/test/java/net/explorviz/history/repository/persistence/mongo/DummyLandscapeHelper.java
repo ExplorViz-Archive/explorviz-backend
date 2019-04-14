@@ -19,6 +19,9 @@ import net.explorviz.shared.landscape.model.landscape.System;
  */
 public final class DummyLandscapeHelper {
 
+  // CHECKSTYLE.OFF: MultipleStringLiteralsCheck - Much more readable than NOCS in many lines
+  // CHECKSTYLE.OFF: MagicNumberCheck - Much more readable than NOCS in many lines
+
   private DummyLandscapeHelper() {
     // Utility Class
   }
@@ -48,7 +51,7 @@ public final class DummyLandscapeHelper {
   }
 
   /**
-   * Creates a new system
+   * Creates a new system.
    *
    * @param name - name of the system
    * @param parentLandscape - parent landscape
@@ -61,13 +64,13 @@ public final class DummyLandscapeHelper {
 
     // create new system event
     parentLandscape.createNewEvent(EEventType.NEWSYSTEM,
-        "New system '" + system.getName() + "' detected");
+        "New system '" + system.getName() + "' detected"); // NOCS
 
     return system;
   }
 
   /**
-   * Creates a new nodeGroup
+   * Creates a new nodeGroup.
    *
    * @param name - name of the nodeGroup
    * @param system - parent system
@@ -81,7 +84,7 @@ public final class DummyLandscapeHelper {
   }
 
   /**
-   * Creates a new node
+   * Creates a new node.
    *
    * @param ipAddress - ipAddress of the node
    * @param parentNodeGroup - parent nodeGroup
@@ -106,7 +109,7 @@ public final class DummyLandscapeHelper {
   }
 
   /**
-   * Creates a new application
+   * Creates a new application.
    *
    * @param name - name of the application
    * @param parentNode - name of the parent node
@@ -123,7 +126,7 @@ public final class DummyLandscapeHelper {
     application.setLastUsage(java.lang.System.currentTimeMillis());
     application.setProgrammingLanguage(EProgrammingLanguage.JAVA);
 
-    if (name == "Eprints") {
+    if ("Eprints".equals(name)) {
       application.setProgrammingLanguage(EProgrammingLanguage.PERL);
     }
 
@@ -138,7 +141,7 @@ public final class DummyLandscapeHelper {
   }
 
   /**
-   * Create communication between applications
+   * Create communication between applications.
    *
    * @param source - sourceApplication
    * @param target - targetApplication
@@ -163,7 +166,7 @@ public final class DummyLandscapeHelper {
   }
 
   /**
-   * Creates a component
+   * Creates a component.
    *
    * @param name - name of the component
    * @param parent - parent component
@@ -186,7 +189,7 @@ public final class DummyLandscapeHelper {
   }
 
   /**
-   * Creates a clazz
+   * Creates a clazz.
    *
    * @param name - name of the clazz
    * @param component - parent component
@@ -206,7 +209,7 @@ public final class DummyLandscapeHelper {
   }
 
   /**
-   * Creating a communication between two clazzes within the dummy landscape
+   * Creating a communication between two clazzes within the dummy landscape.
    *
    * @param traceId - id of the trace
    * @param requests - number of requests
@@ -219,7 +222,7 @@ public final class DummyLandscapeHelper {
       final Application application) {
 
     final float averageResponseTime = 0L + getRandomNum(10, 1000);
-    final float overallTraceDuration = 0L + getRandomNum(1000, 10000);
+    final float overallTraceDuration = 0L + getRandomNum(1000, 10_000);
     final String operationName = "getMethod" + getRandomNum(1, 50) + "()";
 
     ModelHelper.addClazzCommunication(sourceClazz, targetClazz, application, requests,

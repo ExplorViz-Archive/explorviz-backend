@@ -5,8 +5,8 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Random;
 import javax.inject.Inject;
-import net.explorviz.history.server.main.HistoryApplication;
 import net.explorviz.history.server.main.DependencyInjectionBinder;
+import net.explorviz.history.server.main.HistoryApplication;
 import net.explorviz.shared.common.idgen.IdGenerator;
 import net.explorviz.shared.landscape.model.helper.BaseEntity;
 import net.explorviz.shared.landscape.model.landscape.Landscape;
@@ -106,14 +106,14 @@ public class MongoLandscapeJsonApiRepositoryTest {
     this.repo.save(ts2, landscape2, 0);
 
     final int timestamps = this.repo.getAllTimestamps().size();
-    assertEquals("Amount of objects don't match", 2, timestamps);
+    assertEquals("Amount of objects don't match", 2, timestamps); // NOCS
   }
 
   @Test
   public void testCleanup() {
 
     final Landscape landscapeOld = LandscapeDummyCreator.createDummyLandscape();
-    final long ts1 = 1546300800L;
+    final long ts1 = 1546300800L; // NOPMD
 
     final Landscape landscapeNew = LandscapeDummyCreator.createDummyLandscape();
     final long ts2 = System.currentTimeMillis();

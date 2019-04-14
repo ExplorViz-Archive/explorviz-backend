@@ -2,6 +2,7 @@ package net.explorviz.history.repository.persistence.mongo;
 
 import com.github.jasminb.jsonapi.exceptions.DocumentSerializationException;
 import com.mongodb.BasicDBObject;
+import com.mongodb.MongoException;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.result.DeleteResult;
@@ -13,6 +14,7 @@ import java.util.stream.Collectors;
 import javax.inject.Inject;
 import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.InternalServerErrorException;
+import javax.ws.rs.core.Response;
 import net.explorviz.history.repository.persistence.ReplayRepository;
 import net.explorviz.shared.config.annotations.Config;
 import net.explorviz.shared.landscape.model.landscape.Landscape;
@@ -21,6 +23,20 @@ import org.bson.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Stores and retrieves landscapes from a MongoDb instance used for replay landscapes. MongoDb
+ * information is given in the {@code explorviz.properties} resource.
+ *
+ * <p>
+ *
+ * This repository will return all requested landscape objects in the json api format, which is the
+ * format the objects are persisted in internally. Prefer this class over
+ * {@link MongoReplayRepository} if you don't need an actually landscape object to avoid costy
+ * de-/serialization.
+ *
+ * </p>
+ *
+ */
 public class MongoReplayJsonApiRepository implements ReplayRepository<String> {
 
   private static final Logger LOGGER =
@@ -53,7 +69,7 @@ public class MongoReplayJsonApiRepository implements ReplayRepository<String> {
 
     try {
       landscapeCollection.insertOne(landscapeDocument);
-    } catch (final Exception e) {
+    } catch (final MongoException e) {
       if (LOGGER.isErrorEnabled()) {
         LOGGER.error("No document saved.");
         return;
@@ -74,12 +90,17 @@ public class MongoReplayJsonApiRepository implements ReplayRepository<String> {
 
     final FindIterable<Document> result = landscapeCollection.find(landscapeDocument);
 
-    if (result.first() != null) {
-      return (String) result.first().get(MongoHelper.FIELD_LANDSCAPE);
-    } else {
+    if (result.first() == null) {
       throw new ClientErrorException("Landscape not found for provided timestamp " + timestamp,
-          404);
+          Response.Status.NOT_FOUND);
+    } else {
+      return (String) result.first().get(MongoHelper.FIELD_LANDSCAPE);
     }
+  }
+
+  @Override
+  public String getByTimestamp(final Timestamp timestamp) {
+    return this.getByTimestamp(timestamp.getTimestamp());
   }
 
   @Override
@@ -97,7 +118,7 @@ public class MongoReplayJsonApiRepository implements ReplayRepository<String> {
 
     if (result.first() == null) {
       throw new ClientErrorException(String.format("Landscape with provided id %d not found", id),
-          404);
+          Response.Status.NOT_FOUND);
     } else {
       return (String) result.first().get(MongoHelper.FIELD_LANDSCAPE);
     }
@@ -113,7 +134,8 @@ public class MongoReplayJsonApiRepository implements ReplayRepository<String> {
     final FindIterable<Document> result = landscapeCollection.find(landscapeDocument);
 
     if (result.first() == null) {
-      throw new ClientErrorException("Replay not found for provided timestamp " + timestamp, 404);
+      throw new ClientErrorException("Replay not found for provided timestamp " + timestamp,
+          Response.Status.NOT_FOUND);
     } else {
       return (int) result.first().get(MongoHelper.FIELD_REQUESTS);
 
@@ -159,15 +181,8 @@ public class MongoReplayJsonApiRepository implements ReplayRepository<String> {
       rawTimestamps.add((long) doc.get(MongoHelper.FIELD_ID));
     }
 
-    final List<Timestamp> timestamps = rawTimestamps.stream()
-        .map(t -> new Timestamp(t, this.getTotalRequests(t))).collect(Collectors.toList());
-
-    return timestamps;
-  }
-
-  @Override
-  public String getByTimestamp(final Timestamp timestamp) {
-    return this.getByTimestamp(timestamp.getTimestamp());
+    return rawTimestamps.stream().map(t -> new Timestamp(t, this.getTotalRequests(t)))
+        .collect(Collectors.toList());
   }
 
 }

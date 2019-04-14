@@ -48,8 +48,13 @@ public class MongoLandscapeRepository implements LandscapeRepository<Landscape> 
     try {
       return this.serializationHelper.deserialize(jsonLandscape);
     } catch (final DocumentSerializationException e) {
-      throw new InternalServerErrorException("Error serializing: " + e.getMessage(), e); // NOPMD
+      throw new InternalServerErrorException("Error serializing: " + e.getMessage(), e); // NOCS
     }
+  }
+
+  @Override
+  public Landscape getByTimestamp(final Timestamp timestamp) {
+    return this.getByTimestamp(timestamp.getTimestamp());
   }
 
   @Override
@@ -62,8 +67,6 @@ public class MongoLandscapeRepository implements LandscapeRepository<Landscape> 
     }
 
   }
-
-
 
   @Override
   public void cleanup(final long from) {
@@ -84,11 +87,6 @@ public class MongoLandscapeRepository implements LandscapeRepository<Landscape> 
   @Override
   public List<Timestamp> getAllTimestamps() {
     return this.repo.getAllTimestamps();
-  }
-
-  @Override
-  public Landscape getByTimestamp(final Timestamp timestamp) {
-    return this.getByTimestamp(timestamp.getTimestamp());
   }
 
 

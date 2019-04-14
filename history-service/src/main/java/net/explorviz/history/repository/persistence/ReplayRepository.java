@@ -4,6 +4,12 @@ import java.util.List;
 import net.explorviz.shared.landscape.model.landscape.Landscape;
 import net.explorviz.shared.landscape.model.store.Timestamp;
 
+/**
+ * Represents a repository to store {@link Landscape} objects persistently for replay.
+ *
+ * @param <T> the return type of landscapes.
+ *
+ */
 public interface ReplayRepository<T> {
 
 

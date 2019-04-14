@@ -75,17 +75,11 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
       final Landscape l = this.deepCopy(this.internalLandscape);
       l.createOutgoingApplicationCommunication();
       this.lastPeriodLandscape = l;
-    } catch (final Exception e) {
+    } catch (final DocumentSerializationException e) {
       LOGGER.error("Error when deep-copying landscape.", e);
     }
 
     new TimeSignalReader(TimeUnit.SECONDS.toMillis(this.outputIntervalSeconds), this).start();
-  }
-
-  public void reset() {
-    synchronized (this.internalLandscape) {
-      this.internalLandscape.reset();
-    }
   }
 
   private Landscape deepCopy(final Landscape original) throws DocumentSerializationException {
