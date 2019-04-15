@@ -3,7 +3,6 @@ package net.explorviz.security.server.resources.endpoints;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-
 import com.github.jasminb.jsonapi.JSONAPIDocument;
 import com.github.jasminb.jsonapi.exceptions.DocumentSerializationException;
 import java.util.Arrays;
@@ -17,6 +16,8 @@ import net.explorviz.security.server.resources.UserResource;
 import net.explorviz.security.services.RoleService;
 import net.explorviz.security.services.UserMongoCrudService;
 import net.explorviz.security.testutils.TestDatasourceFactory;
+import net.explorviz.shared.exceptions.ErrorObjectHelper;
+import net.explorviz.shared.exceptions.JsonApiErrorObjectHelper;
 import net.explorviz.shared.security.model.User;
 import net.explorviz.shared.security.model.roles.Role;
 import net.explorviz.shared.security.model.settings.UserSettings;
@@ -63,7 +64,9 @@ public class UserResourceEndpointTest extends EndpointTest {
 
   @Override
   protected void overrideTestBindings(final DependencyInjectionBinder binder) {
-    binder.bindFactory(TestDatasourceFactory.class).to(Datastore.class).in(Singleton.class)
+    binder.bindFactory(TestDatasourceFactory.class)
+        .to(Datastore.class)
+        .in(Singleton.class)
         .ranked(2);
   }
 
@@ -74,9 +77,15 @@ public class UserResourceEndpointTest extends EndpointTest {
     return new DependencyInjectionBinder() {
       @Override
       public void configure() {
-        this.bind(UserMongoCrudService.class).to(UserMongoCrudService.class).in(Singleton.class)
+        this.bind(JsonApiErrorObjectHelper.class).to(ErrorObjectHelper.class).in(Singleton.class);
+
+        this.bind(UserMongoCrudService.class)
+            .to(UserMongoCrudService.class)
+            .in(Singleton.class)
             .ranked(10);
-        this.bindFactory(TestDatasourceFactory.class).to(Datastore.class).in(Singleton.class)
+        this.bindFactory(TestDatasourceFactory.class)
+            .to(Datastore.class)
+            .in(Singleton.class)
             .ranked(2);
       }
     };
@@ -108,14 +117,17 @@ public class UserResourceEndpointTest extends EndpointTest {
 
     // Send request
     final Entity<byte[]> userEntity = Entity.entity(converted, MEDIA_TYPE);
-    final Response response = this.target(BASE_URL).request()
-        .header(HttpHeader.AUTHORIZATION.asString(), this.getAdminToken()).post(userEntity);
+    final Response response = this.target(BASE_URL)
+        .request()
+        .header(HttpHeader.AUTHORIZATION.asString(), this.getAdminToken())
+        .post(userEntity);
 
 
     assertEquals(HttpStatus.OK_200, response.getStatus());
 
     final User respuser = this.getJsonApiConverter()
-        .readDocument(response.readEntity(byte[].class), User.class).get();
+        .readDocument(response.readEntity(byte[].class), User.class)
+        .get();
     assertEquals(u.getUsername(), respuser.getUsername());
     // No passwords should be sent back
     assertEquals(null, respuser.getPassword());
@@ -123,6 +135,7 @@ public class UserResourceEndpointTest extends EndpointTest {
     // Id must be set
     assertFalse(respuser.getId().equals("0"));
   }
+
 
 
   @Test
@@ -136,8 +149,10 @@ public class UserResourceEndpointTest extends EndpointTest {
 
     // Send request
     final Entity<byte[]> userEntity = Entity.entity(converted, MEDIA_TYPE);
-    final Response response = this.target(BASE_URL).request()
-        .header(HttpHeader.AUTHORIZATION.asString(), this.getAdminToken()).post(userEntity);
+    final Response response = this.target(BASE_URL)
+        .request()
+        .header(HttpHeader.AUTHORIZATION.asString(), this.getAdminToken())
+        .post(userEntity);
 
     assertEquals(HttpStatus.BAD_REQUEST_400, response.getStatus());
 
@@ -154,8 +169,10 @@ public class UserResourceEndpointTest extends EndpointTest {
 
     // Send request
     final Entity<byte[]> userEntity = Entity.entity(converted, MEDIA_TYPE);
-    final Response response = this.target(BASE_URL).request()
-        .header(HttpHeader.AUTHORIZATION.asString(), this.getAdminToken()).post(userEntity);
+    final Response response = this.target(BASE_URL)
+        .request()
+        .header(HttpHeader.AUTHORIZATION.asString(), this.getAdminToken())
+        .post(userEntity);
 
     assertEquals(HttpStatus.BAD_REQUEST_400, response.getStatus());
 
@@ -172,8 +189,10 @@ public class UserResourceEndpointTest extends EndpointTest {
 
     // Send request
     final Entity<byte[]> userEntity = Entity.entity(converted, MEDIA_TYPE);
-    final Response response = this.target(BASE_URL).request()
-        .header(HttpHeader.AUTHORIZATION.asString(), this.getNormieToken()).post(userEntity);
+    final Response response = this.target(BASE_URL)
+        .request()
+        .header(HttpHeader.AUTHORIZATION.asString(), this.getNormieToken())
+        .post(userEntity);
 
     assertEquals(HttpStatus.FORBIDDEN_403, response.getStatus());
   }
@@ -205,8 +224,10 @@ public class UserResourceEndpointTest extends EndpointTest {
 
     final Entity<byte[]> body = Entity.entity(document, MEDIA_TYPE);
 
-    final Response response = this.target("v1/users/batch").request()
-        .header(HttpHeader.AUTHORIZATION.asString(), this.getAdminToken()).post(body);
+    final Response response = this.target("v1/users/batch")
+        .request()
+        .header(HttpHeader.AUTHORIZATION.asString(), this.getAdminToken())
+        .post(body);
 
     assertEquals(HttpStatus.OK_200, response.getStatus());
 
@@ -238,19 +259,23 @@ public class UserResourceEndpointTest extends EndpointTest {
         this.getJsonApiConverter().writeDocument(new JSONAPIDocument<>(createdUser));
 
 
-    final Response rawResponseBody = this.target("v1/users/" + createdUser.getId()).request()
+    final Response rawResponseBody = this.target("v1/users/" + createdUser.getId())
+        .request()
         .header(HttpHeader.AUTHORIZATION.asString(), this.getAdminToken())
         .method("PATCH", Entity.entity(body, MEDIA_TYPE));
 
 
     final User responseBody = this.getJsonApiConverter()
-        .readDocument(rawResponseBody.readEntity(byte[].class), User.class).get();
+        .readDocument(rawResponseBody.readEntity(byte[].class), User.class)
+        .get();
 
     assertEquals(createdUser.getId(), responseBody.getId());
     assertEquals(createdUser.getUsername(), responseBody.getUsername());
     assertEquals(null, responseBody.getPassword());
-    assertTrue(createdUser.getRoles().stream().anyMatch(
-        r -> r.getDescriptor().equals(this.roleService.getAllRoles().get(0).getDescriptor())));
+    assertTrue(createdUser.getRoles()
+        .stream()
+        .anyMatch(
+            r -> r.getDescriptor().equals(this.roleService.getAllRoles().get(0).getDescriptor())));
   }
 
 
@@ -265,16 +290,20 @@ public class UserResourceEndpointTest extends EndpointTest {
 
     final String id = u.getId();
 
-    final byte[] rawResponseBody = this.target("v1/users/" + id).request()
-        .header(HttpHeader.AUTHORIZATION.asString(), this.getAdminToken()).get(byte[].class);
+    final byte[] rawResponseBody = this.target("v1/users/" + id)
+        .request()
+        .header(HttpHeader.AUTHORIZATION.asString(), this.getAdminToken())
+        .get(byte[].class);
 
     final User foundUser =
         this.getJsonApiConverter().readDocument(rawResponseBody, User.class).get();
 
     assertEquals(id, foundUser.getId());
     assertEquals("name", foundUser.getUsername());
-    assertTrue(foundUser.getRoles().stream().anyMatch(
-        r -> r.getDescriptor().equals(this.roleService.getAllRoles().get(0).getDescriptor())));
+    assertTrue(foundUser.getRoles()
+        .stream()
+        .anyMatch(
+            r -> r.getDescriptor().equals(this.roleService.getAllRoles().get(0).getDescriptor())));
 
   }
 
@@ -295,8 +324,11 @@ public class UserResourceEndpointTest extends EndpointTest {
     this.userCrudService.saveNewEntity(u2);
     this.userCrudService.saveNewEntity(u3);
 
-    final byte[] rawResponseBody = this.target(BASE_URL).queryParam("role", "admin").request()
-        .header(HttpHeader.AUTHORIZATION.asString(), this.getAdminToken()).get(byte[].class);
+    final byte[] rawResponseBody = this.target(BASE_URL)
+        .queryParam("role", "admin")
+        .request()
+        .header(HttpHeader.AUTHORIZATION.asString(), this.getAdminToken())
+        .get(byte[].class);
 
     final List<User> adminUsers =
         this.getJsonApiConverter().readDocumentCollection(rawResponseBody, User.class).get();
@@ -308,17 +340,33 @@ public class UserResourceEndpointTest extends EndpointTest {
   @Test
   public void removeUser() throws DocumentSerializationException {
 
-    final User u = new User("1", "user1", "pw", Arrays.asList(new Role("admin")));
+    final User u = new User("1", "user1", "pw", null);
 
     this.userCrudService.saveNewEntity(u);
 
-    final Response deleteResponse = this.target("v1/users/" + u.getId()).request()
-        .header(HttpHeader.AUTHORIZATION.asString(), this.getAdminToken()).delete();
-    final Response getResponse = this.target("v1/users/" + u.getId()).request()
-        .header(HttpHeader.AUTHORIZATION.asString(), this.getAdminToken()).get();
+    final Response deleteResponse = this.target("v1/users/" + u.getId())
+        .request()
+        .header(HttpHeader.AUTHORIZATION.asString(), this.getAdminToken())
+        .delete();
+    final Response getResponse = this.target("v1/users/" + u.getId())
+        .request()
+        .header(HttpHeader.AUTHORIZATION.asString(), this.getAdminToken())
+        .get();
 
     assertEquals(HttpStatus.NO_CONTENT_204, deleteResponse.getStatus());
     assertEquals(HttpStatus.NOT_FOUND_404, getResponse.getStatus());
+  }
+
+  @Test
+  public void removeLastAdmin() {
+    final User u = new User(null, "admin", "pw", Arrays.asList(new Role("admin")));
+    this.userCrudService.saveNewEntity(u);
+    final Response deleteResponse = this.target("v1/users/" + u.getId())
+        .request()
+        .header(HttpHeader.AUTHORIZATION.asString(), this.getAdminToken())
+        .delete();
+
+    assertEquals("Last admin was deleted", 400, deleteResponse.getStatus());
   }
 
   @Test
@@ -328,8 +376,10 @@ public class UserResourceEndpointTest extends EndpointTest {
 
     this.userCrudService.saveNewEntity(u);
 
-    final byte[] retrievedUserRaw = this.target("v1/users/" + u.getId()).request()
-        .header(HttpHeader.AUTHORIZATION.asString(), this.getAdminToken()).get(byte[].class);
+    final byte[] retrievedUserRaw = this.target("v1/users/" + u.getId())
+        .request()
+        .header(HttpHeader.AUTHORIZATION.asString(), this.getAdminToken())
+        .get(byte[].class);
 
     final User retrievedUser =
         this.getJsonApiConverter().readDocument(retrievedUserRaw, User.class).get();

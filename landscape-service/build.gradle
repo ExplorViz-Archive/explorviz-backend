@@ -15,39 +15,34 @@ repositories {
 	mavenLocal()
 }
 
-ext {	
-	expSharedVersion = "${rootProject.ext.explorvizSharedVersion}"
-}
 dependencies {
   // Any .jar in libs
   implementation fileTree(dir: 'libs', include: '*.jar')
   
-  // ExplorViz landscape model
-  implementation "com.github.explorviz.explorviz-backend-shared:landscape-model:${expSharedVersion}"
-  
-  //implementation project(':config-injection')
-  
-  // ExplorViz config matters
-  implementation "com.github.explorviz.explorviz-backend-shared:config-injection:${expSharedVersion}"
-  
-  implementation "com.github.explorviz.explorviz-backend-shared:common-concerns:${expSharedVersion}"
-  
-  // ExplorViz security matters
-  implementation "com.github.explorviz.explorviz-backend-shared:security:${expSharedVersion}"
-  
-  // ExplorViz exception matters
-  implementation "com.github.explorviz.explorviz-backend-shared:exception-handling:${expSharedVersion}"
+  // ExplorViz Shared Dependencies
+  if(useRemoteSharedProject.toBoolean()) {
+    implementation "com.github.explorviz.explorviz-backend-shared:landscape-model:${sharedProjectVersion}"
+    implementation "com.github.explorviz.explorviz-backend-shared:config-injection:${sharedProjectVersion}"
+    implementation "com.github.explorviz.explorviz-backend-shared:security:${sharedProjectVersion}"
+    implementation "com.github.explorviz.explorviz-backend-shared:exception-handling:${sharedProjectVersion}"
+    implementation "com.github.explorviz.explorviz-backend-shared:common-concerns:${sharedProjectVersion}" 
+  }
+  else {    
+    implementation project(':landscape-model')
+    implementation project(':config-injection')
+   	implementation project(':security')
+   	implementation project(':exception-handling')
+   	implementation project(':common-concerns')
+  }
   
   // SSE context for injection
   implementation group: 'org.glassfish.jersey.media', name: 'jersey-media-sse', version: '2.27'
   
-  // Serialization
-  implementation group: 'de.ruedigermoeller', name: 'fst', version: '2.56' 
    
   // multipart/form-data type
   implementation group: 'org.glassfish.jersey.media', name:'jersey-media-multipart', version:'2.26'
   
-  
+  implementation group: 'org.apache.kafka', name: 'kafka_2.12', version: '2.2.0'
   
 }
 

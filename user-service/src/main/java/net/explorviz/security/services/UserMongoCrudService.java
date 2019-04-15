@@ -1,7 +1,7 @@
 package net.explorviz.security.services;
 
-import com.mongodb.MongoException;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.inject.Inject;
@@ -61,7 +61,7 @@ public class UserMongoCrudService implements MongoCrudService<User> {
    * @param user - a user entity
    * @return an Optional, which contains a User or is empty
    */
-  public Optional<User> saveNewEntity(final User user) throws MongoException {
+  public Optional<User> saveNewEntity(final User user) {
     // Generate an id
     user.setId(this.idGenerator.generateId());
 
@@ -74,12 +74,12 @@ public class UserMongoCrudService implements MongoCrudService<User> {
   }
 
   @Override
-  public void updateEntity(final User user) throws MongoException {
+  public void updateEntity(final User user) {
     this.datastore.save(user);
   }
 
   @Override
-  public Optional<User> getEntityById(final String id) throws MongoException {
+  public Optional<User> getEntityById(final String id) {
 
     final User userObject = this.datastore.get(User.class, id);
 
@@ -87,7 +87,11 @@ public class UserMongoCrudService implements MongoCrudService<User> {
   }
 
   @Override
-  public void deleteEntityById(final String id) throws MongoException {
+  public void deleteEntityById(final String id) throws UserCrudException {
+
+    if (this.isLastAdmin(id)) {
+      throw new UserCrudException("Can not delete last admin");
+    }
 
     this.datastore.delete(User.class, id);
 
@@ -97,6 +101,38 @@ public class UserMongoCrudService implements MongoCrudService<User> {
 
   }
 
+  /**
+   * Helper method to check whether the user with the given id is the only admin.
+   *
+   * @param id user id
+   * @return {@code true} iff the user with the given id has the role "admin" and there is no other
+   *         user with this role.
+   */
+  private boolean isLastAdmin(final String id) {
+    User user;
+    try {
+      user = this.getEntityById(id).get();
+    } catch (final NoSuchElementException e) {
+      return false;
+    }
+
+    final boolean isadmin =
+        user.getRoles().stream().filter(r -> r.getDescriptor().equals("admin")).count() == 1;
+
+    final boolean otheradmin = this.getAll()
+        .stream()
+        .filter(u -> u.getRoles()
+            .stream()
+            .map(r -> r.getDescriptor())
+            .collect(Collectors.toList())
+            .contains("admin"))
+        .filter(u -> !u.getId().equals(id))
+        .count() > 0;
+
+
+    return isadmin && !otheradmin;
+
+  }
 
   @Override
   public Optional<User> findEntityByFieldValue(final String field, final Object value) {
@@ -112,7 +148,7 @@ public class UserMongoCrudService implements MongoCrudService<User> {
    * @param roleName role to search for
    * @return a list of all users, that have the given role assigned
    */
-  public List<User> getUsersByRole(final String roleName) throws MongoException {
+  public List<User> getUsersByRole(final String roleName) {
 
     // TODO find smarter (MongoDB based) way to check for roles
 

@@ -18,7 +18,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
-import net.explorviz.landscape.repository.helper.LandscapeHelper;
 import net.explorviz.landscape.repository.helper.Signature;
 import net.explorviz.landscape.repository.helper.SignatureParser;
 import net.explorviz.shared.landscape.model.application.Application;
@@ -157,8 +156,7 @@ public class InsertionRepositoryPart {
     landscape.getSystems().add(system);
 
     // create a new system event
-    LandscapeHelper.createNewEvent(landscape, EEventType.NEWSYSTEM,
-        "New system '" + systemname + "' detected");
+    landscape.createNewEvent(EEventType.NEWSYSTEM, "New system '" + systemname + "' detected");
 
     return system;
   }
@@ -187,7 +185,7 @@ public class InsertionRepositoryPart {
       this.nodeCache.put(nodeName, node);
 
       // creates a new node event
-      LandscapeHelper.createNewEvent(landscape, EEventType.NEWNODE,
+      landscape.createNewEvent(EEventType.NEWNODE,
           "New node '" + hostApplicationRecord.getHostname() + "' in system '"
               + hostApplicationRecord.getSystemname() + "' detected");
     }
@@ -300,7 +298,7 @@ public class InsertionRepositoryPart {
       this.applicationCache.put(node.getName() + "_" + applicationName, application);
 
       // creates a new application event
-      LandscapeHelper.createNewEvent(landscape, EEventType.NEWAPPLICATION,
+      landscape.createNewEvent(EEventType.NEWAPPLICATION,
           "New application '" + applicationName + "' on node '" + node.getName() + "' detected");
     }
 
@@ -411,9 +409,9 @@ public class InsertionRepositoryPart {
           }
 
           // creates an exception event
-          LandscapeHelper.createNewException(landscape,
-              "Exception thrown in application '" + currentApplication.getName() + "' by class '"
-                  + callerClazz.getFullQualifiedName() + "':\n " + cause);
+          landscape
+              .createNewException("Exception thrown in application '" + currentApplication.getName()
+                  + "' by class '" + callerClazz.getFullQualifiedName() + "':\n " + cause);
         }
 
         final List<DatabaseQuery> databaseQueries = currentApplication.getDatabaseQueries();

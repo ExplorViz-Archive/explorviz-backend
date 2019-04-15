@@ -21,6 +21,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import net.explorviz.security.services.RoleService;
 import net.explorviz.security.services.TokenService;
+import net.explorviz.security.services.UserCrudException;
 import net.explorviz.security.services.UserMongoCrudService;
 import net.explorviz.security.util.PasswordStorage;
 import net.explorviz.security.util.PasswordStorage.CannotPerformOperationException;
@@ -45,9 +46,6 @@ public class UserResource {
   private static final String MSG_INVALID_PASSWORD = "Invalid password";
   private static final String MSG_INVALID_USERNAME = "Invalid username";
   private static final String MSG_USER_NOT_RETRIEVED = "Could not retrieve user ";
-  private static final String MSG_USER_NOT_UPDATED = "Could not update user ";
-
-
   private static final String ADMIN_ROLE = "admin";
 
   @Inject
@@ -113,11 +111,6 @@ public class UserResource {
           .orElseThrow(() -> new InternalServerErrorException());
     } catch (final DuplicateKeyException ex) {
       throw new BadRequestException("User already exists", ex);
-    } catch (final MongoException ex) {
-      if (LOGGER.isErrorEnabled()) {
-        LOGGER.error(MSG_USER_NOT_RETRIEVED + ex.getMessage() + " (" + ex.getCode() + ")");
-      }
-      throw new InternalServerErrorException(ex);
     }
   }
 
@@ -231,11 +224,7 @@ public class UserResource {
       this.userCrudService.updateEntity(targetUser);
     } catch (final DuplicateKeyException ex) {
       throw new BadRequestException("Username already exists", ex);
-    } catch (final MongoException ex) {
-      if (LOGGER.isErrorEnabled()) {
-        LOGGER.error(MSG_USER_NOT_UPDATED + ex.getMessage() + " (" + ex.getCode() + ")");
-      }
-      throw new InternalServerErrorException(ex);
+
     }
 
     return targetUser;
@@ -252,20 +241,15 @@ public class UserResource {
   @RolesAllowed({ADMIN_ROLE})
   @Produces(MEDIA_TYPE)
   public List<User> usersByRole(@QueryParam("role") final String role) {
-    try {
 
-      // Return all users if role parameter is omitted
-      if (role == null) {
-        return this.userCrudService.getAll();
-      }
-      return this.userCrudService.getUsersByRole(role);
 
-    } catch (final MongoException ex) {
-      if (LOGGER.isErrorEnabled()) {
-        LOGGER.error(MSG_USER_NOT_UPDATED + ex.getMessage() + " (" + ex.getCode() + ")");
-      }
-      throw new InternalServerErrorException(ex);
+    // Return all users if role parameter is omitted
+    if (role == null) {
+      return this.userCrudService.getAll();
     }
+    return this.userCrudService.getUsersByRole(role);
+
+
   }
 
   /**
@@ -285,14 +269,9 @@ public class UserResource {
 
     User foundUser = null;
 
-    try {
-      foundUser = this.userCrudService.getEntityById(id).orElseThrow(() -> new NotFoundException());
-    } catch (final MongoException ex) {
-      if (LOGGER.isErrorEnabled()) {
-        LOGGER.error("Could not retrieve user: " + ex.getMessage() + " (" + ex.getCode() + ")");
-      }
-      throw new InternalServerErrorException(ex);
-    }
+
+    foundUser = this.userCrudService.getEntityById(id).orElseThrow(() -> new NotFoundException());
+
 
 
     // Cleanup settings
@@ -316,12 +295,14 @@ public class UserResource {
   public Response removeUser(@PathParam("id") final String id) {
     try {
       this.userCrudService.deleteEntityById(id);
-    } catch (final MongoException ex) {
-      if (LOGGER.isErrorEnabled()) {
-        LOGGER.error("Could not update user: " + ex.getMessage() + " (" + ex.getCode() + ")");
+
+    } catch (final UserCrudException ex) {
+      if (LOGGER.isInfoEnabled()) {
+        LOGGER.info("Tried to delete last admin");
       }
-      throw new InternalServerErrorException(ex);
+      throw new BadRequestException(ex);
     }
+
 
     return Response.status(HttpStatus.NO_CONTENT_204).build();
   }

@@ -1,21 +1,34 @@
 
 rootProject.name = 'explorviz-backend'
 
-include ':landscape-service', ':kiekeradapter', ':user-service', ':analysis-service', ':discovery-service'
-
-// Comment out the 'include' statement above and use the 'include' and 'project' statement below
-// to use a local available 'explorviz-backend-shared' project. Finally, see 'build.gradle' of
-// backend
-
-
-/*include ':landscape-service', ':kiekeradapter', ':user-service', ':analysis-service', ':discovery-service', ':landscape-model', ':config-injection', ':common-concerns', ':security', ':exception-handling', ':user'
-
-
-
-project(':landscape-model').projectDir = new File("../explorviz-backend-shared/landscape-model")
-project(':config-injection').projectDir = new File("../explorviz-backend-shared/config-injection") 
-project(':common-concerns').projectDir = new File("../explorviz-backend-shared/common-concerns")
-project(':security').projectDir = new File("../explorviz-backend-shared/security")
-project(':exception-handling').projectDir = new File("../explorviz-backend-shared/exception-handling")
-project(':user').projectDir = new File("../explorviz-backend-shared/user")
-*/
+if(useRemoteSharedProject.toBoolean()) {
+	include ':landscape-service', 
+	':kiekeradapter', 
+	':user-service', 
+	':analysis-service', 
+	':discovery-service',
+	':history-service'
+} else {
+	include ':landscape-service', 
+	':kiekeradapter', 
+	':user-service', 
+	':analysis-service', 
+	':discovery-service', 
+	':history-service', 
+	':landscape-model', 
+	':config-injection', 
+	':common-concerns', 
+	':security', 
+	':exception-handling', 
+	':user', 
+	':discovery-common'
+	
+	project(':landscape-model').projectDir = new File("../explorviz-backend-shared/landscape-model")
+	project(':config-injection').projectDir = new File("../explorviz-backend-shared/config-injection") 
+	project(':common-concerns').projectDir = new File("../explorviz-backend-shared/common-concerns")
+	project(':security').projectDir = new File("../explorviz-backend-shared/security")
+	project(':exception-handling').projectDir = new File("../explorviz-backend-shared/exception-handling")
+	project(':user').projectDir = new File("../explorviz-backend-shared/user")
+	project(':discovery-common').projectDir = new File("../explorviz-backend-shared/discovery-common")
+	
+}

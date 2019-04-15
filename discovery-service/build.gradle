@@ -9,24 +9,24 @@ configurations.all {
   resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
 }
 
-ext {	
-	expSharedVersion = "${rootProject.ext.explorvizSharedVersion}"
-}
 
 dependencies {
-  // ExplorViz Discovery Classes
-  implementation "com.github.explorviz.explorviz-backend-shared:config-injection:${expSharedVersion}"
 
-  // ExplorViz Discovery Classes
-  implementation "com.github.explorviz.explorviz-backend-shared:discovery-common:${expSharedVersion}"
-  
-  // ExplorViz Discovery Classes
-  implementation "com.github.explorviz.explorviz-backend-shared:security:${expSharedVersion}"
-  
-  // ExplorViz common exception handling
-  implementation "com.github.explorviz.explorviz-backend-shared:exception-handling:${expSharedVersion}"
-  
-  implementation "com.github.explorviz.explorviz-backend-shared:common-concerns:${expSharedVersion}"
+  // ExplorViz Shared Dependencies
+  if(useRemoteSharedProject.toBoolean()) {
+    implementation "com.github.explorviz.explorviz-backend-shared:config-injection:${sharedProjectVersion}"
+    implementation "com.github.explorviz.explorviz-backend-shared:discovery-common:${sharedProjectVersion}"
+    implementation "com.github.explorviz.explorviz-backend-shared:security:${sharedProjectVersion}"
+    implementation "com.github.explorviz.explorviz-backend-shared:exception-handling:${sharedProjectVersion}"
+    implementation "com.github.explorviz.explorviz-backend-shared:common-concerns:${sharedProjectVersion}"
+  }
+  else { 
+    implementation project(':config-injection')
+    implementation project(':discovery-common')
+    implementation project(':security')
+    implementation project(':exception-handling')
+    implementation project(':common-concerns')
+  } 
   
   // SSE context for injection
   implementation group: 'org.glassfish.jersey.media', name: 'jersey-media-sse', version: '2.27'  

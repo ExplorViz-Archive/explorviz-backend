@@ -303,10 +303,10 @@ public final class LandscapeDummyCreator {
     DummyLandscapeHelper.createApplicationCommunication(provenance3, webshop, landscape, 300);
     DummyLandscapeHelper.createApplicationCommunication(provenance4, webshop, landscape, 100);
 
-    final Landscape preparedLandscape = LandscapePreparer.prepareLandscape(landscape);
-    dummyLandscape = preparedLandscape;
+    landscape.createOutgoingApplicationCommunication();
+    dummyLandscape = landscape;
 
-    return preparedLandscape;
+    return landscape;
   }
 
   /**
