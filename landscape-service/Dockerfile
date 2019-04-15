@@ -1,10 +1,17 @@
 FROM openjdk:8-alpine
 
+ENV SERVICE_PREFIX landscape
+
 ENV DUMMY_MODE false
+
 ENV MONGO_HOST 127.0.0.1
 ENV MONGO_PORT 27018
+
+ENV REDIS_ID_GENERATOR false
 ENV REDIS_HOST 127.0.0.1
-ENV SERVICE_PREFIX landscape
+
+ENV KAFKA_BOOTSTRAP_SERVERS localhost:9092
+ENV KAFKA_TOPIC_NAME landscape-update
 
 RUN mkdir /explorviz
 WORKDIR /explorviz
