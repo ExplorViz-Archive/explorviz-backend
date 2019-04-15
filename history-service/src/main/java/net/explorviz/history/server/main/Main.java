@@ -1,4 +1,4 @@
-package net.explorviz.landscape.server.main;
+package net.explorviz.history.server.main;
 
 import net.explorviz.shared.config.helper.PropertyHelper;
 import org.eclipse.jetty.server.Server;
@@ -9,18 +9,24 @@ import org.glassfish.jersey.servlet.ServletContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Entry point for the web service. This main method will start a web server based on the
+ * configuration properties inside of the explorviz.properties file.
+ */
 public final class Main {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(Main.class);
-  private static final int DEFAULT_PORT = 8081;
+  private static final int DEFAULT_PORT = 8083;
 
   private Main() {
     // Utility Class
   }
 
   /**
-   * Starts the landscape service server.
+   * Entry point for the web service. This main method will start a web server based on the
+   * configuration properties inside of the explorviz.properties file
    *
+   * @param args not used at the moment
    */
   public static void main(final String[] args) {
 
@@ -62,10 +68,7 @@ public final class Main {
     final String statedContextPath = PropertyHelper.getStringProperty("server.contextPath");
 
     if (statedContextPath == null) {
-      if (LOGGER.isInfoEnabled()) {
-        LOGGER.info("ATTENTION: Using default contextPath '/' for server. "
-            + "Maybe your stated server.contextPath property is no valid string.");
-      }
+      LOGGER.info("ATTENTION: Using default contextPath '/'. Check explorviz.properties file.");
       return "/";
     } else {
       return statedContextPath;
@@ -73,7 +76,7 @@ public final class Main {
   }
 
   private static ResourceConfig createJaxRsApp() {
-    return new ResourceConfig(new LandscapeApplication());
+    return new ResourceConfig(new HistoryApplication());
   }
 
 }
