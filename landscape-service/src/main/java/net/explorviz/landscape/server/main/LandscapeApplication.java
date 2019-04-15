@@ -1,6 +1,6 @@
 package net.explorviz.landscape.server.main;
 
-import net.explorviz.landscape.server.resources.LandscapeBroadcastSubResource;
+import net.explorviz.landscape.server.resources.LandscapeBroadcastResource;
 import net.explorviz.shared.common.provider.GenericTypeFinder;
 import net.explorviz.shared.common.provider.JsonApiListProvider;
 import net.explorviz.shared.common.provider.JsonApiProvider;
@@ -56,7 +56,7 @@ public class LandscapeApplication extends ResourceConfig {
     this.register(CorsResponseFilter.class);
 
     // resources
-    this.register(LandscapeBroadcastSubResource.class);
+    this.register(LandscapeBroadcastResource.class);
 
     // exception handling (mind the order !)
     this.register(WebApplicationExceptionMapper.class);

@@ -13,12 +13,12 @@ import net.explorviz.landscape.server.helper.LandscapeBroadcastService;
 
 @Path("v1/landscapes/broadcast")
 @RolesAllowed({"admin"})
-public class LandscapeBroadcastSubResource {
+public class LandscapeBroadcastResource {
 
   private final LandscapeBroadcastService broadcastService;
 
   @Inject
-  public LandscapeBroadcastSubResource(final LandscapeBroadcastService broadcastService) {
+  public LandscapeBroadcastResource(final LandscapeBroadcastService broadcastService) {
     this.broadcastService = broadcastService;
   }
 
