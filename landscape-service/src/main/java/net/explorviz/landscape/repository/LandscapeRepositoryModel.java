@@ -54,7 +54,7 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
       final KafkaProducer<String, String> kafkaProducer,
       @Config("repository.outputIntervalSeconds") final int outputIntervalSeconds,
       @Config("repository.useDummyMode") final boolean useDummyMode,
-      @Config("service.kafka.topic.name") final String kafkaTopicName) {
+      @Config("exchange.kafka.topic.name") final String kafkaTopicName) {
 
     this.broadcastService = broadcastService;
     this.serializationHelper = serializationHelper;
@@ -149,9 +149,7 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
       this.kafkaProducer.send(new ProducerRecord<>(kafkaTopicName, "1", serialized));
       LOGGER.info(
           "Sending Kafka record with landscape id {}, timestamp {}, and payload to topic {}",
-          l.getId(),
-          l.getTimestamp().getTimestamp(),
-          kafkaTopicName);
+          l.getId(), l.getTimestamp().getTimestamp(), kafkaTopicName);
     } catch (final DocumentSerializationException e) {
       LOGGER.error("Could not serialize landscape to string for Kafka Production.", e);
     }
@@ -194,7 +192,7 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
 
   public void insertIntoModel(final IRecord inputIRecord) {
     // called every second
-    this.insertionRepositoryPart
-        .insertIntoModel(inputIRecord, this.internalLandscape, this.remoteCallRepositoryPart);
+    this.insertionRepositoryPart.insertIntoModel(inputIRecord, this.internalLandscape,
+        this.remoteCallRepositoryPart);
   }
 }
