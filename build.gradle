@@ -14,7 +14,8 @@ def exportedProjects= [
 		':user-service',
 		':analysis-service',
 		':discovery-service',
-		':history-service'
+		':history-service',
+		':settings-service'
 ]
 
 task alljavadoc(type: Javadoc) {

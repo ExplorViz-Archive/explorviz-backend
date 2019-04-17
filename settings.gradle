@@ -7,7 +7,8 @@ if(useRemoteSharedProject.toBoolean()) {
 	':user-service', 
 	':analysis-service', 
 	':discovery-service',
-	':history-service'
+	':history-service',
+	':settings-service'
 } else {
 	include ':landscape-service', 
 	':kiekeradapter', 
