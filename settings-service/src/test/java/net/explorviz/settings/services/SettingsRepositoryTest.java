@@ -27,18 +27,18 @@ import xyz.morphia.query.FindOptions;
 import xyz.morphia.query.Query;
 
 @ExtendWith(MockitoExtension.class)
-public class SettingsServiceTest {
+public class SettingsRepositoryTest {
 
   @Mock private Datastore ds;
   
-  private SettingsService sps;
+  private SettingsRepository sps;
   
   private List<Setting> settings;
   
   @BeforeEach
   public void setUp() {
     assert ds != null;
-    sps = new SettingsService(ds);
+    sps = new SettingsRepository(ds);
     settings = new ArrayList<>(Arrays.asList(
         new BooleanSetting("bid", "Boolean Setting", "Boolean Setting Description", false),
         new StringSetting("sid", "Boolean Setting", "Boolean Setting Description", "def"),

@@ -28,25 +28,18 @@ import xyz.morphia.Key;
 import xyz.morphia.query.Query;
 
 @ExtendWith(MockitoExtension.class)
-public class UserSettingsServiceTest {
+public class UserSettingsRepositoryTest {
   
   @Mock private Datastore ds;
   
-  private UserSettingsService uss;
+  private UserSettingsRepository uss;
   
-  private List<Setting> settings;
   private List<UserSetting> userSettings;
   
   @BeforeEach
   public void setUp() {
     assert ds != null;
-    uss = new UserSettingsService(ds);
-    settings = new ArrayList<>(Arrays.asList(
-          new BooleanSetting("bid", "Boolean Setting", "Boolean Setting Description", false),
-          new StringSetting("sid", "Boolean Setting", "Boolean Setting Description", "def"),
-          new DoubleSetting("did", "Boolean Setting", "Boolean Setting Description", 0.5, -1, 1)        
-        ));
-    
+    uss = new UserSettingsRepository(ds);  
     userSettings = new ArrayList<>(Arrays.asList(
           new UserSetting<Boolean>("1", "bid", Boolean.TRUE),
           new UserSetting<String>("1", "sid", "val"),

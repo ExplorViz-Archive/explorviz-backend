@@ -7,6 +7,7 @@ import java.util.Optional;
 import javax.inject.Inject;
 import net.explorviz.settings.model.Setting;
 import net.explorviz.shared.security.model.User;
+import org.jvnet.hk2.annotations.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import xyz.morphia.Datastore;
@@ -17,17 +18,18 @@ import xyz.morphia.query.Query;
  * It is backed by mongodb.
  * 
  */
-public class SettingsService {
+@Service
+public class SettingsRepository {
 
   
-  private static final Logger LOGGER = LoggerFactory.getLogger(SettingsService.class.getSimpleName());
+  private static final Logger LOGGER = LoggerFactory.getLogger(SettingsRepository.class.getSimpleName());
 
   
   
   private final Datastore datastore;
   
   @Inject
-  public SettingsService(Datastore datastore) {
+  public SettingsRepository(Datastore datastore) {
     this.datastore = datastore;
   }
 
