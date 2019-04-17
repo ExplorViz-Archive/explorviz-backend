@@ -59,10 +59,8 @@ public class SettingServiceTest {
   public void testGetForUser() {
     String id = "1";
     when(sps.findAll()).thenReturn(settings);
-    when(uss.findAll(id)).thenReturn(userSettings.stream()
-        .filter(us -> us.getId().getUserId().equals(id))
-        .collect(Collectors.toList()));
-    when(sps.findById(ArgumentMatchers.anyString())).thenAnswer(new Answer<Optional<Setting>>() {
+    when(uss.findAll()).thenReturn(userSettings);
+    when(sps.find(ArgumentMatchers.anyString())).thenAnswer(new Answer<Optional<Setting>>() {
 
       @Override
       public Optional<Setting> answer(InvocationOnMock invocation) throws Throwable {
@@ -78,7 +76,7 @@ public class SettingServiceTest {
   @Test
   public void testSetForUser() {
     String id = "1";
-    when(sps.findById(ArgumentMatchers.anyString())).thenAnswer( i -> {
+    when(sps.find(ArgumentMatchers.anyString())).thenAnswer( i -> {
       String sid = i.getArgument(0);
       return settings.stream().filter(s -> s.getId().equals(sid)).findAny();
     });
@@ -90,18 +88,9 @@ public class SettingServiceTest {
         userSettings.add(u);
         
         return null;
-      }}).when(uss).save(ArgumentMatchers.any());
+      }}).when(uss).create(ArgumentMatchers.any());
     when(sps.findAll()).thenReturn(settings); 
-    when(uss.findAll(id)).thenAnswer(new Answer<List<UserSetting>>() {
-      @Override
-      public List<UserSetting> answer(InvocationOnMock invocation) throws Throwable {
-        String uid = invocation.getArgument(0);
-        List<UserSetting> filtered = userSettings.stream()
-            .filter(us -> us.getId().getUserId().equals(uid))
-            .collect(Collectors.toList());
-        return filtered;
-      }
-    });
+    when(uss.findAll()).thenReturn(userSettings);
     
     settingService.setForUser(id, "did", 0.2);
     double retr = (double) settingService.getForUser(id).get("did");
@@ -111,7 +100,7 @@ public class SettingServiceTest {
   @Test
   public void testSetUnkownSetting() {
     String id = "1";
-    when(sps.findById(ArgumentMatchers.anyString())).thenAnswer( i -> {
+    when(sps.find(ArgumentMatchers.anyString())).thenAnswer( i -> {
       String sid = i.getArgument(0);
       return settings.stream().filter(s -> s.getId().equals(sid)).findAny();
     });
@@ -124,7 +113,7 @@ public class SettingServiceTest {
   @Test
   public void testSetUnkownUser() {
     String id = "8";
-    when(sps.findById(ArgumentMatchers.anyString())).thenAnswer( i -> {
+    when(sps.find(ArgumentMatchers.anyString())).thenAnswer( i -> {
       String sid = i.getArgument(0);
       return settings.stream().filter(s -> s.getId().equals(sid)).findAny();
     });
@@ -137,7 +126,7 @@ public class SettingServiceTest {
   public void testOrphanRemoval() {
     String id = "1";
     when(sps.findAll()).thenReturn(settings);
-    when(sps.findById(ArgumentMatchers.anyString())).thenAnswer(new Answer<Optional<Setting>>() {
+    when(sps.find(ArgumentMatchers.anyString())).thenAnswer(new Answer<Optional<Setting>>() {
 
       @Override
       public Optional<Setting> answer(InvocationOnMock invocation) throws Throwable {
@@ -145,10 +134,7 @@ public class SettingServiceTest {
         return settings.stream().filter(s -> s.getId().equals(sid)).findAny();
       }
     });
-    when(uss.findAll(id)).thenReturn(userSettings.stream()
-        .filter(us -> us.getId().getUserId().equals(id))
-        .collect(Collectors.toList()));
-   
+    when(uss.findAll()).thenReturn(userSettings);
     
     settings.remove(0);
     

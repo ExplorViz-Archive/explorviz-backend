@@ -5,6 +5,7 @@ import java.util.Optional;
 import javax.inject.Inject;
 import net.explorviz.settings.model.Setting;
 import net.explorviz.settings.model.UserSetting;
+import net.explorviz.settings.model.UserSetting.UserSettingId;
 import org.jvnet.hk2.annotations.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,7 +18,7 @@ import xyz.morphia.query.Query;
  * 
  */
 @Service
-public class UserSettingsRepository {
+public class UserSettingsRepository implements MongoRepository<UserSetting, UserSetting.UserSettingId> {
   
   private static final Logger LOGGER = LoggerFactory.getLogger(SettingsRepository.class.getSimpleName());
   
@@ -29,23 +30,29 @@ public class UserSettingsRepository {
     this.datastore = datastore;
   }
   
-  public List<UserSetting> findAll(String userId) {
-    Query<UserSetting> q = this.datastore.find(UserSetting.class).filter("userId", userId);
+  @Override
+  public List<UserSetting> findAll() {
+    Query<UserSetting> q = this.datastore.find(UserSetting.class);
     return q.asList();    
   }
   
-  public Optional<UserSetting> findById(String userId, String settingId) {
-    UserSetting u = datastore.get(UserSetting.class, new UserSetting.UserSettingId(userId, settingId));
+  @Override
+  public Optional<UserSetting> find(UserSetting.UserSettingId id) {
+    UserSetting u = datastore.get(UserSetting.class, new UserSetting.UserSettingId(id.getUserId(), id.getSettingId()));
     return Optional.ofNullable(u);
   }
   
-  public void save(UserSetting setting) {
+  @Override
+  public void create(UserSetting setting) {
     datastore.save(setting);
   }
   
-  public void delete(String userId, String settingId) {
-    datastore.delete(UserSetting.class, new UserSetting.UserSettingId(userId, settingId));
+  @Override
+  public void delete(UserSetting.UserSettingId id) {
+    datastore.delete(UserSetting.class, new UserSetting.UserSettingId(id.getUserId(), id.getSettingId()));
   }
+
+
    
   
 }

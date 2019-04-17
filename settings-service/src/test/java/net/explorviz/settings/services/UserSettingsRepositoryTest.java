@@ -53,11 +53,10 @@ public class UserSettingsRepositoryTest {
     String id = "1";
     Query<UserSetting> q = mock(Query.class);
     when(ds.find(UserSetting.class)).thenReturn(q);
-    when(q.filter("userId", id)).thenReturn(q);
     List<UserSetting> returnList = userSettings.stream().filter(u -> u.getId().getUserId().equals(id)).collect(Collectors.toList());
     when(q.asList()).thenReturn(returnList);
     
-    List<UserSetting> retrieved = uss.findAll(id);
+    List<UserSetting> retrieved = uss.findAll();
     assertEquals(userSettings, retrieved);
   }
   
@@ -66,7 +65,7 @@ public class UserSettingsRepositoryTest {
   public void testFindById() {
     when(ds.get(UserSetting.class, userSettings.get(0).getId())).thenReturn(userSettings.get(0));
     
-    UserSetting retrieved = uss.findById("1", "bid").get();
+    UserSetting retrieved = uss.find(userSettings.get(0).getId()).get();
     
     assertEquals(userSettings.get(0), retrieved);
   }
@@ -80,8 +79,8 @@ public class UserSettingsRepositoryTest {
          return new WriteResult(1,false, null);
       }});
     
-    uss.delete(userSettings.get(0).getId().getUserId(), userSettings.get(0).getId().getSettingId());
-    assertNull(uss.findById(userSettings.get(0).getId().getUserId(), userSettings.get(0).getId().getSettingId()).orElse(null));
+    uss.delete(userSettings.get(0).getId());
+    assertNull(uss.find(userSettings.get(0).getId()).orElse(null));
   }
   
   @Test
@@ -97,9 +96,9 @@ public class UserSettingsRepositoryTest {
 
     });
     
-    uss.save(uset);
+    uss.create(uset);
     
-    assertNotNull(uss.findById("1", "test"));
+    assertNotNull(uss.find(uset.getId()));
   }
 
 

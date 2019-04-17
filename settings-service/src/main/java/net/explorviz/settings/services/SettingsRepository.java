@@ -19,7 +19,7 @@ import xyz.morphia.query.Query;
  * 
  */
 @Service
-public class SettingsRepository {
+public class SettingsRepository implements MongoRepository<Setting, String>{
 
   
   private static final Logger LOGGER = LoggerFactory.getLogger(SettingsRepository.class.getSimpleName());
@@ -47,7 +47,8 @@ public class SettingsRepository {
    * @param id the id
    * @return the setting
    */
-  public Optional<Setting> findById(String id) {
+  @Override
+  public Optional<Setting> find(String id) {
     Setting s = this.datastore.get(Setting.class, id);
     return Optional.ofNullable(s);
   }
@@ -67,15 +68,20 @@ public class SettingsRepository {
     }
   }
   
+ 
+
   /**
-   * Creates a new setting
-   * @param setting the setting to create
-   */
-  public void save(Setting setting) {
+  * Creates a new setting
+  * @param setting the setting to create
+  */
+  @Override
+  public void create(Setting setting) {
     this.datastore.save(setting);
     if (LOGGER.isInfoEnabled()) {
       LOGGER.info(String.format("Saved setting with id {}", setting.getId()));
     }
   }
+
+  
   
 }

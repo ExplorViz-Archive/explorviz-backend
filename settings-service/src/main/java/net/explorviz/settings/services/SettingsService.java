@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import javax.inject.Inject;
 import net.explorviz.settings.model.BooleanSetting;
 import net.explorviz.settings.model.DoubleSetting;
@@ -47,7 +48,7 @@ public class SettingsService {
     
     // Automatic orphan removal
     
-    List<UserSetting> userSettings = userSettingRepo.findAll(userId);
+    List<UserSetting> userSettings = userSettingRepo.findAll().stream().filter(us -> us.getId().getUserId().equals(userId)).collect(Collectors.toList());
     removeOrphans(userSettings);
     
     // Override defaults with user specific settings
@@ -66,7 +67,7 @@ public class SettingsService {
   public void setForUser(String userId, String settingId, Object value) throws IllegalArgumentException {
     
     // Check if setting exists
-    Setting s = settingRepo.findById(settingId).orElseThrow(IllegalArgumentException::new);
+    Setting s = settingRepo.find(settingId).orElseThrow(IllegalArgumentException::new);
     UserSetting u = null;
     
     
@@ -98,7 +99,7 @@ public class SettingsService {
       throw new IllegalArgumentException("Unknown setting type");
     }
     
-    userSettingRepo.save(u);
+    userSettingRepo.create(u);
         
     
   }
@@ -123,12 +124,12 @@ public class SettingsService {
       UserSetting us = it.next();
       String usid = us.getId().getSettingId();
       
-      if(!settingRepo.findById(usid).isPresent()) {
+      if(!settingRepo.find(usid).isPresent()) {
         // found orphanized user setting
         // remove from setting list
         userSettings.remove(us);
         // remove from database
-        userSettingRepo.delete(us.getId().getUserId(), usid);
+        userSettingRepo.delete(us.getId());
       }
       
     }

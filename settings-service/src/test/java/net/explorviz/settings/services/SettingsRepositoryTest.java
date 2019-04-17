@@ -65,7 +65,7 @@ public class SettingsRepositoryTest {
   public void testFindById() {
     when(ds.get(Setting.class, "bid")).thenReturn(settings.get(0));
     
-    Setting retrieved = sps.findById("bid").get();
+    Setting retrieved = sps.find("bid").get();
     
     assertEquals(settings.get(0), retrieved);
   }
@@ -80,7 +80,7 @@ public class SettingsRepositoryTest {
       }});
     
     sps.delete(settings.get(0).getId());
-    assertNull(sps.findById("bid").orElse(null));
+    assertNull(sps.find("bid").orElse(null));
   }
   
   @Test
@@ -95,9 +95,9 @@ public class SettingsRepositoryTest {
       }
 
     });
-    sps.save(s);
+    sps.create(s);
     
-    assertNotNull(sps.findById(s.getId()));
+    assertNotNull(sps.find(s.getId()));
   }
 
   
