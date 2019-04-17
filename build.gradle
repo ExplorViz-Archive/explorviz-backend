@@ -13,7 +13,8 @@ def exportedProjects= [
 		':kiekeradapter',
 		':user-service',
 		':analysis-service',
-		':discovery-service'
+		':discovery-service',
+		':history-service'
 ]
 
 task alljavadoc(type: Javadoc) {
@@ -24,13 +25,6 @@ task alljavadoc(type: Javadoc) {
     options.setFooter(footerText)
 }
 
-ext {
-	// Version tag for the Explorviz-Backend-Shared project dependency
-	// https://github.com/ExplorViz/explorviz-backend-shared
-    explorvizSharedVersion = 'v1.3.12'
-    
-    expUseLocalSharedProject = false
-  }
 
 // END aggregated Javadoc in multiproject Gradle build
 subprojects {
@@ -97,7 +91,7 @@ subprojects {
 	// SL4J
 	implementation group: 'org.slf4j', name: 'slf4j-simple', version: '1.6.1'
     
-    if (project.name == 'user-service' || project.name == 'landscape-service' || project.name == 'discovery-service' || project.name == 'settings-service') {
+    if (project.name == 'user-service' || project.name == 'landscape-service' || project.name == 'discovery-service' || project.name == 'settings-service' || project.name == 'history-service') {
     	// subprojects, which are supposed to be a JAX-RS-based microservice
     
     	// Jersey and Servlet
@@ -128,7 +122,8 @@ subprojects {
 	testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.4.0'
 	testImplementation 'org.junit.platform:junit-platform-runner:1.4.0'
 	testImplementation group: 'org.junit.vintage', name: 'junit-vintage-engine', version: '5.4.0'
-	testImplementation 'org.mockito:mockito-core:2.24.0'	
+	testImplementation 'org.mockito:mockito-core:2.24.0'
+	testCompile group: 'org.mockito', name: 'mockito-junit-jupiter', version: '2.25.1'
   }
     
 }

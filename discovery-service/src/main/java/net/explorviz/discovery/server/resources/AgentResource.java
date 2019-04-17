@@ -6,6 +6,7 @@ import com.github.jasminb.jsonapi.exceptions.DocumentSerializationException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import javax.annotation.security.PermitAll;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -90,12 +91,14 @@ public class AgentResource {
 
   @POST
   @Consumes(MEDIA_TYPE)
+  @PermitAll
   public Agent registerAgent(final Agent newAgent) throws DocumentSerializationException {
 
-
     // Attention, registration of MessageBodyReader implementation (JsonApiProvier) is mandatory
-    final Client client = ClientBuilder.newBuilder().register(SseFeature.class)
-        .register(new JsonApiProvider<>(this.converter)).build();
+    final Client client = ClientBuilder.newBuilder()
+        .register(SseFeature.class)
+        .register(new JsonApiProvider<>(this.converter))
+        .build();
     final WebTarget target =
         client.target("http://" + newAgent.getIP() + ":" + newAgent.getPort() + "/broadcast/");
     final EventSource eventSource = EventSource.target(target).build();
@@ -178,7 +181,8 @@ public class AgentResource {
 
     return Response
         .ok(this.converter.writeDocumentCollection(new JSONAPIDocument<>(listToBeReturned)))
-        .type(MEDIA_TYPE).build();
+        .type(MEDIA_TYPE)
+        .build();
 
   }
 

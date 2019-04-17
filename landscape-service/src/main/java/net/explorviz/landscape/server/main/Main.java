@@ -73,7 +73,7 @@ public final class Main {
   }
 
   private static ResourceConfig createJaxRsApp() {
-    return new ResourceConfig(new Application());
+    return new ResourceConfig(new LandscapeApplication());
   }
 
 }

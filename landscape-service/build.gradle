@@ -15,27 +15,24 @@ repositories {
 	mavenLocal()
 }
 
-ext {	
-	expSharedVersion = "${rootProject.ext.explorvizSharedVersion}"
-}
 dependencies {
   // Any .jar in libs
   implementation fileTree(dir: 'libs', include: '*.jar')
   
   // ExplorViz Shared Dependencies
-  if("${expUseLocalSharedProject}" == "true") {
+  if(useRemoteSharedProject.toBoolean()) {
+    implementation "com.github.explorviz.explorviz-backend-shared:landscape-model:${sharedProjectVersion}"
+    implementation "com.github.explorviz.explorviz-backend-shared:config-injection:${sharedProjectVersion}"
+    implementation "com.github.explorviz.explorviz-backend-shared:security:${sharedProjectVersion}"
+    implementation "com.github.explorviz.explorviz-backend-shared:exception-handling:${sharedProjectVersion}"
+    implementation "com.github.explorviz.explorviz-backend-shared:common-concerns:${sharedProjectVersion}" 
+  }
+  else {    
     implementation project(':landscape-model')
     implementation project(':config-injection')
    	implementation project(':security')
    	implementation project(':exception-handling')
    	implementation project(':common-concerns')
-  }
-  else {
-    implementation "com.github.explorviz.explorviz-backend-shared:landscape-model:${expSharedVersion}"
-    implementation "com.github.explorviz.explorviz-backend-shared:config-injection:${expSharedVersion}"
-    implementation "com.github.explorviz.explorviz-backend-shared:security:${expSharedVersion}"
-    implementation "com.github.explorviz.explorviz-backend-shared:exception-handling:${expSharedVersion}"
-    implementation "com.github.explorviz.explorviz-backend-shared:common-concerns:${expSharedVersion}" 
   }
   
   // SSE context for injection
@@ -45,7 +42,7 @@ dependencies {
   // multipart/form-data type
   implementation group: 'org.glassfish.jersey.media', name:'jersey-media-multipart', version:'2.26'
   
-  
+  implementation group: 'org.apache.kafka', name: 'kafka_2.12', version: '2.2.0'
   
 }
 
@@ -105,3 +102,35 @@ task spotbugs {
 artifacts {
   archives shadowJar
 }
+
+// START environment task
+task updateEnvPropsInBuildDir {
+
+	// run with:
+	// .././gradlew run -Penvironment=production
+
+	doLast {
+		if (project.hasProperty("environment")) {
+   			def environment = project.findProperty("environment")
+   	
+   			if(environment.equals("production")) {
+   				println("Using the production properties file")
+   				delete("${buildDir}/resources/main/explorviz.properties")
+    		
+    			copy { 
+      				from "${buildDir}/resources/main" 
+    				into "${buildDir}/resources/main"
+    				rename "explorviz.production.properties", "explorviz.properties" 
+    			}
+    		
+    			delete("${buildDir}/resources/main/explorviz.production.properties")        		
+			}
+		} else {
+    		println("Using default properties file")
+		}
+	}
+}
+
+run.dependsOn updateEnvPropsInBuildDir
+updateEnvPropsInBuildDir.shouldRunAfter classes
+// END environment task

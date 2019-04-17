@@ -9,12 +9,9 @@ import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import net.explorviz.landscape.repository.helper.DummyLandscapeHelper;
-import net.explorviz.landscape.repository.persistence.LandscapeRepository;
-import net.explorviz.landscape.repository.persistence.ReplayRepository;
-import net.explorviz.landscape.repository.persistence.mongo.LandscapeSerializationHelper;
+import net.explorviz.landscape.repository.helper.LandscapeSerializationHelper;
 import net.explorviz.landscape.server.helper.LandscapeBroadcastService;
 import net.explorviz.shared.config.annotations.Config;
-import net.explorviz.shared.config.annotations.ConfigValues;
 import net.explorviz.shared.landscape.model.application.AggregatedClazzCommunication;
 import net.explorviz.shared.landscape.model.application.Application;
 import net.explorviz.shared.landscape.model.application.ApplicationCommunication;
@@ -23,6 +20,8 @@ import net.explorviz.shared.landscape.model.landscape.Node;
 import net.explorviz.shared.landscape.model.landscape.NodeGroup;
 import net.explorviz.shared.landscape.model.landscape.System;
 import net.explorviz.shared.landscape.model.store.Timestamp;
+import org.apache.kafka.clients.producer.KafkaProducer;
+import org.apache.kafka.clients.producer.ProducerRecord;
 import org.jvnet.hk2.annotations.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,88 +32,54 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
 
   private static final Logger LOGGER = LoggerFactory.getLogger(LandscapeRepositoryModel.class);
 
-  private static final boolean LOAD_LAST_LANDSCAPE_ON_LOAD = false;
   private volatile Landscape lastPeriodLandscape;
   private Landscape internalLandscape;
   private final InsertionRepositoryPart insertionRepositoryPart;
   private final RemoteCallRepositoryPart remoteCallRepositoryPart;
   private final int outputIntervalSeconds;
 
-  @Inject
-  private LandscapeBroadcastService broadcastService;
-
-  @Inject
-  private LandscapeRepository<Landscape> landscapeRepository;
-
-  @Inject
-  private ReplayRepository<Landscape> replayRepository;
-
-
-  @Inject
-  private LandscapeSerializationHelper serializationHelper;
+  private final LandscapeBroadcastService broadcastService;
+  private final LandscapeSerializationHelper serializationHelper;
 
   private final boolean useDummyMode;
 
+  private final KafkaProducer<String, String> kafkaProducer;
 
-  @ConfigValues({@Config("repository.useDummyMode"), @Config("repository.outputIntervalSeconds")})
-  public LandscapeRepositoryModel(final boolean useDummyMode, final int outputIntervalSeconds) {
+  private final String kafkaTopicName;
+
+
+  @Inject
+  public LandscapeRepositoryModel(final LandscapeBroadcastService broadcastService,
+      final LandscapeSerializationHelper serializationHelper,
+      final KafkaProducer<String, String> kafkaProducer,
+      @Config("repository.outputIntervalSeconds") final int outputIntervalSeconds,
+      @Config("repository.useDummyMode") final boolean useDummyMode,
+      @Config("exchange.kafka.topic.name") final String kafkaTopicName) {
+
+    this.broadcastService = broadcastService;
+    this.serializationHelper = serializationHelper;
+    this.kafkaProducer = kafkaProducer;
     this.useDummyMode = useDummyMode;
     this.insertionRepositoryPart = new InsertionRepositoryPart();
     this.remoteCallRepositoryPart = new RemoteCallRepositoryPart();
     this.outputIntervalSeconds = outputIntervalSeconds;
+    this.kafkaTopicName = kafkaTopicName;
   }
 
   @PostConstruct
   public void init() {
-    if (LOAD_LAST_LANDSCAPE_ON_LOAD) {
 
-      // final Landscape readLandscape =
-      // RepositoryFileStorage.readFromFile(System.currentTimeMillis(),
-      // Configuration.LANDSCAPE_REPOSITORY);
-
-      final Landscape readLandscape =
-          this.landscapeRepository.getByTimestamp(java.lang.System.currentTimeMillis());
-
-      this.internalLandscape = readLandscape;
-    } else {
-      this.internalLandscape = new Landscape();
-    }
+    this.internalLandscape = new Landscape();
 
     try {
       final Landscape l = this.deepCopy(this.internalLandscape);
       l.createOutgoingApplicationCommunication();
       this.lastPeriodLandscape = l;
-    } catch (final Exception e) {
+    } catch (final DocumentSerializationException e) {
       LOGGER.error("Error when deep-copying landscape.", e);
     }
 
     new TimeSignalReader(TimeUnit.SECONDS.toMillis(this.outputIntervalSeconds), this).start();
-  }
-
-
-  public Landscape getLastPeriodLandscape() {
-    synchronized (this.lastPeriodLandscape) {
-      return this.lastPeriodLandscape;
-    }
-  }
-
-  public Landscape getLandscape(final long timestamp) {
-    final Landscape l = this.landscapeRepository.getByTimestamp(timestamp);
-    l.createOutgoingApplicationCommunication();
-    return l;
-  }
-
-  public Landscape getReplay(final long timestamp) {
-    final Landscape l = this.replayRepository.getByTimestamp(timestamp);
-    l.createOutgoingApplicationCommunication();
-    return l;
-  }
-
-
-  public void reset() {
-    synchronized (this.internalLandscape) {
-      this.internalLandscape.reset();
-    }
   }
 
   private Landscape deepCopy(final Landscape original) throws DocumentSerializationException {
@@ -144,7 +109,8 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
           calculatedTotalRequests = DummyLandscapeHelper.getRandomNum(500, 25000);
           dummyLandscape.getTimestamp().setTotalRequests(calculatedTotalRequests);
 
-          this.landscapeRepository.save(milliseconds, dummyLandscape, calculatedTotalRequests);
+          this.sendLandscapeToKafka(dummyLandscape, this.kafkaTopicName);
+
           this.lastPeriodLandscape = dummyLandscape;
         } else {
 
@@ -152,13 +118,13 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
           this.internalLandscape.getTimestamp().setTotalRequests(calculatedTotalRequests);
           this.internalLandscape.setTimestamp(new Timestamp(milliseconds, calculatedTotalRequests));
 
-          this.landscapeRepository.save(milliseconds, this.internalLandscape,
-              calculatedTotalRequests);
+          this.sendLandscapeToKafka(this.internalLandscape, this.kafkaTopicName);
+
           try {
             final Landscape l = this.deepCopy(this.internalLandscape);
             l.createOutgoingApplicationCommunication();
             this.lastPeriodLandscape = l;
-          } catch (final Exception e) {
+          } catch (final DocumentSerializationException e) {
             LOGGER.error("Error while deep-copying landscape.", e);
           }
         }
@@ -170,9 +136,23 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
         this.resetCommunication();
       }
     }
+  }
 
-
-    this.landscapeRepository.cleanup();
+  /**
+   * Sends a landscape object with all its relationships to a Kafka topic.
+   *
+   * @param Landscape that should be send to the Kafka topic
+   */
+  private void sendLandscapeToKafka(final Landscape l, final String kafkaTopicName) {
+    try {
+      final String serialized = this.serializationHelper.serialize(l);
+      this.kafkaProducer.send(new ProducerRecord<>(kafkaTopicName, "1", serialized));
+      LOGGER.info(
+          "Sending Kafka record with landscape id {}, timestamp {}, and payload to topic {}",
+          l.getId(), l.getTimestamp().getTimestamp(), kafkaTopicName);
+    } catch (final DocumentSerializationException e) {
+      LOGGER.error("Could not serialize landscape to string for Kafka Production.", e);
+    }
   }
 
   /**

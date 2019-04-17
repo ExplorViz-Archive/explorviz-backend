@@ -1,11 +1,11 @@
 package net.explorviz.security.server.resources;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -23,20 +23,24 @@ import net.explorviz.security.util.PasswordStorage.CannotPerformOperationExcepti
 import net.explorviz.security.util.PasswordStorage.InvalidHashException;
 import net.explorviz.shared.security.model.User;
 import net.explorviz.shared.security.model.roles.Role;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 /**
  * Unit tests for {@link UserResource}. All tests are performed by just calling the methods of
  * {@link UserResource}. See {@link UserResourceEndpointTest} for tests that use web requests.
  *
  */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
+@RunWith(JUnitPlatform.class)
 @SuppressWarnings("PMD")
 public class UserResourceTest {
 
@@ -56,15 +60,15 @@ public class UserResourceTest {
 
   private Long lastId = 0L;
 
-  @Before
+  @BeforeEach
   public void setUp() throws UserCrudException {
 
 
 
-    when(this.roleService.getAllRoles()).thenReturn(this.roles);
+    Mockito.lenient().when(this.roleService.getAllRoles()).thenReturn(this.roles);
 
 
-    when(this.userCrudService.saveNewEntity(any())).thenAnswer(inv -> {
+    Mockito.lenient().when(this.userCrudService.saveNewEntity(any())).thenAnswer(inv -> {
       final User u = (User) inv.getArgument(0);
       final String id = Long.toString(++this.lastId);
       final User newUser = new User(id, u.getUsername(), u.getPassword(), u.getRoles());
@@ -72,16 +76,16 @@ public class UserResourceTest {
       return Optional.ofNullable(newUser);
     });
 
-    when(this.userCrudService.getEntityById(any())).thenAnswer(inv -> {
+    Mockito.lenient().when(this.userCrudService.getEntityById(any())).thenAnswer(inv -> {
       return Optional.ofNullable(this.users.get(inv.getArgument(0)));
     });
 
-    doAnswer(inv -> {
+    Mockito.lenient().doAnswer(inv -> {
       this.users.remove(inv.getArgument(0));
       return null;
     }).when(this.userCrudService).deleteEntityById(any());
 
-    when(this.userCrudService.getUsersByRole(any())).thenAnswer(inv -> {
+    Mockito.lenient().when(this.userCrudService.getUsersByRole(any())).thenAnswer(inv -> {
       final String role = inv.getArgument(0);
       return this.users.values()
           .stream()
@@ -90,13 +94,13 @@ public class UserResourceTest {
 
     });
 
-    when(this.userCrudService.getAll()).thenAnswer(inv -> {
+    Mockito.lenient().when(this.userCrudService.getAll()).thenAnswer(inv -> {
       return this.users.values().stream().collect(Collectors.toList());
     });
 
   }
 
-  @After
+  @AfterEach
   public void tearDown() {
     this.users.clear();
     this.roles.clear();
@@ -131,23 +135,31 @@ public class UserResourceTest {
   }
 
 
-  @Test(expected = BadRequestException.class)
+  @Test
   public void testInvalidUsername() {
     final User u = new User("");
-    this.userResource.newUser(u);
+
+    assertThrows(BadRequestException.class, () -> this.userResource.newUser(u));
+
   }
 
-  @Test(expected = BadRequestException.class)
+  @Test
   public void testInvalidPassword() {
     final User u = new User("");
     u.setPassword("");
-    this.userResource.newUser(u);
+    assertThrows(BadRequestException.class, () -> this.userResource.newUser(u));
   }
 
-  @Test(expected = BadRequestException.class)
+  @Test
   public void testInvalidId() {
     final User u = new User("12", "name", "pw", new ArrayList<>());
-    this.userResource.newUser(u);
+    assertThrows(BadRequestException.class, () -> this.userResource.newUser(u));
+  }
+
+  @Test
+  public void testInvalidRoles() {
+    final User u = new User(null, "name", "pw", Arrays.asList(new Role("Unknown")));
+    assertThrows(BadRequestException.class, () -> this.userResource.newUser(u));
   }
 
 
@@ -278,21 +290,20 @@ public class UserResourceTest {
   }
 
 
-  @Test(expected = BadRequestException.class)
   public void testUnknownSettings() {
     final User u = new User("testuser");
     u.setPassword("password");
     u.getSettings().getBooleanAttributes().put("UnknownKey", false);
-    this.userResource.newUser(u);
+    assertThrows(BadRequestException.class, () -> this.userResource.newUser(u));
   }
 
 
-  @Test(expected = BadRequestException.class)
+
   public void testSettingsNotInRange() {
     final User u = new User("testuser");
     u.setPassword("password");
     u.getSettings().getNumericAttributes().put("appVizTransparencyIntensity", 0.7);
-    this.userResource.newUser(u);
+    assertThrows(BadRequestException.class, () -> this.userResource.newUser(u));
   }
 
 

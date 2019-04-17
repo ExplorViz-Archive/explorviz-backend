@@ -1,24 +1,21 @@
 
 rootProject.name = 'explorviz-backend'
 
-def useRemoteSharedProject = true
-
-if(useRemoteSharedProject) {
+if(useRemoteSharedProject.toBoolean()) {
 	include ':landscape-service', 
 	':kiekeradapter', 
 	':user-service', 
 	':analysis-service', 
 	':discovery-service',
-	':settings-service'
+	':history-service'
 } else {
-	// use local linked shared project, set 
-	// expUseLocalSharedProject = true in build.gradle
 	include ':landscape-service', 
 	':kiekeradapter', 
 	':user-service', 
 	':settings-service',
 	':analysis-service', 
 	':discovery-service', 
+	':history-service', 
 	':landscape-model', 
 	':config-injection', 
 	':common-concerns', 
