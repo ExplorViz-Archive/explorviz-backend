@@ -8,6 +8,7 @@ import net.explorviz.settings.model.UserSetting;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import xyz.morphia.Datastore;
+import xyz.morphia.query.Query;
 
 /**
  * This service is responsible for persisting and retrieving {@link Setting} objects. 
@@ -27,20 +28,21 @@ public class UserSettingsService {
   }
   
   public List<UserSetting> findAll(String userId) {
-    return null;
-    
+    Query<UserSetting> q = this.datastore.find(UserSetting.class).filter("userId", userId);
+    return q.asList();    
   }
   
   public Optional<UserSetting> findById(String userId, String settingId) {
-    return null;
+    UserSetting u = datastore.get(UserSetting.class, new UserSetting.UserSettingId(userId, settingId));
+    return Optional.ofNullable(u);
   }
   
   public void save(UserSetting setting) {
-    return;
+    datastore.save(setting);
   }
   
   public void delete(String userId, String settingId) {
-    return;
+    datastore.delete(UserSetting.class, new UserSetting.UserSettingId(userId, settingId));
   }
    
   

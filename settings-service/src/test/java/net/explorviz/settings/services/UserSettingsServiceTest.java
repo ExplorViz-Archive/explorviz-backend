@@ -9,6 +9,7 @@ import com.mongodb.WriteResult;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 import net.explorviz.settings.model.BooleanSetting;
 import net.explorviz.settings.model.DoubleSetting;
 import net.explorviz.settings.model.Setting;
@@ -16,13 +17,17 @@ import net.explorviz.settings.model.StringSetting;
 import net.explorviz.settings.model.UserSetting;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.stubbing.Answer;
 import xyz.morphia.Datastore;
 import xyz.morphia.Key;
 import xyz.morphia.query.Query;
 
+@ExtendWith(MockitoExtension.class)
 public class UserSettingsServiceTest {
   
   @Mock private Datastore ds;
@@ -52,11 +57,14 @@ public class UserSettingsServiceTest {
   
   @Test
   public void testGetAll() {
+    String id = "1";
     Query<UserSetting> q = mock(Query.class);
     when(ds.find(UserSetting.class)).thenReturn(q);
-    when(q.asList()).thenReturn(userSettings);
+    when(q.filter("userId", id)).thenReturn(q);
+    List<UserSetting> returnList = userSettings.stream().filter(u -> u.getId().getUserId().equals(id)).collect(Collectors.toList());
+    when(q.asList()).thenReturn(returnList);
     
-    List<UserSetting> retrieved = uss.findAll("1");
+    List<UserSetting> retrieved = uss.findAll(id);
     assertEquals(userSettings, retrieved);
   }
   
@@ -67,7 +75,7 @@ public class UserSettingsServiceTest {
     
     UserSetting retrieved = uss.findById("1", "bid").get();
     
-    assertEquals(settings.get(0), retrieved);
+    assertEquals(userSettings.get(0), retrieved);
   }
   
   @Test

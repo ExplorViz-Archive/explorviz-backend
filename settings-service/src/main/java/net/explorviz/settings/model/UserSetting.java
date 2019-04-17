@@ -2,6 +2,7 @@ package net.explorviz.settings.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import xyz.morphia.annotations.Entity;
 import xyz.morphia.annotations.Id;
 import xyz.morphia.annotations.Property;
@@ -27,7 +28,7 @@ public class UserSetting<T> {
    * @param value the value for this setting
    */
   public UserSetting(String userId, String settingId, T value) {
-    this.id = new UserSettingId(settingId, userId);
+    this.id = new UserSettingId(userId, settingId);
     this.value = value;
   }
 
@@ -40,6 +41,17 @@ public class UserSetting<T> {
   public Object getValue() {
     return value;
   }
+
+  
+  
+  
+  @Override
+  public String toString() {
+    return new ToStringBuilder(this).append(this.id).append(this.value).build();
+  }
+
+
+
 
   /**
    * 
@@ -102,6 +114,12 @@ public class UserSetting<T> {
           .append(this.settingId, rhs.settingId)
           .append(this.userId, rhs.userId)
           .build();
+    }
+
+
+    @Override
+    public String toString() {
+      return new ToStringBuilder(this).append(this.userId).append(this.settingId).build();
     }
     
     
