@@ -42,7 +42,7 @@ dependencies {
   // multipart/form-data type
   implementation group: 'org.glassfish.jersey.media', name:'jersey-media-multipart', version:'2.26'
   
-  
+  implementation group: 'org.apache.kafka', name: 'kafka_2.12', version: '2.2.0'
   
 }
 
@@ -102,3 +102,35 @@ task spotbugs {
 artifacts {
   archives shadowJar
 }
+
+// START environment task
+task updateEnvPropsInBuildDir {
+
+	// run with:
+	// .././gradlew run -Penvironment=production
+
+	doLast {
+		if (project.hasProperty("environment")) {
+   			def environment = project.findProperty("environment")
+   	
+   			if(environment.equals("production")) {
+   				println("Using the production properties file")
+   				delete("${buildDir}/resources/main/explorviz.properties")
+    		
+    			copy { 
+      				from "${buildDir}/resources/main" 
+    				into "${buildDir}/resources/main"
+    				rename "explorviz.production.properties", "explorviz.properties" 
+    			}
+    		
+    			delete("${buildDir}/resources/main/explorviz.production.properties")        		
+			}
+		} else {
+    		println("Using default properties file")
+		}
+	}
+}
+
+run.dependsOn updateEnvPropsInBuildDir
+updateEnvPropsInBuildDir.shouldRunAfter classes
+// END environment task

@@ -13,7 +13,8 @@ def exportedProjects= [
 		':kiekeradapter',
 		':user-service',
 		':analysis-service',
-		':discovery-service'
+		':discovery-service',
+		':history-service'
 ]
 
 task alljavadoc(type: Javadoc) {
@@ -90,7 +91,7 @@ subprojects {
 	// SL4J
 	implementation group: 'org.slf4j', name: 'slf4j-simple', version: '1.6.1'
     
-    if (project.name == 'user-service' || project.name == 'landscape-service' || project.name == 'discovery-service') {
+    if (project.name == 'user-service' || project.name == 'landscape-service' || project.name == 'discovery-service' || project.name == 'history-service') {
     	// subprojects, which are supposed to be a JAX-RS-based microservice
     
     	// Jersey and Servlet

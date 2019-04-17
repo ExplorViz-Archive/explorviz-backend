@@ -7,7 +7,7 @@
 
   <description>CAU-SE PMD ruleset</description>
 
-  <exclude-pattern>.*/src/main/java/net/explorviz/repository/LandscapeDummyCreator.java</exclude-pattern>
+  <exclude-pattern>.*/LandscapeDummyCreator.java</exclude-pattern>
 
   <rule ref="category/java/bestpractices.xml">
     <exclude name="AccessorMethodGeneration" />

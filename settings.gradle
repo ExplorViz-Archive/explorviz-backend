@@ -6,13 +6,15 @@ if(useRemoteSharedProject.toBoolean()) {
 	':kiekeradapter', 
 	':user-service', 
 	':analysis-service', 
-	':discovery-service'
+	':discovery-service',
+	':history-service'
 } else {
 	include ':landscape-service', 
 	':kiekeradapter', 
 	':user-service', 
 	':analysis-service', 
 	':discovery-service', 
+	':history-service', 
 	':landscape-model', 
 	':config-injection', 
 	':common-concerns', 

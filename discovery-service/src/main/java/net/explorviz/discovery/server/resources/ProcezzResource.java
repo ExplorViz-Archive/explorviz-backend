@@ -2,6 +2,7 @@ package net.explorviz.discovery.server.resources;
 
 import java.util.List;
 import java.util.Optional;
+import javax.annotation.security.PermitAll;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.PATCH;
@@ -24,6 +25,7 @@ import net.explorviz.shared.discovery.services.PropertyService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@PermitAll
 public class ProcezzResource {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ProcezzResource.class);
