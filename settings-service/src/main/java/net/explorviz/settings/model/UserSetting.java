@@ -50,6 +50,29 @@ public class UserSetting<T> {
     return new ToStringBuilder(this).append(this.id).append(this.value).build();
   }
 
+  
+
+
+  @Override
+  public boolean equals(Object obj) {
+    if (obj == null) {
+      return false;
+    }
+    
+    if (!(obj instanceof UserSetting)) {
+      return false;
+    }
+    
+    UserSetting rhs = (UserSetting) obj;
+    
+    return new EqualsBuilder().append(this.id, rhs.id)
+        .append(this.getValue(), rhs.getValue())
+        .build();
+    
+  }
+
+
+
 
 
 
