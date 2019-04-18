@@ -92,6 +92,10 @@ subprojects {
 	// SL4J
 	implementation group: 'org.slf4j', name: 'slf4j-simple', version: '1.6.1'
     
+    // Apache Commons
+    implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.9'
+    
+    
     if (project.name == 'user-service' || project.name == 'landscape-service' || project.name == 'discovery-service' || project.name == 'settings-service' || project.name == 'history-service') {
     	// subprojects, which are supposed to be a JAX-RS-based microservice
     
@@ -119,12 +123,15 @@ subprojects {
 		compile group: 'org.mongodb', name: 'mongo-java-driver', version: '3.9.1'
 	}
 	
+	
+	
 	// Testing and Mocking
 	testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.4.0'
 	testImplementation 'org.junit.platform:junit-platform-runner:1.4.0'
 	testImplementation group: 'org.junit.vintage', name: 'junit-vintage-engine', version: '5.4.0'
 	testImplementation 'org.mockito:mockito-core:2.24.0'
-	testCompile group: 'org.mockito', name: 'mockito-junit-jupiter', version: '2.25.1'
+	testCompile group: 'org.mockito', name: 'mockito-junit-jupiter', version: '2.26.0'
+	
   }
     
 }
