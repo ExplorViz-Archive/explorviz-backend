@@ -127,9 +127,13 @@ public class SettingsService {
       if(!settingRepo.find(usid).isPresent()) {
         // found orphanized user setting
         // remove from setting list
+        if (LOGGER.isInfoEnabled()) {
+          LOGGER.info(String.format("Found orphanized setting: ", usid));
+        }
         userSettings.remove(us);
         // remove from database
         userSettingRepo.delete(us.getId());
+        
       }
       
     }
