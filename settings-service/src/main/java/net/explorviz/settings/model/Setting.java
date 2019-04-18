@@ -12,15 +12,15 @@ import xyz.morphia.annotations.Entity;
 @Entity("setting")
 public class Setting<T> {
 
-  private final String description;
+  private  String description;
 
   @Id
   @xyz.morphia.annotations.Id
-  private final String idName;
+  private  String idName;
 
-  private final String simpleName;
+  private  String simpleName;
 
-  private final T defaultValue;
+  private  T defaultValue;
   
   /**
    * Creates a new setting
@@ -37,6 +37,9 @@ public class Setting<T> {
     this.defaultValue = defaultValue;
   }
 
+  public Setting() {
+    // TODO Auto-generated constructor stub
+  }
 
   public String getDescription() {
     return this.description;

@@ -1,16 +1,22 @@
 package net.explorviz.settings.model;
 
+import com.github.jasminb.jsonapi.annotations.Type;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
+@Type("doublesetting")
 public class DoubleSetting extends Setting<Double>{
 
-  private final double min, max;
+  private  double min, max;
   
   /**
    * {@inheritDoc}
    */
   public DoubleSetting(String id, String name, String description, Double defaultValue) {
     this(id, name, description, defaultValue, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
+  }
+  
+  public DoubleSetting() {
+   super();
   }
   
   /**

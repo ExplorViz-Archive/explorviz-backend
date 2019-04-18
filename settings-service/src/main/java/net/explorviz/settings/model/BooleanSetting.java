@@ -1,7 +1,9 @@
 package net.explorviz.settings.model;
 
+import com.github.jasminb.jsonapi.annotations.Type;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
+@Type("booleansetting")
 public class BooleanSetting extends Setting<Boolean>{
 
  
@@ -13,6 +15,11 @@ public class BooleanSetting extends Setting<Boolean>{
     // TODO Auto-generated constructor stub
   }
 
+  
+  public BooleanSetting() {
+    super();
+  }
+  
   @Override
   public String toString() {
     return new ToStringBuilder(this).append(this.getId())

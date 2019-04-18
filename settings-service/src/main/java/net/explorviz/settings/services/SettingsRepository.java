@@ -61,9 +61,9 @@ public class SettingsRepository implements MongoRepository<Setting, String>{
     WriteResult wr = this.datastore.delete(Setting.class, id);
     if(LOGGER.isInfoEnabled()) {
       if (wr.getN() > 0) {
-        LOGGER.info(String.format("Removed setting with id {}", id));
+        LOGGER.info(String.format("Removed setting with id %s", id));
       } else {
-        LOGGER.info(String.format("No setting with id {}", id));
+        LOGGER.info(String.format("No setting with id %s}", id));
       }
     }
   }
@@ -78,7 +78,7 @@ public class SettingsRepository implements MongoRepository<Setting, String>{
   public void create(Setting setting) {
     this.datastore.save(setting);
     if (LOGGER.isInfoEnabled()) {
-      LOGGER.info(String.format("Saved setting with id {}", setting.getId()));
+      LOGGER.info(String.format("Saved setting with id %s", setting.getId()));
     }
   }
 
