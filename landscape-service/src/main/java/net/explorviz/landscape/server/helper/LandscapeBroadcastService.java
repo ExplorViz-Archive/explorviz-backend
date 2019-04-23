@@ -36,6 +36,9 @@ public class LandscapeBroadcastService {
         .mediaType(APPLICATION_JSON_API_TYPE).data(landscape).build();
 
     this.broadcaster.broadcast(event);
+    if (LOGGER.isDebugEnabled()) {
+      LOGGER.debug("Broadcast new landscape to clients.");
+    }
   }
 
   public void register(final SseEventSink eventSink) {
