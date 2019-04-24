@@ -1,10 +1,18 @@
 package net.explorviz.settings.services;
 
+import com.mongodb.client.MongoCollection;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import javax.inject.Inject;
 import net.explorviz.settings.model.Setting;
 import net.explorviz.settings.model.UserSetting;
+import net.explorviz.settings.services.mongo.MongoHelper;
+import net.explorviz.settings.services.mongo.UserSettingCodec;
+import org.bson.Document;
+import org.bson.codecs.configuration.CodecRegistries;
+import org.bson.codecs.configuration.CodecRegistry;
 import org.jvnet.hk2.annotations.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,18 +30,28 @@ public class UserSettingsRepository implements MongoRepository<UserSetting, User
   private static final Logger LOGGER = LoggerFactory.getLogger(SettingsRepository.class.getSimpleName());
   
   
+  private final MongoHelper mongoHelper;
   private final Datastore datastore;
   
+  
+  
   @Inject
-  public UserSettingsRepository(Datastore datastore) {
+  public UserSettingsRepository(MongoHelper mongoHelper, Datastore datastore) {
+    this.mongoHelper = mongoHelper;
     this.datastore = datastore;
   }
   
   @Override
   public List<UserSetting> findAll() {
-    Query<UserSetting> q = this.datastore.find(UserSetting.class);
+    CodecRegistry registry =  CodecRegistries.fromCodecs(new UserSettingCodec());
+    MongoCollection<Document> userSettingCollection = this.mongoHelper.getUserSettingsCollection();
+    Iterator<UserSetting> it = userSettingCollection.withCodecRegistry(registry).find(UserSetting.class).iterator();
     
-    return q.asList();    
+    List<UserSetting> result = new ArrayList<UserSetting>();
+    it.forEachRemaining(result::add);
+       
+    return result;
+      
   }
   
   @Override

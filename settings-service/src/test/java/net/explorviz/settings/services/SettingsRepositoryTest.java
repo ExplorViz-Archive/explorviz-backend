@@ -54,9 +54,7 @@ public class SettingsRepositoryTest {
     when(q.asList()).thenReturn(settings);
     
     List<Setting> retrievedSettings = sps.findAll();
-    for (Setting s: retrievedSettings) {
-      System.out.println(s);
-    }
+
     assertEquals(this.settings, retrievedSettings); 
   }
   

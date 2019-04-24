@@ -10,7 +10,7 @@ import xyz.morphia.annotations.Property;
 /**
  * Represents a specific setting a user has set a value other than the default value for 
  */
-@Entity("UserSetting")
+@Entity("usersetting")
 @Type("usersetting")
 public class UserSetting{
 
@@ -20,6 +20,9 @@ public class UserSetting{
   
   // the value
   private Object value;
+  
+  // ugly
+  private Class<?> type;
   
   public UserSetting() {
     // TODO Auto-generated constructor stub
@@ -32,10 +35,34 @@ public class UserSetting{
    * @param value the value for this setting
    */
   public UserSetting(String userId, String settingId, Object value) {
+   
+    if (userId == null || settingId == null) {
+      throw new NullPointerException("Ids can't be null");
+    }
+    
+    if (value == null) {
+      throw new NullPointerException("Value can't be null");
+    }
+    
     this.id = new UserSettingId(userId, settingId);
     this.value = value;
+   
+    setType(value);
   }
+  
 
+
+  private void setType(Object value) {
+    if (value instanceof String) {
+      type =  String.class;
+    } else if (value instanceof Double) {
+      type =  Double.class;
+    } else if (value instanceof Boolean) {
+      type =  Boolean.class;
+    } else {
+      throw new IllegalArgumentException(String.format("Unknown setting type: %s", value.getClass().toString()));
+    }
+  }
 
   public UserSettingId getId() {
     return id;
@@ -46,8 +73,9 @@ public class UserSetting{
     return value;
   }
 
-  
-  
+  public Class<?> getType() {
+    return type;
+  }
   
   @Override
   public String toString() {
@@ -148,13 +176,7 @@ public class UserSetting{
     public String toString() {
       return new ToStringBuilder(this).append(this.userId).append(this.settingId).build();
     }
-    
-    
-    
-    
-    
-    
-    
+        
     
   }
 
