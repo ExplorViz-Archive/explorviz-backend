@@ -3,7 +3,6 @@ package net.explorviz.security.server.main;
 import net.explorviz.security.server.filter.AuthenticationFilter;
 import net.explorviz.security.server.providers.UserJsonApiDeserializer;
 import net.explorviz.security.server.resources.RoleResource;
-import net.explorviz.security.server.resources.SettingsResource;
 import net.explorviz.security.server.resources.TokenResource;
 import net.explorviz.security.server.resources.UserResource;
 import net.explorviz.shared.common.jsonapi.ResourceConverterFactory;
@@ -65,7 +64,6 @@ public class Application extends ResourceConfig {
     this.register(TokenResource.class);
     this.register(UserResource.class);
     this.register(RoleResource.class);
-    this.register(SettingsResource.class);
   }
 
 
