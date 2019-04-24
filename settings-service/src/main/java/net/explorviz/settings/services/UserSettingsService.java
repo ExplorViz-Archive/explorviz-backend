@@ -11,6 +11,7 @@ import net.explorviz.settings.model.DoubleSetting;
 import net.explorviz.settings.model.Setting;
 import net.explorviz.settings.model.StringSetting;
 import net.explorviz.settings.model.UserSetting;
+import net.explorviz.settings.model.UserSetting.UserSettingId;
 import org.jvnet.hk2.annotations.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -113,7 +114,7 @@ public class UserSettingsService {
    * @param settingId the id of the setting
    */
   public void setDefault(String userId, String settingId) {
-    
+    userSettingRepo.delete(new UserSettingId(userId, settingId));
   }
     
   /**

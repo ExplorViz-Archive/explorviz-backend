@@ -7,6 +7,7 @@ import java.util.Map.Entry;
 import javax.inject.Inject;
 import javax.ws.rs.BadRequestException;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.NotFoundException;
 import javax.ws.rs.PUT;
@@ -45,7 +46,7 @@ public class UserSettingsResource {
   
   @GET
   @Path("{uid}")
-  public CustomSettings settingsForUser(@PathParam("uid") String userId) {
+  public CustomSettings getForUser(@PathParam("uid") String userId) {
     Map<String, Object> sets = userSettingService.getForUser(userId);
     return new CustomSettings(sets, userId);
   }
@@ -53,8 +54,8 @@ public class UserSettingsResource {
   @PUT
   @Path("{uid}")
   @Consumes(MEDIA_TYPE)
-  public Response test(@PathParam("uid") String userId, SettingValue value){
-    
+  public Response setForUser(@PathParam("uid") String userId, SettingValue value){
+   
 
     try {
       userSettingService.setForUser(userId, value.settingId, value.value);
@@ -74,23 +75,15 @@ public class UserSettingsResource {
   }
   
   
-
-  /*
-  public void setForUser(UserSetting us) {
+  @DELETE
+  @Path("{uid}/{sid}")
+  @Consumes(MEDIA_TYPE)
+  public Response resetToDefaultForUser(@PathParam("uid") String userId, @PathParam("sid") String settingId) {
+    userSettingService.setDefault(userId, settingId);
     
-    try {
-      userSettingService.setForUser(us.getId().getUserId(), us.getId().getSettingId(), us.getValue());
-    } catch (IllegalArgumentException e) {
-      throw new BadRequestException(e.getMessage());
-    } catch (UnknownSettinException e) {
-      throw new NotFoundException(String.format("No such setting: %s", us.getId().getSettingId()));
-    } catch (NullPointerException e) {
-      throw new BadRequestException("Bad value");
-    }
-    
-    
+    return Response.noContent().build();
   }
-  */
+  
   
   /**
    * Helper class that represents a single setting value.

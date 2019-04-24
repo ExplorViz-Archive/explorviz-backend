@@ -70,7 +70,7 @@ public class UserSettingsRepository implements MongoRepository<UserSetting, User
   
   @Override
   public void delete(UserSetting.UserSettingId id) {
-    datastore.delete(UserSetting.class, new UserSetting.UserSettingId(id.getUserId(), id.getSettingId()));
+    datastore.delete(datastore.find(UserSetting.class).filter("_id.userId == ", id.getUserId()).filter("_id.settingId == ", id.getSettingId()));
   }
 
 

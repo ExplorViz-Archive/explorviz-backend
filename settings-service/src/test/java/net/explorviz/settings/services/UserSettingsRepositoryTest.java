@@ -288,7 +288,10 @@ public class UserSettingsRepositoryTest {
   
   @Test
   public void testRemove() {
-    when(ds.delete(UserSetting.class, userSettings.get(0).getId())).then(new Answer<WriteResult>() {
+    Query q = mock(Query.class);
+    when(ds.find(UserSetting.class)).thenReturn(q);
+    when(q.filter(ArgumentMatchers.anyString(), ArgumentMatchers.any())).thenReturn(q);
+    when(ds.delete(q)).then(new Answer<WriteResult>() {
       @Override
       public WriteResult answer(InvocationOnMock invocation) throws Throwable {
          userSettings.remove(0);
