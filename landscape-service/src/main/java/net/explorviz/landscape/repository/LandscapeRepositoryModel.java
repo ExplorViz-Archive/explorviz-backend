@@ -147,9 +147,11 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
     try {
       final String serialized = this.serializationHelper.serialize(l);
       this.kafkaProducer.send(new ProducerRecord<>(kafkaTopicName, "1", serialized));
-      LOGGER.info(
-          "Sending Kafka record with landscape id {}, timestamp {}, and payload to topic {}",
-          l.getId(), l.getTimestamp().getTimestamp(), kafkaTopicName);
+      if (LOGGER.isDebugEnabled()) {
+        LOGGER.debug(
+            "Sending Kafka record with landscape id {}, timestamp {}, and payload to topic {}",
+            l.getId(), l.getTimestamp().getTimestamp(), kafkaTopicName);
+      }
     } catch (final DocumentSerializationException e) {
       LOGGER.error("Could not serialize landscape to string for Kafka Production.", e);
     }

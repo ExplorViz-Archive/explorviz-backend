@@ -57,8 +57,6 @@ public class SetupApplicationListener implements ApplicationEventListener {
       // first.
       this.model = this.serviceLocator.createAndInitialize(LandscapeRepositoryModel.class);
 
-      System.out.println(this.model);
-
       this.startExplorVizBackend();
       this.startDatabase();
     }
