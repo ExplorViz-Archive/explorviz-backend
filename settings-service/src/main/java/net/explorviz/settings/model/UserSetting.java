@@ -1,25 +1,29 @@
 package net.explorviz.settings.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.github.jasminb.jsonapi.annotations.Type;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import xyz.morphia.annotations.Entity;
 import xyz.morphia.annotations.Id;
 import xyz.morphia.annotations.Property;
-import xyz.morphia.annotations.Reference;
 
 /**
  * Represents a specific setting a user has set a value other than the default value for 
  */
 @Entity("UserSetting")
-public class UserSetting<T> {
+@Type("usersetting")
+public class UserSetting{
 
   @Id
-  private final UserSetting.UserSettingId id;
+  @com.github.jasminb.jsonapi.annotations.Id
+  private  UserSetting.UserSettingId id;
   
   // the value
-  private final T value;
+  private Object value;
   
+  public UserSetting() {
+    // TODO Auto-generated constructor stub
+  }
   
   /**
    * Creates a new user setting.
@@ -27,7 +31,7 @@ public class UserSetting<T> {
    * @param setting the setting object
    * @param value the value for this setting
    */
-  public UserSetting(String userId, String settingId, T value) {
+  public UserSetting(String userId, String settingId, Object value) {
     this.id = new UserSettingId(userId, settingId);
     this.value = value;
   }

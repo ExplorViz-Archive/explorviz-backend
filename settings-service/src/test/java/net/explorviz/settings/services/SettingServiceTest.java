@@ -34,15 +34,15 @@ public class SettingServiceTest {
   private List<UserSetting> userSettings;
   private List<Setting> settings;
   
-  private SettingsService settingService;
+  private UserSettingsService settingService;
   
   @BeforeEach
   public void setUp() {
 
     userSettings = new ArrayList<>(Arrays.asList(
-          new UserSetting<Boolean>("1", "bid", Boolean.TRUE),
-          new UserSetting<String>("1", "sid", "val"),
-          new UserSetting<Boolean>("2", "bid", Boolean.TRUE)
+          new UserSetting("1", "bid", Boolean.TRUE),
+          new UserSetting("1", "sid", "val"),
+          new UserSetting("2", "bid", Boolean.TRUE)
         ));
 
     settings = new ArrayList<>(Arrays.asList(
@@ -50,7 +50,7 @@ public class SettingServiceTest {
         new StringSetting("sid", "Boolean Setting", "Boolean Setting Description", "def"),
         new DoubleSetting("did", "Double Setting", "Boolean Setting Description", 0.5, -1, 1)        
         ));
-    settingService = new SettingsService(sps, uss);
+    settingService = new UserSettingsService(sps, uss);
   }
 
   
@@ -74,7 +74,7 @@ public class SettingServiceTest {
   }
   
   @Test
-  public void testSetForUser() {
+  public void testSetForUser() throws IllegalArgumentException, UnknownSettingException {
     String id = "1";
     when(sps.find(ArgumentMatchers.anyString())).thenAnswer( i -> {
       String sid = i.getArgument(0);

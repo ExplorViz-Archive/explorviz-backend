@@ -20,12 +20,10 @@ import xyz.morphia.Datastore;
 public class SettingJsonApiDeserializer implements MessageBodyReader<Setting> {
 
   private final ResourceConverter converter;
-  private final Datastore datastore;
-
+  
   @Inject
-  public SettingJsonApiDeserializer(final ResourceConverter converter, final Datastore datastore) {
+  public SettingJsonApiDeserializer(final ResourceConverter converter) {
     this.converter = converter;
-    this.datastore = datastore;
   }
 
   @Override

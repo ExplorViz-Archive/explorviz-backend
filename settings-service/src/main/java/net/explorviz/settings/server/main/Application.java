@@ -2,8 +2,10 @@ package net.explorviz.settings.server.main;
 
 import net.explorviz.settings.server.main.SetupApplicationListener;
 import net.explorviz.settings.server.providers.SettingJsonApiDeserializer;
+import net.explorviz.settings.server.providers.SettingValueDeserializer;
 import net.explorviz.settings.server.providers.UserSettingJsonApiDeserializer;
 import net.explorviz.settings.server.resources.SettingsResource;
+import net.explorviz.settings.server.resources.UserSettingsResource;
 import net.explorviz.settings.model.BooleanSetting;
 import net.explorviz.settings.model.DoubleSetting;
 import net.explorviz.settings.model.Setting;
@@ -23,10 +25,13 @@ public class Application extends ResourceConfig {
   public Application() {
 
     GenericTypeFinder.getTypeMap().put("Setting", Setting.class);
-    GenericTypeFinder.getTypeMap().put("BooleanSetting", BooleanSetting.class);
+    GenericTypeFinder.getTypeMap().put("BooleanSettings", BooleanSetting.class);
     GenericTypeFinder.getTypeMap().put("UserSettings", UserSetting.class);
     GenericTypeFinder.getTypeMap().put("DoubleSetting", DoubleSetting.class);
     GenericTypeFinder.getTypeMap().put("StringSetting", StringSetting.class);
+    GenericTypeFinder.getTypeMap().put("SettingValue", UserSettingsResource.SettingValue.class);
+    GenericTypeFinder.getTypeMap().put("CustomSettings", UserSettingsResource.CustomSettings.class);
+    
     
     // register CDI
     this.register(new DependencyInjectionBinder());
@@ -50,6 +55,8 @@ public class Application extends ResourceConfig {
     this.register(SetupApplicationListener.class);
     
     this.register(SettingsResource.class);
+    this.register(UserSettingsResource.class);
+    this.register(SettingValueDeserializer.class);
     
     
   }

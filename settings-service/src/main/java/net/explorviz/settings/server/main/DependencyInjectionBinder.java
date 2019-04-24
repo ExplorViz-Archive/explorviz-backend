@@ -6,7 +6,7 @@ import net.explorviz.settings.model.UserSetting;
 import net.explorviz.settings.server.inject.DatastoreFactory;
 import net.explorviz.settings.services.MongoRepository;
 import net.explorviz.settings.services.SettingsRepository;
-import net.explorviz.settings.services.SettingsService;
+import net.explorviz.settings.services.UserSettingsService;
 import net.explorviz.settings.services.UserSettingsRepository;
 import net.explorviz.shared.common.injection.CommonDependencyInjectionBinder;
 import org.glassfish.hk2.api.TypeLiteral;
@@ -24,7 +24,7 @@ public class DependencyInjectionBinder extends CommonDependencyInjectionBinder {
     // Service
     this.bind(SettingsRepository.class).to(new TypeLiteral<MongoRepository<Setting, String>>() {}).in(Singleton.class);
     this.bind(UserSettingsRepository.class).to(new TypeLiteral<MongoRepository<UserSetting, UserSetting.UserSettingId>>() {}).in(Singleton.class);
-    this.bind(SettingsService.class).to(SettingsService.class).in(Singleton.class);
+    this.bind(UserSettingsService.class).to(UserSettingsService.class).in(Singleton.class);
 
     
   }

@@ -20,17 +20,17 @@ import org.slf4j.LoggerFactory;
  *
  */
 @Service
-public class SettingsService {
+public class UserSettingsService {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(SettingsService.class.getSimpleName());
+  private static final Logger LOGGER = LoggerFactory.getLogger(UserSettingsService.class.getSimpleName());
   
-  private SettingsRepository settingRepo;
+  private MongoRepository<Setting, String>  settingRepo;
   
-  private UserSettingsRepository userSettingRepo;
+  private MongoRepository<UserSetting, UserSetting.UserSettingId> userSettingRepo;
   
   
   @Inject
-  public SettingsService(SettingsRepository settingsRepo, UserSettingsRepository userSettingsRepo) {
+  public UserSettingsService(MongoRepository<Setting, String> settingsRepo, MongoRepository<UserSetting, UserSetting.UserSettingId> userSettingsRepo) {
     this.settingRepo = settingsRepo;
     this.userSettingRepo = userSettingsRepo;
   }
@@ -62,27 +62,30 @@ public class SettingsService {
    * @param userId the user's id
    * @param settingId the setting's id
    * @param value the value 
-   * @throws IllegalArgumentException if the user or the setting does not exist or if the type of the value does not match the type of the setting
+   * @throws IllegalArgumentException if the type of the value does not match the type of the setting
+   * @throws UnknownSettingException if the setting does not exist
    */
-  public void setForUser(String userId, String settingId, Object value) throws IllegalArgumentException {
+  public void setForUser(String userId, String settingId, Object value) throws IllegalArgumentException, UnknownSettingException {
     
     // Check if setting exists
     Setting s = settingRepo.find(settingId).orElseThrow(IllegalArgumentException::new);
     UserSetting u = null;
     
-    
+    if (value == null) {
+      throw new NullPointerException();
+    }
     
     if (s instanceof BooleanSetting) {
       BooleanSetting setting = (BooleanSetting) s;
       if (value instanceof Boolean) {
-        u = new UserSetting<Boolean>(userId, settingId, (Boolean) value);
+        u = new UserSetting(userId, settingId, value);
       } else {
         throw new IllegalArgumentException("Setting and value type don't match");
       }
     } else if (s instanceof StringSetting) {
       StringSetting setting = (StringSetting) s;
       if (value instanceof String) {
-        u = new UserSetting<String>(userId, settingId, (String) value);
+        u = new UserSetting(userId, settingId, value);
       } else {
         throw new IllegalArgumentException("Setting and value type don't match");
       }
@@ -90,13 +93,13 @@ public class SettingsService {
     } else if (s instanceof DoubleSetting) {
       DoubleSetting setting = (DoubleSetting) s;
       if (value instanceof Double) {
-        u = new UserSetting<Double>(userId, settingId, (Double) value);
+        u = new UserSetting(userId, settingId, value);
       } else {
         throw new IllegalArgumentException("Setting and value type don't match");
       }
       
     } else {
-      throw new IllegalArgumentException("Unknown setting type");
+      throw new UnknownSettingException();
     }
     
     userSettingRepo.create(u);

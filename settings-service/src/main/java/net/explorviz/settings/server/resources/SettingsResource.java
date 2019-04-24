@@ -1,8 +1,9 @@
 package net.explorviz.settings.server.resources;
 
 import java.util.List;
-import java.util.function.Supplier;
+import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.NotFoundException;
@@ -21,10 +22,9 @@ import org.slf4j.LoggerFactory;
  * Endpoint to access and manipulate settings
  *
  */
-@Path("v1/settings")
+@Path("v1/settings/")
 public class SettingsResource {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(SettingsResource.class); // NOPMD
 
   private static final String MEDIA_TYPE = "application/vnd.api+json";
   private static final String ADMIN_ROLE = "admin";
@@ -52,8 +52,9 @@ public class SettingsResource {
    * @param newSetting the setting to create
    * @return a Response with code 204 on success
    */
-  @Produces(MEDIA_TYPE)
+  @Consumes(MEDIA_TYPE)
   @PUT
+  @RolesAllowed(ADMIN_ROLE)
   public Response putSetting(BooleanSetting newSetting) {
     settingRepo.create(newSetting);
     return Response.noContent().status(201).build();
@@ -80,6 +81,7 @@ public class SettingsResource {
   @Produces(MEDIA_TYPE)
   @DELETE
   @Path("{sid}")
+  @RolesAllowed(ADMIN_ROLE)
   public Response deleteSetting(@PathParam("sid") String settingsId) {
     settingRepo.delete(settingsId);
     return Response.noContent().status(201).build();

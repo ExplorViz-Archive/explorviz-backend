@@ -41,9 +41,9 @@ public class UserSettingsRepositoryTest {
     assert ds != null;
     uss = new UserSettingsRepository(ds);  
     userSettings = new ArrayList<>(Arrays.asList(
-          new UserSetting<Boolean>("1", "bid", Boolean.TRUE),
-          new UserSetting<String>("1", "sid", "val"),
-          new UserSetting<Double>("1", "did", 0.4)
+          new UserSetting("1", "bid", Boolean.TRUE),
+          new UserSetting("1", "sid", "val"),
+          new UserSetting("1", "did", 0.4)
         ));
   }
   
@@ -85,7 +85,7 @@ public class UserSettingsRepositoryTest {
   
   @Test
   public void testCreate() {
-    UserSetting<Boolean> uset = new UserSetting<Boolean>("1", "test", false);
+    UserSetting uset = new UserSetting("1", "test", false);
     when(ds.save(uset)).then(new Answer<Key<Setting<String>>>() {
 
       @Override

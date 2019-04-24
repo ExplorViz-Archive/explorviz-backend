@@ -11,7 +11,9 @@ configurations.all {
 
 dependencies {
 	
-	
+		
+	// MongoDB ORM
+	api group: 'org.mongodb.morphia', name: 'morphia', version: '1.3.2'
 	
 	// ExplorViz Shared Dependencies
 	if(useRemoteSharedProject.toBoolean()) {
