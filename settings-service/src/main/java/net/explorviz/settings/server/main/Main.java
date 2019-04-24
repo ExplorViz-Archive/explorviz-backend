@@ -74,5 +74,5 @@ public class Main {
   private static ResourceConfig createJaxRsApp() {
     return new ResourceConfig(new Application());
   }
-  
+
 }

@@ -38,14 +38,14 @@ jar.enabled = false
 jar {
   manifest {
     attributes(
-      'Main-Class': 'net.explorviz.security.server.main.Main'
+      'Main-Class': 'net.explorviz.settings.server.main.Main'
     )
   }
 }
 
 
 application {
-    mainClassName = 'net.explorviz.security.server.main.Main'
+    mainClassName = 'net.explorviz.settings.server.main.Main'
 }
 
 shadowJar {

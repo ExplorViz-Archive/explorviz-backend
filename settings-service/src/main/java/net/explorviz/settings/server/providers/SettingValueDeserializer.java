@@ -12,10 +12,10 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.ext.MessageBodyReader;
 import net.explorviz.settings.server.resources.UserSettingsResource.SettingValue;
 
-public class SettingValueDeserializer implements MessageBodyReader<SettingValue>{
-  
+public class SettingValueDeserializer implements MessageBodyReader<SettingValue> {
+
   private final ResourceConverter converter;
-  
+
   @Inject
   public SettingValueDeserializer(final ResourceConverter converter) {
     this.converter = converter;

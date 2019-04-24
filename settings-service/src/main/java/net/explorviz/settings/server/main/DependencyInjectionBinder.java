@@ -6,29 +6,32 @@ import net.explorviz.settings.model.UserSetting;
 import net.explorviz.settings.server.inject.DatastoreFactory;
 import net.explorviz.settings.services.MongoRepository;
 import net.explorviz.settings.services.SettingsRepository;
+import net.explorviz.settings.services.UserSettingsRepository;
 import net.explorviz.settings.services.UserSettingsService;
 import net.explorviz.settings.services.mongo.MongoHelper;
-import net.explorviz.settings.services.UserSettingsRepository;
 import net.explorviz.shared.common.injection.CommonDependencyInjectionBinder;
 import org.glassfish.hk2.api.TypeLiteral;
 import xyz.morphia.Datastore;
 
 public class DependencyInjectionBinder extends CommonDependencyInjectionBinder {
-  
+
   @Override
   public void configure() {
 
     super.configure();
 
     this.bindFactory(DatastoreFactory.class).to(Datastore.class).in(Singleton.class);
-    
+
     // Service
-    this.bind(SettingsRepository.class).to(new TypeLiteral<MongoRepository<Setting, String>>() {}).in(Singleton.class);
-    this.bind(UserSettingsRepository.class).to(new TypeLiteral<MongoRepository<UserSetting, UserSetting.UserSettingId>>() {}).in(Singleton.class);
+    this.bind(SettingsRepository.class).to(new TypeLiteral<MongoRepository<Setting, String>>() {})
+        .in(Singleton.class);
+    this.bind(UserSettingsRepository.class)
+        .to(new TypeLiteral<MongoRepository<UserSetting, UserSetting.UserSettingId>>() {})
+        .in(Singleton.class);
     this.bind(UserSettingsService.class).to(UserSettingsService.class).in(Singleton.class);
     this.bind(MongoHelper.class).to(MongoHelper.class).in(Singleton.class);
-    
+
   }
-  
+
 
 }

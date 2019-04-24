@@ -27,34 +27,38 @@ public class SettingsResource {
 
   private static final String MEDIA_TYPE = "application/vnd.api+json";
   private static final String ADMIN_ROLE = "admin";
-  
-  
+
+
   private MongoRepository<Setting, String> settingRepo;
-  
+
   @Inject
   public SettingsResource(MongoRepository<Setting, String> settingRepo) {
     this.settingRepo = settingRepo;
   }
-  
+
   /**
    * Retrieves all settings
+   * 
    * @return all settings
    */
   @Produces(MEDIA_TYPE)
   @GET
   public List<Setting> getAll(@QueryParam("origin") String origin) {
 
-    List<Setting> allSettings =  settingRepo.findAll();
-    
+    List<Setting> allSettings = settingRepo.findAll();
+
     if (origin != null) {
-      allSettings = allSettings.stream().filter(s -> s.getOrigin() != null && s.getOrigin().equals(origin)).collect(Collectors.toList());
+      allSettings =
+          allSettings.stream().filter(s -> s.getOrigin() != null && s.getOrigin().equals(origin))
+              .collect(Collectors.toList());
     }
-    
+
     return allSettings;
   }
 
   /**
    * Creates a new setting
+   * 
    * @param newSetting the setting to create
    * @return a Response with code 204 on success
    */
@@ -65,9 +69,10 @@ public class SettingsResource {
     settingRepo.create(newSetting);
     return Response.noContent().status(201).build();
   }
-  
+
   /**
    * Retrieve setting with specific id.
+   * 
    * @param settingsId the d of the setting
    * @return the setting
    */
@@ -78,9 +83,10 @@ public class SettingsResource {
     Setting s = settingRepo.find(settingsId).orElseThrow(() -> new NotFoundException());
     return s;
   }
-  
+
   /**
    * Deletes a single setting
+   * 
    * @param settingsId the id of the setting to delete
    * @return a Response with code 204 on success
    */
@@ -92,11 +98,7 @@ public class SettingsResource {
     settingRepo.delete(settingsId);
     return Response.noContent().status(201).build();
   }
-  
-  
-  
-  
-  
-  
-  
+
+
+
 }

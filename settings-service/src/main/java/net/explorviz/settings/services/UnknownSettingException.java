@@ -5,9 +5,9 @@ package net.explorviz.settings.services;
  * 
  */
 public class UnknownSettingException extends Exception {
-  
+
   public UnknownSettingException() {
     super();
   }
-  
+
 }

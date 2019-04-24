@@ -11,10 +11,10 @@ import org.glassfish.hk2.api.Factory;
 import xyz.morphia.Datastore;
 import xyz.morphia.Morphia;
 
-public class DatastoreFactory implements Factory<Datastore>{
+public class DatastoreFactory implements Factory<Datastore> {
 
   private Datastore datastore;
-  
+
   /**
    * Creates new Datastore, which will be used for injection.
    *
@@ -25,11 +25,12 @@ public class DatastoreFactory implements Factory<Datastore>{
   @Config("mongo.port")
   public DatastoreFactory(String host, String port) {
     Morphia morphia = new Morphia();
-    morphia.map(Setting.class, DoubleSetting.class, StringSetting.class, BooleanSetting.class, UserSetting.class);
+    morphia.map(Setting.class, DoubleSetting.class, StringSetting.class, BooleanSetting.class,
+        UserSetting.class);
     this.datastore = morphia.createDatastore(new MongoClient(host + ":" + port), "explorviz");
     this.datastore.ensureIndexes();
   }
-  
+
   @Override
   public Datastore provide() {
     return this.datastore;
@@ -39,7 +40,7 @@ public class DatastoreFactory implements Factory<Datastore>{
   public void dispose(Datastore instance) {
     // TODO Auto-generated method stub
   }
-  
-  
+
+
 
 }
