@@ -1,12 +1,17 @@
 package net.explorviz.settings.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.github.jasminb.jsonapi.annotations.Type;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 @Type("doublesetting")
 public class DoubleSetting extends Setting<Double>{
 
-  private  double min, max;
+  @JsonProperty("min")
+  private Double min;
+  
+  @JsonProperty("max")
+  private Double max;
   
   /**
    * {@inheritDoc}
@@ -17,6 +22,8 @@ public class DoubleSetting extends Setting<Double>{
   
   public DoubleSetting() {
    super();
+   min = Double.NEGATIVE_INFINITY;
+   max = Double.POSITIVE_INFINITY;
   }
   
   /**

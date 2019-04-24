@@ -55,7 +55,7 @@ public class SettingsResource {
   @Consumes(MEDIA_TYPE)
   @PUT
   @RolesAllowed(ADMIN_ROLE)
-  public Response putSetting(BooleanSetting newSetting) {
+  public Response putSetting(Setting newSetting) {
     settingRepo.create(newSetting);
     return Response.noContent().status(201).build();
   }
