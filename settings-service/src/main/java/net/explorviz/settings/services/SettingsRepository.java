@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Optional;
 import javax.inject.Inject;
 import net.explorviz.settings.model.Setting;
-import net.explorviz.shared.security.model.User;
 import org.jvnet.hk2.annotations.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

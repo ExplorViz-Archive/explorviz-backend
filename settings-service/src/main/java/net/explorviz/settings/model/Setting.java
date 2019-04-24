@@ -2,7 +2,6 @@ package net.explorviz.settings.model;
 
 import com.github.jasminb.jsonapi.annotations.Id;
 import com.github.jasminb.jsonapi.annotations.Type;
-import net.bytebuddy.implementation.bind.annotation.Morph;
 import xyz.morphia.annotations.Entity;
 
 /**

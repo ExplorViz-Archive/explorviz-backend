@@ -17,7 +17,6 @@ import org.jvnet.hk2.annotations.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import xyz.morphia.Datastore;
-import xyz.morphia.query.Query;
 
 /**
  * This service is responsible for persisting and retrieving {@link Setting} objects. 

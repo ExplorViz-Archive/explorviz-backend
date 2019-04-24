@@ -5,28 +5,20 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.List;
 import javax.inject.Inject;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.ext.MessageBodyReader;
-import net.explorviz.settings.model.Setting;
 import net.explorviz.settings.model.UserSetting;
-import net.explorviz.shared.security.model.User;
-import net.explorviz.shared.security.model.roles.Role;
 import xyz.morphia.Datastore;
 
 public class UserSettingJsonApiDeserializer implements MessageBodyReader<UserSetting> {
 
   private final ResourceConverter converter;
-  private final Datastore datastore;
-
   @Inject
   public UserSettingJsonApiDeserializer(final ResourceConverter converter, final Datastore datastore) {
     this.converter = converter;
-    this.datastore = datastore;
   }
 
   @Override
