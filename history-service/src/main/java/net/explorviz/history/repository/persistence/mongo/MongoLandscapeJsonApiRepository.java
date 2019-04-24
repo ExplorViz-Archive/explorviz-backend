@@ -81,8 +81,8 @@ public class MongoLandscapeJsonApiRepository implements LandscapeRepository<Stri
         return;
       }
     }
-    if (LOGGER.isInfoEnabled()) {
-      LOGGER.info(String.format("Saved landscape {timestamp: %d, id: %s, totalRequests: %d}",
+    if (LOGGER.isDebugEnabled()) {
+      LOGGER.debug(String.format("Saved landscape {timestamp: %d, id: %s, totalRequests: %d}",
           timestamp, landscape.getId(), totalRequests));
     }
   }

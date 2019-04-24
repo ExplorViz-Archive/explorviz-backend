@@ -22,13 +22,13 @@ public class LandscapeResource {
 
   private static final String MEDIA_TYPE = "application/vnd.api+json";
 
-  private final LandscapeRepository<Landscape> landscapeRepo;
-  private final ReplayRepository<Landscape> replayRepo;
+  private final LandscapeRepository<String> landscapeRepo;
+  private final ReplayRepository<String> replayRepo;
 
 
   @Inject
-  public LandscapeResource(final LandscapeRepository<Landscape> landscapeRepo,
-      final ReplayRepository<Landscape> replayRepo) {
+  public LandscapeResource(final LandscapeRepository<String> landscapeRepo,
+      final ReplayRepository<String> replayRepo) {
     this.landscapeRepo = landscapeRepo;
     this.replayRepo = replayRepo;
   }
@@ -36,14 +36,14 @@ public class LandscapeResource {
   @GET
   @Path("/by-timestamp")
   @Produces(MEDIA_TYPE)
-  public Landscape getLandscapeByTimestamp(@QueryParam("timestamp") final long timestamp) {
+  public String getLandscapeByTimestamp(@QueryParam("timestamp") final long timestamp) {
     return this.landscapeRepo.getByTimestamp(timestamp);
   }
 
   @GET
   @Path("/by-uploaded-timestamp/{timestamp}")
   @Produces(MEDIA_TYPE)
-  public Landscape getReplayLandscape(@PathParam("timestamp") final long timestamp)
+  public String getReplayLandscape(@PathParam("timestamp") final long timestamp)
       throws FileNotFoundException {
     return this.replayRepo.getByTimestamp(timestamp);
   }
