@@ -46,9 +46,9 @@ public class SettingServiceTest {
         ));
 
     settings = new ArrayList<>(Arrays.asList(
-        new BooleanSetting("bid", "Boolean Setting", "Boolean Setting Description", false),
-        new StringSetting("sid", "Boolean Setting", "Boolean Setting Description", "def"),
-        new DoubleSetting("did", "Double Setting", "Boolean Setting Description", 0.5, -1, 1)        
+        new BooleanSetting("bid", "Boolean Setting", "Boolean Setting Description", false, "test"),
+        new StringSetting("sid", "Boolean Setting", "Boolean Setting Description", "def", "test"),
+        new DoubleSetting("did", "Double Setting", "Boolean Setting Description", 0.5, "test", -1, 1)        
         ));
     settingService = new UserSettingsService(sps, uss);
   }

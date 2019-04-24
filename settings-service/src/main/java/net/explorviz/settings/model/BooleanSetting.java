@@ -10,8 +10,8 @@ public class BooleanSetting extends Setting<Boolean>{
   /**
    * {@inheritDoc}
    */
-  public BooleanSetting(String id, String name, String description, Boolean defaultValue) {
-    super(id, name, description, defaultValue);
+  public BooleanSetting(String id, String name, String description, Boolean defaultValue, String origin) {
+    super(id, name, description, defaultValue, origin);
     // TODO Auto-generated constructor stub
   }
 

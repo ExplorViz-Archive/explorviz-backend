@@ -40,9 +40,9 @@ public class SettingsRepositoryTest {
     assert ds != null;
     sps = new SettingsRepository(ds);
     settings = new ArrayList<>(Arrays.asList(
-        new BooleanSetting("bid", "Boolean Setting", "Boolean Setting Description", false),
-        new StringSetting("sid", "Boolean Setting", "Boolean Setting Description", "def"),
-        new DoubleSetting("did", "Boolean Setting", "Boolean Setting Description", 0.5, -1, 1)        
+        new BooleanSetting("bid", "Boolean Setting", "Boolean Setting Description", false, "test"),
+        new StringSetting("sid", "Boolean Setting", "Boolean Setting Description", "def", "test"),
+        new DoubleSetting("did", "Double Setting", "Boolean Setting Description", 0.5, "test", -1, 1)       
         ));
   }
   
@@ -83,7 +83,7 @@ public class SettingsRepositoryTest {
   
   @Test
   public void testCreate() {
-    Setting<String> s = new StringSetting("test", "testname", "a test setting", "default");
+    Setting<String> s = new StringSetting("test", "testname", "a test setting", "default", "test");
     when(ds.save(s)).then(new Answer<Key<Setting<String>>>() {
 
       @Override

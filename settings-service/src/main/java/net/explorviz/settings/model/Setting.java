@@ -22,6 +22,9 @@ public class Setting<T> {
 
   protected  T defaultValue;
   
+  // By default, we use backend as origin
+  protected String origin = "backend";
+  
   /**
    * Creates a new setting
    * @param id a unique identifier to the setting
@@ -30,11 +33,12 @@ public class Setting<T> {
    * @param defaultValue the default value
    */
   public Setting(final String id, final String name, final String description,
-      final T defaultValue) {
+      final T defaultValue, String origin) {
     this.id = id;
     this.name = name;
     this.description = description;
     this.defaultValue = defaultValue;
+    this.origin = origin;
   }
 
   public Setting() {
@@ -55,6 +59,10 @@ public class Setting<T> {
   
   public String getId() {
     return this.id;
+  }
+  
+  public String getOrigin() {
+    return origin;
   }
   
 }

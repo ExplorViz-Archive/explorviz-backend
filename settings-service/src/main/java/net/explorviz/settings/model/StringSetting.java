@@ -9,8 +9,8 @@ public class StringSetting extends Setting<String>{
   /**
    * {@inheritDoc}
    */
-  public StringSetting(String id, String name, String description, String defaultValue) {
-    super(id, name, description, defaultValue);
+  public StringSetting(String id, String name, String description, String defaultValue, String origin) {
+    super(id, name, description, defaultValue, origin);
   }
   
   public StringSetting() {

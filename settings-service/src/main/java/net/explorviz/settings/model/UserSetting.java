@@ -21,12 +21,12 @@ public class UserSetting{
   // the value
   private Object value;
   
-  // ugly
+  // ugly but needed to infer the actual type at runtime as this class has to be 
+  // deserialized without morphia, as it can't handle generic type
+  // instead this class is deserialized with services.mongo.UserSettingCodec
   private Class<?> type;
   
-  public UserSetting() {
-    // TODO Auto-generated constructor stub
-  }
+  public UserSetting() {  }
   
   /**
    * Creates a new user setting.

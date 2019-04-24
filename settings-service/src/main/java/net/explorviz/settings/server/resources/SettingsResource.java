@@ -1,6 +1,7 @@
 package net.explorviz.settings.server.resources;
 
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
@@ -11,6 +12,7 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import net.explorviz.settings.model.BooleanSetting;
 import net.explorviz.settings.model.Setting;
@@ -43,8 +45,15 @@ public class SettingsResource {
    */
   @Produces(MEDIA_TYPE)
   @GET
-  public List<Setting> getAll() {
-    return settingRepo.findAll();
+  public List<Setting> getAll(@QueryParam("origin") String origin) {
+
+    List<Setting> allSettings =  settingRepo.findAll();
+    
+    if (origin != null) {
+      allSettings = allSettings.stream().filter(s -> s.getOrigin() != null && s.getOrigin().equals(origin)).collect(Collectors.toList());
+    }
+    
+    return allSettings;
   }
 
   /**

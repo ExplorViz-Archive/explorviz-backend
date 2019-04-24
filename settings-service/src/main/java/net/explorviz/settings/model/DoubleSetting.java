@@ -16,8 +16,8 @@ public class DoubleSetting extends Setting<Double>{
   /**
    * {@inheritDoc}
    */
-  public DoubleSetting(String id, String name, String description, Double defaultValue) {
-    this(id, name, description, defaultValue, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
+  public DoubleSetting(String id, String name, String description, Double defaultValue, String origin) {
+    this(id, name, description, defaultValue, origin, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
   }
   
   public DoubleSetting() {
@@ -32,8 +32,8 @@ public class DoubleSetting extends Setting<Double>{
    * @param minValue the minimal acceptable value for this setting
    * @param maxValue the maximal acceptable value for this setting
    */
-  public DoubleSetting(String id, String name, String description, Double defaultValue, double minValue, double maxValue) {
-    super(id, name, description, defaultValue);
+  public DoubleSetting(String id, String name, String description, Double defaultValue, String origin, double minValue, double maxValue) {
+    super(id, name, description, defaultValue, origin);
     min = minValue;
     max = maxValue;
   }
