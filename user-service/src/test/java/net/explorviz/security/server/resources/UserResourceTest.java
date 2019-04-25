@@ -290,21 +290,5 @@ public class UserResourceTest {
   }
 
 
-  public void testUnknownSettings() {
-    final User u = new User("testuser");
-    u.setPassword("password");
-    u.getSettings().getBooleanAttributes().put("UnknownKey", false);
-    assertThrows(BadRequestException.class, () -> this.userResource.newUser(u));
-  }
-
-
-
-  public void testSettingsNotInRange() {
-    final User u = new User("testuser");
-    u.setPassword("password");
-    u.getSettings().getNumericAttributes().put("appVizTransparencyIntensity", 0.7);
-    assertThrows(BadRequestException.class, () -> this.userResource.newUser(u));
-  }
-
 
 }
