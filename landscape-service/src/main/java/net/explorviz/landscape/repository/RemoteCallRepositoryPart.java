@@ -54,7 +54,7 @@ public class RemoteCallRepositoryPart {
     }
   }
 
-  public void insertSentRecord(final Clazz callerClazz,
+  public void insertSentRecord(final String potentialNewAppCommuId, final Clazz callerClazz,
       final BeforeSentRemoteCallRecord sentRemoteCallRecord, final Landscape landscape,
       final InsertionRepositoryPart inserter, final int runtimeIndex) {
     final BeforeReceivedRemoteCallRecord receivedRecord =
@@ -66,17 +66,17 @@ public class RemoteCallRepositoryPart {
 
       this.sentRemoteCallRecordCache.put(sentRemoteCallRecord, remoteRecordBuffer);
     } else {
-      this.seekOrCreateCommunication(sentRemoteCallRecord, receivedRecord, callerClazz,
-          this.receivedRemoteCallRecordCache.get(receivedRecord).getBelongingClazz(), landscape,
-          inserter, runtimeIndex);
+      this.seekOrCreateAppCommunication(potentialNewAppCommuId, sentRemoteCallRecord, receivedRecord,
+          callerClazz, this.receivedRemoteCallRecordCache.get(receivedRecord).getBelongingClazz(),
+          landscape, inserter, runtimeIndex);
 
       this.receivedRemoteCallRecordCache.remove(receivedRecord);
     }
   }
 
-  public void insertReceivedRecord(final BeforeReceivedRemoteCallRecord receivedRemoteCallRecord,
-      final Clazz firstReceiverClazz, final Landscape landscape,
-      final InsertionRepositoryPart inserter, final int runtimeIndex) {
+  public void insertReceivedRecord(final String potentialNewAppCommuId,
+      final BeforeReceivedRemoteCallRecord receivedRemoteCallRecord, final Clazz firstReceiverClazz,
+      final Landscape landscape, final InsertionRepositoryPart inserter, final int runtimeIndex) {
     final BeforeSentRemoteCallRecord sentRecord =
         this.seekSentRemoteTraceIdandOrderId(receivedRemoteCallRecord);
 
@@ -86,7 +86,7 @@ public class RemoteCallRepositoryPart {
 
       this.receivedRemoteCallRecordCache.put(receivedRemoteCallRecord, remoteRecordBuffer);
     } else {
-      this.seekOrCreateCommunication(sentRecord, receivedRemoteCallRecord,
+      this.seekOrCreateAppCommunication(potentialNewAppCommuId, sentRecord, receivedRemoteCallRecord,
           this.sentRemoteCallRecordCache.get(sentRecord).getBelongingClazz(), firstReceiverClazz,
           landscape, inserter, runtimeIndex);
 
@@ -121,7 +121,8 @@ public class RemoteCallRepositoryPart {
   }
 
   // Communication between applications (landscape-perspective)
-  private void seekOrCreateCommunication(final BeforeSentRemoteCallRecord sentRemoteCallRecord,
+  private void seekOrCreateAppCommunication(final String potentialNewAppCommuId,
+      final BeforeSentRemoteCallRecord sentRemoteCallRecord,
       final BeforeReceivedRemoteCallRecord receivedRemoteCallRecord, final Clazz sentRemoteClazz,
       final Clazz receivedRemoteClazz, final Landscape landscape,
       final InsertionRepositoryPart inserter, final int runtimeIndex) {
@@ -150,7 +151,8 @@ public class RemoteCallRepositoryPart {
         return;
       }
     }
-    final ApplicationCommunication communication = new ApplicationCommunication();
+    final ApplicationCommunication communication =
+        new ApplicationCommunication(potentialNewAppCommuId);
     communication.setSourceApplication(callerApplication);
     communication.setSourceClazz(sentRemoteClazz);
 

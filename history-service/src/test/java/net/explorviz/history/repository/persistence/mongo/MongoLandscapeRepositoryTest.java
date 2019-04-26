@@ -7,7 +7,6 @@ import javax.inject.Inject;
 import net.explorviz.history.server.main.DependencyInjectionBinder;
 import net.explorviz.history.server.main.HistoryApplication;
 import net.explorviz.shared.common.idgen.IdGenerator;
-import net.explorviz.shared.landscape.model.helper.BaseEntity;
 import net.explorviz.shared.landscape.model.landscape.Landscape;
 import org.glassfish.hk2.api.ServiceLocator;
 import org.glassfish.hk2.utilities.ServiceLocatorUtilities;
@@ -44,7 +43,6 @@ public class MongoLandscapeRepositoryTest {
       locator.inject(this);
     }
     this.repo.clear();
-    BaseEntity.initialize(this.idGenerator);
   }
 
 
@@ -58,7 +56,7 @@ public class MongoLandscapeRepositoryTest {
   @Test
   public void findByTimestamp() {
     final long ts = System.currentTimeMillis();
-    final Landscape landscape = LandscapeDummyCreator.createDummyLandscape();
+    final Landscape landscape = LandscapeDummyCreator.createDummyLandscape(idGenerator);
     this.repo.save(ts, landscape, 0);
 
     final Landscape landscapeRetrieved = this.repo.getByTimestamp(ts);
@@ -71,7 +69,7 @@ public class MongoLandscapeRepositoryTest {
   @Test
   public void testTotalRequets() {
     final long ts = System.currentTimeMillis();
-    final Landscape landscape = LandscapeDummyCreator.createDummyLandscape();
+    final Landscape landscape = LandscapeDummyCreator.createDummyLandscape(idGenerator);
     this.repo.save(ts, landscape, 0);
 
     final Landscape landscapeRetrieved = this.repo.getByTimestamp(ts);
@@ -82,8 +80,8 @@ public class MongoLandscapeRepositoryTest {
   @Test
   public void testFindById() {
     final long ts = System.currentTimeMillis();
-    final Landscape landscape = LandscapeDummyCreator.createDummyLandscape();
-    final Landscape landscape2 = LandscapeDummyCreator.createDummyLandscape();
+    final Landscape landscape = LandscapeDummyCreator.createDummyLandscape(idGenerator);
+    final Landscape landscape2 = LandscapeDummyCreator.createDummyLandscape(idGenerator);
     this.repo.save(ts, landscape, 0);
     this.repo.save(ts, landscape2, 0);
 
@@ -102,7 +100,7 @@ public class MongoLandscapeRepositoryTest {
     final Random rand = new Random();
     final long ts = System.currentTimeMillis();
     final int requests = rand.nextInt(Integer.MAX_VALUE) + 1;
-    final Landscape landscape = LandscapeDummyCreator.createDummyLandscape();
+    final Landscape landscape = LandscapeDummyCreator.createDummyLandscape(idGenerator);
     this.repo.save(ts, landscape, requests);
 
     final int retrievedRequests = this.repo.getTotalRequests(ts);
@@ -111,9 +109,9 @@ public class MongoLandscapeRepositoryTest {
 
   @Test
   public void testAllTimestamps() {
-    final Landscape landscape = LandscapeDummyCreator.createDummyLandscape();
+    final Landscape landscape = LandscapeDummyCreator.createDummyLandscape(idGenerator);
     final long ts = System.currentTimeMillis();
-    final Landscape landscape2 = LandscapeDummyCreator.createDummyLandscape();
+    final Landscape landscape2 = LandscapeDummyCreator.createDummyLandscape(idGenerator);
     final long ts2 = ts + 1;
     this.repo.save(ts, landscape, 0);
     this.repo.save(ts2, landscape2, 0);

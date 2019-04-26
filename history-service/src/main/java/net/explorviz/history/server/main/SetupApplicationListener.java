@@ -3,8 +3,6 @@ package net.explorviz.history.server.main;
 import javax.inject.Inject;
 import javax.servlet.annotation.WebListener;
 import net.explorviz.history.kafka.KafkaLandscapeExchangeService;
-import net.explorviz.shared.common.idgen.IdGenerator;
-import net.explorviz.shared.landscape.model.helper.BaseEntity;
 import org.glassfish.jersey.server.monitoring.ApplicationEvent;
 import org.glassfish.jersey.server.monitoring.ApplicationEvent.Type;
 import org.glassfish.jersey.server.monitoring.ApplicationEventListener;
@@ -22,9 +20,6 @@ public class SetupApplicationListener implements ApplicationEventListener {
   private static final Logger LOGGER = LoggerFactory.getLogger(SetupApplicationListener.class);
 
   @Inject
-  private IdGenerator idGenerator;
-
-  @Inject
   private KafkaLandscapeExchangeService landscapeExchangeService;
 
   @Override
@@ -35,7 +30,6 @@ public class SetupApplicationListener implements ApplicationEventListener {
     final Type t = Type.INITIALIZATION_FINISHED;
 
     if (event.getType().equals(t)) {
-      BaseEntity.initialize(idGenerator);
       this.startHistoryBackend();
     }
   }

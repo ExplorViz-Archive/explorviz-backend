@@ -6,11 +6,10 @@ import com.mongodb.MongoException;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.result.DeleteResult;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 import javax.inject.Inject;
 import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.InternalServerErrorException;
@@ -70,6 +69,7 @@ public class MongoLandscapeJsonApiRepository implements LandscapeRepository<Stri
 
     final Document landscapeDocument = new Document();
     landscapeDocument.append(MongoHelper.FIELD_ID, timestamp);
+    landscapeDocument.append(MongoHelper.FIELD_TIMESTAMP, timestamp);
     landscapeDocument.append(MongoHelper.FIELD_LANDSCAPE, landscapeJsonApi);
     landscapeDocument.append(MongoHelper.FIELD_REQUESTS, totalRequests);
 
@@ -178,16 +178,20 @@ public class MongoLandscapeJsonApiRepository implements LandscapeRepository<Stri
   @Override
   public List<Timestamp> getAllTimestamps() {
     final MongoCollection<Document> landscapeCollection = this.mongoHelper.getLandscapeCollection();
-    final List<Long> rawTimestamps = new LinkedList<>();
 
     final FindIterable<Document> documents = landscapeCollection.find();
 
+    final List<Timestamp> resultList = new ArrayList<>();
+
     for (final Document doc : documents) {
-      rawTimestamps.add((long) doc.get(MongoHelper.FIELD_ID));
+      final String id = String.valueOf((long) doc.get(MongoHelper.FIELD_ID));
+      final long timestamp = (long) doc.get(MongoHelper.FIELD_TIMESTAMP);
+      final int totalRequests = (int) doc.get(MongoHelper.FIELD_REQUESTS);
+
+      resultList.add(new Timestamp(id, timestamp, totalRequests)); // NOPMD
     }
 
-    return rawTimestamps.stream().map(t -> new Timestamp(t, this.getTotalRequests(t)))
-        .collect(Collectors.toList());
+    return resultList;
   }
 
 

@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import net.explorviz.history.repository.persistence.LandscapeRepository;
 import net.explorviz.history.repository.persistence.ReplayRepository;
+import net.explorviz.shared.common.idgen.IdGenerator;
 import net.explorviz.shared.landscape.model.landscape.Landscape;
 import net.explorviz.shared.landscape.model.store.Timestamp;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,11 +27,14 @@ public class TimestampResourceTest {
 
   private TimestampResource timestampResource;
 
-  @Mock
+  @Mock(lenient = true)
   private LandscapeRepository<Landscape> landscapeRepo;
 
-  @Mock
+  @Mock(lenient = true)
   private ReplayRepository<Landscape> replayRepo;
+
+  @Mock(lenient = true)
+  private IdGenerator idGen;
 
   private List<Timestamp> serviceGeneratedTimestamps;
   private List<Timestamp> userUploadedTimestamps;
@@ -40,27 +44,45 @@ public class TimestampResourceTest {
 
     // CHECKSTYLE.OFF: MagicNumber
     serviceGeneratedTimestamps = new ArrayList<>();
-    serviceGeneratedTimestamps.add(new Timestamp(1_556_302_800, 300));
-    serviceGeneratedTimestamps.add(new Timestamp(1_556_302_810, 400));
-    serviceGeneratedTimestamps.add(new Timestamp(1_556_302_820, 500));
+    serviceGeneratedTimestamps.add(new Timestamp("1", 1_556_302_800, 300));
+    serviceGeneratedTimestamps.add(new Timestamp("2", 1_556_302_810, 400));
+    serviceGeneratedTimestamps.add(new Timestamp("3", 1_556_302_820, 500));
 
     userUploadedTimestamps = new ArrayList<>();
-    userUploadedTimestamps.add(new Timestamp(1_556_302_860, 600));
-    userUploadedTimestamps.add(new Timestamp(1_556_302_870, 700));
-    userUploadedTimestamps.add(new Timestamp(1_556_302_880, 800));
+    userUploadedTimestamps.add(new Timestamp("4", 1_556_302_860, 600));
+    userUploadedTimestamps.add(new Timestamp("5", 1_556_302_870, 700));
+    userUploadedTimestamps.add(new Timestamp("6", 1_556_302_880, 800));
     // CHECKSTYLE.ON: MagicNumber
 
     when(this.landscapeRepo.getAllTimestamps()).thenReturn(this.serviceGeneratedTimestamps);
     when(this.replayRepo.getAllTimestamps()).thenReturn(this.userUploadedTimestamps);
 
-    timestampResource = new TimestampResource(landscapeRepo, replayRepo);
+    when(this.idGen.generateId()).thenReturn("42");
+
+    timestampResource = new TimestampResource(landscapeRepo, replayRepo, idGen);
 
   }
 
   @Test
   @DisplayName("No params (default param values) should return all service generated timestamps")
-  public void noQueryParam() {
+  public void giveAllServiceGenerated() {
     assertEquals(this.serviceGeneratedTimestamps, timestampResource.getTimestamps(0L, 0, false),
-        "Wrong return value for timestamp resource.");
+        "No params returned wrong value for timestamp resource.");
   }
+
+  @Test
+  @DisplayName("ReturnUploadedTimestamps = true should return all user uploaded timestamps.")
+  public void giveAllUserUploadedOnlyFlag() {
+    assertEquals(this.userUploadedTimestamps, timestampResource.getTimestamps(0L, 0, true),
+        "ReturnUploadedTimestamps flag = true returned wrong value for timestamp resource.");
+  }
+
+  @Test
+  @DisplayName("ReturnUploadedTimestamps = true has highest priority for return value.")
+  public void giveAllUserUploadedAllParams() {
+    assertEquals(this.userUploadedTimestamps, timestampResource.getTimestamps(5L, 42, true), // NOCS
+        "ReturnUploadedTimestamps flag = true does not have highest priority.");
+  }
+
+  // TODO afterTimestamp and interval
 }

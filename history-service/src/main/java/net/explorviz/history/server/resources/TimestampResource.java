@@ -12,6 +12,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import net.explorviz.history.repository.persistence.LandscapeRepository;
 import net.explorviz.history.repository.persistence.ReplayRepository;
+import net.explorviz.shared.common.idgen.IdGenerator;
 import net.explorviz.shared.landscape.model.landscape.Landscape;
 import net.explorviz.shared.landscape.model.store.Timestamp;
 
@@ -26,11 +27,14 @@ public class TimestampResource {
   private final LandscapeRepository<Landscape> landscapeRepo;
   private final ReplayRepository<Landscape> replayRepo;
 
+  private final IdGenerator idGen;
+
   @Inject
   public TimestampResource(final LandscapeRepository<Landscape> landscapeRepo,
-      final ReplayRepository<Landscape> replayRepo) {
+      final ReplayRepository<Landscape> replayRepo, final IdGenerator idGen) {
     this.landscapeRepo = landscapeRepo;
     this.replayRepo = replayRepo;
+    this.idGen = idGen;
   }
 
   /**
@@ -108,7 +112,7 @@ public class TimestampResource {
    * @param searchedTimestamp - a specific timestamp to be found
    * @return a retrieved timestamp
    */
-  private static Timestamp getTimestampPosition(final List<Timestamp> timestamps,
+  private Timestamp getTimestampPosition(final List<Timestamp> timestamps,
       final long searchedTimestamp) {
 
     final Iterator<Timestamp> iterator = timestamps.iterator();
@@ -126,7 +130,7 @@ public class TimestampResource {
         return currentTimestamp;
       }
     }
-    return new Timestamp();
+    return new Timestamp(this.idGen.generateId());
   }
 
 }

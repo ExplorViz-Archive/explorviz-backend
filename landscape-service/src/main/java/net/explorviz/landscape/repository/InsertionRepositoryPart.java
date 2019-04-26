@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.Stack;
 import net.explorviz.landscape.repository.helper.Signature;
 import net.explorviz.landscape.repository.helper.SignatureParser;
+import net.explorviz.shared.common.idgen.IdGenerator;
 import net.explorviz.shared.landscape.model.application.Application;
 import net.explorviz.shared.landscape.model.application.Clazz;
 import net.explorviz.shared.landscape.model.application.Component;
@@ -42,6 +43,13 @@ public class InsertionRepositoryPart {
   private final Map<String, Node> nodeCache = new HashMap<>();
   private final Map<String, Application> applicationCache = new HashMap<>();
   private final Map<Application, Map<String, Clazz>> clazzCache = new HashMap<>();
+
+  private final IdGenerator idGen;
+
+
+  public InsertionRepositoryPart(final IdGenerator idGen) {
+    this.idGen = idGen;
+  }
 
   /**
    * Inserts a record into the data model (landscape)
@@ -150,13 +158,14 @@ public class InsertionRepositoryPart {
     }
 
     // New system, add to internalLandscape
-    final System system = new System();
+    final System system = new System(this.idGen.generateId());
     system.setName(systemname);
     system.setParent(landscape);
     landscape.getSystems().add(system);
 
     // create a new system event
-    landscape.createNewEvent(EEventType.NEWSYSTEM, "New system '" + systemname + "' detected");
+    landscape.createNewEvent(this.idGen.generateId(), EEventType.NEWSYSTEM,
+        "New system '" + systemname + "' detected");
 
     return system;
   }
@@ -177,7 +186,7 @@ public class InsertionRepositoryPart {
     if (node == null) {
       // new node, add to nodeCache for the moment
       // eventual, put in NodeGroup
-      node = new Node();
+      node = new Node(this.idGen.generateId());
 
 
       node.setIpAddress(hostApplicationRecord.getIpaddress());
@@ -185,7 +194,7 @@ public class InsertionRepositoryPart {
       this.nodeCache.put(nodeName, node);
 
       // creates a new node event
-      landscape.createNewEvent(EEventType.NEWNODE,
+      landscape.createNewEvent(this.idGen.generateId(), EEventType.NEWNODE,
           "New node '" + hostApplicationRecord.getHostname() + "' in system '"
               + hostApplicationRecord.getSystemname() + "' detected");
     }
@@ -210,7 +219,7 @@ public class InsertionRepositoryPart {
     }
 
     // new NodeGroup, add to system, therefore, internalLandscape
-    final NodeGroup nodeGroup = new NodeGroup();
+    final NodeGroup nodeGroup = new NodeGroup(this.idGen.generateId());
 
 
     nodeGroup.setName(node.getIpAddress());
@@ -263,7 +272,7 @@ public class InsertionRepositoryPart {
     if (application == null) {
       // new application, put in applicationCache for the moment
       // eventually, parent Node must not be in the old NodeGroup
-      application = new Application();
+      application = new Application(this.idGen.generateId());
       // application.setId((node.getName() + "_" + applicationName).hashCode());
       application.setLastUsage(java.lang.System.currentTimeMillis());
       application.setName(applicationName);
@@ -298,7 +307,7 @@ public class InsertionRepositoryPart {
       this.applicationCache.put(node.getName() + "_" + applicationName, application);
 
       // creates a new application event
-      landscape.createNewEvent(EEventType.NEWAPPLICATION,
+      landscape.createNewEvent(this.idGen.generateId(), EEventType.NEWAPPLICATION,
           "New application '" + applicationName + "' on node '" + node.getName() + "' detected");
     }
 
@@ -380,7 +389,7 @@ public class InsertionRepositoryPart {
           if (abstractBeforeEventRecord instanceof BeforeJDBCOperationEventRecord) {
             final BeforeJDBCOperationEventRecord jdbcOperationEventRecord =
                 (BeforeJDBCOperationEventRecord) abstractBeforeEventRecord;
-            final DatabaseQuery databaseQuery = new DatabaseQuery(); // NOPMD
+            final DatabaseQuery databaseQuery = new DatabaseQuery(this.idGen.generateId()); // NOPMD
 
             // parse type of Statement, e.g. Statement or PreparedStatement
             final String operationSignature = jdbcOperationEventRecord.getOperationSignature();
@@ -409,9 +418,9 @@ public class InsertionRepositoryPart {
           }
 
           // creates an exception event
-          landscape
-              .createNewException("Exception thrown in application '" + currentApplication.getName()
-                  + "' by class '" + callerClazz.getFullQualifiedName() + "':\n " + cause);
+          landscape.createNewException(this.idGen.generateId(),
+              "Exception thrown in application '" + currentApplication.getName() + "' by class '"
+                  + callerClazz.getFullQualifiedName() + "':\n " + cause);
         }
 
         final List<DatabaseQuery> databaseQueries = currentApplication.getDatabaseQueries();
@@ -435,8 +444,8 @@ public class InsertionRepositoryPart {
       } else if (event instanceof BeforeSentRemoteCallRecord) {
         final BeforeSentRemoteCallRecord sentRemoteCallRecord = (BeforeSentRemoteCallRecord) event;
 
-        remoteCallRepositoryPart.insertSentRecord(callerClazz, sentRemoteCallRecord, landscape,
-            this, runtimeIndex);
+        remoteCallRepositoryPart.insertSentRecord(this.idGen.generateId(), callerClazz,
+            sentRemoteCallRecord, landscape, this, runtimeIndex);
       } else if (event instanceof BeforeReceivedRemoteCallRecord) {
         final BeforeReceivedRemoteCallRecord receivedRemoteCallRecord =
             (BeforeReceivedRemoteCallRecord) event;
@@ -455,8 +464,8 @@ public class InsertionRepositoryPart {
                   .getRuntimeStatisticInformationList().get(runtimeIndex).getObjectIds());
         }
 
-        remoteCallRepositoryPart.insertReceivedRecord(receivedRemoteCallRecord, firstReceiverClazz,
-            landscape, this, runtimeIndex);
+        remoteCallRepositoryPart.insertReceivedRecord(this.idGen.generateId(),
+            receivedRemoteCallRecord, firstReceiverClazz, landscape, this, runtimeIndex);
       }
       // else if (event instanceof BeforeUnknownReceivedRemoteCallRecord) {
       // }
@@ -508,8 +517,9 @@ public class InsertionRepositoryPart {
 
     // add clazzCommunication to clazz and aggregatedClazzCommunication to
     // application
-    ModelHelper.addClazzCommunication(caller, callee, application, requests, average,
-        overallTraceDuration, traceId, orderIndex, operationName);
+    ModelHelper.addClazzCommunication(this.idGen.generateId(), this.idGen.generateId(),
+        this.idGen.generateId(), this.idGen.generateId(), caller, callee, application, requests,
+        average, overallTraceDuration, traceId, orderIndex, operationName);
   }
 
   private Clazz seekOrCreateClazz(final String fullQName, final Application application,
@@ -556,7 +566,7 @@ public class InsertionRepositoryPart {
               index + 1);
         }
       }
-      final Component component = new Component();
+      final Component component = new Component(this.idGen.generateId());
 
       String fullQNameComponent = "";
       for (int i = 0; i <= index; i++) {
@@ -580,7 +590,7 @@ public class InsertionRepositoryPart {
         }
 
         if (potentialParent == null) {
-          final Component component = new Component();
+          final Component component = new Component(this.idGen.generateId());
 
           component.setFullQualifiedName(DEFAULT_COMPONENT_NAME);
           component.setName(DEFAULT_COMPONENT_NAME);
@@ -599,7 +609,7 @@ public class InsertionRepositoryPart {
       }
 
       // new clazz
-      final Clazz clazz = new Clazz();
+      final Clazz clazz = new Clazz(this.idGen.generateId());
 
       clazz.setName(currentPart);
       clazz.setFullQualifiedName(fullQName);
