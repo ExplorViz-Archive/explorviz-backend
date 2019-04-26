@@ -43,7 +43,7 @@ public class SetupApplicationListener implements ApplicationEventListener {
 
 
     if (event.getType().equals(t)) {
-      addDefaultSettings();
+      this.addDefaultSettings();
     }
 
   }
@@ -56,7 +56,7 @@ public class SetupApplicationListener implements ApplicationEventListener {
 
 
   private void addDefaultSettings() {
-    List<Setting<?>> defaults = new ArrayList<Setting<?>>(Arrays.asList(
+    final List<Setting<?>> defaults = new ArrayList<Setting<?>>(Arrays.asList(
         new BooleanSetting("showFpsCounter", "Show FPS Counter",
             "\'Frames Per Second\' metrics in visualizations", false, "backend"),
         new BooleanSetting("appVizTransparency", "App Viz Transparency",
@@ -74,8 +74,8 @@ public class SetupApplicationListener implements ApplicationEventListener {
             "Transparency effect intensity (\'App Viz Transparency\' must be enabled)", 0.1,
             "backend", 0.5, 0.1)));
 
-    defaults.stream().filter(d -> !settingRepo.find(d.getId()).isPresent())
-        .forEach(settingRepo::create);
+    defaults.stream().filter(d -> !this.settingRepo.find(d.getId()).isPresent())
+        .forEach(this.settingRepo::create);
 
   }
 

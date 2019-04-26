@@ -115,7 +115,7 @@ public class UserSetting {
 
   /**
    * A user setting is identified by both by the id of the user and the id of the setting. This
-   * class functions as a composite key
+   * class functions as a composite key.
    *
    */
   @Entity(noClassnameStored = true)

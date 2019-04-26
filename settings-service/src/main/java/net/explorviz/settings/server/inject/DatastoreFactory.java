@@ -13,7 +13,7 @@ import xyz.morphia.Morphia;
 
 public class DatastoreFactory implements Factory<Datastore> {
 
-  private Datastore datastore;
+  private final Datastore datastore;
 
   /**
    * Creates new Datastore, which will be used for injection.
@@ -23,8 +23,8 @@ public class DatastoreFactory implements Factory<Datastore> {
    */
   @Config("mongo.host")
   @Config("mongo.port")
-  public DatastoreFactory(String host, String port) {
-    Morphia morphia = new Morphia();
+  public DatastoreFactory(final String host, final String port) {
+    final Morphia morphia = new Morphia();
     morphia.map(Setting.class, DoubleSetting.class, StringSetting.class, BooleanSetting.class,
         UserSetting.class);
     this.datastore = morphia.createDatastore(new MongoClient(host + ":" + port), "explorviz");
@@ -37,7 +37,7 @@ public class DatastoreFactory implements Factory<Datastore> {
   }
 
   @Override
-  public void dispose(Datastore instance) {
+  public void dispose(final Datastore instance) {
     // TODO Auto-generated method stub
   }
 

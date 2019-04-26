@@ -29,38 +29,36 @@ public class UserSettingsResource {
       LoggerFactory.getLogger(UserSettingsResource.class.getSimpleName());
 
   private static final String MEDIA_TYPE = "application/vnd.api+json";
-  private static final String ADMIN_ROLE = "admin";
 
-
-  private UserSettingsService userSettingService;
+  private final UserSettingsService userSettingService;
   private SettingsRepository settingRepo;
 
   @Inject
-  public UserSettingsResource(UserSettingsService userSettingsService) {
+  public UserSettingsResource(final UserSettingsService userSettingsService) {
     this.userSettingService = userSettingsService;
   }
 
   @GET
   @Path("{uid}")
-  public CustomSettings getForUser(@PathParam("uid") String userId) {
-    Map<String, Object> sets = userSettingService.getForUser(userId);
+  public CustomSettings getForUser(@PathParam("uid") final String userId) {
+    final Map<String, Object> sets = this.userSettingService.getForUser(userId);
     return new CustomSettings(sets, userId);
   }
 
   @PUT
   @Path("{uid}")
   @Consumes(MEDIA_TYPE)
-  public Response setForUser(@PathParam("uid") String userId, SettingValue value) {
+  public Response setForUser(@PathParam("uid") final String userId, final SettingValue value) {
 
 
     try {
-      userSettingService.setForUser(userId, value.settingId, value.value);
-    } catch (IllegalArgumentException e) {
+      this.userSettingService.setForUser(userId, value.settingId, value.value);
+    } catch (final IllegalArgumentException e) {
       if (LOGGER.isInfoEnabled()) {
         LOGGER.info("Types of setting and value don't match");
       }
       throw new BadRequestException("Types of setting and value don't match");
-    } catch (UnknownSettingException e) {
+    } catch (final UnknownSettingException e) {
       if (LOGGER.isInfoEnabled()) {
         LOGGER.info(String.format("Unknown setting: %s", value.settingId));
       }
@@ -74,9 +72,9 @@ public class UserSettingsResource {
   @DELETE
   @Path("{uid}/{sid}")
   @Consumes(MEDIA_TYPE)
-  public Response resetToDefaultForUser(@PathParam("uid") String userId,
-      @PathParam("sid") String settingId) {
-    userSettingService.setDefault(userId, settingId);
+  public Response resetToDefaultForUser(@PathParam("uid") final String userId,
+      @PathParam("sid") final String settingId) {
+    this.userSettingService.setDefault(userId, settingId);
 
     return Response.noContent().build();
   }
@@ -97,23 +95,23 @@ public class UserSettingsResource {
     public SettingValue() {}
 
     public boolean isBool() {
-      return (value instanceof Boolean);
+      return (this.value instanceof Boolean);
     }
 
     public boolean isString() {
-      return (value instanceof String);
+      return (this.value instanceof String);
     }
 
     public boolean isDouble() {
-      return (value instanceof Double);
+      return (this.value instanceof Double);
     }
 
     public Object getValue() {
-      return value;
+      return this.value;
     }
 
     public String getSettingId() {
-      return settingId;
+      return this.settingId;
     }
 
   }
@@ -130,7 +128,7 @@ public class UserSettingsResource {
     @Id
     private String userId;
 
-    public CustomSettings(Map<String, Object> settings, String userId) {
+    public CustomSettings(final Map<String, Object> settings, final String userId) {
       this.settings = settings;
       this.userId = userId;
     }
@@ -139,11 +137,11 @@ public class UserSettingsResource {
 
 
     public Map<String, Object> getSettings() {
-      return settings;
+      return this.settings;
     }
 
     public String getUserId() {
-      return userId;
+      return this.userId;
     }
   }
 

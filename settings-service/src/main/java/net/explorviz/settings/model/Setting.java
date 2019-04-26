@@ -26,14 +26,14 @@ public class Setting<T> {
 
   /**
    * Creates a new setting
-   * 
+   *
    * @param id a unique identifier to the setting
    * @param name name of the setting
    * @param description a short description of values and their effects
    * @param defaultValue the default value
    */
   public Setting(final String id, final String name, final String description, final T defaultValue,
-      String origin) {
+      final String origin) {
     this.id = id;
     this.name = name;
     this.description = description;
@@ -62,7 +62,7 @@ public class Setting<T> {
   }
 
   public String getOrigin() {
-    return origin;
+    return this.origin;
   }
 
 }

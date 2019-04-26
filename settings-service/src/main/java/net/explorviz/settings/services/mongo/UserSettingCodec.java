@@ -11,13 +11,14 @@ import org.bson.codecs.EncoderContext;
 
 /**
  * Maps an entity to mongo and back
- * 
+ *
  * @param <T>
  */
 public class UserSettingCodec implements Codec<UserSetting> {
 
   @Override
-  public void encode(BsonWriter writer, UserSetting setting, EncoderContext encoderContext) {
+  public void encode(final BsonWriter writer, final UserSetting setting,
+      final EncoderContext encoderContext) {
     throw new NotImplementedException("Use morphia");
   }
 
@@ -28,7 +29,7 @@ public class UserSettingCodec implements Codec<UserSetting> {
   }
 
   @Override
-  public UserSetting decode(BsonReader reader, DecoderContext decoderContext) {
+  public UserSetting decode(final BsonReader reader, final DecoderContext decoderContext) {
     Object value = null;
     String sid = "";
     String uid = "";
@@ -38,7 +39,7 @@ public class UserSettingCodec implements Codec<UserSetting> {
 
 
     while (reader.readBsonType() != BsonType.END_OF_DOCUMENT) {
-      String fieldName = reader.readName();
+      final String fieldName = reader.readName();
 
 
 
@@ -47,7 +48,7 @@ public class UserSettingCodec implements Codec<UserSetting> {
           reader.readStartDocument();
 
           while (reader.readBsonType() != BsonType.END_OF_DOCUMENT) {
-            String idFieldName = reader.readName();
+            final String idFieldName = reader.readName();
             if (idFieldName.equals("settingId")) {
               sid = reader.readString();
             } else if (idFieldName.equals("userId")) {
