@@ -7,7 +7,6 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import net.explorviz.history.repository.persistence.LandscapeRepository;
 import net.explorviz.history.repository.persistence.ReplayRepository;
 import net.explorviz.shared.landscape.model.landscape.Landscape;
@@ -34,10 +33,10 @@ public class LandscapeResource {
   }
 
   @GET
-  @Path("/by-timestamp")
+  @Path("{id}")
   @Produces(MEDIA_TYPE)
-  public String getLandscapeByTimestamp(@QueryParam("timestamp") final long timestamp) {
-    return this.landscapeRepo.getByTimestamp(timestamp);
+  public String getLandscapeById(@PathParam("id") final long id) {
+    return this.landscapeRepo.getByTimestamp(id);
   }
 
   @GET
