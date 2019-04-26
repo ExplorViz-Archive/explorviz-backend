@@ -118,6 +118,8 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
           this.internalLandscape.getTimestamp().setTotalRequests(calculatedTotalRequests);
           this.internalLandscape.setTimestamp(new Timestamp(milliseconds, calculatedTotalRequests));
 
+          this.internalLandscape.updateId();
+
           this.sendLandscapeToKafka(this.internalLandscape, this.kafkaTopicName);
 
           try {
