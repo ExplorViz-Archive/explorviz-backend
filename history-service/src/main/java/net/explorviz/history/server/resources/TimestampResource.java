@@ -33,36 +33,30 @@ public class TimestampResource {
     this.replayRepo = replayRepo;
   }
 
-
-
   /**
-   * Returns an List of {@link net.explorviz.landscape.model.store.Timestamp} interval of
-   * "intervalSize" after a specific passed "timestamp".
+   * Returns a list of either user-uploaded or service-generated
+   * {@link net.explorviz.landscape.model.store.Timestamp}. The result depends on the passed query
+   * parameters, whereas the existence of the "returnUploadedTimestamps" query parameter has the
+   * highest priority, i.e., the list of user-uploaded timestamps will be returned.
    *
    * @param afterTimestamp - a starting timestamp for the returned interval
    * @param intervalSize - the size of the interval
+   * @param returnUploadedTimestamps - the size of the interval
    * @return a filtered list of timestamps
    */
   @GET
-  @Path("/subsequent-interval")
   @Produces("application/vnd.api+json")
-  public List<Timestamp> getSubsequentTimestamps(@QueryParam("after") final long afterTimestamp,
-      @QueryParam("intervalSize") final int intervalSize) {
+  public List<Timestamp> getTimestamps(@QueryParam("afterTimestamp") final long afterTimestamp,
+      @QueryParam("intervalSize") final int intervalSize,
+      @QueryParam("returnUploadedTimestamps") final boolean returnUploadedTimestamps) {
+
+    if (returnUploadedTimestamps) {
+      return this.replayRepo.getAllTimestamps();
+    }
+
     final List<Timestamp> timestamps = this.landscapeRepo.getAllTimestamps();
-
     return this.filterTimestampsAfterTimestamp(timestamps, afterTimestamp, intervalSize);
-  }
 
-  /**
-   * Returns a List of all uploaded {@link net.explorviz.landscape.model.store.Timestamp}.
-   *
-   * @return a list of all uploaded timestamps
-   */
-  @GET
-  @Path("/all-uploaded")
-  @Produces("application/vnd.api+json")
-  public List<Timestamp> getUploadedTimestamps() {
-    return this.replayRepo.getAllTimestamps();
   }
 
 
