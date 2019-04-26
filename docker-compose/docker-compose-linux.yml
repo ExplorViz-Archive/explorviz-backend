@@ -57,6 +57,8 @@ services:
    kafka:
     container_name: kafka
     image: wurstmeister/kafka
+    depends_on:
+      - zookeeper
     ports:
       - "9092:9092"
     environment:

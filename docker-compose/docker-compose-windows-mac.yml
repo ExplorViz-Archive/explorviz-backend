@@ -32,11 +32,10 @@ services:
     container_name: explorviz-settings-mongo
     command: mongod --port 27019
     ports:
-    - 27019:27019
+      - 27019:27019
     volumes:
-    - explorviz-settings-mongo-data:/data/db
-    - explorviz-settings-mongo-configdb:/data/configdb
-    network_mode: "host"       
+      - explorviz-settings-mongo-data:/data/db
+      - explorviz-settings-mongo-configdb:/data/configdb 
     
   ids-redis:
     image: redis
@@ -56,6 +55,8 @@ services:
   kafka:
     container_name: kafka
     image: wurstmeister/kafka
+    depends_on:
+      - zookeeper
     ports:
       - "9092:9092"
     environment:
