@@ -61,8 +61,8 @@ public class MongoReplayRepository implements ReplayRepository<Landscape> {
   }
 
   @Override
-  public int getTotalRequests(final long timestamp) {
-    return this.repo.getTotalRequests(timestamp);
+  public int getTotalRequestsByTimestamp(final long timestamp) {
+    return this.repo.getTotalRequestsByTimestamp(timestamp);
   }
 
 

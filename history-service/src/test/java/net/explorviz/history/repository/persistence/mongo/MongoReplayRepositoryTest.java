@@ -89,7 +89,7 @@ public class MongoReplayRepositoryTest {
     final Landscape landscape = LandscapeDummyCreator.createDummyLandscape(idGenerator);
     this.repo.save(ts, landscape, requests);
 
-    final int retrievedRequests = this.repo.getTotalRequests(ts);
+    final int retrievedRequests = this.repo.getTotalRequestsByTimestamp(ts);
     assertEquals("Requests not matching", requests, retrievedRequests);
   }
 

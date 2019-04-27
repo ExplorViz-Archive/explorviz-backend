@@ -85,7 +85,7 @@ public class MongoReplayJsonApiRepositoryTest {
     final Landscape landscape = LandscapeDummyCreator.createDummyLandscape(idGenerator);
     this.repo.save(ts, landscape, requests);
 
-    final int retrievedRequests = this.repo.getTotalRequests(ts);
+    final int retrievedRequests = this.repo.getTotalRequestsByTimestamp(ts);
     assertEquals("Requests not matching", requests, retrievedRequests);
   }
 
@@ -94,7 +94,8 @@ public class MongoReplayJsonApiRepositoryTest {
     final Landscape landscape = LandscapeDummyCreator.createDummyLandscape(idGenerator);
     final long ts = System.currentTimeMillis();
     final Landscape landscape2 = LandscapeDummyCreator.createDummyLandscape(idGenerator);
-    final long ts2 = ts + 1;
+    final long ts2 = ts + 10;
+
     this.repo.save(ts, landscape, 0);
     this.repo.save(ts2, landscape2, 0);
 

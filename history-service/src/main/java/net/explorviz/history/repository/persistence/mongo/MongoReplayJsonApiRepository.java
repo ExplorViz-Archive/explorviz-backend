@@ -9,7 +9,6 @@ import com.mongodb.client.result.DeleteResult;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-import java.util.regex.Pattern;
 import javax.inject.Inject;
 import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.InternalServerErrorException;
@@ -62,7 +61,7 @@ public class MongoReplayJsonApiRepository implements ReplayRepository<String> {
     final MongoCollection<Document> landscapeCollection = this.mongoHelper.getReplayCollection();
 
     final Document landscapeDocument = new Document();
-    landscapeDocument.append(MongoHelper.FIELD_ID, timestamp);
+    landscapeDocument.append(MongoHelper.FIELD_ID, replayLandscape.getId());
     landscapeDocument.append(MongoHelper.FIELD_TIMESTAMP, timestamp);
     landscapeDocument.append(MongoHelper.FIELD_LANDSCAPE, landscapeJsonApi);
     landscapeDocument.append(MongoHelper.FIELD_REQUESTS, totalRequests);
@@ -86,7 +85,7 @@ public class MongoReplayJsonApiRepository implements ReplayRepository<String> {
     final MongoCollection<Document> landscapeCollection = this.mongoHelper.getReplayCollection();
 
     final Document landscapeDocument = new Document();
-    landscapeDocument.append(MongoHelper.FIELD_ID, timestamp);
+    landscapeDocument.append(MongoHelper.FIELD_TIMESTAMP, timestamp);
 
     final FindIterable<Document> result = landscapeCollection.find(landscapeDocument);
 
@@ -105,19 +104,15 @@ public class MongoReplayJsonApiRepository implements ReplayRepository<String> {
 
   @Override
   public String getById(final String id) {
-    final String regexQuery = "\\{\"data\":\\{\"type\":\"landscape\",\"id\":\"" + id;
-
-    final Pattern pat = Pattern.compile(regexQuery, Pattern.CASE_INSENSITIVE);
-
     final MongoCollection<Document> landscapeCollection = this.mongoHelper.getReplayCollection();
 
     final Document landscapeDocument = new Document();
-    landscapeDocument.append(MongoHelper.FIELD_LANDSCAPE, pat);
+    landscapeDocument.append(MongoHelper.FIELD_ID, id);
 
     final FindIterable<Document> result = landscapeCollection.find(landscapeDocument);
 
     if (result.first() == null) {
-      throw new ClientErrorException(String.format("Landscape with provided id %d not found", id),
+      throw new ClientErrorException("Landscape not found for provided id " + id,
           Response.Status.NOT_FOUND);
     } else {
       return (String) result.first().get(MongoHelper.FIELD_LANDSCAPE);
@@ -125,11 +120,11 @@ public class MongoReplayJsonApiRepository implements ReplayRepository<String> {
   }
 
   @Override
-  public int getTotalRequests(final long timestamp) {
+  public int getTotalRequestsByTimestamp(final long timestamp) {
     final MongoCollection<Document> landscapeCollection = this.mongoHelper.getReplayCollection();
 
     final Document landscapeDocument = new Document();
-    landscapeDocument.append(MongoHelper.FIELD_ID, timestamp);
+    landscapeDocument.append(MongoHelper.FIELD_TIMESTAMP, timestamp);
 
     final FindIterable<Document> result = landscapeCollection.find(landscapeDocument);
 
@@ -150,7 +145,7 @@ public class MongoReplayJsonApiRepository implements ReplayRepository<String> {
     final MongoCollection<Document> replayCollection = this.mongoHelper.getReplayCollection();
 
     final Document landscapeDocument = new Document();
-    landscapeDocument.append(MongoHelper.FIELD_ID, new BasicDBObject("$lt", enddate));
+    landscapeDocument.append(MongoHelper.FIELD_TIMESTAMP, new BasicDBObject("$lt", enddate));
 
     final DeleteResult landsapeResult = landscapeCollection.deleteMany(landscapeDocument);
     final DeleteResult replayResult = replayCollection.deleteMany(landscapeDocument);
@@ -179,7 +174,7 @@ public class MongoReplayJsonApiRepository implements ReplayRepository<String> {
     final List<Timestamp> resultList = new ArrayList<>();
 
     for (final Document doc : documents) {
-      final String id = String.valueOf((long) doc.get(MongoHelper.FIELD_ID));
+      final String id = String.valueOf(doc.get(MongoHelper.FIELD_ID));
       final long timestamp = (long) doc.get(MongoHelper.FIELD_TIMESTAMP);
       final int totalRequests = (int) doc.get(MongoHelper.FIELD_REQUESTS);
 

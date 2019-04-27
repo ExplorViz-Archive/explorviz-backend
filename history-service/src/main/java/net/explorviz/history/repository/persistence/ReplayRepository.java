@@ -28,7 +28,7 @@ public interface ReplayRepository<T> {
    * @param timestamp the timestamp of the replay
    * @return the total requests
    */
-  int getTotalRequests(long timestamp);
+  int getTotalRequestsByTimestamp(long timestamp);
 
 
   /**

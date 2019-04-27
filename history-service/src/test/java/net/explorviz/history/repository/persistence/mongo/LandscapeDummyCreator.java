@@ -23,7 +23,6 @@ public final class LandscapeDummyCreator {
   public static int applicationId = 0;
   public static int formatFactor = 1024 * 1024 * 1024;
 
-  private static Landscape dummyLandscape = null;
   private static IdGenerator idGen;
 
 
@@ -38,13 +37,6 @@ public final class LandscapeDummyCreator {
    * @return a prepared dummy landscape
    */
   public static Landscape createDummyLandscape(final IdGenerator idGen) {
-
-    // used from second execution on
-    if (dummyLandscape != null) {
-      dummyLandscape.getTimestamp().setTotalRequests(DummyLandscapeHelper.getRandomNum(500, 25000));
-      dummyLandscape.setId(idGen.generateId());
-      return dummyLandscape;
-    }
 
     LandscapeDummyCreator.idGen = idGen;
 
@@ -313,7 +305,6 @@ public final class LandscapeDummyCreator {
     DummyLandscapeHelper.createApplicationCommunication(provenance4, webshop, landscape, 100);
 
     landscape.createOutgoingApplicationCommunication();
-    dummyLandscape = landscape;
 
     return landscape;
   }
