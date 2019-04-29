@@ -12,25 +12,26 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.ext.MessageBodyReader;
 import net.explorviz.settings.server.resources.UserSettingsResource.SettingValue;
 
-public class SettingValueDeserializer implements MessageBodyReader<SettingValue>{
-  
+public class SettingValueDeserializer implements MessageBodyReader<SettingValue> {
+
   private final ResourceConverter converter;
-  
+
   @Inject
   public SettingValueDeserializer(final ResourceConverter converter) {
     this.converter = converter;
   }
 
   @Override
-  public boolean isReadable(Class<?> type, Type genericType, Annotation[] annotations,
-      MediaType mediaType) {
+  public boolean isReadable(final Class<?> type, final Type genericType,
+      final Annotation[] annotations, final MediaType mediaType) {
     // TODO Auto-generated method stub
     return true;
   }
 
   @Override
-  public SettingValue readFrom(Class<SettingValue> type, Type genericType, Annotation[] annotations,
-      MediaType mediaType, MultivaluedMap<String, String> httpHeaders, InputStream entityStream)
+  public SettingValue readFrom(final Class<SettingValue> type, final Type genericType,
+      final Annotation[] annotations, final MediaType mediaType,
+      final MultivaluedMap<String, String> httpHeaders, final InputStream entityStream)
       throws IOException, WebApplicationException {
     // TODO Auto-generated method stub
     final SettingValue setting = this.converter.readDocument(entityStream, type).get();

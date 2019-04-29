@@ -27,60 +27,65 @@ public class SettingsResource {
 
   private static final String MEDIA_TYPE = "application/vnd.api+json";
   private static final String ADMIN_ROLE = "admin";
-  
-  
-  private MongoRepository<Setting, String> settingRepo;
-  
+
+
+  private final MongoRepository<Setting, String> settingRepo;
+
   @Inject
-  public SettingsResource(MongoRepository<Setting, String> settingRepo) {
+  public SettingsResource(final MongoRepository<Setting, String> settingRepo) {
     this.settingRepo = settingRepo;
   }
-  
+
   /**
    * Retrieves all settings
+   *
    * @return all settings
    */
   @Produces(MEDIA_TYPE)
   @GET
-  public List<Setting> getAll(@QueryParam("origin") String origin) {
+  public List<Setting> getAll(@QueryParam("origin") final String origin) {
 
-    List<Setting> allSettings =  settingRepo.findAll();
-    
+    List<Setting> allSettings = this.settingRepo.findAll();
+
     if (origin != null) {
-      allSettings = allSettings.stream().filter(s -> s.getOrigin() != null && s.getOrigin().equals(origin)).collect(Collectors.toList());
+      allSettings =
+          allSettings.stream().filter(s -> s.getOrigin() != null && s.getOrigin().equals(origin))
+              .collect(Collectors.toList());
     }
-    
+
     return allSettings;
   }
 
   /**
-   * Creates a new setting
+   * Creates a new setting.
+   *
    * @param newSetting the setting to create
    * @return a Response with code 204 on success
    */
   @Consumes(MEDIA_TYPE)
   @PUT
   @RolesAllowed(ADMIN_ROLE)
-  public Response putSetting(Setting newSetting) {
-    settingRepo.create(newSetting);
-    return Response.noContent().status(201).build();
+  public Response putSetting(final Setting newSetting) {
+    this.settingRepo.create(newSetting);
+    return Response.noContent().status(Response.Status.CREATED).build();
   }
-  
+
   /**
    * Retrieve setting with specific id.
+   *
    * @param settingsId the d of the setting
    * @return the setting
    */
   @Produces(MEDIA_TYPE)
   @GET
   @Path("{sid}")
-  public Setting getById(@PathParam("sid") String settingsId) {
-    Setting s = settingRepo.find(settingsId).orElseThrow(() -> new NotFoundException());
-    return s;
+  public Setting getById(@PathParam("sid") final String settingsId) {
+    return this.settingRepo.find(settingsId).orElseThrow(() -> new NotFoundException());
   }
-  
+
   /**
-   * Deletes a single setting
+   * Deletes a single setting.
+   *
    * @param settingsId the id of the setting to delete
    * @return a Response with code 204 on success
    */
@@ -88,15 +93,11 @@ public class SettingsResource {
   @DELETE
   @Path("{sid}")
   @RolesAllowed(ADMIN_ROLE)
-  public Response deleteSetting(@PathParam("sid") String settingsId) {
-    settingRepo.delete(settingsId);
-    return Response.noContent().status(201).build();
+  public Response deleteSetting(@PathParam("sid") final String settingsId) {
+    this.settingRepo.delete(settingsId);
+    return Response.noContent().status(Response.Status.OK).build();
   }
-  
-  
-  
-  
-  
-  
-  
+
+
+
 }

@@ -15,7 +15,7 @@ import net.explorviz.settings.model.Setting;
 public class SettingJsonApiDeserializer implements MessageBodyReader<Setting> {
 
   private final ResourceConverter converter;
-  
+
   @Inject
   public SettingJsonApiDeserializer(final ResourceConverter converter) {
     this.converter = converter;

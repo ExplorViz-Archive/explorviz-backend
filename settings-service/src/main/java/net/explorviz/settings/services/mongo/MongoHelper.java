@@ -53,8 +53,8 @@ public class MongoHelper { // NOPMD
     } else {
       throw new IllegalStateException("Onl y one instance allowed");
     }
-    
-    
+
+
   }
 
   /**
