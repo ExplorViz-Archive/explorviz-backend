@@ -61,6 +61,8 @@ public class MongoReplayRepositoryTest {
     final Landscape landscape = LandscapeDummyCreator.createDummyLandscape(idGenerator);
     this.repo.save(ts, landscape, 0);
 
+    System.out.println("test " + this.repo.getByTimestamp(ts));
+
     final Landscape landscapeRetrieved = this.repo.getByTimestamp(ts);
 
     assertEquals("Ids don't match", landscape.getId(), landscapeRetrieved.getId()); // NOCS

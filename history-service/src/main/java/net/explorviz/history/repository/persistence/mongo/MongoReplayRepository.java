@@ -38,6 +38,7 @@ public class MongoReplayRepository implements ReplayRepository<Landscape> {
   @Override
   public Landscape getByTimestamp(final long timestamp) {
     final String jsonLandscape = this.repo.getByTimestamp(timestamp);
+    System.out.println(jsonLandscape);
     try {
       return this.serializationHelper.deserialize(jsonLandscape);
     } catch (final DocumentSerializationException e) {
