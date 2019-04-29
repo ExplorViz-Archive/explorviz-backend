@@ -13,7 +13,6 @@ import net.explorviz.shared.landscape.model.landscape.NodeGroup;
 import net.explorviz.shared.landscape.model.landscape.System;
 import net.explorviz.shared.landscape.model.store.Timestamp;
 
-
 /**
  * Creates a dummy landscape for developing or demo purposes.
  */
@@ -25,7 +24,6 @@ public final class LandscapeDummyCreator {
   public static int applicationId = 0;
   public static int formatFactor = 1024 * 1024 * 1024;
 
-  private static Landscape dummyLandscape = null;
   private static IdGenerator idGen;
 
 
@@ -41,13 +39,6 @@ public final class LandscapeDummyCreator {
    */
   public static Landscape createDummyLandscape(final IdGenerator idGen) {
 
-    // used from second execution on
-    if (dummyLandscape != null) {
-      dummyLandscape.getTimestamp().setTotalRequests(DummyLandscapeHelper.getRandomNum(500, 25000));
-      dummyLandscape.setId(idGen.generateId());
-      return dummyLandscape;
-    }
-
     LandscapeDummyCreator.idGen = idGen;
 
     final int randomRequestCount = DummyLandscapeHelper.getRandomNum(500, 25000);
@@ -56,6 +47,7 @@ public final class LandscapeDummyCreator {
         new Timestamp(LandscapeDummyCreator.idGen.generateId(),
             java.lang.System.currentTimeMillis(), randomRequestCount));
     landscape.getTimestamp().setTotalRequests(DummyLandscapeHelper.getRandomNum(500, 25000));
+
 
     DummyLandscapeHelper.idGen = LandscapeDummyCreator.idGen;
 
@@ -318,7 +310,6 @@ public final class LandscapeDummyCreator {
     DummyLandscapeHelper.createApplicationCommunication(provenance4, webshop, landscape, 100);
 
     landscape.createOutgoingApplicationCommunication();
-    dummyLandscape = landscape;
 
     return landscape;
   }
