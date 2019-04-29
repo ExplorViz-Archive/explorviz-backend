@@ -130,7 +130,7 @@ public class TimestampResource {
         return currentTimestamp;
       }
     }
-    return new Timestamp(this.idGen.generateId());
+    return new Timestamp(this.idGen.generateId(), java.lang.System.currentTimeMillis(), 0);
   }
 
 }

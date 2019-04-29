@@ -73,8 +73,8 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
   @PostConstruct
   public void init() {
 
-    this.internalLandscape =
-        new Landscape(this.idGen.generateId(), new Timestamp(this.idGen.generateId()));
+    this.internalLandscape = new Landscape(this.idGen.generateId(),
+        new Timestamp(this.idGen.generateId(), java.lang.System.currentTimeMillis(), 0));
 
     try {
       final Landscape l = this.deepCopy(this.internalLandscape);

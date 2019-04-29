@@ -50,8 +50,11 @@ public final class LandscapeDummyCreator {
 
     LandscapeDummyCreator.idGen = idGen;
 
+    final int randomRequestCount = DummyLandscapeHelper.getRandomNum(500, 25000);
+
     final Landscape landscape = new Landscape(LandscapeDummyCreator.idGen.generateId(),
-        new Timestamp(LandscapeDummyCreator.idGen.generateId()));
+        new Timestamp(LandscapeDummyCreator.idGen.generateId(),
+            java.lang.System.currentTimeMillis(), randomRequestCount));
     landscape.getTimestamp().setTotalRequests(DummyLandscapeHelper.getRandomNum(500, 25000));
 
     DummyLandscapeHelper.idGen = LandscapeDummyCreator.idGen;
