@@ -3,6 +3,7 @@ package net.explorviz.history.server.resources;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.ws.rs.GET;
@@ -12,7 +13,6 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import net.explorviz.history.repository.persistence.LandscapeRepository;
 import net.explorviz.history.repository.persistence.ReplayRepository;
-import net.explorviz.shared.common.idgen.IdGenerator;
 import net.explorviz.shared.landscape.model.landscape.Landscape;
 import net.explorviz.shared.landscape.model.store.Timestamp;
 
@@ -27,14 +27,11 @@ public class TimestampResource {
   private final LandscapeRepository<Landscape> landscapeRepo;
   private final ReplayRepository<Landscape> replayRepo;
 
-  private final IdGenerator idGen;
-
   @Inject
   public TimestampResource(final LandscapeRepository<Landscape> landscapeRepo,
-      final ReplayRepository<Landscape> replayRepo, final IdGenerator idGen) {
+      final ReplayRepository<Landscape> replayRepo) {
     this.landscapeRepo = landscapeRepo;
     this.replayRepo = replayRepo;
-    this.idGen = idGen;
   }
 
   /**
@@ -45,7 +42,7 @@ public class TimestampResource {
    *
    * @param afterTimestamp - a starting timestamp for the returned interval
    * @param intervalSize - the size of the interval
-   * @param returnUploadedTimestamps - the size of the interval
+   * @param returnUploadedTimestamps - switch between user-uploaded and service-generated timestamps
    * @return a filtered list of timestamps
    */
   @GET
@@ -54,11 +51,12 @@ public class TimestampResource {
       @QueryParam("intervalSize") final int intervalSize,
       @QueryParam("returnUploadedTimestamps") final boolean returnUploadedTimestamps) {
 
+    List<Timestamp> timestamps = this.landscapeRepo.getAllTimestamps();
+
     if (returnUploadedTimestamps) {
-      return this.replayRepo.getAllTimestamps();
+      timestamps = this.replayRepo.getAllTimestamps();
     }
 
-    final List<Timestamp> timestamps = this.landscapeRepo.getAllTimestamps();
     return this.filterTimestampsAfterTimestamp(timestamps, afterTimestamp, intervalSize);
 
   }
@@ -76,28 +74,33 @@ public class TimestampResource {
   private List<Timestamp> filterTimestampsAfterTimestamp(final List<Timestamp> allTimestamps,
       final long afterTimestamp, final int intervalSize) {
 
-    final int timestampListSize = allTimestamps.size();
-
     // search the passed timestamp
-    final Timestamp foundTimestamp = getTimestampPosition(allTimestamps, afterTimestamp);
-    final int foundTimestampPosition = allTimestamps.indexOf(foundTimestamp);
+    final Optional<Timestamp> potentialStartTimestamp =
+        getTimestampPosition(allTimestamps, afterTimestamp);
+
+    if (!potentialStartTimestamp.isPresent()) {
+      return new LinkedList<>();
+    }
+
+    final int potentialStartingPosition = allTimestamps.indexOf(potentialStartTimestamp.get());
 
     // no timestamp was found
-    if (foundTimestampPosition == -1) {
+    if (potentialStartingPosition == -1) {
       return new LinkedList<>();
     } else {
       try {
-        if (intervalSize == 0 || intervalSize > timestampListSize) {
-          // all timestamps starting at position
-          return allTimestamps.subList(foundTimestampPosition, timestampListSize);
+        final int totalTimestampListSize = allTimestamps.size();
+
+        if (intervalSize == 0 || intervalSize > totalTimestampListSize
+            || potentialStartingPosition + intervalSize > totalTimestampListSize) {
+          // return all timestamps starting at desired position
+          return allTimestamps.subList(potentialStartingPosition, totalTimestampListSize);
         } else {
-          if (foundTimestampPosition + intervalSize > timestampListSize) {
-            return allTimestamps.subList(foundTimestampPosition, timestampListSize);
-          } else {
-            return allTimestamps.subList(foundTimestampPosition,
-                foundTimestampPosition + intervalSize);
-          }
+          // return desired interval of timestamps
+          return allTimestamps.subList(potentialStartingPosition,
+              potentialStartingPosition + intervalSize);
         }
+
       } catch (final IllegalArgumentException e) {
         throw new WebApplicationException(e);
       }
@@ -105,14 +108,14 @@ public class TimestampResource {
   }
 
   /**
-   * Retrieves the a passed {@link Timestamp} within a list of timestamps if found, otherwise the
+   * Retrieves the passed {@link Timestamp} within a list of timestamps if found, otherwise the
    * following timestamp.
    *
    * @param timestamps - a list of timestamps
    * @param searchedTimestamp - a specific timestamp to be found
-   * @return a retrieved timestamp
+   * @return an Optional containing the retrieved timestamp or emptys
    */
-  private Timestamp getTimestampPosition(final List<Timestamp> timestamps,
+  private Optional<Timestamp> getTimestampPosition(final List<Timestamp> timestamps,
       final long searchedTimestamp) {
 
     final Iterator<Timestamp> iterator = timestamps.iterator();
@@ -123,14 +126,14 @@ public class TimestampResource {
 
       // searched timestamp found
       if (currentTimestamp.getTimestamp() == searchedTimestamp) {
-        return currentTimestamp;
+        return Optional.of(currentTimestamp);
 
         // next timestamp later than searched timestamp found
       } else if (currentTimestamp.getTimestamp() > searchedTimestamp) {
-        return currentTimestamp;
+        return Optional.of(currentTimestamp);
       }
     }
-    return new Timestamp(this.idGen.generateId(), java.lang.System.currentTimeMillis(), 0);
+    return Optional.empty();
   }
 
 }

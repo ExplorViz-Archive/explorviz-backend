@@ -57,9 +57,7 @@ public class TimestampResourceTest {
     when(this.landscapeRepo.getAllTimestamps()).thenReturn(this.serviceGeneratedTimestamps);
     when(this.replayRepo.getAllTimestamps()).thenReturn(this.userUploadedTimestamps);
 
-    when(this.idGen.generateId()).thenReturn("42");
-
-    timestampResource = new TimestampResource(landscapeRepo, replayRepo, idGen);
+    timestampResource = new TimestampResource(landscapeRepo, replayRepo);
 
   }
 
