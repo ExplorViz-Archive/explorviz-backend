@@ -6,24 +6,26 @@ import net.explorviz.kiekeradapter.filter.teetime.KiekerToExplorVizTransformStag
 import teetime.framework.Configuration;
 
 /**
- * Teetime Pipe and Filter configuration for the kiekeradapter
- *
- * @author Christian Zirkelbach (czi@informatik.uni-kiel.de)
- *
+ * Teetime Pipe and Filter configuration for the kiekeradapter.
  */
 public class StageConfiguration extends Configuration {
 
-  final int tcpReaderInputPort = 10133;
-  final int tcpReaderBufferSize = 1024;
+  private static final int TCP_READER_INPUT_PORT = 10_133;
+  private static final int TCP_READER_BUFFER_SIZE = 1024;
 
+  /**
+   * Custom {@link Configuration} class for TeeTime Pipe and Filter Execution.
+   */
   public StageConfiguration() {
-    final MultipleConnectionTcpSourceStage tcpReaderStage = new MultipleConnectionTcpSourceStage(
-        this.tcpReaderInputPort, this.tcpReaderBufferSize, new NoneTraceMetadataRewriter());
+    super();
+    final MultipleConnectionTcpSourceStage tcpReaderStage =
+        new MultipleConnectionTcpSourceStage(StageConfiguration.TCP_READER_INPUT_PORT,
+            StageConfiguration.TCP_READER_BUFFER_SIZE, new NoneTraceMetadataRewriter());
 
-    final KiekerToExplorVizTransformStage kiekerToExplorVizTransformStage =
+    final KiekerToExplorVizTransformStage kiekerToExplTransformStage =
         new KiekerToExplorVizTransformStage();
 
     this.connectPorts(tcpReaderStage.getOutputPort(),
-        kiekerToExplorVizTransformStage.getInputPort());
+        kiekerToExplTransformStage.getInputPort());
   }
 }

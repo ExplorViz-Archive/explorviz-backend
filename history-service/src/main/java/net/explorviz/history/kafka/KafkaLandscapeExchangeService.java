@@ -66,10 +66,11 @@ public class KafkaLandscapeExchangeService implements Runnable {
   public void run() {
     LOGGER.info("Starting Kafka Exchange \n");
 
-    kafkaConsumer.subscribe(Arrays.asList(kafkaTopic));
+    this.kafkaConsumer.subscribe(Arrays.asList(this.kafkaTopic));
 
     while (true) {
-      final ConsumerRecords<String, String> records = kafkaConsumer.poll(Duration.ofMillis(100));
+      final ConsumerRecords<String, String> records =
+          this.kafkaConsumer.poll(Duration.ofMillis(100));
 
       for (final ConsumerRecord<String, String> record : records) {
 
@@ -85,7 +86,7 @@ public class KafkaLandscapeExchangeService implements Runnable {
           continue;
         }
 
-        mongoLandscapeRepo.save(l.getTimestamp().getTimestamp(), l,
+        this.mongoLandscapeRepo.save(l.getTimestamp().getTimestamp(), l,
             l.getTimestamp().getTotalRequests());
       }
     }

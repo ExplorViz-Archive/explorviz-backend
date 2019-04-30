@@ -76,7 +76,7 @@ public class TimestampResource {
 
     // search the passed timestamp
     final Optional<Timestamp> potentialStartTimestamp =
-        getTimestampPosition(allTimestamps, afterTimestamp);
+        this.getTimestampPosition(allTimestamps, afterTimestamp);
 
     if (!potentialStartTimestamp.isPresent()) {
       return new LinkedList<>();

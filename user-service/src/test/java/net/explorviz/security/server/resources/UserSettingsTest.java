@@ -1,7 +1,6 @@
 package net.explorviz.security.server.resources;
 
 import static org.junit.Assert.assertEquals;
-
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import net.explorviz.security.server.main.DependencyInjectionBinder;
@@ -55,7 +54,8 @@ public class UserSettingsTest {
     this.userCrudService.saveNewEntity(u);
 
     final User u1 = this.userCrudService.getEntityById(u.getId()).orElse(null);
-    assertEquals(0.5, u1.getSettings().getNumericAttributes().get("appVizTransparencyIntensity"),
+    assertEquals(0.5,
+        u1.getSettings().getNumericAttributes().get("appVizTransparencyIntensity"),
         0.0001);
   }
 

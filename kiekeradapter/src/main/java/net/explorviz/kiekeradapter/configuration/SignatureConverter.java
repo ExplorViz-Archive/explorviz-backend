@@ -3,10 +3,8 @@ package net.explorviz.kiekeradapter.configuration;
 import kieker.common.record.flow.trace.operation.BeforeOperationEvent;
 
 /**
- * Interface providing a signature converter for Explorviz records
- * @author Christian Zirkelbach (czi@informatik.uni-kiel.de)
- *
+ * Interface providing a signature converter for Explorviz records.
  */
 public interface SignatureConverter {
-	public String convertSignatureToExplorViz(final BeforeOperationEvent kiekerBefore);
+  String convertSignatureToExplorViz(final BeforeOperationEvent kiekerBefore);
 }

@@ -41,7 +41,7 @@ public class SetupApplicationListener implements ApplicationEventListener {
 
   private void startHistoryBackend() {
 
-    new Thread(landscapeExchangeService).start();
+    new Thread(this.landscapeExchangeService).start();
 
     LOGGER.info("\n");
     LOGGER.info("* * * * * * * * * * * * * * * * * * *\n"); // NOCS

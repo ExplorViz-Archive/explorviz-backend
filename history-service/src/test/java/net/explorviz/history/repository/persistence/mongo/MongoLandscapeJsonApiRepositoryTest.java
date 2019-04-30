@@ -58,7 +58,7 @@ public class MongoLandscapeJsonApiRepositoryTest {
   @Test
   public void findByTimestamp() {
     final long ts = System.currentTimeMillis();
-    final Landscape landscape = LandscapeDummyCreator.createDummyLandscape(idGenerator);
+    final Landscape landscape = LandscapeDummyCreator.createDummyLandscape(this.idGenerator);
     this.repo.save(ts, landscape, 0);
 
     final String rawLandscape = this.repo.getByTimestamp(ts);
@@ -68,9 +68,9 @@ public class MongoLandscapeJsonApiRepositoryTest {
 
   @Test
   public void testFindById() {
-    final Landscape landscape = LandscapeDummyCreator.createDummyLandscape(idGenerator);
+    final Landscape landscape = LandscapeDummyCreator.createDummyLandscape(this.idGenerator);
     final long ts = System.currentTimeMillis();
-    final Landscape landscape2 = LandscapeDummyCreator.createDummyLandscape(idGenerator);
+    final Landscape landscape2 = LandscapeDummyCreator.createDummyLandscape(this.idGenerator);
     final long ts2 = ts + 1;
     this.repo.save(ts, landscape, 0);
     this.repo.save(ts2, landscape2, 0);
@@ -87,7 +87,7 @@ public class MongoLandscapeJsonApiRepositoryTest {
     final Random rand = new Random();
     final long ts = System.currentTimeMillis();
     final int requests = rand.nextInt(Integer.MAX_VALUE) + 1;
-    final Landscape landscape = LandscapeDummyCreator.createDummyLandscape(idGenerator);
+    final Landscape landscape = LandscapeDummyCreator.createDummyLandscape(this.idGenerator);
     this.repo.save(ts, landscape, requests);
 
     final int retrievedRequests = this.repo.getTotalRequests(ts);
@@ -96,9 +96,9 @@ public class MongoLandscapeJsonApiRepositoryTest {
 
   @Test
   public void testAllTimestamps() {
-    final Landscape landscape = LandscapeDummyCreator.createDummyLandscape(idGenerator);
+    final Landscape landscape = LandscapeDummyCreator.createDummyLandscape(this.idGenerator);
     final long ts = System.currentTimeMillis();
-    final Landscape landscape2 = LandscapeDummyCreator.createDummyLandscape(idGenerator);
+    final Landscape landscape2 = LandscapeDummyCreator.createDummyLandscape(this.idGenerator);
     final long ts2 = ts + 1;
     this.repo.save(ts, landscape, 0);
     this.repo.save(ts2, landscape2, 0);
@@ -110,10 +110,10 @@ public class MongoLandscapeJsonApiRepositoryTest {
   @Test
   public void testCleanup() {
 
-    final Landscape landscapeOld = LandscapeDummyCreator.createDummyLandscape(idGenerator);
+    final Landscape landscapeOld = LandscapeDummyCreator.createDummyLandscape(this.idGenerator);
     final long ts1 = 1546300800L; // NOPMD
 
-    final Landscape landscapeNew = LandscapeDummyCreator.createDummyLandscape(idGenerator);
+    final Landscape landscapeNew = LandscapeDummyCreator.createDummyLandscape(this.idGenerator);
     final long ts2 = System.currentTimeMillis();
 
     this.repo.save(ts1, landscapeOld, 0);

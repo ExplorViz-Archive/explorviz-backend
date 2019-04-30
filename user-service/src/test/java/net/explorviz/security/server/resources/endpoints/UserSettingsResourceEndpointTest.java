@@ -1,7 +1,6 @@
 package net.explorviz.security.server.resources.endpoints;
 
 import static org.junit.Assert.assertEquals;
-
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.ws.rs.ForbiddenException;
@@ -45,7 +44,9 @@ public class UserSettingsResourceEndpointTest extends EndpointTest {
 
   @Override
   protected void overrideTestBindings(final DependencyInjectionBinder binder) {
-    binder.bindFactory(TestDatasourceFactory.class).to(Datastore.class).in(Singleton.class)
+    binder.bindFactory(TestDatasourceFactory.class)
+        .to(Datastore.class)
+        .in(Singleton.class)
         .ranked(2);
   }
 
@@ -64,9 +65,13 @@ public class UserSettingsResourceEndpointTest extends EndpointTest {
       @Override
       public void configure() {
         super.configure();
-        this.bind(UserMongoCrudService.class).to(UserMongoCrudService.class).in(Singleton.class)
+        this.bind(UserMongoCrudService.class)
+            .to(UserMongoCrudService.class)
+            .in(Singleton.class)
             .ranked(10);
-        this.bindFactory(TestDatasourceFactory.class).to(Datastore.class).in(Singleton.class)
+        this.bindFactory(TestDatasourceFactory.class)
+            .to(Datastore.class)
+            .in(Singleton.class)
             .ranked(2);
       }
     };
@@ -76,8 +81,10 @@ public class UserSettingsResourceEndpointTest extends EndpointTest {
   @Test
   public void checkDefaultSettings() {
 
-    final byte[] rawResponseBody = this.target(URL_PATH).request()
-        .header(HttpHeader.AUTHORIZATION.asString(), this.getAdminToken()).get(byte[].class);
+    final byte[] rawResponseBody = this.target(URL_PATH)
+        .request()
+        .header(HttpHeader.AUTHORIZATION.asString(), this.getAdminToken())
+        .get(byte[].class);
 
     final UserSettings obtainedUserSettings =
         this.getJsonApiConverter().readDocument(rawResponseBody, UserSettings.class).get();
@@ -88,8 +95,10 @@ public class UserSettingsResourceEndpointTest extends EndpointTest {
   @Test(expected = ForbiddenException.class)
   public void checkDefaultSettingsAsNormie() {
 
-    this.target(URL_PATH).request()
-        .header(HttpHeader.AUTHORIZATION.asString(), this.getNormieToken()).get(String.class);
+    this.target(URL_PATH)
+        .request()
+        .header(HttpHeader.AUTHORIZATION.asString(), this.getNormieToken())
+        .get(String.class);
   }
 
 
@@ -108,8 +117,10 @@ public class UserSettingsResourceEndpointTest extends EndpointTest {
     final String path = URL_PATH + user.getId();
 
 
-    final byte[] rawResponseBody = this.target(path).request()
-        .header(HttpHeader.AUTHORIZATION.asString(), token).get(byte[].class);
+    final byte[] rawResponseBody = this.target(path)
+        .request()
+        .header(HttpHeader.AUTHORIZATION.asString(), token)
+        .get(byte[].class);
 
     final UserSettings obtainedUserSettings =
         this.getJsonApiConverter().readDocument(rawResponseBody, UserSettings.class).get();

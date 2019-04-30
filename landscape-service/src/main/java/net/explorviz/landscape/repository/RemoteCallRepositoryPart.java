@@ -66,9 +66,10 @@ public class RemoteCallRepositoryPart {
 
       this.sentRemoteCallRecordCache.put(sentRemoteCallRecord, remoteRecordBuffer);
     } else {
-      this.seekOrCreateAppCommunication(potentialNewAppCommuId, sentRemoteCallRecord, receivedRecord,
-          callerClazz, this.receivedRemoteCallRecordCache.get(receivedRecord).getBelongingClazz(),
-          landscape, inserter, runtimeIndex);
+      this.seekOrCreateAppCommunication(potentialNewAppCommuId, sentRemoteCallRecord,
+          receivedRecord, callerClazz,
+          this.receivedRemoteCallRecordCache.get(receivedRecord).getBelongingClazz(), landscape,
+          inserter, runtimeIndex);
 
       this.receivedRemoteCallRecordCache.remove(receivedRecord);
     }
@@ -86,7 +87,8 @@ public class RemoteCallRepositoryPart {
 
       this.receivedRemoteCallRecordCache.put(receivedRemoteCallRecord, remoteRecordBuffer);
     } else {
-      this.seekOrCreateAppCommunication(potentialNewAppCommuId, sentRecord, receivedRemoteCallRecord,
+      this.seekOrCreateAppCommunication(potentialNewAppCommuId, sentRecord,
+          receivedRemoteCallRecord,
           this.sentRemoteCallRecordCache.get(sentRecord).getBelongingClazz(), firstReceiverClazz,
           landscape, inserter, runtimeIndex);
 
