@@ -1,12 +1,11 @@
 package net.explorviz.history.server.resources;
 
-import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.ws.rs.GET;
+import javax.ws.rs.NotFoundException;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
@@ -57,83 +56,77 @@ public class TimestampResource {
       timestamps = this.replayRepo.getAllTimestamps();
     }
 
-    return this.filterTimestampsAfterTimestamp(timestamps, afterTimestamp, intervalSize);
+    return this.getTimestampInterval(timestamps, afterTimestamp, intervalSize);
 
+
+    // TODO can we use overloading (regarding QueryParam) in JAX-RS
   }
 
 
   /**
-   * Retrieves timestamps AFTER a passed
-   * {@link net.explorviz.shared.landscape.model.store.Timestamp}.
+   * Get an interval (List) of {@link net.explorviz.shared.landscape.model.store.Timestamp} starting
+   * at a passed timestamp value.
    *
-   * @param allTimestamps - All timestamps within the system
-   * @param afterTimestamp - Define the timestamp which sets the limit
-   * @param intervalSize - The number of retrieved timestamps
+   * @param allTimestamps - timestamp list
+   * @param afterTimestamp - Starting point of interval
+   * @param intervalSize - The number of retrieved timestamps, if 0 or bigger that (partial) list,
+   *        then returns all following timestamps
    * @return List of Timestamp
    */
-  private List<Timestamp> filterTimestampsAfterTimestamp(final List<Timestamp> allTimestamps,
-      final long afterTimestamp, final int intervalSize) {
+  private List<Timestamp> getTimestampInterval(final List<Timestamp> allTimestamps,
+      final long afterTimestamp, int intervalSize) {
 
     // search the passed timestamp
     final Optional<Timestamp> potentialStartTimestamp =
         this.getTimestampPosition(allTimestamps, afterTimestamp);
 
     if (!potentialStartTimestamp.isPresent()) {
-      return new LinkedList<>();
+      throw new NotFoundException("The passed timestamp value does not exist in the system.");
     }
 
     final int potentialStartingPosition = allTimestamps.indexOf(potentialStartTimestamp.get());
 
-    // no timestamp was found
-    if (potentialStartingPosition == -1) {
-      return new LinkedList<>();
-    } else {
-      try {
-        final int totalTimestampListSize = allTimestamps.size();
+    final int totalTimestampListSize = allTimestamps.size();
 
-        if (intervalSize == 0 || intervalSize > totalTimestampListSize
-            || potentialStartingPosition + intervalSize > totalTimestampListSize) {
-          // return all timestamps starting at desired position
-          return allTimestamps.subList(potentialStartingPosition, totalTimestampListSize);
-        } else {
-          // return desired interval of timestamps
-          return allTimestamps.subList(potentialStartingPosition,
-              potentialStartingPosition + intervalSize);
-        }
-
-      } catch (final IllegalArgumentException e) {
-        throw new WebApplicationException(e);
-      }
+    // intervalSize shorten by one, since starting point does also count
+    if (intervalSize >= 2) {
+      intervalSize -= 1;
     }
+
+    try {
+      if (intervalSize == 0 || intervalSize > totalTimestampListSize
+          || potentialStartingPosition + intervalSize > totalTimestampListSize) {
+        // return all timestamps starting at desired position
+        return allTimestamps.subList(potentialStartingPosition, totalTimestampListSize);
+      } else {
+        // return exact desired interval of timestamps
+        return allTimestamps.subList(potentialStartingPosition,
+            potentialStartingPosition + intervalSize);
+      }
+    } catch (final IllegalArgumentException e) {
+      throw new WebApplicationException(
+          "Your timestamp interval could not be processed. This shouldn't happen.", e);
+    }
+
   }
 
   /**
-   * Retrieves the passed {@link Timestamp} within a list of timestamps if found, otherwise the
-   * following timestamp.
+   * Retrieves the passed {@link Timestamp} within a list of timestamps if found.
    *
    * @param timestamps - a list of timestamps
    * @param searchedTimestamp - a specific timestamp to be found
-   * @return an Optional containing the retrieved timestamp or emptys
+   * @return an Optional containing the retrieved timestamp or empty
    */
   private Optional<Timestamp> getTimestampPosition(final List<Timestamp> timestamps,
       final long searchedTimestamp) {
 
-    final Iterator<Timestamp> iterator = timestamps.iterator();
-
-    while (iterator.hasNext()) {
-
-      final Timestamp currentTimestamp = iterator.next();
-
-      // searched timestamp found
-      if (currentTimestamp.getTimestamp() == searchedTimestamp) {
-        return Optional.of(currentTimestamp);
-
-        // next timestamp later than searched timestamp found
-      } else if (currentTimestamp.getTimestamp() > searchedTimestamp) {
-        return Optional.of(currentTimestamp);
+    for (final Timestamp t : timestamps) {
+      if (t.getTimestamp() == searchedTimestamp) {
+        return Optional.of(t);
       }
     }
     return Optional.empty();
   }
+
 
 }
