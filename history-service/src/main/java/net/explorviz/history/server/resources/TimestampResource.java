@@ -23,6 +23,8 @@ import net.explorviz.shared.landscape.model.store.Timestamp;
 @RolesAllowed({"admin"})
 public class TimestampResource {
 
+  private static final long DEFAULT_QUERY_VALUE_TIMESTAMP = 0L;
+
   private final LandscapeRepository<Landscape> landscapeRepo;
   private final ReplayRepository<Landscape> replayRepo;
 
@@ -39,14 +41,14 @@ public class TimestampResource {
    * parameters, whereas the existence of the "returnUploadedTimestamps" query parameter has the
    * highest priority, i.e., the list of user-uploaded timestamps will be returned.
    *
-   * @param afterTimestamp - a starting timestamp for the returned interval
+   * @param startTimestamp - a starting timestamp for the returned interval
    * @param intervalSize - the size of the interval
    * @param returnUploadedTimestamps - switch between user-uploaded and service-generated timestamps
    * @return a filtered list of timestamps
    */
   @GET
   @Produces("application/vnd.api+json")
-  public List<Timestamp> getTimestamps(@QueryParam("afterTimestamp") final long afterTimestamp,
+  public List<Timestamp> getTimestamps(@QueryParam("startTimestamp") final long startTimestamp,
       @QueryParam("intervalSize") final int intervalSize,
       @QueryParam("returnUploadedTimestamps") final boolean returnUploadedTimestamps) {
 
@@ -56,10 +58,7 @@ public class TimestampResource {
       timestamps = this.replayRepo.getAllTimestamps();
     }
 
-    return this.getTimestampInterval(timestamps, afterTimestamp, intervalSize);
-
-
-    // TODO can we use overloading (regarding QueryParam) in JAX-RS
+    return this.getTimestampInterval(timestamps, startTimestamp, intervalSize);
   }
 
 
@@ -74,7 +73,11 @@ public class TimestampResource {
    * @return List of Timestamp
    */
   private List<Timestamp> getTimestampInterval(final List<Timestamp> allTimestamps,
-      final long afterTimestamp, int intervalSize) {
+      final long afterTimestamp, final int intervalSize) {
+
+    if (afterTimestamp == DEFAULT_QUERY_VALUE_TIMESTAMP) {
+      return allTimestamps;
+    }
 
     // search the passed timestamp
     final Optional<Timestamp> potentialStartTimestamp =
@@ -88,20 +91,22 @@ public class TimestampResource {
 
     final int totalTimestampListSize = allTimestamps.size();
 
+    int updatedIntervalSize = intervalSize;
+
     // intervalSize shorten by one, since starting point does also count
-    if (intervalSize >= 2) {
-      intervalSize -= 1;
+    if (intervalSize >= 2) { // NOPMD
+      updatedIntervalSize -= 1;
     }
 
     try {
-      if (intervalSize == 0 || intervalSize > totalTimestampListSize
-          || potentialStartingPosition + intervalSize > totalTimestampListSize) {
+      if (updatedIntervalSize == 0 || updatedIntervalSize > totalTimestampListSize
+          || potentialStartingPosition + updatedIntervalSize > totalTimestampListSize) {
         // return all timestamps starting at desired position
         return allTimestamps.subList(potentialStartingPosition, totalTimestampListSize);
       } else {
         // return exact desired interval of timestamps
         return allTimestamps.subList(potentialStartingPosition,
-            potentialStartingPosition + intervalSize);
+            potentialStartingPosition + updatedIntervalSize);
       }
     } catch (final IllegalArgumentException e) {
       throw new WebApplicationException(

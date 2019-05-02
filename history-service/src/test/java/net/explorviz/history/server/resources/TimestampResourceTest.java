@@ -1,16 +1,17 @@
 package net.explorviz.history.server.resources;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.List;
+import javax.ws.rs.NotFoundException;
 import net.explorviz.history.repository.persistence.LandscapeRepository;
 import net.explorviz.history.repository.persistence.ReplayRepository;
 import net.explorviz.shared.landscape.model.landscape.Landscape;
 import net.explorviz.shared.landscape.model.store.Timestamp;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -65,7 +66,6 @@ public class TimestampResourceTest {
   }
 
   @Test
-  @Disabled
   @DisplayName("Return all service generated timestamps.")
   public void giveAllServiceGenerated() {
     assertEquals(this.serviceGeneratedTimestamps,
@@ -74,7 +74,6 @@ public class TimestampResourceTest {
   }
 
   @Test
-  @Disabled
   @DisplayName("Return all user uploaded timestamps.")
   public void giveAllUserUploadedOnlyFlag() {
     assertEquals(this.userUploadedTimestamps, this.timestampResource.getTimestamps(0L, 0, true),
@@ -82,16 +81,23 @@ public class TimestampResourceTest {
   }
 
   @Test
-  @Disabled
   @DisplayName("Return all service generated timestamps, which come after the passed one.")
   public void giveAllServiceTimestampsAfterPassedTimestamp() {
-    assertEquals(this.serviceGeneratedTimestamps,
-        this.timestampResource.getTimestamps(5L, 42, true), // NOCS
+
+    final List<Timestamp> resultList =
+        this.timestampResource.getTimestamps(1_556_302_820L, 0, false);
+
+    final List<Timestamp> expectedList = new ArrayList<>();
+    expectedList.add(new Timestamp("3", 1_556_302_820L, 500)); // NOCS
+    expectedList.add(new Timestamp("4", 1_556_302_830L, 600)); // NOCS
+    expectedList.add(new Timestamp("5", 1_556_302_840L, 700)); // NOCS
+    expectedList.add(new Timestamp("6", 1_556_302_850L, 800)); // NOCS
+
+    assertEquals(expectedList, resultList, // NOCS
         "Invalid return value for filtered service generated timestamps.");
   }
 
   @Test
-  @Disabled
   @DisplayName("Return all user uploaded timestamps, which come after the passed one.")
   public void giveAllUserUploadedAllParams() {
 
@@ -104,20 +110,26 @@ public class TimestampResourceTest {
     expectedList.add(new Timestamp("11", 1_556_302_900L, 1000)); // NOCS
     expectedList.add(new Timestamp("12", 1_556_302_910L, 1100)); // NOCS
 
-    // TODO equals in Timestamp class
-
     assertEquals(expectedList, resultList, // NOCS
         "Invalid return value for filtered user uploaded timestamps.");
   }
 
   @Test
-  @Disabled
-  @DisplayName("Unknown passed timestamp throws exception.")
-  public void throwExceptionOnUnknownTimestamp() {
-    assertEquals(this.serviceGeneratedTimestamps,
-        this.timestampResource.getTimestamps(5L, 42, true), // NOCS
-        "Error on expected exception.");
+  @DisplayName("Unknown passed user-uploaded timestamp throws exception.")
+  public void throwExceptionOnUnknownUserTimestamp() {
+    assertThrows(NotFoundException.class, () -> {
+      this.timestampResource.getTimestamps(5L, 42, true); // NOCS
+    });
   }
 
-  // TODO afterTimestamp and interval
+  @Test
+  @DisplayName("Unknown passed service-generated timestamp throws exception.")
+  public void throwExceptionOnUnknownServiceTimestamp() {
+    assertThrows(NotFoundException.class, () -> {
+      this.timestampResource.getTimestamps(5L, 42, false); // NOCS
+    });
+  }
+
+  // TODO Tests for interval sizes (valid, negative etc.)
+
 }
