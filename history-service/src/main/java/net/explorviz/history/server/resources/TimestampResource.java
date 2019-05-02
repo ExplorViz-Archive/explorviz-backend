@@ -4,12 +4,12 @@ import java.util.List;
 import java.util.Optional;
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
+import javax.ws.rs.BadRequestException;
 import javax.ws.rs.GET;
 import javax.ws.rs.NotFoundException;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
-import javax.ws.rs.WebApplicationException;
 import net.explorviz.history.repository.persistence.LandscapeRepository;
 import net.explorviz.history.repository.persistence.ReplayRepository;
 import net.explorviz.shared.landscape.model.landscape.Landscape;
@@ -23,7 +23,7 @@ import net.explorviz.shared.landscape.model.store.Timestamp;
 @RolesAllowed({"admin"})
 public class TimestampResource {
 
-  private static final long DEFAULT_QUERY_VALUE_TIMESTAMP = 0L;
+  private static final long DEFAULT_VALUE_TIMESTAMP = 0L;
 
   private final LandscapeRepository<Landscape> landscapeRepo;
   private final ReplayRepository<Landscape> replayRepo;
@@ -68,15 +68,19 @@ public class TimestampResource {
    *
    * @param allTimestamps - timestamp list
    * @param afterTimestamp - Starting point of interval
-   * @param intervalSize - The number of retrieved timestamps, if 0 or bigger that (partial) list,
-   *        then returns all following timestamps
+   * @param intervalSize - The number of retrieved timestamps, if 0 or bigger than size of (partial)
+   *        list, then returns all following timestamps
    * @return List of Timestamp
    */
   private List<Timestamp> getTimestampInterval(final List<Timestamp> allTimestamps,
       final long afterTimestamp, final int intervalSize) {
 
-    if (afterTimestamp == DEFAULT_QUERY_VALUE_TIMESTAMP) {
+    if (afterTimestamp == DEFAULT_VALUE_TIMESTAMP) {
       return allTimestamps;
+    }
+
+    if (intervalSize < 0) {
+      throw new BadRequestException("Interval size must not be negative.");
     }
 
     // search the passed timestamp
@@ -91,29 +95,17 @@ public class TimestampResource {
 
     final int totalTimestampListSize = allTimestamps.size();
 
-    int updatedIntervalSize = intervalSize;
 
-    // intervalSize shorten by one, since starting point does also count
-    if (intervalSize >= 2) { // NOPMD
-      updatedIntervalSize -= 1;
+    if (intervalSize == 0 || potentialStartingPosition + intervalSize > totalTimestampListSize) {
+      // return all timestamps starting at desired position
+      return allTimestamps.subList(potentialStartingPosition, totalTimestampListSize);
+    } else {
+      // return exact desired interval of timestamps
+      return allTimestamps.subList(potentialStartingPosition,
+          potentialStartingPosition + intervalSize);
     }
-
-    try {
-      if (updatedIntervalSize == 0 || updatedIntervalSize > totalTimestampListSize
-          || potentialStartingPosition + updatedIntervalSize > totalTimestampListSize) {
-        // return all timestamps starting at desired position
-        return allTimestamps.subList(potentialStartingPosition, totalTimestampListSize);
-      } else {
-        // return exact desired interval of timestamps
-        return allTimestamps.subList(potentialStartingPosition,
-            potentialStartingPosition + updatedIntervalSize);
-      }
-    } catch (final IllegalArgumentException e) {
-      throw new WebApplicationException(
-          "Your timestamp interval could not be processed. This shouldn't happen.", e);
-    }
-
   }
+
 
   /**
    * Retrieves the passed {@link Timestamp} within a list of timestamps if found.
