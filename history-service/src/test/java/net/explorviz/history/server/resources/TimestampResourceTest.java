@@ -71,15 +71,42 @@ public class TimestampResourceTest {
   @DisplayName("Return all service-generated timestamps.")
   public void giveAllServiceGenerated() {
     assertEquals(this.serviceGeneratedTimestamps,
-        this.timestampResource.getTimestamps(0L, 0, false),
+        this.timestampResource.getTimestamps(0L, 0, false, 0),
         "No params returned wrong value for timestamp resource.");
   }
 
   @Test
   @DisplayName("Return all user-uploaded timestamps.")
   public void giveAllUserUploadedOnlyFlag() {
-    assertEquals(this.userUploadedTimestamps, this.timestampResource.getTimestamps(0L, 0, true),
-        "user-uploaded flag returned wrong value for timestamp resource.");
+    assertEquals(this.userUploadedTimestamps, this.timestampResource.getTimestamps(0L, 0, true, 0),
+        "User-uploaded flag returned wrong value for timestamp resource.");
+  }
+
+  @Test
+  @DisplayName("Return first two service-generated timestamps.")
+  public void giveServiceGeneratedBasedOnMaxLength() {
+
+    final List<Timestamp> resultList = this.timestampResource.getTimestamps(0L, 0, false, 2);
+
+    final List<Timestamp> expectedList = new ArrayList<>();
+    expectedList.add(new Timestamp("1", 1_556_302_800L, 300)); // NOCS
+    expectedList.add(new Timestamp("2", 1_556_302_810L, 400)); // NOCS
+
+    assertEquals(expectedList, resultList, "MaxLength returned wrong value.");
+  }
+
+  @Test
+  @DisplayName("Return first two user-uploaded timestamps.")
+  public void giveUserUploadedOnlyFlagBasedOnMaxLength() {
+
+    final List<Timestamp> resultList = this.timestampResource.getTimestamps(0L, 0, true, 2);
+
+    final List<Timestamp> expectedList = new ArrayList<>();
+    expectedList.add(new Timestamp("7", 1_556_302_860L, 600)); // NOCS
+    expectedList.add(new Timestamp("8", 1_556_302_870L, 700)); // NOCS
+
+    assertEquals(expectedList, resultList,
+        "User-uploaded flag and maxLength returned wrong value.");
   }
 
   @Test
@@ -87,7 +114,7 @@ public class TimestampResourceTest {
   public void giveAllServiceTimestampsAfterPassedTimestamp() {
 
     final List<Timestamp> resultList =
-        this.timestampResource.getTimestamps(1_556_302_820L, 0, false);
+        this.timestampResource.getTimestamps(1_556_302_820L, 0, false, 0);
 
     final List<Timestamp> expectedList = new ArrayList<>();
     expectedList.add(new Timestamp("3", 1_556_302_820L, 500)); // NOCS
@@ -95,7 +122,7 @@ public class TimestampResourceTest {
     expectedList.add(new Timestamp("5", 1_556_302_840L, 700)); // NOCS
     expectedList.add(new Timestamp("6", 1_556_302_850L, 800)); // NOCS
 
-    assertEquals(expectedList, resultList, // NOCS
+    assertEquals(expectedList, resultList,
         "Invalid return value for filtered service-generated timestamps.");
   }
 
@@ -104,7 +131,7 @@ public class TimestampResourceTest {
   public void giveAllUserUploadedAllParams() {
 
     final List<Timestamp> resultList =
-        this.timestampResource.getTimestamps(1_556_302_880L, 0, true);
+        this.timestampResource.getTimestamps(1_556_302_880L, 0, true, 0);
 
     final List<Timestamp> expectedList = new ArrayList<>();
     expectedList.add(new Timestamp("9", 1_556_302_880L, 800)); // NOCS
@@ -112,7 +139,7 @@ public class TimestampResourceTest {
     expectedList.add(new Timestamp("11", 1_556_302_900L, 1000)); // NOCS
     expectedList.add(new Timestamp("12", 1_556_302_910L, 1100)); // NOCS
 
-    assertEquals(expectedList, resultList, // NOCS
+    assertEquals(expectedList, resultList,
         "Invalid return value for filtered user-uploaded timestamps.");
   }
 
@@ -121,14 +148,14 @@ public class TimestampResourceTest {
   public void giveConcreteIntervalOfUserUploadedTimestamps() {
 
     final List<Timestamp> resultList =
-        this.timestampResource.getTimestamps(1_556_302_880L, 3, true);
+        this.timestampResource.getTimestamps(1_556_302_880L, 3, true, 0);
 
     final List<Timestamp> expectedList = new ArrayList<>();
     expectedList.add(new Timestamp("9", 1_556_302_880L, 800)); // NOCS
     expectedList.add(new Timestamp("10", 1_556_302_890L, 900)); // NOCS
     expectedList.add(new Timestamp("11", 1_556_302_900L, 1000)); // NOCS
 
-    assertEquals(expectedList, resultList, // NOCS
+    assertEquals(expectedList, resultList,
         "Invalid return value for concrete interval of user-uploaded timestamps.");
   }
 
@@ -137,7 +164,7 @@ public class TimestampResourceTest {
   public void giveRemainingIntervalOfUserUploadedTimestamps() {
 
     final List<Timestamp> resultList =
-        this.timestampResource.getTimestamps(1_556_302_880L, 100, true);
+        this.timestampResource.getTimestamps(1_556_302_880L, 100, true, 0);
 
     final List<Timestamp> expectedList = new ArrayList<>();
     expectedList.add(new Timestamp("9", 1_556_302_880L, 800)); // NOCS
@@ -146,7 +173,7 @@ public class TimestampResourceTest {
     expectedList.add(new Timestamp("12", 1_556_302_910L, 1100)); // NOCS
 
 
-    assertEquals(expectedList, resultList, // NOCS
+    assertEquals(expectedList, resultList,
         "Invalid return value for remaining interval of user-uploaded timestamps.");
   }
 
@@ -155,7 +182,7 @@ public class TimestampResourceTest {
   public void giveConcreteIntervalOfServiceGeneratedTimestamps() {
 
     final List<Timestamp> resultList =
-        this.timestampResource.getTimestamps(1_556_302_810L, 100, false);
+        this.timestampResource.getTimestamps(1_556_302_810L, 100, false, 0);
 
     final List<Timestamp> expectedList = new ArrayList<>();
     expectedList.add(new Timestamp("2", 1_556_302_810L, 400)); // NOCS
@@ -165,7 +192,7 @@ public class TimestampResourceTest {
     expectedList.add(new Timestamp("6", 1_556_302_850L, 800)); // NOCS
 
 
-    assertEquals(expectedList, resultList, // NOCS
+    assertEquals(expectedList, resultList,
         "Invalid return value for concrete interval of service-generated timestamps.");
   }
 
@@ -174,7 +201,7 @@ public class TimestampResourceTest {
   public void giveRemainingIntervalOfServiceGeneratedTimestamps() {
 
     final List<Timestamp> resultList =
-        this.timestampResource.getTimestamps(1_556_302_810L, 4, false);
+        this.timestampResource.getTimestamps(1_556_302_810L, 4, false, 0);
 
     final List<Timestamp> expectedList = new ArrayList<>();
     expectedList.add(new Timestamp("2", 1_556_302_810L, 400)); // NOCS
@@ -182,8 +209,36 @@ public class TimestampResourceTest {
     expectedList.add(new Timestamp("4", 1_556_302_830L, 600)); // NOCS
     expectedList.add(new Timestamp("5", 1_556_302_840L, 700)); // NOCS
 
-    assertEquals(expectedList, resultList, // NOCS
+    assertEquals(expectedList, resultList,
         "Invalid return value for remaining interval of service-generated timestamps.");
+  }
+
+  @Test
+  @DisplayName("Return interval of user-uploaded timestamps starting at oldest, when no timestamp was passed.") // NOCS
+  public void giveIntervalOfUserPloadedTimestamps() {
+
+    final List<Timestamp> resultList = this.timestampResource.getTimestamps(0L, 0, true, 2);
+
+    final List<Timestamp> expectedList = new ArrayList<>();
+    expectedList.add(new Timestamp("7", 1_556_302_860L, 600)); // NOCS
+    expectedList.add(new Timestamp("8", 1_556_302_870L, 700)); // NOCS
+
+    assertEquals(expectedList, resultList,
+        "Invalid return value for interval of user-uploaded timestamps.");
+  }
+
+  @Test
+  @DisplayName("Return interval of service-generated timestamps starting at oldest, when no timestamp was passed.") // NOCS
+  public void giveIntervalOfServiceGeneratedTimestamps() {
+
+    final List<Timestamp> resultList = this.timestampResource.getTimestamps(0L, 0, false, 2);
+
+    final List<Timestamp> expectedList = new ArrayList<>();
+    expectedList.add(new Timestamp("1", 1_556_302_800L, 300)); // NOCS
+    expectedList.add(new Timestamp("2", 1_556_302_810L, 400)); // NOCS
+
+    assertEquals(expectedList, resultList,
+        "Invalid return value for interval of service-generated timestamps.");
   }
 
 
@@ -191,7 +246,7 @@ public class TimestampResourceTest {
   @DisplayName("Unknown passed user-uploaded timestamp throws exception.")
   public void throwExceptionOnUnknownUserTimestamp() {
     assertThrows(NotFoundException.class, () -> {
-      this.timestampResource.getTimestamps(5L, 42, true); // NOCS
+      this.timestampResource.getTimestamps(5L, 42, true, 0); // NOCS
     });
   }
 
@@ -199,7 +254,7 @@ public class TimestampResourceTest {
   @DisplayName("Unknown passed service-generated timestamp throws exception.")
   public void throwExceptionOnUnknownServiceTimestamp() {
     assertThrows(NotFoundException.class, () -> {
-      this.timestampResource.getTimestamps(5L, 42, false); // NOCS
+      this.timestampResource.getTimestamps(5L, 42, false, 0); // NOCS
     });
   }
 
@@ -207,7 +262,15 @@ public class TimestampResourceTest {
   @DisplayName("Negative interval throws exception.")
   public void throwExceptionOnNegativeInterval() {
     assertThrows(BadRequestException.class, () -> {
-      this.timestampResource.getTimestamps(1_556_302_810L, -1, false); // NOCS
+      this.timestampResource.getTimestamps(1_556_302_810L, -1, false, 0); // NOCS
+    });
+  }
+
+  @Test
+  @DisplayName("Negative maxLength throws exception.")
+  public void throwExceptionOnNegativeMaxLength() {
+    assertThrows(BadRequestException.class, () -> {
+      this.timestampResource.getTimestamps(1_556_302_810L, 0, false, -1); // NOCS
     });
   }
 

@@ -44,13 +44,24 @@ public class TimestampResource {
    * @param startTimestamp - a starting timestamp for the returned interval
    * @param intervalSize - the size of the interval
    * @param returnUploadedTimestamps - switch between user-uploaded and service-generated timestamps
+   * @param maxLength - if intervalSize is 0 you will get the whole list. Use maxListLength to
+   *        shorten the list. Will only applied if intervalSize is 0.
    * @return a filtered list of timestamps
    */
   @GET
   @Produces("application/vnd.api+json")
   public List<Timestamp> getTimestamps(@QueryParam("startTimestamp") final long startTimestamp,
       @QueryParam("intervalSize") final int intervalSize,
-      @QueryParam("returnUploadedTimestamps") final boolean returnUploadedTimestamps) {
+      @QueryParam("returnUploadedTimestamps") final boolean returnUploadedTimestamps,
+      @QueryParam("maxLength") final int maxLength) {
+
+    if (maxLength < 0) {
+      throw new BadRequestException("MaxLength must not be negative.");
+    }
+
+    if (intervalSize < 0) {
+      throw new BadRequestException("Interval size must not be negative.");
+    }
 
     List<Timestamp> timestamps = this.landscapeRepo.getAllTimestamps();
 
@@ -58,7 +69,14 @@ public class TimestampResource {
       timestamps = this.replayRepo.getAllTimestamps();
     }
 
-    return this.getTimestampInterval(timestamps, startTimestamp, intervalSize);
+    final List<Timestamp> tempResultList =
+        this.getTimestampInterval(timestamps, startTimestamp, intervalSize);
+
+    if (intervalSize == 0 && maxLength > 0 && maxLength < tempResultList.size()) {
+      return tempResultList.subList(0, maxLength);
+    } else {
+      return tempResultList;
+    }
   }
 
 
@@ -77,10 +95,6 @@ public class TimestampResource {
 
     if (afterTimestamp == DEFAULT_VALUE_TIMESTAMP) {
       return allTimestamps;
-    }
-
-    if (intervalSize < 0) {
-      throw new BadRequestException("Interval size must not be negative.");
     }
 
     // search the passed timestamp
