@@ -1,16 +1,22 @@
 package net.explorviz.history.server.resources.endpoints;
 
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.List;
+import javax.ws.rs.core.Application;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 import net.explorviz.history.repository.persistence.LandscapeRepository;
 import net.explorviz.history.repository.persistence.ReplayRepository;
 import net.explorviz.history.server.resources.TimestampResource;
 import net.explorviz.history.server.resources.TimestampResourceTest;
 import net.explorviz.shared.landscape.model.landscape.Landscape;
 import net.explorviz.shared.landscape.model.store.Timestamp;
+import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
@@ -24,7 +30,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 public class TimestampResourceEndpointTest extends JerseyTest {
 
   private static final String MEDIA_TYPE = "application/vnd.api+json";
-  private static final String BASE_URL = "v1/timestamps/";
+  private static final String BASE_URL = "v1/timestamps";
 
   private TimestampResource timestampResource;
 
@@ -36,6 +42,11 @@ public class TimestampResourceEndpointTest extends JerseyTest {
 
   private List<Timestamp> serviceGeneratedTimestamps;
   private List<Timestamp> userUploadedTimestamps;
+
+  @Override
+  protected Application configure() {
+    return new ResourceConfig(TimestampResource.class);
+  }
 
   @Override
   public void setUp() {
@@ -66,5 +77,20 @@ public class TimestampResourceEndpointTest extends JerseyTest {
   }
 
   // TODO CommonEndpointTest class with Application + DI/Mock Setup
+
+  @Test
+  public void allServiceGeneratedTimestampsStatusCode() {
+    final Response response = target().path(BASE_URL).request().get();
+
+
+
+    assertEquals("Http Response should be 200: ", Status.OK.getStatusCode(), response.getStatus());
+
+    // assertEquals("Http Content-Type should be: ", MEDIA_TYPE,
+    // response.getHeaderString(HttpHeaders.CONTENT_TYPE));
+
+    // final String content = response.readEntity(String.class);
+    // assertEquals("Content of ressponse is: ", "hi", content);
+  }
 
 }
