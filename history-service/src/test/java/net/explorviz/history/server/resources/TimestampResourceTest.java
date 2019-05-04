@@ -215,7 +215,7 @@ public class TimestampResourceTest {
 
   @Test
   @DisplayName("Return interval of user-uploaded timestamps starting at oldest, when no timestamp was passed.") // NOCS
-  public void giveIntervalOfUserPloadedTimestamps() {
+  public void giveMaxLengthIntervalOfUserPloadedTimestamps() {
 
     final List<Timestamp> resultList = this.timestampResource.getTimestamps(0L, 0, true, 2);
 
@@ -229,7 +229,7 @@ public class TimestampResourceTest {
 
   @Test
   @DisplayName("Return interval of service-generated timestamps starting at oldest, when no timestamp was passed.") // NOCS
-  public void giveIntervalOfServiceGeneratedTimestamps() {
+  public void giveMaxLengthIntervalOfServiceGeneratedTimestamps() {
 
     final List<Timestamp> resultList = this.timestampResource.getTimestamps(0L, 0, false, 2);
 
@@ -274,8 +274,5 @@ public class TimestampResourceTest {
     });
   }
 
-
-
-  // TODO Tests for interval sizes (valid, negative etc.)
 
 }

@@ -6,6 +6,7 @@ import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.List;
 import javax.ws.rs.core.Application;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import net.explorviz.history.repository.persistence.LandscapeRepository;
@@ -32,6 +33,10 @@ public class TimestampResourceEndpointTest extends JerseyTest {
   private static final String QUERY_PARAM_USER_UPLOADED = "returnUploadedTimestamps";
   private static final String QUERY_PARAM_START_TIMESTAMP = "startTimestamp";
   private static final String QUERY_PARAM_INTERVAL_SIZE = "intervalSize";
+  private static final String QUERY_PARAM_MAX_LENGTH = "maxLength";
+
+  private static final String GENERIC_STATUS_ERROR_MESSAGE = "Wrong HTTP Status code.";
+  private static final String GENERIC_MEDIA_TYPE_ERROR_MESSAGE = "Wrong media type.";
 
   private LandscapeRepository<Landscape> landscapeRepo;
   private ReplayRepository<Landscape> replayRepo;
@@ -74,7 +79,7 @@ public class TimestampResourceEndpointTest extends JerseyTest {
   }
 
   @Test
-  public void checkStatusCodes() {
+  public void checkOkStatusCodes() { // NOPMD
     Response response = target().path(BASE_URL).request().get();
     assertEquals("Wrong HTTP Status code for all service-generated timestamps: ",
         Status.OK.getStatusCode(), response.getStatus());
@@ -88,12 +93,54 @@ public class TimestampResourceEndpointTest extends JerseyTest {
         .queryParam(QUERY_PARAM_INTERVAL_SIZE, 2) // NOCS
         .request().get();
     assertEquals(
-        "Wrong HTTP Status code for service-generated timestamps with starting timestamp and intervalsize",
+        "Wrong HTTP Status code for service-generated timestamps"
+            + "with starting timestamp and intervalsize",
         Status.OK.getStatusCode(), response.getStatus());
 
     response = target().path(BASE_URL).queryParam(QUERY_PARAM_USER_UPLOADED, true).request().get();
     assertEquals("Wrong HTTP Status code for all user-uploaded timestamps: ",
         Status.OK.getStatusCode(), response.getStatus());
   }
+
+  @Test
+  public void checkBadRequestStatusCodes() { // NOPMD
+    Response response =
+        target().path(BASE_URL).queryParam(QUERY_PARAM_MAX_LENGTH, -1).request().get();
+    assertEquals(GENERIC_STATUS_ERROR_MESSAGE, Status.BAD_REQUEST.getStatusCode(),
+        response.getStatus());
+
+    response = target().path(BASE_URL).queryParam(QUERY_PARAM_INTERVAL_SIZE, -1).request().get();
+    assertEquals(GENERIC_STATUS_ERROR_MESSAGE, Status.BAD_REQUEST.getStatusCode(),
+        response.getStatus());
+  }
+
+  @Test
+  public void checkNotFoundStatusCodeForUnknownTimestamp() {
+    final Response response =
+        target().path(BASE_URL).queryParam(QUERY_PARAM_START_TIMESTAMP, 2L).request().get();
+    assertEquals(GENERIC_STATUS_ERROR_MESSAGE, Status.NOT_FOUND.getStatusCode(),
+        response.getStatus());
+  }
+
+  @Test
+  public void checkNotAcceptableMediaTypeStatusCode() {
+    final Response response = target().path(BASE_URL).request().accept(MediaType.TEXT_PLAIN).get();
+    assertEquals(GENERIC_MEDIA_TYPE_ERROR_MESSAGE, Status.NOT_ACCEPTABLE.getStatusCode(),
+        response.getStatus());
+  }
+
+  @Test
+  public void checkMediaTypeOfValidRequestAndResponse() {
+    final Response response = target().path(BASE_URL).request().get();
+    assertEquals(GENERIC_MEDIA_TYPE_ERROR_MESSAGE, MEDIA_TYPE, response.getMediaType().toString());
+  }
+
+  @Test
+  public void checkMediaTypeOfValidRequestAndResponseWithAcceptHeader() {
+    final Response response = target().path(BASE_URL).request().accept(MEDIA_TYPE).get();
+    assertEquals(GENERIC_MEDIA_TYPE_ERROR_MESSAGE, MEDIA_TYPE, response.getMediaType().toString());
+  }
+
+  // TODO test for valid response and JSON-API conformity
 
 }
