@@ -23,7 +23,9 @@ import net.explorviz.shared.landscape.model.store.Timestamp;
 @RolesAllowed({"admin"})
 public class TimestampResource {
 
-  private static final long DEFAULT_VALUE_TIMESTAMP = 0L;
+  private static final String MEDIA_TYPE = "application/vnd.api+json";
+
+  private static final long QUERY_PARAM_DEFAULT_VALUE_LONG = 0L;
 
   private final LandscapeRepository<Landscape> landscapeRepo;
   private final ReplayRepository<Landscape> replayRepo;
@@ -49,7 +51,7 @@ public class TimestampResource {
    * @return a filtered list of timestamps
    */
   @GET
-  @Produces("application/vnd.api+json")
+  @Produces(MEDIA_TYPE)
   public List<Timestamp> getTimestamps(@QueryParam("startTimestamp") final long startTimestamp,
       @QueryParam("intervalSize") final int intervalSize,
       @QueryParam("returnUploadedTimestamps") final boolean returnUploadedTimestamps,
@@ -93,7 +95,7 @@ public class TimestampResource {
   private List<Timestamp> getTimestampInterval(final List<Timestamp> allTimestamps,
       final long afterTimestamp, final int intervalSize) {
 
-    if (afterTimestamp == DEFAULT_VALUE_TIMESTAMP) {
+    if (afterTimestamp == QUERY_PARAM_DEFAULT_VALUE_LONG) {
       return allTimestamps;
     }
 
