@@ -110,6 +110,8 @@ public class MongoLandscapeJsonApiRepository implements LandscapeRepository<Stri
 
   @Override
   public String getById(final String id) {
+    System.out.println("aaa");
+
     final MongoCollection<Document> landscapeCollection = this.mongoHelper.getLandscapeCollection();
 
     final Document landscapeDocument = new Document();
@@ -118,9 +120,11 @@ public class MongoLandscapeJsonApiRepository implements LandscapeRepository<Stri
     final FindIterable<Document> result = landscapeCollection.find(landscapeDocument);
 
     if (result.first() == null) {
+      System.out.println("test");
       throw new ClientErrorException("Landscape not found for provided id " + id, // NOCS
           Response.Status.NOT_FOUND);
     } else {
+      System.out.println("test 222");
       return (String) result.first().get(MongoHelper.FIELD_LANDSCAPE);
     }
   }
