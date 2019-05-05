@@ -179,7 +179,7 @@ public class MongoLandscapeJsonApiRepository implements LandscapeRepository<Stri
     final List<Timestamp> resultList = new ArrayList<>();
 
     for (final Document doc : documents) {
-      final String id = String.valueOf((long) doc.get(MongoHelper.FIELD_ID));
+      final String id = String.valueOf(doc.get(MongoHelper.FIELD_ID));
       final long timestamp = (long) doc.get(MongoHelper.FIELD_TIMESTAMP);
       final int totalRequests = (int) doc.get(MongoHelper.FIELD_REQUESTS);
 

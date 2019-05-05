@@ -26,7 +26,6 @@ public class LandscapeResource {
   private final LandscapeRepository<String> landscapeRepo;
   private final ReplayRepository<String> replayRepo;
 
-
   @Inject
   public LandscapeResource(final LandscapeRepository<String> landscapeRepo,
       final ReplayRepository<String> replayRepo) {

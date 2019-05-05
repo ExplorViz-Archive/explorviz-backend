@@ -12,9 +12,12 @@ import net.explorviz.shared.landscape.model.landscape.Landscape;
  */
 public class LandscapeSerializationHelper {
 
+  private final ResourceConverter jsonApiConverter;
 
   @Inject
-  private ResourceConverter jsonApiConverter;
+  public LandscapeSerializationHelper(final ResourceConverter jsonApiConverter) {
+    this.jsonApiConverter = jsonApiConverter;
+  }
 
 
   /**
