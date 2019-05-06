@@ -20,6 +20,13 @@ This is only the backend, you will need the [explorviz-frontend](https://github.
 
 This gradle project includes or installs every necessary dependency.
 
+## Reference
+How to cite ExplorViz:
+
+Florian Fittkau, Alexander Krause, Wilhelm Hasselbring (2017): Software landscape and application visualization for system comprehension with ExplorViz. Information and Software Technology, Volume 87. pp. 259-277. DOI https://doi.org/10.1016/j.infsof.2016.07.004.
+
+[[BibTex]](http://eprints.uni-kiel.de/cgi/export/eprint/33464/BibTeX/cau-eprint-33464.bib) | [[Endnote]](http://eprints.uni-kiel.de/cgi/export/eprint/33464/EndNote/cau-eprint-33464.enw)
+
 ## Documentation
 The API documentation is available [here](https://explorviz.github.io/explorviz-backend/).
 
