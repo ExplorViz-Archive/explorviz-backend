@@ -6,9 +6,9 @@ import javax.inject.Inject;
 import net.explorviz.settings.model.CustomSetting;
 import net.explorviz.settings.model.Setting;
 import org.jvnet.hk2.annotations.Service;
+import org.mongodb.morphia.Datastore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import xyz.morphia.Datastore;
 
 /**
  * This service is responsible for persisting and retrieving {@link Setting} objects. It is backed

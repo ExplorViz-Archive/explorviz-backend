@@ -18,10 +18,13 @@ public class SettingsInfoResource {
 
   private static final String MEDIA_TYPE = "application/vnd.api+json";
 
+
+  private final SettingsRepository repo;
+
   @Inject
-  private SettingsRepository repo;
-
-
+  public SettingsInfoResource(final SettingsRepository repo) {
+    this.repo = repo;
+  }
 
   @GET
   @Produces(MEDIA_TYPE)
