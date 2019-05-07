@@ -18,7 +18,7 @@ import xyz.morphia.Datastore;
  */
 @Service
 public class CustomSettingsRepository
-    implements MongoRepository<CustomSetting, CustomSetting.CustumSettingId> {
+    implements MongoRepository<CustomSetting, CustomSetting.CustomSettingId> {
 
   private static final Logger LOGGER =
       LoggerFactory.getLogger(SettingsRepository.class.getSimpleName());
@@ -42,13 +42,14 @@ public class CustomSettingsRepository
   }
 
   @Override
-  public Optional<CustomSetting> find(final CustomSetting.CustumSettingId id) {
+  public Optional<CustomSetting> find(final CustomSetting.CustomSettingId id) {
     final CustomSetting u = this.datastore.get(CustomSetting.class, id);
     return Optional.ofNullable(u);
   }
 
   @Override
   public void create(final CustomSetting setting) {
+    System.out.println(setting);
     this.datastore.save(setting);
     if (LOGGER.isInfoEnabled()) {
       LOGGER.info(String.format("Created new user setting with id %s:%s", setting.getUserId(),
@@ -57,7 +58,7 @@ public class CustomSettingsRepository
   }
 
   @Override
-  public void delete(final CustomSetting.CustumSettingId id) {
+  public void delete(final CustomSetting.CustomSettingId id) {
     this.datastore.delete(this.datastore.find(CustomSetting.class)
         .filter("_id.userId == ", id.getUserId()).filter("_id.settingId == ", id.getSettingId()));
   }

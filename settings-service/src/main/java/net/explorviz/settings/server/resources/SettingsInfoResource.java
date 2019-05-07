@@ -14,7 +14,7 @@ import net.explorviz.settings.model.Setting;
 import net.explorviz.settings.services.SettingsRepository;
 
 @Path("v1/settings/info")
-public class SettingResource {
+public class SettingsInfoResource {
 
   private static final String MEDIA_TYPE = "application/vnd.api+json";
 
@@ -38,7 +38,7 @@ public class SettingResource {
 
   @POST
   @Consumes(MEDIA_TYPE)
-  public Response getSetting(final Setting s) {
+  public Response createSetting(final Setting s) {
     this.repo.create(s);
     return Response.ok().build();
   }

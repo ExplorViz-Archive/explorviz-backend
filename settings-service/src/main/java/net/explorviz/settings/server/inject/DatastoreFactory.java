@@ -2,6 +2,7 @@ package net.explorviz.settings.server.inject;
 
 import com.mongodb.MongoClient;
 import net.explorviz.settings.model.CustomSetting;
+import net.explorviz.settings.model.CustomSettingConverter;
 import net.explorviz.settings.model.FlagSetting;
 import net.explorviz.settings.model.RangeSetting;
 import net.explorviz.settings.model.Setting;
@@ -25,8 +26,10 @@ public class DatastoreFactory implements Factory<Datastore> {
   public DatastoreFactory(final String host, final String port) {
     final Morphia morphia = new Morphia();
     morphia.map(Setting.class, RangeSetting.class, FlagSetting.class, CustomSetting.class);
+    morphia.getMapper().getConverters().addConverter(new CustomSettingConverter());
     this.datastore = morphia.createDatastore(new MongoClient(host + ":" + port), "explorviz");
     this.datastore.ensureIndexes();
+
   }
 
   @Override

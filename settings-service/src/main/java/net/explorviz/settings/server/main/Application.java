@@ -1,11 +1,13 @@
 package net.explorviz.settings.server.main;
 
+import net.explorviz.settings.model.CustomSetting;
 import net.explorviz.settings.model.FlagSetting;
 import net.explorviz.settings.model.RangeSetting;
 import net.explorviz.settings.model.Setting;
 import net.explorviz.settings.server.providers.SettingJsonApiDeserializer;
 import net.explorviz.settings.server.providers.UserSettingJsonApiDeserializer;
-import net.explorviz.settings.server.resources.SettingResource;
+import net.explorviz.settings.server.resources.CustomSettingsResource;
+import net.explorviz.settings.server.resources.SettingsInfoResource;
 import net.explorviz.shared.common.jsonapi.ResourceConverterFactory;
 import net.explorviz.shared.common.provider.GenericTypeFinder;
 import net.explorviz.shared.common.provider.JsonApiListProvider;
@@ -19,9 +21,9 @@ public class Application extends ResourceConfig {
   public Application() {
 
     GenericTypeFinder.getTypeMap().put("Setting", Setting.class);
-    GenericTypeFinder.getTypeMap().put("Setting", net.explorviz.settings.model.Setting.class);
     GenericTypeFinder.getTypeMap().put("RangeSetting", RangeSetting.class);
     GenericTypeFinder.getTypeMap().put("FlagSetting", FlagSetting.class);
+    GenericTypeFinder.getTypeMap().put("CustomSetting", CustomSetting.class);
 
 
 
@@ -47,8 +49,8 @@ public class Application extends ResourceConfig {
 
 
 
-    this.register(SettingResource.class);
-
+    this.register(SettingsInfoResource.class);
+    this.register(CustomSettingsResource.class);
 
   }
 
