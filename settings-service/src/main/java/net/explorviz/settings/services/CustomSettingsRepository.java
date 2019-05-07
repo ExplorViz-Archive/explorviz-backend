@@ -5,7 +5,6 @@ import java.util.Optional;
 import javax.inject.Inject;
 import net.explorviz.settings.model.CustomSetting;
 import net.explorviz.settings.model.Setting;
-import net.explorviz.settings.services.mongo.MongoHelper;
 import org.jvnet.hk2.annotations.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,14 +23,12 @@ public class CustomSettingsRepository
       LoggerFactory.getLogger(SettingsRepository.class.getSimpleName());
 
 
-  private final MongoHelper mongoHelper;
   private final Datastore datastore;
 
 
 
   @Inject
-  public CustomSettingsRepository(final MongoHelper mongoHelper, final Datastore datastore) {
-    this.mongoHelper = mongoHelper;
+  public CustomSettingsRepository(final Datastore datastore) {
     this.datastore = datastore;
   }
 

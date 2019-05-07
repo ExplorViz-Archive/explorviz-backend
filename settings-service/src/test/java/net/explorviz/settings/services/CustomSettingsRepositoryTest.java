@@ -12,7 +12,6 @@ import java.util.Arrays;
 import java.util.List;
 import net.explorviz.settings.model.CustomSetting;
 import net.explorviz.settings.model.Setting;
-import net.explorviz.settings.services.mongo.MongoHelper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -31,9 +30,6 @@ public class CustomSettingsRepositoryTest {
   @Mock
   private Datastore ds;
 
-  @Mock
-  private MongoHelper mongohelper;
-
   private CustomSettingsRepository uss;
 
   private List<CustomSetting> userSettings;
@@ -41,7 +37,7 @@ public class CustomSettingsRepositoryTest {
   @BeforeEach
   public void setUp() {
     assert this.ds != null;
-    this.uss = new CustomSettingsRepository(this.mongohelper, this.ds);
+    this.uss = new CustomSettingsRepository(this.ds);
     this.userSettings = new ArrayList<>(Arrays.asList(new CustomSetting("1", "bid", Boolean.TRUE),
         new CustomSetting("1", "sid", "val"), new CustomSetting("1", "did", 0.4)));
   }
