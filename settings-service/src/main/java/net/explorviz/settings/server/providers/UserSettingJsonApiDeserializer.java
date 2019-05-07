@@ -10,10 +10,10 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.ext.MessageBodyReader;
-import net.explorviz.settings.model.UserSetting;
+import net.explorviz.settings.model.CustomSetting;
 import xyz.morphia.Datastore;
 
-public class UserSettingJsonApiDeserializer implements MessageBodyReader<UserSetting> {
+public class UserSettingJsonApiDeserializer implements MessageBodyReader<CustomSetting> {
 
   private final ResourceConverter converter;
 
@@ -30,14 +30,14 @@ public class UserSettingJsonApiDeserializer implements MessageBodyReader<UserSet
     return true;
   }
 
+
   @Override
-  public UserSetting readFrom(final Class<UserSetting> type, final Type genericType,
+  public CustomSetting readFrom(final Class<CustomSetting> type, final Type genericType,
       final Annotation[] annotations, final MediaType mediaType,
       final MultivaluedMap<String, String> httpHeaders, final InputStream entityStream)
       throws IOException, WebApplicationException {
 
-    final UserSetting setting = this.converter.readDocument(entityStream, type).get();
-
+    final CustomSetting setting = this.converter.readDocument(entityStream, type).get();
     return setting;
   }
 

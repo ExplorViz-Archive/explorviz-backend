@@ -10,10 +10,9 @@ import com.mongodb.WriteResult;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import net.explorviz.settings.model.BooleanSetting;
-import net.explorviz.settings.model.DoubleSetting;
+import net.explorviz.settings.model.FlagSetting;
+import net.explorviz.settings.model.RangeSetting;
 import net.explorviz.settings.model.Setting;
-import net.explorviz.settings.model.StringSetting;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -37,23 +36,22 @@ public class SettingsRepositoryTest {
 
   @BeforeEach
   public void setUp() {
-    assert ds != null;
-    sps = new SettingsRepository(ds);
-    settings = new ArrayList<>(Arrays.asList(
-        new BooleanSetting("bid", "Boolean Setting", "Boolean Setting Description", false, "test"),
-        new StringSetting("sid", "Boolean Setting", "Boolean Setting Description", "def", "test"),
-        new DoubleSetting("did", "Double Setting", "Boolean Setting Description", 0.5, "test", -1,
+    assert this.ds != null;
+    this.sps = new SettingsRepository(this.ds);
+    this.settings = new ArrayList<>(Arrays.asList(
+        new FlagSetting("bid", "Boolean Setting", "Boolean Setting Description", "test", false),
+        new RangeSetting("did", "Double Setting", "Boolean Setting Description", "test", 0.5, -1,
             1)));
   }
 
 
   @Test
   public void testGetAll() {
-    Query<Setting> q = mock(Query.class);
-    when(ds.find(Setting.class)).thenReturn(q);
-    when(q.asList()).thenReturn(settings);
+    final Query<Setting> q = mock(Query.class);
+    when(this.ds.find(Setting.class)).thenReturn(q);
+    when(q.asList()).thenReturn(this.settings);
 
-    List<Setting> retrievedSettings = sps.findAll();
+    final List<Setting> retrievedSettings = this.sps.findAll();
 
     assertEquals(this.settings, retrievedSettings);
   }
@@ -61,42 +59,45 @@ public class SettingsRepositoryTest {
 
   @Test
   public void testFindById() {
-    when(ds.get(Setting.class, "bid")).thenReturn(settings.get(0));
+    when(this.ds.get(Setting.class, "bid")).thenReturn(this.settings.get(0));
 
-    Setting retrieved = sps.find("bid").get();
+    final Setting retrieved = this.sps.find("bid").get();
 
-    assertEquals(settings.get(0), retrieved);
+    assertEquals(this.settings.get(0), retrieved);
   }
 
   @Test
   public void testRemove() {
-    when(ds.delete(Setting.class, settings.get(0).getId())).then(new Answer<WriteResult>() {
-      @Override
-      public WriteResult answer(InvocationOnMock invocation) throws Throwable {
-        settings.remove(0);
-        return new WriteResult(1, false, null);
-      }
-    });
+    when(this.ds.delete(Setting.class, this.settings.get(0).getId()))
+        .then(new Answer<WriteResult>() {
+          @Override
+          public WriteResult answer(final InvocationOnMock invocation) throws Throwable {
+            SettingsRepositoryTest.this.settings.remove(0);
+            return new WriteResult(1, false, null);
+          }
+        });
 
-    sps.delete(settings.get(0).getId());
-    assertNull(sps.find("bid").orElse(null));
+    this.sps.delete(this.settings.get(0).getId());
+    assertNull(this.sps.find("bid").orElse(null));
   }
 
   @Test
   public void testCreate() {
-    Setting<String> s = new StringSetting("test", "testname", "a test setting", "default", "test");
-    when(ds.save(s)).then(new Answer<Key<Setting<String>>>() {
+    final Setting s = new FlagSetting("test", "testname", "a test setting", "default", false);
+    when(this.ds.save(s)).then(new Answer<Key<FlagSetting>>() {
+
+
 
       @Override
-      public Key<Setting<String>> answer(InvocationOnMock invocation) throws Throwable {
-        settings.add(s);
+      public Key<FlagSetting> answer(final InvocationOnMock invocation) throws Throwable {
+        SettingsRepositoryTest.this.settings.add(s);
         return null;
       }
 
     });
-    sps.create(s);
+    this.sps.create(s);
 
-    assertNotNull(sps.find(s.getId()));
+    assertNotNull(this.sps.find(s.getId()));
   }
 
 

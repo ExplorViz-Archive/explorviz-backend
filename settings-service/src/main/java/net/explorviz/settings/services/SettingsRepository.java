@@ -2,9 +2,12 @@ package net.explorviz.settings.services;
 
 
 import com.mongodb.WriteResult;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import javax.inject.Inject;
+import net.explorviz.settings.model.FlagSetting;
+import net.explorviz.settings.model.RangeSetting;
 import net.explorviz.settings.model.Setting;
 import org.jvnet.hk2.annotations.Service;
 import org.slf4j.Logger;
@@ -40,8 +43,16 @@ public class SettingsRepository implements MongoRepository<Setting, String> {
    */
   @Override
   public List<Setting> findAll() {
-    final Query<Setting> q = this.datastore.find(Setting.class);
-    return q.asList();
+    // Morphia can't query for subtypes, this has to be done manuall
+    // See https://github.com/MorphiaOrg/morphia/issues/22
+    final Query<RangeSetting> qRange = this.datastore.find(RangeSetting.class);
+    final Query<FlagSetting> qFlags = this.datastore.find(FlagSetting.class);
+
+    final List<Setting> all = new ArrayList<>();
+    all.addAll(qRange.asList());
+    all.addAll(qFlags.asList());
+
+    return all;
   }
 
   /**

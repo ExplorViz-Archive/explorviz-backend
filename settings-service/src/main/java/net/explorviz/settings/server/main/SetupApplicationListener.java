@@ -1,12 +1,7 @@
 package net.explorviz.settings.server.main;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import javax.inject.Inject;
 import javax.servlet.annotation.WebListener;
-import net.explorviz.settings.model.BooleanSetting;
-import net.explorviz.settings.model.DoubleSetting;
 import net.explorviz.settings.model.Setting;
 import net.explorviz.settings.services.MongoRepository;
 import org.glassfish.jersey.server.monitoring.ApplicationEvent;
@@ -56,26 +51,28 @@ public class SetupApplicationListener implements ApplicationEventListener {
 
 
   private void addDefaultSettings() {
-    final List<Setting<?>> defaults = new ArrayList<Setting<?>>(Arrays.asList(
-        new BooleanSetting("showFpsCounter", "Show FPS Counter",
-            "\'Frames Per Second\' metrics in visualizations", false, "backend"),
-        new BooleanSetting("appVizTransparency", "App Viz Transparency",
-            "Transparency effect for selection (left click) in application visualization", true,
-            "backend"),
-        new BooleanSetting("enableHoverEffects", "Enable Hover Effects",
-            "Hover effect (flashing entities) for mouse cursor", true, "backend"),
-        new BooleanSetting("keepHighlightingOnOpenOrClose", "Keep Highlighting On Open Or Close",
-            "Toggle if highlighting should be resetted on double click in application visualization",
-            true, "backend"),
-        new DoubleSetting("appVizCommArrowSize", "Arrow Size in Application Visualization",
-            "Arrow Size for selected communications in application visualization", 1.0, "backend"),
-        new DoubleSetting("appVizTransparencyIntensity",
-            "Transparency Intensity in Application Visualization",
-            "Transparency effect intensity (\'App Viz Transparency\' must be enabled)", 0.1,
-            "backend", 0.5, 0.1)));
 
-    defaults.stream().filter(d -> !this.settingRepo.find(d.getId()).isPresent())
-        .forEach(this.settingRepo::create);
+    /*
+     * final List<Setting<?>> defaults = new ArrayList<Setting<?>>(Arrays.asList( new
+     * BooleanSetting("showFpsCounter", "Show FPS Counter",
+     * "\'Frames Per Second\' metrics in visualizations", false, "backend"), new
+     * BooleanSetting("appVizTransparency", "App Viz Transparency",
+     * "Transparency effect for selection (left click) in application visualization", true,
+     * "backend"), new BooleanSetting("enableHoverEffects", "Enable Hover Effects",
+     * "Hover effect (flashing entities) for mouse cursor", true, "backend"), new
+     * BooleanSetting("keepHighlightingOnOpenOrClose", "Keep Highlighting On Open Or Close",
+     * "Toggle if highlighting should be resetted on double click in application visualization",
+     * true, "backend"), new DoubleSetting("appVizCommArrowSize",
+     * "Arrow Size in Application Visualization",
+     * "Arrow Size for selected communications in application visualization", 1.0, "backend"), new
+     * DoubleSetting("appVizTransparencyIntensity",
+     * "Transparency Intensity in Application Visualization",
+     * "Transparency effect intensity (\'App Viz Transparency\' must be enabled)", 0.1, "backend",
+     * 0.5, 0.1)));
+     * 
+     * defaults.stream().filter(d -> !this.settingRepo.find(d.getId()).isPresent())
+     * .forEach(this.settingRepo::create);
+     */
 
   }
 

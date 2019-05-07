@@ -1,68 +1,63 @@
 package net.explorviz.settings.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
 import com.github.jasminb.jsonapi.annotations.Id;
-import com.github.jasminb.jsonapi.annotations.Type;
-import xyz.morphia.annotations.Entity;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 
-/**
- * Model of a single setting object.
- */
-@Type("setting")
-@Entity("setting")
-public class Setting<T> {
-
-  protected String description;
+@com.github.jasminb.jsonapi.annotations.Type("setting")
+@JsonSubTypes({@Type(name = "RangeSetting", value = RangeSetting.class),
+    @Type(name = "FlagSeting", value = FlagSetting.class)})
+public abstract class Setting {
 
   @Id
   @xyz.morphia.annotations.Id
   protected String id;
 
-  protected String name;
+  @JsonProperty
+  protected String displayName;
 
-  protected T defaultValue;
+  @JsonProperty
+  protected String description;
 
-  // By default, we use backend as origin
-  protected String origin = "backend";
+  @JsonProperty
+  protected String origin;
 
-  /**
-   * Creates a new setting
-   *
-   * @param id a unique identifier to the setting
-   * @param name name of the setting
-   * @param description a short description of values and their effects
-   * @param defaultValue the default value
-   */
-  public Setting(final String id, final String name, final String description, final T defaultValue,
+  public Setting(final String id, final String displayName, final String description,
       final String origin) {
     this.id = id;
-    this.name = name;
+    this.displayName = displayName;
     this.description = description;
-    this.defaultValue = defaultValue;
     this.origin = origin;
   }
 
   public Setting() {
-    // TODO Auto-generated constructor stub
+    // Morphia
   }
 
-  public String getDescription() {
-    return this.description;
-  }
-
-  public T getDefaultValue() {
-    return this.defaultValue;
-  }
-
-  public String getName() {
-    return this.name;
+  @Override
+  public String toString() {
+    return new ToStringBuilder(this).append("id", this.id).append("displayName", this.displayName)
+        .append("description", this.description).append("valueDescription").build();
   }
 
   public String getId() {
     return this.id;
   }
 
+  public String getDisplayName() {
+    return this.displayName;
+  }
+
+  public String getDescription() {
+    return this.description;
+  }
+
   public String getOrigin() {
     return this.origin;
   }
+
+
 
 }

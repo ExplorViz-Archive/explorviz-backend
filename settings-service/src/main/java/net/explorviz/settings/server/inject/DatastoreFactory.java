@@ -1,11 +1,10 @@
 package net.explorviz.settings.server.inject;
 
 import com.mongodb.MongoClient;
-import net.explorviz.settings.model.BooleanSetting;
-import net.explorviz.settings.model.DoubleSetting;
+import net.explorviz.settings.model.CustomSetting;
+import net.explorviz.settings.model.FlagSetting;
+import net.explorviz.settings.model.RangeSetting;
 import net.explorviz.settings.model.Setting;
-import net.explorviz.settings.model.StringSetting;
-import net.explorviz.settings.model.UserSetting;
 import net.explorviz.shared.config.annotations.Config;
 import org.glassfish.hk2.api.Factory;
 import xyz.morphia.Datastore;
@@ -25,8 +24,7 @@ public class DatastoreFactory implements Factory<Datastore> {
   @Config("mongo.port")
   public DatastoreFactory(final String host, final String port) {
     final Morphia morphia = new Morphia();
-    morphia.map(Setting.class, DoubleSetting.class, StringSetting.class, BooleanSetting.class,
-        UserSetting.class);
+    morphia.map(Setting.class, RangeSetting.class, FlagSetting.class, CustomSetting.class);
     this.datastore = morphia.createDatastore(new MongoClient(host + ":" + port), "explorviz");
     this.datastore.ensureIndexes();
   }
