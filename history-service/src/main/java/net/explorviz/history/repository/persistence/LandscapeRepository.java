@@ -1,6 +1,7 @@
 package net.explorviz.history.repository.persistence;
 
 import java.util.List;
+import java.util.Optional;
 import javax.ws.rs.ClientErrorException;
 import net.explorviz.shared.landscape.model.landscape.Landscape;
 import net.explorviz.shared.landscape.model.store.Timestamp;
@@ -35,7 +36,7 @@ public interface LandscapeRepository<T> {
    *
    * @throws ClientErrorException if the landscape could not be found.
    */
-  T getByTimestamp(final long timestamp);
+  Optional<T> getByTimestamp(final long timestamp);
 
   /**
    * Retrieves a landscape object with a specific timestamp from the repository.
@@ -46,7 +47,7 @@ public interface LandscapeRepository<T> {
    *
    * @throws ClientErrorException if the landscape could not be found.
    */
-  T getByTimestamp(final Timestamp timestamp);
+  Optional<T> getByTimestamp(final Timestamp timestamp);
 
   /**
    * Retrieves all timestamps currently stored in the db. Each timestamp is a unique identifier of
@@ -65,7 +66,7 @@ public interface LandscapeRepository<T> {
    *
    * @throws ClientErrorException if the landscape could not be found.
    */
-  T getById(final String id);
+  Optional<T> getById(final String id);
 
 
   /**

@@ -2,6 +2,7 @@ package net.explorviz.history.repository.persistence.mongo;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.Optional;
 import java.util.Random;
 import javax.inject.Inject;
 import net.explorviz.history.server.main.DependencyInjectionBinder;
@@ -61,9 +62,9 @@ public class MongoReplayRepositoryTest {
     final Landscape landscape = LandscapeDummyCreator.createDummyLandscape(this.idGenerator);
     this.repo.save(ts, landscape, 0);
 
-    final Landscape landscapeRetrieved = this.repo.getByTimestamp(ts);
+    final Optional<Landscape> landscapeRetrieved = this.repo.getByTimestamp(ts);
 
-    assertEquals("Ids don't match", landscape.getId(), landscapeRetrieved.getId()); // NOCS
+    assertEquals("Ids don't match", landscape.getId(), landscapeRetrieved.get().getId()); // NOCS
   }
 
   @Test
@@ -75,9 +76,9 @@ public class MongoReplayRepositoryTest {
     this.repo.save(ts, landscape2, 0);
 
     final String id = landscape.getId();
-    final Landscape landscapeRetrieved = this.repo.getById(id);
+    final Optional<Landscape> landscapeRetrieved = this.repo.getById(id);
 
-    assertEquals("Ids don't match", id, landscapeRetrieved.getId());
+    assertEquals("Ids don't match", id, landscapeRetrieved.get().getId());
 
   }
 

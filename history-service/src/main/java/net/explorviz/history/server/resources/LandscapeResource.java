@@ -1,5 +1,7 @@
 package net.explorviz.history.server.resources;
 
+import java.util.Optional;
+import java.util.stream.Stream;
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.ws.rs.BadRequestException;
@@ -22,6 +24,7 @@ import net.explorviz.shared.landscape.model.landscape.Landscape;
 public class LandscapeResource {
 
   private static final String MEDIA_TYPE = "application/vnd.api+json";
+  private static final long QUERY_PARAM_DEFAULT_VALUE_LONG = 0L;
 
   private final LandscapeRepository<String> landscapeRepo;
   private final ReplayRepository<String> replayRepo;
@@ -33,18 +36,30 @@ public class LandscapeResource {
     this.replayRepo = replayRepo;
   }
 
+  // akr: IMHO best option for decision between 404 or 200 Empty
+  // https://stackoverflow.com/a/48746789
+
+  /**
+   * Returns a landscape by its id or 404.
+   *
+   * @param id - entity id of the landscape
+   * @return landscape object found by passed id or 404.
+   */
   @GET
   @Path("{id}")
   @Produces(MEDIA_TYPE)
   public String getLandscapeById(@PathParam("id") final String id) {
-    return this.landscapeRepo.getById(id);
+
+    return Stream.of(this.landscapeRepo.getById(id), this.replayRepo.getById(id))
+        .filter(Optional::isPresent).map(Optional::get).findFirst()
+        .orElseThrow(() -> new NotFoundException("Landscape with id " + id + " not found."));
   }
 
   /**
-   * Returns a list of either user-uploaded or service-generated
-   * {@link net.explorviz.shared.landscape.model.landscape.Landscape}. The result depends on the
-   * passed query parameters, whereas the existence of the "returnUploadedLandscapes" query
-   * parameter has the highest priority, i.e., the list of user-uploaded landscapes will be
+   * Returns a list of either user-uploaded (any POSTed landscape) or service-generated (from
+   * landscape-service) {@link net.explorviz.shared.landscape.model.landscape.Landscape}. The result
+   * depends on the passed query parameters, whereas the existence of the "returnUploadedLandscapes"
+   * query parameter has the highest priority, i.e., the list of user-uploaded landscapes will be
    * returned. This endpoint additionally enables user to obtain a single landscape by its timestamp
    * value, by using the 'startTimestamp' and 'intervalSize' query parameters.
    *
@@ -69,6 +84,12 @@ public class LandscapeResource {
     if (intervalSize < 0) {
       throw new BadRequestException("Interval size must not be negative.");
     }
+
+    /*
+     * return Stream .of(this.landscapeRepo.getByTimestamp(timestamp),
+     * this.replayRepo.getByTimestamp(timestamp))
+     * .filter(Optional::isPresent).map(Optional::get).findFirst().orElse(null);
+     */
 
     throw new NotFoundException();
 

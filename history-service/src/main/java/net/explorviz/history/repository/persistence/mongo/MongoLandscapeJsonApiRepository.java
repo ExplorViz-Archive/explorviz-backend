@@ -8,6 +8,7 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.result.DeleteResult;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 import javax.ws.rs.ClientErrorException;
@@ -87,7 +88,7 @@ public class MongoLandscapeJsonApiRepository implements LandscapeRepository<Stri
   }
 
   @Override
-  public String getByTimestamp(final long timestamp) {
+  public Optional<String> getByTimestamp(final long timestamp) {
     final MongoCollection<Document> landscapeCollection = this.mongoHelper.getLandscapeCollection();
 
     final Document landscapeDocument = new Document();
@@ -96,22 +97,19 @@ public class MongoLandscapeJsonApiRepository implements LandscapeRepository<Stri
     final FindIterable<Document> result = landscapeCollection.find(landscapeDocument);
 
     if (result.first() == null) {
-      throw new ClientErrorException("Landscape not found for provided timestamp " + timestamp, // NOCS
-          Response.Status.NOT_FOUND);
+      return Optional.empty();
     } else {
-      return (String) result.first().get(MongoHelper.FIELD_LANDSCAPE);
+      return Optional.of((String) result.first().get(MongoHelper.FIELD_LANDSCAPE));
     }
   }
 
   @Override
-  public String getByTimestamp(final Timestamp timestamp) {
+  public Optional<String> getByTimestamp(final Timestamp timestamp) {
     return this.getByTimestamp(timestamp.getTimestamp());
   }
 
   @Override
-  public String getById(final String id) {
-    System.out.println("aaa");
-
+  public Optional<String> getById(final String id) {
     final MongoCollection<Document> landscapeCollection = this.mongoHelper.getLandscapeCollection();
 
     final Document landscapeDocument = new Document();
@@ -120,12 +118,9 @@ public class MongoLandscapeJsonApiRepository implements LandscapeRepository<Stri
     final FindIterable<Document> result = landscapeCollection.find(landscapeDocument);
 
     if (result.first() == null) {
-      System.out.println("test");
-      throw new ClientErrorException("Landscape not found for provided id " + id, // NOCS
-          Response.Status.NOT_FOUND);
+      return Optional.empty();
     } else {
-      System.out.println("test 222");
-      return (String) result.first().get(MongoHelper.FIELD_LANDSCAPE);
+      return Optional.of((String) result.first().get(MongoHelper.FIELD_LANDSCAPE));
     }
   }
 

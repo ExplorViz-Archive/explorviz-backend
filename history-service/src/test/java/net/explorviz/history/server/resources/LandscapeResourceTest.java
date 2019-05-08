@@ -1,15 +1,19 @@
 package net.explorviz.history.server.resources;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
 import com.github.jasminb.jsonapi.ResourceConverter;
 import com.github.jasminb.jsonapi.SerializationFeature;
 import com.github.jasminb.jsonapi.exceptions.DocumentSerializationException;
+import java.util.Optional;
+import javax.ws.rs.NotFoundException;
 import net.explorviz.history.repository.persistence.LandscapeRepository;
 import net.explorviz.history.repository.persistence.ReplayRepository;
 import net.explorviz.history.repository.persistence.mongo.LandscapeDummyCreator;
 import net.explorviz.history.repository.persistence.mongo.LandscapeSerializationHelper;
+import net.explorviz.history.server.resources.endpoints.LandscapeResourceEndpointTest;
 import net.explorviz.shared.common.idgen.AtomicEntityIdGenerator;
 import net.explorviz.shared.common.idgen.IdGenerator;
 import net.explorviz.shared.common.idgen.UuidServiceIdGenerator;
@@ -57,7 +61,8 @@ public class LandscapeResourceTest {
     this.currentLandscape = serializationHelper.serialize(l);
     this.currentLandscapeId = l.getId();
 
-    when(this.landscapeRepo.getById(this.currentLandscapeId)).thenReturn(this.currentLandscape);
+    when(this.landscapeRepo.getById(this.currentLandscapeId))
+        .thenReturn(Optional.of(this.currentLandscape));
     // when(this.replayRepo.getAllTimestamps()).thenReturn(this.userUploadedTimestamps);
 
     this.landscapeResouce = new LandscapeResource(this.landscapeRepo, this.replayRepo);
@@ -70,5 +75,14 @@ public class LandscapeResourceTest {
         this.landscapeResouce.getLandscapeById(this.currentLandscapeId),
         "Wrong landscape was returned.");
   }
+
+  @Test
+  @DisplayName("Unknown landscape id throws NotFoundException.")
+  public void checkUnknownLandscapeException() {
+    assertThrows(NotFoundException.class, () -> {
+      this.landscapeResouce.getLandscapeById("not-a-valid-id");
+    });
+  }
+
 
 }

@@ -3,6 +3,7 @@ package net.explorviz.history.repository.persistence.mongo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Optional;
 import java.util.Random;
 import javax.inject.Inject;
 import net.explorviz.history.server.main.DependencyInjectionBinder;
@@ -61,9 +62,10 @@ public class MongoLandscapeJsonApiRepositoryTest {
     final Landscape landscape = LandscapeDummyCreator.createDummyLandscape(this.idGenerator);
     this.repo.save(ts, landscape, 0);
 
-    final String rawLandscape = this.repo.getByTimestamp(ts);
+    final Optional<String> rawLandscape = this.repo.getByTimestamp(ts);
 
-    assertTrue("Invalid landscape", rawLandscape.startsWith("{\"data\":{\"type\":\"landscape\""));
+    assertTrue("Invalid landscape",
+        rawLandscape.get().startsWith("{\"data\":{\"type\":\"landscape\""));
   }
 
   @Test
@@ -76,10 +78,10 @@ public class MongoLandscapeJsonApiRepositoryTest {
     this.repo.save(ts2, landscape2, 0);
 
     final String id = landscape.getId();
-    final String rawLandscape = this.repo.getById(id);
+    final Optional<String> rawLandscape = this.repo.getById(id);
 
     assertTrue("Ivalid landscape or wrong id",
-        rawLandscape.startsWith("{\"data\":{\"type\":\"landscape\",\"id\":\"" + id + "\""));
+        rawLandscape.get().startsWith("{\"data\":{\"type\":\"landscape\",\"id\":\"" + id + "\""));
   }
 
   @Test

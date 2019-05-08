@@ -7,6 +7,7 @@ import static org.mockito.Mockito.when;
 import com.github.jasminb.jsonapi.ResourceConverter;
 import com.github.jasminb.jsonapi.SerializationFeature;
 import com.github.jasminb.jsonapi.exceptions.DocumentSerializationException;
+import java.util.Optional;
 import javax.ws.rs.NotFoundException;
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.MediaType;
@@ -17,8 +18,6 @@ import net.explorviz.history.repository.persistence.ReplayRepository;
 import net.explorviz.history.repository.persistence.mongo.LandscapeDummyCreator;
 import net.explorviz.history.repository.persistence.mongo.LandscapeSerializationHelper;
 import net.explorviz.history.server.resources.LandscapeResource;
-import net.explorviz.history.server.resources.TimestampResource;
-import net.explorviz.history.server.resources.TimestampResourceTest;
 import net.explorviz.shared.common.idgen.AtomicEntityIdGenerator;
 import net.explorviz.shared.common.idgen.IdGenerator;
 import net.explorviz.shared.common.idgen.UuidServiceIdGenerator;
@@ -30,9 +29,9 @@ import org.junit.Test;
 import org.mockito.Mockito;
 
 /**
- * Unit tests for {@link TimestampResource}. All tests are performed by calling the HTTP endpoints
- * of {@link TimestampResource} via HTTP client requests. See {@link TimestampResourceTest} for
- * tests that use method level calls instead of HTTP requests.
+ * Unit tests for {@link LandscapeResource}. All tests are performed by calling the HTTP endpoints
+ * of {@link LandscapeResource} via HTTP client requests. See {@link LandscapeResourceEndpointTest}
+ * for tests that use method level calls instead of HTTP requests.
  */
 public class LandscapeResourceEndpointTest extends JerseyTest {
 
@@ -76,7 +75,8 @@ public class LandscapeResourceEndpointTest extends JerseyTest {
     landscapeRepo = Mockito.mock(LandscapeRepository.class);
     replayRepo = Mockito.mock(ReplayRepository.class);
 
-    when(this.landscapeRepo.getById(this.currentLandscapeId)).thenReturn(this.currentLandscape);
+    when(this.landscapeRepo.getById(this.currentLandscapeId))
+        .thenReturn(Optional.of(this.currentLandscape));
     when(this.landscapeRepo.getById("2L"))
         .thenThrow(new NotFoundException("Landscape not found for provided 2L."));
     // when(this.replayRepo.getAllTimestamps()).thenReturn(this.userUploadedTimestamps);
@@ -99,8 +99,8 @@ public class LandscapeResourceEndpointTest extends JerseyTest {
   }
 
   @Test
-  public void checkNotFoundStatusCodeForNotImplementedEndpoint() {
-    final Response response = target().path(BASE_URL).request().get();
+  public void checkNotFoundStatusCodeForUnknownLandscape() {
+    final Response response = target().path(BASE_URL + "/12").request().get();
     assertEquals(GENERIC_STATUS_ERROR_MESSAGE, Status.NOT_FOUND.getStatusCode(),
         response.getStatus());
   }
@@ -125,6 +125,8 @@ public class LandscapeResourceEndpointTest extends JerseyTest {
         target().path(BASE_URL + "/" + currentLandscapeId).request().accept(MEDIA_TYPE).get();
     assertEquals(GENERIC_MEDIA_TYPE_ERROR_MESSAGE, MEDIA_TYPE, response.getMediaType().toString());
   }
+
+
 
   // TODO test for valid response and JSON-API conformity
 

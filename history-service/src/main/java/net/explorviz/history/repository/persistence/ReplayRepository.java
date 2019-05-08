@@ -1,6 +1,7 @@
 package net.explorviz.history.repository.persistence;
 
 import java.util.List;
+import java.util.Optional;
 import net.explorviz.shared.landscape.model.landscape.Landscape;
 import net.explorviz.shared.landscape.model.store.Timestamp;
 
@@ -46,7 +47,7 @@ public interface ReplayRepository<T> {
    *
    * @return the landscape object
    */
-  T getByTimestamp(final long timestamp);
+  Optional<T> getByTimestamp(final long timestamp);
 
 
   /**
@@ -56,7 +57,7 @@ public interface ReplayRepository<T> {
    *
    * @return the landscape object
    */
-  T getByTimestamp(final Timestamp timestamp);
+  Optional<T> getByTimestamp(final Timestamp timestamp);
 
   /**
    * Retrieves a replay object with a specific, unique identifier.
@@ -65,7 +66,7 @@ public interface ReplayRepository<T> {
    *
    * @return the replay object
    */
-  T getById(final String id);
+  Optional<T> getById(final String id);
 
   /**
    * Removes all landscapes that have exceeded their lifespan.
