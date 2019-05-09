@@ -6,9 +6,13 @@ import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
 import com.github.jasminb.jsonapi.annotations.Id;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
+/**
+ * Base class for all settings.
+ *
+ */
 @com.github.jasminb.jsonapi.annotations.Type("setting")
 @JsonSubTypes({@Type(name = "RangeSetting", value = RangeSetting.class),
-  @Type(name = "FlagSeting", value = FlagSetting.class)})
+    @Type(name = "FlagSeting", value = FlagSetting.class)})
 public abstract class Setting {
 
   @Id
@@ -24,9 +28,30 @@ public abstract class Setting {
   @JsonProperty
   protected String origin;
 
+  /**
+   * Creates a new Setting.
+   * @param id the unique id
+   * @param displayName the display name
+   * @param description a brief description
+   * @param origin the origin
+   */
   public Setting(final String id, final String displayName, final String description,
       final String origin) {
     this.id = id;
+    this.displayName = displayName;
+    this.description = description;
+    this.origin = origin;
+  }
+  
+  /**
+   * Creates a new Setting.
+   * @param displayName the display name
+   * @param description a brief description
+   * @param origin the origin
+   */
+  public Setting(final String displayName, final String description,
+      final String origin) {
+    this.id = null;
     this.displayName = displayName;
     this.description = description;
     this.origin = origin;
@@ -44,6 +69,10 @@ public abstract class Setting {
 
   public String getId() {
     return this.id;
+  }
+  
+  public void setId(String id) {
+    this.id = id;
   }
 
   public String getDisplayName() {

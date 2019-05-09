@@ -14,6 +14,15 @@ public class FlagSetting extends Setting {
 
   private boolean defaultValue;
 
+  /**
+   * Creates a new flag.
+   * 
+   * @param id the id
+   * @param displayName the display name
+   * @param description a brief description
+   * @param origin the origin
+   * @param defaultValue the default value
+   */
   @JsonCreator
   public FlagSetting(@JsonProperty("id") final String id,
       @JsonProperty("displayName") final String displayName,
@@ -21,6 +30,22 @@ public class FlagSetting extends Setting {
       @JsonProperty("origin") final String origin,
       @JsonProperty("defaultValue") final boolean defaultValue) {
     super(id, displayName, description, origin);
+    this.defaultValue = defaultValue;
+  }
+  
+  /**
+   * Creates a new flag.
+   * 
+   * @param displayName the display name
+   * @param description a brief description
+   * @param origin the origin
+   * @param defaultValue the default value
+   */
+  public FlagSetting(final String displayName,
+      final String description,
+      final String origin,
+      final boolean defaultValue) {
+    super(displayName, description, origin);
     this.defaultValue = defaultValue;
   }
 

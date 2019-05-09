@@ -41,8 +41,29 @@ public class RangeSetting extends Setting {
     this.min = min;
     this.max = max;
   }
+  
+  /**
+   * Creates a new range setting.
+   * @param displayName the display name
+   * @param description a brief description of the settings effects
+   * @param origin the origin of the setting
+   * @param defaultValue its default value
+   * @param min the lower bound (inclusively)
+   * @param max the upper bound (inclusively)
+   */
+  public RangeSetting(final String displayName,
+      final String description,
+      final String origin,
+      final double defaultValue,
+      final double min, @JsonProperty("max") final double max) {
+    super(displayName, description, origin);
+    this.defaultValue = defaultValue;
+    this.min = min;
+    this.max = max;
+  }
 
-  public RangeSetting() {
+  @SuppressWarnings("unused")
+  private RangeSetting() {
     // Morphia
   }
 

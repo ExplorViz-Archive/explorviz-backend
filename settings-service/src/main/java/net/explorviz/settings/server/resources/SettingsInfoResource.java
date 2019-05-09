@@ -1,6 +1,7 @@
 package net.explorviz.settings.server.resources;
 
 import java.util.List;
+import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.ws.rs.BadRequestException;
 import javax.ws.rs.Consumes;
@@ -23,6 +24,7 @@ import net.explorviz.settings.services.SettingsRepository;
 public class SettingsInfoResource {
 
   private static final String MEDIA_TYPE = "application/vnd.api+json";
+  private static final String ADMIN = "admin";
 
 
   private final SettingsRepository repo;
@@ -66,6 +68,7 @@ public class SettingsInfoResource {
   @DELETE
   @Produces(MEDIA_TYPE)
   @Path("/{id}")
+  @RolesAllowed({ADMIN})
   public Response deleteById(@PathParam("id") final String id) {
     this.repo.delete(id);
     return Response.noContent().build();
@@ -80,12 +83,13 @@ public class SettingsInfoResource {
    */
   @POST
   @Consumes(MEDIA_TYPE)
+  @RolesAllowed({ADMIN})
   public Response createSetting(final Setting s) {
     try {
       this.repo.create(s);
       return Response.ok().build();
     } catch (final Exception e) {
-      throw new BadRequestException();
+      throw new BadRequestException(e.getMessage());
     }
 
   }

@@ -9,6 +9,7 @@ import javax.inject.Inject;
 import net.explorviz.settings.model.FlagSetting;
 import net.explorviz.settings.model.RangeSetting;
 import net.explorviz.settings.model.Setting;
+import net.explorviz.shared.common.idgen.IdGenerator;
 import org.jvnet.hk2.annotations.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,13 +29,14 @@ public class SettingsRepository implements MongoRepository<Setting, String> {
   private static final Logger LOGGER =
       LoggerFactory.getLogger(SettingsRepository.class.getSimpleName());
 
-
+  private final IdGenerator idgen;
 
   private final Datastore datastore;
 
   @Inject
-  public SettingsRepository(final Datastore datastore) {
+  public SettingsRepository(final Datastore datastore, final IdGenerator idgen) {
     this.datastore = datastore;
+    this.idgen = idgen;
   }
 
   /**
@@ -101,12 +103,19 @@ public class SettingsRepository implements MongoRepository<Setting, String> {
 
 
   /**
-   * Creates a new setting
+   * Creates a new setting.
    *
    * @param setting the setting to create
    */
   @Override
   public void create(final Setting setting) {
+
+    if (setting.getId() != null && !setting.getId().isEmpty()) {
+      throw new IllegalArgumentException("This instance already has an id, can't create");
+    }
+
+    setting.setId(this.idgen.generateId());
+
     this.datastore.save(setting);
     if (LOGGER.isInfoEnabled()) {
       LOGGER.info(String.format("Saved setting with id %s", setting.getId()));

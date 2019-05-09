@@ -3,6 +3,7 @@ package net.explorviz.settings.services;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -13,6 +14,7 @@ import java.util.List;
 import net.explorviz.settings.model.FlagSetting;
 import net.explorviz.settings.model.RangeSetting;
 import net.explorviz.settings.model.Setting;
+import net.explorviz.shared.common.idgen.IdGenerator;
 import org.hamcrest.CoreMatchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -38,6 +40,10 @@ public class SettingsRepositoryTest {
   @Mock
   private Datastore ds;
 
+  @Mock
+  private IdGenerator idgen;
+
+
   private SettingsRepository sps;
 
   private List<RangeSetting> rangeSettings;
@@ -51,7 +57,7 @@ public class SettingsRepositoryTest {
   @BeforeEach
   public void setUp() {
     assert this.ds != null;
-    this.sps = new SettingsRepository(this.ds);
+    this.sps = new SettingsRepository(this.ds, this.idgen);
 
     // Add some default values
     this.rangeSettings = new ArrayList<>(Arrays.asList(new RangeSetting("r", "Double Setting",
@@ -112,11 +118,11 @@ public class SettingsRepositoryTest {
 
   @Test
   public void testCreate() {
-    final FlagSetting s = new FlagSetting("test", "testname", "a test setting", "default", false);
+    final FlagSetting s = new FlagSetting("testname", "a test setting", "default", false);
+
+    when(this.idgen.generateId()).thenReturn("generatedId");
+
     when(this.ds.save(s)).then(new Answer<Key<FlagSetting>>() {
-
-
-
       @Override
       public Key<FlagSetting> answer(final InvocationOnMock invocation) throws Throwable {
         SettingsRepositoryTest.this.flagSettings.add(s);
@@ -129,6 +135,14 @@ public class SettingsRepositoryTest {
     assertNotNull(this.sps.find(s.getId()));
   }
 
+
+  @Test
+  public void testExisting() {
+    final FlagSetting s = new FlagSetting("id", "testname", "a test setting", "default", false);
+
+    assertThrows(IllegalArgumentException.class, () -> this.sps.create(s));
+
+  }
 
 
 }
