@@ -3,6 +3,7 @@ package net.explorviz.settings.server.main;
 import javax.inject.Singleton;
 import net.explorviz.settings.model.Setting;
 import net.explorviz.settings.server.inject.DatastoreFactory;
+import net.explorviz.settings.services.AuthorizationService;
 import net.explorviz.settings.services.MongoRepository;
 import net.explorviz.settings.services.SettingsRepository;
 import net.explorviz.settings.services.UserPreferenceRepository;
@@ -30,7 +31,9 @@ public class DependencyInjectionBinder extends CommonDependencyInjectionBinder {
     this.bind(SettingsRepository.class).to(SettingsRepository.class).in(Singleton.class);
     this.bind(UserPreferenceRepository.class).to(UserPreferenceRepository.class)
         .in(Singleton.class);
+    this.bind(AuthorizationService.class).to(AuthorizationService.class).in(Singleton.class);
     this.bind(UserPreferenceService.class).to(UserPreferenceService.class).in(Singleton.class);
+
   }
 
 

@@ -1,19 +1,20 @@
 package net.explorviz.settings.server.main;
 
-import net.explorviz.settings.model.UserPreference;
 import net.explorviz.settings.model.FlagSetting;
 import net.explorviz.settings.model.RangeSetting;
 import net.explorviz.settings.model.Setting;
+import net.explorviz.settings.model.UserPreference;
 import net.explorviz.settings.server.providers.SettingJsonApiDeserializer;
 import net.explorviz.settings.server.providers.UserSettingJsonApiDeserializer;
-import net.explorviz.settings.server.resources.UserPreferencesResource;
 import net.explorviz.settings.server.resources.SettingsInfoResource;
+import net.explorviz.settings.server.resources.UserPreferencesResource;
 import net.explorviz.shared.common.jsonapi.ResourceConverterFactory;
 import net.explorviz.shared.common.provider.GenericTypeFinder;
 import net.explorviz.shared.common.provider.JsonApiListProvider;
 import net.explorviz.shared.common.provider.JsonApiProvider;
 import net.explorviz.shared.exceptions.mapper.GeneralExceptionMapper;
 import net.explorviz.shared.exceptions.mapper.WebApplicationExceptionMapper;
+import net.explorviz.shared.security.filters.AuthenticationFilter;
 import org.glassfish.jersey.server.ResourceConfig;
 
 public class Application extends ResourceConfig {
@@ -29,6 +30,8 @@ public class Application extends ResourceConfig {
 
     // register CDI
     this.register(new DependencyInjectionBinder());
+
+    this.register(AuthenticationFilter.class);
 
 
     // exception handling (mind the order !)
