@@ -10,8 +10,8 @@ import com.mongodb.WriteResult;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import net.explorviz.settings.model.UserPreference;
 import net.explorviz.settings.model.Setting;
+import net.explorviz.settings.model.UserPreference;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,9 +20,9 @@ import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.stubbing.Answer;
-import org.mongodb.morphia.Datastore;
-import org.mongodb.morphia.Key;
-import org.mongodb.morphia.query.Query;
+import xyz.morphia.Datastore;
+import xyz.morphia.Key;
+import xyz.morphia.query.Query;
 
 /**
  * Unit test for {@link UserPreferenceRepository}.

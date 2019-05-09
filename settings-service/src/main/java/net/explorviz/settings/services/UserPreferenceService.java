@@ -42,7 +42,7 @@ public class UserPreferenceService {
    * @throws SettingValidationException if the setting is invalid
    *
    */
-  public void validate(final UserPreference customSetting) throws SettingValidationException {
+  public void validate(final UserPreference customSetting) {
     // TODO
   }
 

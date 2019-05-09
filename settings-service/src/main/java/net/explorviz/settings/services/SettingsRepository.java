@@ -10,10 +10,10 @@ import net.explorviz.settings.model.FlagSetting;
 import net.explorviz.settings.model.RangeSetting;
 import net.explorviz.settings.model.Setting;
 import org.jvnet.hk2.annotations.Service;
-import org.mongodb.morphia.Datastore;
-import org.mongodb.morphia.query.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import xyz.morphia.Datastore;
+import xyz.morphia.query.Query;
 
 
 /**

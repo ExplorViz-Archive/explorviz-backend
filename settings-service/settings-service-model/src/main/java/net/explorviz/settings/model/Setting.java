@@ -12,7 +12,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 public abstract class Setting {
 
   @Id
-  @org.mongodb.morphia.annotations.Id
+  @xyz.morphia.annotations.Id
   protected String id;
 
   @JsonProperty

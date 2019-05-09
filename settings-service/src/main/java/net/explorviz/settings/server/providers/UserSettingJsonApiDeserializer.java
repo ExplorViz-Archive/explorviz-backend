@@ -11,7 +11,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.ext.MessageBodyReader;
 import net.explorviz.settings.model.UserPreference;
-import org.mongodb.morphia.Datastore;
+import xyz.morphia.Datastore;
 
 public class UserSettingJsonApiDeserializer implements MessageBodyReader<UserPreference> {
 

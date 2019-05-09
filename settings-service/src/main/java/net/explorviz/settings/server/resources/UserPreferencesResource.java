@@ -2,7 +2,6 @@ package net.explorviz.settings.server.resources;
 
 import java.util.List;
 import javax.inject.Inject;
-import javax.ws.rs.BadRequestException;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -13,14 +12,13 @@ import javax.ws.rs.core.Response;
 import net.explorviz.settings.model.UserPreference;
 import net.explorviz.settings.services.UserPreferenceRepository;
 import net.explorviz.settings.services.UserPreferenceService;
-import net.explorviz.settings.services.SettingValidationException;
 
 /**
  * Resource to access {@link UserPreference}, i.e. to handle user specific settings.
  *
  */
 @Path("v1/settings/custom")
-public class CustomSettingsResource {
+public class UserPreferencesResource {
 
   private static final String MEDIA_TYPE = "application/vnd.api+json";
 
@@ -36,7 +34,7 @@ public class CustomSettingsResource {
    * @param customSettingRepo repository for user preferences
    */
   @Inject
-  public CustomSettingsResource(final UserPreferenceRepository customSettingRepo,
+  public UserPreferencesResource(final UserPreferenceRepository customSettingRepo,
       final UserPreferenceService customSettingService) {
     super();
     this.customSettingsRepo = customSettingRepo;
@@ -76,14 +74,11 @@ public class CustomSettingsResource {
   @POST
   @Consumes(MEDIA_TYPE)
   public Response createCustomSetting(final UserPreference customSetting) {
-    try {
-      this.customSettingService.validate(customSetting);
-      this.customSettingsRepo.create(customSetting);
-      return Response.ok().build();
-    } catch (final SettingValidationException e) {
-      // TODO Auto-generated catch block
-      throw new BadRequestException(e.getMessage());
-    }
+
+    this.customSettingService.validate(customSetting);
+    this.customSettingsRepo.create(customSetting);
+    return Response.ok().build();
+
   }
 
 }

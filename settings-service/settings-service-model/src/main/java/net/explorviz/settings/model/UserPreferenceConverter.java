@@ -1,9 +1,9 @@
 package net.explorviz.settings.model;
 
 import com.mongodb.BasicDBObject;
-import org.mongodb.morphia.converters.SimpleValueConverter;
-import org.mongodb.morphia.converters.TypeConverter;
-import org.mongodb.morphia.mapping.MappedField;
+import xyz.morphia.converters.SimpleValueConverter;
+import xyz.morphia.converters.TypeConverter;
+import xyz.morphia.mapping.MappedField;
 
 
 public class UserPreferenceConverter extends TypeConverter implements SimpleValueConverter {

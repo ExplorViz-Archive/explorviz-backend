@@ -7,10 +7,10 @@ import com.github.jasminb.jsonapi.annotations.Type;
 import com.mongodb.DBObject;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.mongodb.morphia.annotations.Converters;
-import org.mongodb.morphia.annotations.Embedded;
-import org.mongodb.morphia.annotations.Entity;
-import org.mongodb.morphia.annotations.PreLoad;
+import xyz.morphia.annotations.Converters;
+import xyz.morphia.annotations.Embedded;
+import xyz.morphia.annotations.Entity;
+import xyz.morphia.annotations.PreLoad;
 
 /**
  * An entity of this class represent the preference of a user regarding a specific {@link Setting}.
@@ -25,7 +25,7 @@ public class UserPreference {
   private static final String VALUE = "value";
   
   @Id
-  @org.mongodb.morphia.annotations.Id
+  @xyz.morphia.annotations.Id
   @Embedded
   private CustomSettingId id;
 

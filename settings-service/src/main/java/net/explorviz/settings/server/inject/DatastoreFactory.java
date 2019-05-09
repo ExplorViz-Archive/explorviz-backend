@@ -1,15 +1,15 @@
 package net.explorviz.settings.server.inject;
 
 import com.mongodb.MongoClient;
-import net.explorviz.settings.model.UserPreference;
-import net.explorviz.settings.model.UserPreferenceConverter;
 import net.explorviz.settings.model.FlagSetting;
 import net.explorviz.settings.model.RangeSetting;
 import net.explorviz.settings.model.Setting;
+import net.explorviz.settings.model.UserPreference;
+import net.explorviz.settings.model.UserPreferenceConverter;
 import net.explorviz.shared.config.annotations.Config;
 import org.glassfish.hk2.api.Factory;
-import org.mongodb.morphia.Datastore;
-import org.mongodb.morphia.Morphia;
+import xyz.morphia.Datastore;
+import xyz.morphia.Morphia;
 
 
 public class DatastoreFactory implements Factory<Datastore> {
