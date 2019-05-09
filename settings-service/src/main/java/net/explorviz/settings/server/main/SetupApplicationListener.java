@@ -1,9 +1,14 @@
 package net.explorviz.settings.server.main;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import javax.inject.Inject;
 import javax.servlet.annotation.WebListener;
+import net.explorviz.settings.model.FlagSetting;
+import net.explorviz.settings.model.RangeSetting;
 import net.explorviz.settings.model.Setting;
-import net.explorviz.settings.services.MongoRepository;
+import net.explorviz.settings.services.SettingsRepository;
 import org.glassfish.jersey.server.monitoring.ApplicationEvent;
 import org.glassfish.jersey.server.monitoring.ApplicationEvent.Type;
 import org.glassfish.jersey.server.monitoring.ApplicationEventListener;
@@ -27,7 +32,7 @@ public class SetupApplicationListener implements ApplicationEventListener {
   private Datastore datastore;
 
   @Inject
-  private MongoRepository<Setting, String> settingRepo;
+  private SettingsRepository settingRepo;
 
   @Override
   public void onEvent(final ApplicationEvent event) {
@@ -49,30 +54,34 @@ public class SetupApplicationListener implements ApplicationEventListener {
   }
 
 
-
+  /**
+   * Adds the default settings to the database
+   */
   private void addDefaultSettings() {
+    final String origin = "backend";
 
-    /*
-     * final List<Setting<?>> defaults = new ArrayList<Setting<?>>(Arrays.asList( new
-     * BooleanSetting("showFpsCounter", "Show FPS Counter",
-     * "\'Frames Per Second\' metrics in visualizations", false, "backend"), new
-     * BooleanSetting("appVizTransparency", "App Viz Transparency",
-     * "Transparency effect for selection (left click) in application visualization", true,
-     * "backend"), new BooleanSetting("enableHoverEffects", "Enable Hover Effects",
-     * "Hover effect (flashing entities) for mouse cursor", true, "backend"), new
-     * BooleanSetting("keepHighlightingOnOpenOrClose", "Keep Highlighting On Open Or Close",
-     * "Toggle if highlighting should be resetted on double click in application visualization",
-     * true, "backend"), new DoubleSetting("appVizCommArrowSize",
-     * "Arrow Size in Application Visualization",
-     * "Arrow Size for selected communications in application visualization", 1.0, "backend"), new
-     * DoubleSetting("appVizTransparencyIntensity",
-     * "Transparency Intensity in Application Visualization",
-     * "Transparency effect intensity (\'App Viz Transparency\' must be enabled)", 0.1, "backend",
-     * 0.5, 0.1)));
-     *
-     * defaults.stream().filter(d -> !this.settingRepo.find(d.getId()).isPresent())
-     * .forEach(this.settingRepo::create);
-     */
+    // Workaround: Assign hardcoded ids
+    final List<Setting> defaults = new ArrayList<Setting>(Arrays.asList(
+        new FlagSetting("showFpsCounter", "Show FPS Counter",
+            "\'Frames Per Second\' metrics in visualizations", origin, false),
+        new FlagSetting("appVizTransparency", "App Viz Transparency",
+            "Transparency effect for selection (left click) in application visualization", origin,
+            true),
+        new FlagSetting("keepHighlightingOnOpenOrClose", "Keep Highlighting On Open Or Close",
+            "Toggle if highlighting should be resetted on double click in application"
+                + " visualization",
+            origin, true),
+        new FlagSetting("enableHoverEffects", "Enable Hover Effects",
+            "Hover effect (flashing entities) for mouse cursor", origin, true),
+        new RangeSetting("appVizCommArrowSize", "Arrow Size in Application Visualization",
+            "Arrow Size for selected communications in application visualization", origin, 1.0, 0.0,
+            5.0),
+        new RangeSetting("appVizTransparencyIntensity",
+            "Transparency Intensity in Application Visualization",
+            "Transparency effect intensity (\'App Viz Transparency\' must be enabled)", origin, 0.1,
+            0.1, 0.5)));
+
+    defaults.stream().forEach(this.settingRepo::createOrOverride);
 
   }
 
