@@ -45,13 +45,13 @@ public class UserPreferenceRepository
   }
 
   @Override
-  public void create(final UserPreference setting) {
-    System.out.println(setting);
-    this.datastore.save(setting);
+  public UserPreference create(final UserPreference pref) {
+    this.datastore.save(pref);
     if (LOGGER.isInfoEnabled()) {
-      LOGGER.info(String.format("Created new user setting with id %s:%s", setting.getUserId(),
-          setting.getSettingId()));
+      LOGGER.info(String.format("Created new user setting with id %s:%s", pref.getUserId(),
+          pref.getSettingId()));
     }
+    return pref;
   }
 
   @Override

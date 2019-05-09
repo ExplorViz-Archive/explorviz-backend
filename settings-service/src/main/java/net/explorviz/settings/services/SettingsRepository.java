@@ -108,7 +108,7 @@ public class SettingsRepository implements MongoRepository<Setting, String> {
    * @param setting the setting to create
    */
   @Override
-  public void create(final Setting setting) {
+  public Setting create(final Setting setting) {
 
     if (setting.getId() != null && !setting.getId().isEmpty()) {
       throw new IllegalArgumentException("This instance already has an id, can't create");
@@ -120,6 +120,8 @@ public class SettingsRepository implements MongoRepository<Setting, String> {
     if (LOGGER.isInfoEnabled()) {
       LOGGER.info(String.format("Saved setting with id %s", setting.getId()));
     }
+
+    return setting;
   }
 
 

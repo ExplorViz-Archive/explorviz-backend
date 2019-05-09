@@ -84,10 +84,10 @@ public class SettingsInfoResource {
   @POST
   @Consumes(MEDIA_TYPE)
   @RolesAllowed({ADMIN})
-  public Response createSetting(final Setting s) {
+  public Setting createSetting(final Setting s) {
     try {
-      this.repo.create(s);
-      return Response.ok().build();
+      final Setting updated = this.repo.create(s);
+      return updated;
     } catch (final Exception e) {
       throw new BadRequestException(e.getMessage());
     }
