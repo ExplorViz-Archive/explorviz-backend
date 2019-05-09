@@ -8,8 +8,9 @@ import net.explorviz.settings.model.RangeSetting;
 import net.explorviz.settings.model.Setting;
 import net.explorviz.shared.config.annotations.Config;
 import org.glassfish.hk2.api.Factory;
-import xyz.morphia.Datastore;
-import xyz.morphia.Morphia;
+import org.mongodb.morphia.Datastore;
+import org.mongodb.morphia.Morphia;
+
 
 public class DatastoreFactory implements Factory<Datastore> {
 

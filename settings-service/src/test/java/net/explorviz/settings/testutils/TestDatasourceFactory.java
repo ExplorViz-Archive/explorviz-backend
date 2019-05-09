@@ -5,8 +5,9 @@ import net.explorviz.shared.config.annotations.Config;
 import net.explorviz.shared.security.model.User;
 import net.explorviz.shared.security.model.roles.Role;
 import org.glassfish.hk2.api.Factory;
-import xyz.morphia.Datastore;
-import xyz.morphia.Morphia;
+import org.mongodb.morphia.Datastore;
+import org.mongodb.morphia.Morphia;
+
 
 public class TestDatasourceFactory implements Factory<Datastore> {
 

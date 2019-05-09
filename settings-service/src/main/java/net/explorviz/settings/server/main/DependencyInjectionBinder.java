@@ -9,7 +9,7 @@ import net.explorviz.settings.services.MongoRepository;
 import net.explorviz.settings.services.SettingsRepository;
 import net.explorviz.shared.common.injection.CommonDependencyInjectionBinder;
 import org.glassfish.hk2.api.TypeLiteral;
-import xyz.morphia.Datastore;
+import org.mongodb.morphia.Datastore;
 
 public class DependencyInjectionBinder extends CommonDependencyInjectionBinder {
 

@@ -20,9 +20,10 @@ import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.stubbing.Answer;
-import xyz.morphia.Datastore;
-import xyz.morphia.Key;
-import xyz.morphia.query.Query;
+import org.mongodb.morphia.Datastore;
+import org.mongodb.morphia.Key;
+import org.mongodb.morphia.query.Query;
+
 
 @ExtendWith(MockitoExtension.class)
 public class CustomSettingsRepositoryTest {

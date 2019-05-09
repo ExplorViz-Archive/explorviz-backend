@@ -7,10 +7,10 @@ import com.github.jasminb.jsonapi.annotations.Type;
 import com.mongodb.DBObject;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
-import xyz.morphia.annotations.Converters;
-import xyz.morphia.annotations.Embedded;
-import xyz.morphia.annotations.Entity;
-import xyz.morphia.annotations.PreLoad;
+import org.mongodb.morphia.annotations.Converters;
+import org.mongodb.morphia.annotations.Embedded;
+import org.mongodb.morphia.annotations.Entity;
+import org.mongodb.morphia.annotations.PreLoad;
 
 @Type("CustomSetting") // -> UserPreference klingt eindeutiger
 @Converters(CustomSettingConverter.class)
@@ -18,7 +18,7 @@ import xyz.morphia.annotations.PreLoad;
 public class CustomSetting {
 
   @Id
-  @xyz.morphia.annotations.Id
+  @org.mongodb.morphia.annotations.Id
   @Embedded
   private CustomSettingId id;
 

@@ -8,11 +8,11 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 
 @com.github.jasminb.jsonapi.annotations.Type("setting")
 @JsonSubTypes({@Type(name = "RangeSetting", value = RangeSetting.class),
-    @Type(name = "FlagSeting", value = FlagSetting.class)})
+  @Type(name = "FlagSeting", value = FlagSetting.class)})
 public abstract class Setting {
 
   @Id
-  @xyz.morphia.annotations.Id
+  @org.mongodb.morphia.annotations.Id
   protected String id;
 
   @JsonProperty

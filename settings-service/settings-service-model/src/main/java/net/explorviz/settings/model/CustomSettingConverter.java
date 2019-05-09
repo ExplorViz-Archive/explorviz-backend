@@ -1,9 +1,10 @@
 package net.explorviz.settings.model;
 
 import com.mongodb.BasicDBObject;
-import xyz.morphia.converters.SimpleValueConverter;
-import xyz.morphia.converters.TypeConverter;
-import xyz.morphia.mapping.MappedField;
+import org.mongodb.morphia.converters.SimpleValueConverter;
+import org.mongodb.morphia.converters.TypeConverter;
+import org.mongodb.morphia.mapping.MappedField;
+
 
 public class CustomSettingConverter extends TypeConverter implements SimpleValueConverter {
 
@@ -15,8 +16,6 @@ public class CustomSettingConverter extends TypeConverter implements SimpleValue
   @Override
   public Object decode(final Class<?> targetClass, final Object fromDBObject,
       final MappedField optionalExtraInfo) {
-
-    System.out.println("UIASDIUAHSDIUASHDI");
 
     final BasicDBObject basicDBO = (BasicDBObject) fromDBObject;
     final BasicDBObject idDBO = (BasicDBObject) basicDBO.get("_id");

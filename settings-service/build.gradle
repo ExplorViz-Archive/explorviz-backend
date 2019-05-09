@@ -10,10 +10,10 @@ configurations.all {
 }
 
 dependencies {
-	
 		
 	// MongoDB ORM
 	api group: 'org.mongodb.morphia', name: 'morphia', version: '1.3.2'
+	implementation project(':settings-service:settings-service-model')
 	
 	// ExplorViz Shared Dependencies
 	if(useRemoteSharedProject.toBoolean()) {
