@@ -5,7 +5,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.github.jasminb.jsonapi.annotations.Type;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
-@Type("FlagSetting")
+/**
+ * Represents a flag that can either be set (value = true) or not (value = false).
+ *
+ */
+@Type("flagsetting")
 public class FlagSetting extends Setting {
 
   private boolean defaultValue;
@@ -20,14 +24,16 @@ public class FlagSetting extends Setting {
     this.defaultValue = defaultValue;
   }
 
+  @SuppressWarnings("unused")
+  private FlagSetting() {
+    // Morphia
+  }
 
   public boolean getDefaultValue() {
     return this.defaultValue;
   }
 
-  public FlagSetting() {
-    // Morphia
-  }
+  
 
   public void setDefaultValue(final boolean defaultValue) {
     this.defaultValue = defaultValue;

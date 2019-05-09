@@ -3,8 +3,8 @@ package net.explorviz.settings.services;
 import java.util.List;
 import java.util.Optional;
 import javax.inject.Inject;
-import net.explorviz.settings.model.CustomSetting;
 import net.explorviz.settings.model.Setting;
+import net.explorviz.settings.model.UserPreference;
 import org.jvnet.hk2.annotations.Service;
 import org.mongodb.morphia.Datastore;
 import org.slf4j.Logger;
@@ -16,8 +16,8 @@ import org.slf4j.LoggerFactory;
  *
  */
 @Service
-public class CustomSettingsRepository
-    implements MongoRepository<CustomSetting, CustomSetting.CustomSettingId> {
+public class UserPreferenceRepository
+    implements MongoRepository<UserPreference, UserPreference.CustomSettingId> {
 
   private static final Logger LOGGER =
       LoggerFactory.getLogger(SettingsRepository.class.getSimpleName());
@@ -28,24 +28,24 @@ public class CustomSettingsRepository
 
 
   @Inject
-  public CustomSettingsRepository(final Datastore datastore) {
+  public UserPreferenceRepository(final Datastore datastore) {
     this.datastore = datastore;
   }
 
   @Override
-  public List<CustomSetting> findAll() {
-    return this.datastore.find(CustomSetting.class).asList();
+  public List<UserPreference> findAll() {
+    return this.datastore.find(UserPreference.class).asList();
 
   }
 
   @Override
-  public Optional<CustomSetting> find(final CustomSetting.CustomSettingId id) {
-    final CustomSetting u = this.datastore.get(CustomSetting.class, id);
+  public Optional<UserPreference> find(final UserPreference.CustomSettingId id) {
+    final UserPreference u = this.datastore.get(UserPreference.class, id);
     return Optional.ofNullable(u);
   }
 
   @Override
-  public void create(final CustomSetting setting) {
+  public void create(final UserPreference setting) {
     System.out.println(setting);
     this.datastore.save(setting);
     if (LOGGER.isInfoEnabled()) {
@@ -55,8 +55,8 @@ public class CustomSettingsRepository
   }
 
   @Override
-  public void delete(final CustomSetting.CustomSettingId id) {
-    this.datastore.delete(this.datastore.find(CustomSetting.class)
+  public void delete(final UserPreference.CustomSettingId id) {
+    this.datastore.delete(this.datastore.find(UserPreference.class)
         .filter("_id.userId == ", id.getUserId()).filter("_id.settingId == ", id.getSettingId()));
   }
 

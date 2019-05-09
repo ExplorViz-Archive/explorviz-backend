@@ -1,6 +1,6 @@
 package net.explorviz.settings.server.main;
 
-import net.explorviz.settings.model.CustomSetting;
+import net.explorviz.settings.model.UserPreference;
 import net.explorviz.settings.model.FlagSetting;
 import net.explorviz.settings.model.RangeSetting;
 import net.explorviz.settings.model.Setting;
@@ -23,7 +23,7 @@ public class Application extends ResourceConfig {
     GenericTypeFinder.getTypeMap().put("Setting", Setting.class);
     GenericTypeFinder.getTypeMap().put("RangeSetting", RangeSetting.class);
     GenericTypeFinder.getTypeMap().put("FlagSetting", FlagSetting.class);
-    GenericTypeFinder.getTypeMap().put("CustomSetting", CustomSetting.class);
+    GenericTypeFinder.getTypeMap().put("CustomSetting", UserPreference.class);
 
 
 

@@ -6,11 +6,11 @@ import org.mongodb.morphia.converters.TypeConverter;
 import org.mongodb.morphia.mapping.MappedField;
 
 
-public class CustomSettingConverter extends TypeConverter implements SimpleValueConverter {
+public class UserPreferenceConverter extends TypeConverter implements SimpleValueConverter {
 
 
-  public CustomSettingConverter() {
-    super(CustomSetting.class);
+  public UserPreferenceConverter() {
+    super(UserPreference.class);
   }
 
   @Override
@@ -25,7 +25,7 @@ public class CustomSettingConverter extends TypeConverter implements SimpleValue
 
     final Object value = basicDBO.get("value");
 
-    return new CustomSetting(uId, sId, value);
+    return new UserPreference(uId, sId, value);
 
 
   }

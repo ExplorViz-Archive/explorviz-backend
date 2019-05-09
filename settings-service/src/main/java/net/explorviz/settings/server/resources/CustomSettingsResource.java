@@ -10,13 +10,13 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
-import net.explorviz.settings.model.CustomSetting;
-import net.explorviz.settings.services.CustomSettingsRepository;
-import net.explorviz.settings.services.CustomSettingsService;
+import net.explorviz.settings.model.UserPreference;
+import net.explorviz.settings.services.UserPreferenceRepository;
+import net.explorviz.settings.services.UserPreferenceService;
 import net.explorviz.settings.services.SettingValidationException;
 
 /**
- * Resource to access {@link CustomSetting}, i.e. to handle user specific settings.
+ * Resource to access {@link UserPreference}, i.e. to handle user specific settings.
  *
  */
 @Path("v1/settings/custom")
@@ -25,8 +25,8 @@ public class CustomSettingsResource {
   private static final String MEDIA_TYPE = "application/vnd.api+json";
 
 
-  private final CustomSettingsRepository customSettingsRepo;
-  private final CustomSettingsService customSettingService;
+  private final UserPreferenceRepository customSettingsRepo;
+  private final UserPreferenceService customSettingService;
 
 
   /**
@@ -36,8 +36,8 @@ public class CustomSettingsResource {
    * @param customSettingRepo repository for user preferences
    */
   @Inject
-  public CustomSettingsResource(final CustomSettingsRepository customSettingRepo,
-      final CustomSettingsService customSettingService) {
+  public CustomSettingsResource(final UserPreferenceRepository customSettingRepo,
+      final UserPreferenceService customSettingService) {
     super();
     this.customSettingsRepo = customSettingRepo;
     this.customSettingService = customSettingService;
@@ -50,7 +50,7 @@ public class CustomSettingsResource {
    */
   @GET
   @Produces(MEDIA_TYPE)
-  public List<CustomSetting> getAll() {
+  public List<UserPreference> getAll() {
     return this.customSettingsRepo.findAll();
   }
 
@@ -58,12 +58,12 @@ public class CustomSettingsResource {
    * Access the custom settings of a specific user.
    *
    * @param uid the id of the user
-   * @return a list of {@link CustomSetting} describing the users preferences.
+   * @return a list of {@link UserPreference} describing the users preferences.
    */
   @GET
   @Produces(MEDIA_TYPE)
   @Path("/{userId}")
-  public List<CustomSetting> getForUser(@PathParam("userId") final String uid) {
+  public List<UserPreference> getForUser(@PathParam("userId") final String uid) {
     return this.customSettingService.getCustomsForUser(uid);
   }
 
@@ -75,7 +75,7 @@ public class CustomSettingsResource {
    */
   @POST
   @Consumes(MEDIA_TYPE)
-  public Response createCustomSetting(final CustomSetting customSetting) {
+  public Response createCustomSetting(final UserPreference customSetting) {
     try {
       this.customSettingService.validate(customSetting);
       this.customSettingsRepo.create(customSetting);

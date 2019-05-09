@@ -5,7 +5,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.github.jasminb.jsonapi.annotations.Type;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
-@Type("RangeSetting")
+
+/**
+ * Represents a value that lies between an upper and lower bound. 
+ *
+ */
+@Type("rangesetting")
 public class RangeSetting extends Setting {
 
   private double defaultValue;
@@ -14,6 +19,16 @@ public class RangeSetting extends Setting {
 
   private double max;
 
+  /**
+   * Creates a new range setting.
+   * @param id the id
+   * @param displayName the display name
+   * @param description a brief description of the settings effects
+   * @param origin the origin of the setting
+   * @param defaultValue its default value
+   * @param min the lower bound (inclusively)
+   * @param max the upper bound (inclusively)
+   */
   @JsonCreator
   public RangeSetting(@JsonProperty("id") final String id,
       @JsonProperty("displayName") final String displayName,

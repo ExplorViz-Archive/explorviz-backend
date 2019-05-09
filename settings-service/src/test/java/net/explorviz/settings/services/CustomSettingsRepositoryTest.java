@@ -10,7 +10,7 @@ import com.mongodb.WriteResult;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import net.explorviz.settings.model.CustomSetting;
+import net.explorviz.settings.model.UserPreference;
 import net.explorviz.settings.model.Setting;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,7 +25,7 @@ import org.mongodb.morphia.Key;
 import org.mongodb.morphia.query.Query;
 
 /**
- * Unit test for {@link CustomSettingsRepository}.
+ * Unit test for {@link UserPreferenceRepository}.
  *
  *
  */
@@ -35,9 +35,9 @@ public class CustomSettingsRepositoryTest {
   @Mock
   private Datastore ds;
 
-  private CustomSettingsRepository uss;
+  private UserPreferenceRepository uss;
 
-  private List<CustomSetting> userSettings;
+  private List<UserPreference> userSettings;
 
   /**
    * Setup.
@@ -45,28 +45,28 @@ public class CustomSettingsRepositoryTest {
   @BeforeEach
   public void setUp() {
     assert this.ds != null;
-    this.uss = new CustomSettingsRepository(this.ds);
-    this.userSettings = new ArrayList<>(Arrays.asList(new CustomSetting("1", "bid", Boolean.TRUE),
-        new CustomSetting("1", "sid", "val"), new CustomSetting("1", "did", 0.4)));
+    this.uss = new UserPreferenceRepository(this.ds);
+    this.userSettings = new ArrayList<>(Arrays.asList(new UserPreference("1", "bid", Boolean.TRUE),
+        new UserPreference("1", "sid", "val"), new UserPreference("1", "did", 0.4)));
   }
 
 
   @Test
   public void testGetAll() {
-    final Query<CustomSetting> s = mock(Query.class);
-    when(this.ds.find(CustomSetting.class)).thenReturn(s);
+    final Query<UserPreference> s = mock(Query.class);
+    when(this.ds.find(UserPreference.class)).thenReturn(s);
     when(s.asList()).thenReturn(this.userSettings);
-    final List<CustomSetting> retrieved = this.uss.findAll();
+    final List<UserPreference> retrieved = this.uss.findAll();
     assertEquals(this.userSettings, retrieved);
   }
 
 
   @Test
   public void testFindById() {
-    when(this.ds.get(CustomSetting.class, this.userSettings.get(0).getId()))
+    when(this.ds.get(UserPreference.class, this.userSettings.get(0).getId()))
         .thenReturn(this.userSettings.get(0));
 
-    final CustomSetting retrieved = this.uss.find(this.userSettings.get(0).getId()).get();
+    final UserPreference retrieved = this.uss.find(this.userSettings.get(0).getId()).get();
 
     assertEquals(this.userSettings.get(0), retrieved);
   }
@@ -74,7 +74,7 @@ public class CustomSettingsRepositoryTest {
   @Test
   public void testRemove() {
     final Query q = mock(Query.class);
-    when(this.ds.find(CustomSetting.class)).thenReturn(q);
+    when(this.ds.find(UserPreference.class)).thenReturn(q);
     when(q.filter(ArgumentMatchers.anyString(), ArgumentMatchers.any())).thenReturn(q);
     when(this.ds.delete(q)).then(new Answer<WriteResult>() {
       @Override
@@ -90,7 +90,7 @@ public class CustomSettingsRepositoryTest {
 
   @Test
   public void testCreate() {
-    final CustomSetting uset = new CustomSetting("1", "test", false);
+    final UserPreference uset = new UserPreference("1", "test", false);
     when(this.ds.save(uset)).then(new Answer<Key<Setting>>() {
 
       @Override
