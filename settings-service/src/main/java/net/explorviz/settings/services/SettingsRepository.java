@@ -38,7 +38,7 @@ public class SettingsRepository implements MongoRepository<Setting, String> {
   }
 
   /**
-   * Queries all settings
+   * Queries all settings.
    *
    * @return a list of all settings
    */
@@ -64,8 +64,21 @@ public class SettingsRepository implements MongoRepository<Setting, String> {
    */
   @Override
   public Optional<Setting> find(final String id) {
-    final Setting s = this.datastore.get(Setting.class, id);
-    return Optional.ofNullable(s);
+    // Problem: Each subtype is stored within a seperate collection, thus allowing ids to occur
+    // multiple times
+
+    final Class[] types = {RangeSetting.class, FlagSetting.class};
+
+    for (final Class<? extends Setting> t : types) {
+      final Optional<Setting> res =
+          Optional.ofNullable((Setting) this.datastore.find(t).filter("_id=", id).get());
+
+      if (res.isPresent()) {
+        return res;
+      }
+    }
+
+    return Optional.empty();
   }
 
   /**
