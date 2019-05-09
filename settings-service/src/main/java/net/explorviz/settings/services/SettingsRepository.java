@@ -1,7 +1,6 @@
 package net.explorviz.settings.services;
 
 
-import com.mongodb.WriteResult;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -90,9 +89,12 @@ public class SettingsRepository implements MongoRepository<Setting, String> {
    */
   @Override
   public void delete(final String id) {
-    final WriteResult wr = this.datastore.delete(Setting.class, id);
+    int n = 0;
+    n += this.datastore.delete(RangeSetting.class, id).getN();
+    n += this.datastore.delete(FlagSetting.class, id).getN();
+
     if (LOGGER.isInfoEnabled()) {
-      if (wr.getN() > 0) {
+      if (n > 0) {
         LOGGER.info(String.format("Removed setting with id %s", id));
       } else {
         LOGGER.info(String.format("No setting with id %s}", id));
