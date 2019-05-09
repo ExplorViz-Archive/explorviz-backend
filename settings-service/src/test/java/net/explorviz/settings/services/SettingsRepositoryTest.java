@@ -33,65 +33,76 @@ public class SettingsRepositoryTest {
 
   private SettingsRepository sps;
 
-  private List<Setting> settings;
+  private List<RangeSetting> rangeSettings;
+  private List<FlagSetting> flagSettings;
+
+  private List<Setting> union;
 
   @BeforeEach
   public void setUp() {
     assert this.ds != null;
     this.sps = new SettingsRepository(this.ds);
-    this.settings = new ArrayList<>(Arrays.asList(
-        new FlagSetting("bid", "Boolean Setting", "Boolean Setting Description", "test", false),
-        new RangeSetting("did", "Double Setting", "Boolean Setting Description", "test", 0.5, -1,
-            1)));
+    this.rangeSettings = new ArrayList<>(Arrays.asList(new RangeSetting("did", "Double Setting",
+        "Boolean Setting Description", "test", 0.5, -1, 1)));
+    this.flagSettings = new ArrayList<FlagSetting>(Arrays.asList(
+        new FlagSetting("bid", "Boolean Setting", "Boolean Setting Description", "test", false)));
+
+    this.union = new ArrayList<Setting>();
+    this.union.addAll(this.rangeSettings);
+    this.union.addAll(this.flagSettings);
   }
 
 
   @Test
   public void testGetAll() {
-    final Query<Setting> q = mock(Query.class);
-    when(this.ds.find(Setting.class)).thenReturn(q);
-    when(q.asList()).thenReturn(this.settings);
+
+    final Query<RangeSetting> qrange = mock(Query.class);
+    final Query<FlagSetting> qflag = mock(Query.class);
+    when(this.ds.find(RangeSetting.class)).thenReturn(qrange);
+    when(this.ds.find(FlagSetting.class)).thenReturn(qflag);
+    when(qrange.asList()).thenReturn(this.rangeSettings);
+    when(qflag.asList()).thenReturn(this.flagSettings);
 
     final List<Setting> retrievedSettings = this.sps.findAll();
 
-    assertEquals(this.settings, retrievedSettings);
+    assertEquals(this.union, retrievedSettings);
   }
 
 
   @Test
   public void testFindById() {
-    when(this.ds.get(Setting.class, "bid")).thenReturn(this.settings.get(0));
+    when(this.ds.get(FlagSetting.class, "bid")).thenReturn(this.flagSettings.get(0));
 
     final Setting retrieved = this.sps.find("bid").get();
 
-    assertEquals(this.settings.get(0), retrieved);
+    assertEquals(this.flagSettings.get(0), retrieved);
   }
 
   @Test
   public void testRemove() {
-    when(this.ds.delete(Setting.class, this.settings.get(0).getId()))
+    when(this.ds.delete(Setting.class, this.flagSettings.get(0).getId()))
         .then(new Answer<WriteResult>() {
           @Override
           public WriteResult answer(final InvocationOnMock invocation) throws Throwable {
-            SettingsRepositoryTest.this.settings.remove(0);
+            SettingsRepositoryTest.this.flagSettings.remove(0);
             return new WriteResult(1, false, null);
           }
         });
 
-    this.sps.delete(this.settings.get(0).getId());
+    this.sps.delete(this.flagSettings.get(0).getId());
     assertNull(this.sps.find("bid").orElse(null));
   }
 
   @Test
   public void testCreate() {
-    final Setting s = new FlagSetting("test", "testname", "a test setting", "default", false);
+    final FlagSetting s = new FlagSetting("test", "testname", "a test setting", "default", false);
     when(this.ds.save(s)).then(new Answer<Key<FlagSetting>>() {
 
 
 
       @Override
       public Key<FlagSetting> answer(final InvocationOnMock invocation) throws Throwable {
-        SettingsRepositoryTest.this.settings.add(s);
+        SettingsRepositoryTest.this.flagSettings.add(s);
         return null;
       }
 
