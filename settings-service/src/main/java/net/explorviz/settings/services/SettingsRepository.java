@@ -57,7 +57,7 @@ public class SettingsRepository implements MongoRepository<Setting, String> {
   }
 
   /**
-   * Queries a single setting
+   * Queries a single setting.
    *
    * @param id the id
    * @return the setting
@@ -70,8 +70,8 @@ public class SettingsRepository implements MongoRepository<Setting, String> {
     final Class[] types = {RangeSetting.class, FlagSetting.class};
 
     for (final Class<? extends Setting> t : types) {
-      final Optional<Setting> res =
-          Optional.ofNullable((Setting) this.datastore.find(t).filter("_id=", id).get());
+      final Setting setting = this.datastore.get(t, id);
+      final Optional<Setting> res = Optional.ofNullable(setting);
 
       if (res.isPresent()) {
         return res;
@@ -82,7 +82,7 @@ public class SettingsRepository implements MongoRepository<Setting, String> {
   }
 
   /**
-   * Removes a setting with a given id
+   * Removes a setting with a given id.
    *
    * @param id the id
    */

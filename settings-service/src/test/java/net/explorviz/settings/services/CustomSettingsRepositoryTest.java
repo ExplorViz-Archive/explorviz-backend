@@ -24,7 +24,11 @@ import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.Key;
 import org.mongodb.morphia.query.Query;
 
-
+/**
+ * Unit test for {@link CustomSettingsRepository}.
+ *
+ *
+ */
 @ExtendWith(MockitoExtension.class)
 public class CustomSettingsRepositoryTest {
 
@@ -35,6 +39,9 @@ public class CustomSettingsRepositoryTest {
 
   private List<CustomSetting> userSettings;
 
+  /**
+   * Setup.
+   */
   @BeforeEach
   public void setUp() {
     assert this.ds != null;
@@ -46,10 +53,9 @@ public class CustomSettingsRepositoryTest {
 
   @Test
   public void testGetAll() {
-    final String id = "1";
-
-
-
+    final Query<CustomSetting> s = mock(Query.class);
+    when(this.ds.find(CustomSetting.class)).thenReturn(s);
+    when(s.asList()).thenReturn(this.userSettings);
     final List<CustomSetting> retrieved = this.uss.findAll();
     assertEquals(this.userSettings, retrieved);
   }

@@ -13,19 +13,26 @@ import java.util.List;
 import net.explorviz.settings.model.FlagSetting;
 import net.explorviz.settings.model.RangeSetting;
 import net.explorviz.settings.model.Setting;
+import org.hamcrest.CoreMatchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 import org.mockito.stubbing.Answer;
 import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.Key;
 import org.mongodb.morphia.query.Query;
 
-
+/**
+ * Unit tests for {@link SettingsRepository}.
+ *
+ */
 @ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class SettingsRepositoryTest {
 
   @Mock
@@ -38,14 +45,19 @@ public class SettingsRepositoryTest {
 
   private List<Setting> union;
 
+  /**
+   * Setup.
+   */
   @BeforeEach
   public void setUp() {
     assert this.ds != null;
     this.sps = new SettingsRepository(this.ds);
-    this.rangeSettings = new ArrayList<>(Arrays.asList(new RangeSetting("did", "Double Setting",
-        "Boolean Setting Description", "test", 0.5, -1, 1)));
-    this.flagSettings = new ArrayList<FlagSetting>(Arrays.asList(
-        new FlagSetting("bid", "Boolean Setting", "Boolean Setting Description", "test", false)));
+
+    // Add some default values
+    this.rangeSettings = new ArrayList<>(Arrays.asList(new RangeSetting("r", "Double Setting",
+        "Range Setting Description", "testoriging", 0.5, -1, 1)));
+    this.flagSettings = new ArrayList<FlagSetting>(Arrays.asList(new FlagSetting("b",
+        "Boolean Setting", "Boolean Setting Description", "someorigin", false)));
 
     this.union = new ArrayList<Setting>();
     this.union.addAll(this.rangeSettings);
@@ -71,9 +83,14 @@ public class SettingsRepositoryTest {
 
   @Test
   public void testFindById() {
-    when(this.ds.get(FlagSetting.class, "bid")).thenReturn(this.flagSettings.get(0));
+    when(this.ds.get(FlagSetting.class, "b")).thenReturn(this.flagSettings.get(0));
+    when(this.ds.get(FlagSetting.class, CoreMatchers.not(CoreMatchers.equalTo("b"))))
+        .thenReturn(null);
+    when(this.ds.get(RangeSetting.class, "r")).thenReturn(this.rangeSettings.get(0));
+    when(this.ds.get(RangeSetting.class, CoreMatchers.not(CoreMatchers.equalTo("r"))))
+        .thenReturn(null);
 
-    final Setting retrieved = this.sps.find("bid").get();
+    final Setting retrieved = this.sps.find("b").get();
 
     assertEquals(this.flagSettings.get(0), retrieved);
   }
