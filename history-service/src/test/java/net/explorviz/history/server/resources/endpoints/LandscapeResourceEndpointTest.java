@@ -18,6 +18,7 @@ import net.explorviz.history.repository.persistence.ReplayRepository;
 import net.explorviz.history.repository.persistence.mongo.LandscapeDummyCreator;
 import net.explorviz.history.repository.persistence.mongo.LandscapeSerializationHelper;
 import net.explorviz.history.server.resources.LandscapeResource;
+import net.explorviz.history.server.resources.LandscapeResourceTest;
 import net.explorviz.shared.common.idgen.AtomicEntityIdGenerator;
 import net.explorviz.shared.common.idgen.IdGenerator;
 import net.explorviz.shared.common.idgen.UuidServiceIdGenerator;
@@ -30,8 +31,8 @@ import org.mockito.Mockito;
 
 /**
  * Unit tests for {@link LandscapeResource}. All tests are performed by calling the HTTP endpoints
- * of {@link LandscapeResource} via HTTP client requests. See {@link LandscapeResourceEndpointTest}
- * for tests that use method level calls instead of HTTP requests.
+ * of {@link LandscapeResource} via HTTP client requests. See {@link LandscapeResourceTest} for
+ * tests that use method level calls instead of HTTP requests.
  */
 public class LandscapeResourceEndpointTest extends JerseyTest {
 

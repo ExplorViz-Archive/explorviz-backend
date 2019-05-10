@@ -50,6 +50,9 @@ public class LandscapeResource {
   @Produces(MEDIA_TYPE)
   public String getLandscapeById(@PathParam("id") final String id) {
 
+    // this can be done better since Java 9
+
+    // Check existence in landscapeRepo and replayRepo or throw Exception
     return Stream.of(this.landscapeRepo.getById(id), this.replayRepo.getById(id))
         .filter(Optional::isPresent).map(Optional::get).findFirst()
         .orElseThrow(() -> new NotFoundException("Landscape with id " + id + " not found."));
