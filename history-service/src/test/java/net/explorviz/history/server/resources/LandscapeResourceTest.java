@@ -40,10 +40,17 @@ public class LandscapeResourceTest {
   private String currentLandscapeId;
 
   @Mock(lenient = true)
-  private LandscapeRepository<String> landscapeRepo;
+  private LandscapeRepository<String> landscapeStringRepo;
 
   @Mock(lenient = true)
-  private ReplayRepository<String> replayRepo;
+  private ReplayRepository<String> replayStringRepo;
+
+  @Mock(lenient = true)
+  private LandscapeRepository<Landscape> landscapeRepo;
+
+  @Mock(lenient = true)
+  private ReplayRepository<Landscape> replayRepo;
+
 
 
   @BeforeEach
@@ -61,11 +68,12 @@ public class LandscapeResourceTest {
     this.currentLandscape = serializationHelper.serialize(l);
     this.currentLandscapeId = l.getId();
 
-    when(this.landscapeRepo.getById(this.currentLandscapeId))
+    when(this.landscapeStringRepo.getById(this.currentLandscapeId))
         .thenReturn(Optional.of(this.currentLandscape));
     // when(this.replayRepo.getAllTimestamps()).thenReturn(this.userUploadedTimestamps);
 
-    this.landscapeResouce = new LandscapeResource(this.landscapeRepo, this.replayRepo);
+    this.landscapeResouce = new LandscapeResource(this.landscapeStringRepo, this.replayStringRepo,
+        this.landscapeRepo, this.replayRepo);
   }
 
   @Test
