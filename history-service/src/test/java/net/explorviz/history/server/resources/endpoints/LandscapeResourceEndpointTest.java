@@ -41,21 +41,15 @@ public class LandscapeResourceEndpointTest extends JerseyTest {
   private static final String MEDIA_TYPE = "application/vnd.api+json";
   private static final String BASE_URL = "v1/landscapes";
 
-  // private static final String QUERY_PARAM_USER_UPLOADED = "returnUploadedLandscapes";
   private static final String QUERY_PARAM_TIMESTAMP = "timestamp";
-  // private static final String QUERY_PARAM_INTERVAL_SIZE = "intervalSize";
-  // private static final String QUERY_PARAM_MAX_LENGTH = "maxLength";
 
-  private static final String GENERIC_STATUS_ERROR_MESSAGE = "Wrong HTTP Status code.";
-  private static final String GENERIC_MEDIA_TYPE_ERROR_MESSAGE = "Wrong media type.";
+  private static final String GENERIC_STATUS_ERR_MESSAGE = "Wrong HTTP Status code.";
+  private static final String GENERIC_MEDIA_TYPE_ERR_MESSAGE = "Wrong media type.";
 
-  private LandscapeRepository<String> landscapeStringRepo;
-  private ReplayRepository<String> replayStringRepo;
+  private LandscapeRepository<String> landscapeStringRepo; // NOPMD
+  private ReplayRepository<String> replayStringRepo; // NOPMD
 
-  private LandscapeRepository<Landscape> landscapeRepo;
-  private ReplayRepository<Landscape> replayRepo;
-
-  private String currentLandscape;
+  private String currentLandscape; // NOPMD
   private String currentLandscapeId;
   private String currentLandscapeAsList;
 
@@ -86,38 +80,45 @@ public class LandscapeResourceEndpointTest extends JerseyTest {
     landscapeStringRepo = Mockito.mock(LandscapeRepository.class);
     replayStringRepo = Mockito.mock(ReplayRepository.class);
 
-    landscapeRepo = Mockito.mock(LandscapeRepository.class);
-    replayRepo = Mockito.mock(ReplayRepository.class);
-
     when(this.landscapeStringRepo.getById(this.currentLandscapeId))
         .thenReturn(Optional.of(this.currentLandscape));
     when(this.landscapeStringRepo.getById("2L"))
         .thenThrow(new NotFoundException("Landscape not found for provided 2L."));
 
-    when(this.landscapeRepo.getByTimestamp(this.currentLandscapeTimestamp.getTimestamp()))
-        .thenReturn(Optional.of(l));
-
-    return new ResourceConfig().register(new LandscapeResource(this.landscapeStringRepo,
-        this.replayStringRepo, this.landscapeRepo, this.replayRepo));
+    return new ResourceConfig()
+        .register(new LandscapeResource(this.landscapeStringRepo, this.replayStringRepo));
   }
 
   @Test
   public void checkOkStatusCodes() { // NOPMD
-    final Response response = target().path(BASE_URL + "/" + currentLandscapeId).request().get();
-    assertEquals(GENERIC_STATUS_ERROR_MESSAGE, Status.OK.getStatusCode(), response.getStatus());
+    Response response = target().path(BASE_URL + "/" + currentLandscapeId).request().get();
+    assertEquals(GENERIC_STATUS_ERR_MESSAGE, Status.OK.getStatusCode(), response.getStatus());
+
+    response = target().path(BASE_URL)
+        .queryParam(QUERY_PARAM_TIMESTAMP, this.currentLandscapeTimestamp.getTimestamp()).request()
+        .accept(MEDIA_TYPE).get();
+
+    // TODO why fail?
+    assertEquals(GENERIC_STATUS_ERR_MESSAGE, Status.OK.getStatusCode(), response.getStatus());
   }
 
   @Test
   public void checkNotFoundStatusCodeForUnknownId() { // NOPMD
-    final Response response = target().path(BASE_URL + "/2L").request().get();
-    assertEquals(GENERIC_STATUS_ERROR_MESSAGE, Status.NOT_FOUND.getStatusCode(),
+    Response response = target().path(BASE_URL + "/2L").request().get();
+    assertEquals(GENERIC_STATUS_ERR_MESSAGE, Status.NOT_FOUND.getStatusCode(),
+        response.getStatus());
+
+    response = target().path(BASE_URL).queryParam(QUERY_PARAM_TIMESTAMP, "2").request()
+        .accept(MEDIA_TYPE).get();
+
+    assertEquals(GENERIC_STATUS_ERR_MESSAGE, Status.NOT_FOUND.getStatusCode(),
         response.getStatus());
   }
 
   @Test
   public void checkNotFoundStatusCodeForUnknownLandscape() {
     final Response response = target().path(BASE_URL + "/12").request().get();
-    assertEquals(GENERIC_STATUS_ERROR_MESSAGE, Status.NOT_FOUND.getStatusCode(),
+    assertEquals(GENERIC_STATUS_ERR_MESSAGE, Status.NOT_FOUND.getStatusCode(),
         response.getStatus());
   }
 
@@ -125,21 +126,21 @@ public class LandscapeResourceEndpointTest extends JerseyTest {
   public void checkNotAcceptableMediaTypeStatusCode() {
     final Response response = target().path(BASE_URL + "/" + currentLandscapeId).request()
         .accept(MediaType.TEXT_PLAIN).get();
-    assertEquals(GENERIC_MEDIA_TYPE_ERROR_MESSAGE, Status.NOT_ACCEPTABLE.getStatusCode(),
+    assertEquals(GENERIC_MEDIA_TYPE_ERR_MESSAGE, Status.NOT_ACCEPTABLE.getStatusCode(),
         response.getStatus());
   }
 
   @Test
   public void checkMediaTypeOfValidRequestAndResponse() {
     final Response response = target().path(BASE_URL + "/" + currentLandscapeId).request().get();
-    assertEquals(GENERIC_MEDIA_TYPE_ERROR_MESSAGE, MEDIA_TYPE, response.getMediaType().toString());
+    assertEquals(GENERIC_MEDIA_TYPE_ERR_MESSAGE, MEDIA_TYPE, response.getMediaType().toString());
   }
 
   @Test
   public void checkMediaTypeOfValidRequestAndResponseWithAcceptHeader() {
     final Response response =
         target().path(BASE_URL + "/" + currentLandscapeId).request().accept(MEDIA_TYPE).get();
-    assertEquals(GENERIC_MEDIA_TYPE_ERROR_MESSAGE, MEDIA_TYPE, response.getMediaType().toString());
+    assertEquals(GENERIC_MEDIA_TYPE_ERR_MESSAGE, MEDIA_TYPE, response.getMediaType().toString());
   }
 
   @Test
@@ -148,23 +149,11 @@ public class LandscapeResourceEndpointTest extends JerseyTest {
         .queryParam(QUERY_PARAM_TIMESTAMP, this.currentLandscapeTimestamp.getTimestamp()).request()
         .accept(MEDIA_TYPE).get();
 
-    // TODO wrong return value, why?
-    // TODO Check timestamp return values in endpoint test
+    // TODO why fail?
 
     assertEquals("Query Parameter endpoint returned wrong value", this.currentLandscapeAsList,
         response.readEntity(String.class));
   }
-
-  @Test
-  public void checkQueryEndpointNothingFound() {
-    final Response response = target().path(BASE_URL).queryParam(QUERY_PARAM_TIMESTAMP, "15")
-        .request().accept(MEDIA_TYPE).get();
-
-    assertEquals("Query Parameter should have returned empty list", "[]",
-        response.readEntity(String.class));
-  }
-
-
 
   // TODO test for valid response and JSON-API conformity
 

@@ -45,14 +45,6 @@ public class LandscapeResourceTest {
   @Mock(lenient = true)
   private ReplayRepository<String> replayStringRepo;
 
-  @Mock(lenient = true)
-  private LandscapeRepository<Landscape> landscapeRepo;
-
-  @Mock(lenient = true)
-  private ReplayRepository<Landscape> replayRepo;
-
-
-
   @BeforeEach
   public void setUp() throws DocumentSerializationException {
 
@@ -72,8 +64,7 @@ public class LandscapeResourceTest {
         .thenReturn(Optional.of(this.currentLandscape));
     // when(this.replayRepo.getAllTimestamps()).thenReturn(this.userUploadedTimestamps);
 
-    this.landscapeResouce = new LandscapeResource(this.landscapeStringRepo, this.replayStringRepo,
-        this.landscapeRepo, this.replayRepo);
+    this.landscapeResouce = new LandscapeResource(this.landscapeStringRepo, this.replayStringRepo);
   }
 
   @Test
