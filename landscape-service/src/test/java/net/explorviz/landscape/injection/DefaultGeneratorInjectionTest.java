@@ -10,7 +10,6 @@ import net.explorviz.shared.common.idgen.AtomicEntityIdGenerator;
 import net.explorviz.shared.common.idgen.EntityIdGenerator;
 import net.explorviz.shared.common.idgen.ServiceIdGenerator;
 import net.explorviz.shared.common.idgen.UuidServiceIdGenerator;
-import net.explorviz.shared.config.annotations.Config;
 import net.explorviz.shared.config.annotations.injection.ConfigInjectionResolver;
 import net.explorviz.shared.config.annotations.injection.ConfigValuesInjectionResolver;
 import net.explorviz.shared.config.helper.PropertyHelper;
@@ -33,15 +32,16 @@ public class DefaultGeneratorInjectionTest {
   @Inject
   private EntityIdGenerator entityIdGen;
 
-  @Config("service.generator.id.redis")
-  private boolean useRedisForIdGeneration;
-
   /**
    * Inject dependencies.
    */
   @BeforeEach
   public void setUp() {
-    this.updateConfigInjectionProperties(PropertyHelper.getLoadedProperties());
+    final Properties props = PropertyHelper.getLoadedProperties();
+    props.remove("service.generator.id.redis");
+    props.put("service.generator.id.redis", false);
+
+    this.updateConfigInjectionProperties(props);
 
     final AbstractBinder binder = new DependencyInjectionBinder();
     final ServiceLocator locator = ServiceLocatorUtilities.bind(binder);
