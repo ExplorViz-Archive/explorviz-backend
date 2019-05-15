@@ -7,6 +7,7 @@ import com.github.jasminb.jsonapi.annotations.Type;
 import com.mongodb.DBObject;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 import xyz.morphia.annotations.Converters;
 import xyz.morphia.annotations.Embedded;
 import xyz.morphia.annotations.Entity;
@@ -118,7 +119,8 @@ public class UserPreference {
 
     @Override
     public String toString() {
-      return new ToStringBuilder(this).append("userId", this.userId)
+      return new ToStringBuilder(this, ToStringStyle.NO_CLASS_NAME_STYLE)
+          .append("userId", this.userId)
           .append("settingId", this.settingId).build();
     }
 
