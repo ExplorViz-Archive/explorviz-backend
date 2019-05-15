@@ -7,7 +7,6 @@ import static org.mockito.Mockito.when;
 import com.github.jasminb.jsonapi.ResourceConverter;
 import com.github.jasminb.jsonapi.SerializationFeature;
 import com.github.jasminb.jsonapi.exceptions.DocumentSerializationException;
-import java.util.Arrays;
 import java.util.Optional;
 import javax.ws.rs.NotFoundException;
 import javax.ws.rs.core.Application;
@@ -51,7 +50,6 @@ public class LandscapeResourceEndpointTest extends JerseyTest {
 
   private String currentLandscape; // NOPMD
   private String currentLandscapeId;
-  private String currentLandscapeAsList;
 
   private Timestamp currentLandscapeTimestamp;
 
@@ -70,7 +68,6 @@ public class LandscapeResourceEndpointTest extends JerseyTest {
     final Landscape l = LandscapeDummyCreator.createDummyLandscape(idGen);
     try {
       this.currentLandscape = serializationHelper.serialize(l);
-      this.currentLandscapeAsList = serializationHelper.serializeToList(Arrays.asList(l));
     } catch (final DocumentSerializationException e) {
       fail("Failed test since landscape serialization in configure() method failed.");
     }
@@ -81,6 +78,8 @@ public class LandscapeResourceEndpointTest extends JerseyTest {
     replayStringRepo = Mockito.mock(ReplayRepository.class);
 
     when(this.landscapeStringRepo.getById(this.currentLandscapeId))
+        .thenReturn(Optional.of(this.currentLandscape));
+    when(this.landscapeStringRepo.getByTimestamp(this.currentLandscapeTimestamp.getTimestamp()))
         .thenReturn(Optional.of(this.currentLandscape));
     when(this.landscapeStringRepo.getById("2L"))
         .thenThrow(new NotFoundException("Landscape not found for provided 2L."));
@@ -131,6 +130,13 @@ public class LandscapeResourceEndpointTest extends JerseyTest {
   }
 
   @Test
+  public void checkBadRequestErrorCodeOnMissingQueryParam() {
+    final Response response = target().path(BASE_URL).request().get();
+    assertEquals(GENERIC_MEDIA_TYPE_ERR_MESSAGE, Status.BAD_REQUEST.getStatusCode(),
+        response.getStatus());
+  }
+
+  @Test
   public void checkMediaTypeOfValidRequestAndResponse() {
     final Response response = target().path(BASE_URL + "/" + currentLandscapeId).request().get();
     assertEquals(GENERIC_MEDIA_TYPE_ERR_MESSAGE, MEDIA_TYPE, response.getMediaType().toString());
@@ -149,9 +155,7 @@ public class LandscapeResourceEndpointTest extends JerseyTest {
         .queryParam(QUERY_PARAM_TIMESTAMP, this.currentLandscapeTimestamp.getTimestamp()).request()
         .accept(MEDIA_TYPE).get();
 
-    // TODO why fail?
-
-    assertEquals("Query Parameter endpoint returned wrong value", this.currentLandscapeAsList,
+    assertEquals("Query Parameter endpoint returned wrong value", this.currentLandscape,
         response.readEntity(String.class));
   }
 

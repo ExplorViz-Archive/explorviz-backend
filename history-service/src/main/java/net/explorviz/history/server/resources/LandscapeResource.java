@@ -51,9 +51,8 @@ public class LandscapeResource {
   @Produces(MEDIA_TYPE)
   public String getLandscapeById(@PathParam("id") final String id) {
 
-    // this can be done better since Java 9
-
     // Check existence in landscapeRepo and replayRepo or throw Exception
+    // this can be done better since Java 9
     return Stream.of(this.landscapeStringRepo.getById(id), this.replayStringRepo.getById(id))
         .filter(Optional::isPresent).map(Optional::get).findFirst()
         .orElseThrow(() -> new NotFoundException("Landscape with id " + id + " not found.")); // NOCS
@@ -70,13 +69,12 @@ public class LandscapeResource {
   @Produces(MEDIA_TYPE)
   public String getLandscape(@QueryParam("timestamp") final long timestamp) {
 
-    System.out.println(timestamp);
-
     if (timestamp == QUERY_PARAM_DEFAULT_VALUE_LONG) {
       throw new BadRequestException("Query parameter 'timestamp' is mandatory");
     }
 
     // Check existence in landscapeRepo and replayRepo or throw Exception
+    // this can be done better since Java 9
     return Stream
         .of(this.landscapeStringRepo.getByTimestamp(timestamp),
             this.replayStringRepo.getByTimestamp(timestamp))
