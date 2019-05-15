@@ -1,15 +1,15 @@
 package net.explorviz.history.server.resources;
 
-import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
+import javax.ws.rs.BadRequestException;
 import javax.ws.rs.GET;
+import javax.ws.rs.NotFoundException;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
-import javax.ws.rs.WebApplicationException;
 import net.explorviz.history.repository.persistence.LandscapeRepository;
 import net.explorviz.history.repository.persistence.ReplayRepository;
 import net.explorviz.shared.landscape.model.landscape.Landscape;
@@ -23,6 +23,10 @@ import net.explorviz.shared.landscape.model.store.Timestamp;
 @RolesAllowed({"admin"})
 public class TimestampResource {
 
+  private static final String MEDIA_TYPE = "application/vnd.api+json";
+
+  private static final long QUERY_PARAM_DEFAULT_VALUE_LONG = 0L;
+
   private final LandscapeRepository<Landscape> landscapeRepo;
   private final ReplayRepository<Landscape> replayRepo;
 
@@ -33,106 +37,109 @@ public class TimestampResource {
     this.replayRepo = replayRepo;
   }
 
-
-
   /**
-   * Returns an List of {@link net.explorviz.landscape.model.store.Timestamp} interval of
-   * "intervalSize" after a specific passed "timestamp".
+   * Returns a list of either user-uploaded or service-generated
+   * {@link net.explorviz.landscape.model.store.Timestamp}. The result depends on the passed query
+   * parameters, whereas the existence of the "returnUploadedTimestamps" query parameter has the
+   * highest priority, i.e., the list of user-uploaded timestamps will be returned.
    *
-   * @param afterTimestamp - a starting timestamp for the returned interval
+   * @param startTimestamp - a starting timestamp for the returned interval
    * @param intervalSize - the size of the interval
+   * @param returnUploadedTimestamps - switch between user-uploaded and service-generated timestamps
+   * @param maxLength - if intervalSize is 0 you will get the whole list. Use maxListLength to
+   *        shorten the list. Will only applied if intervalSize is 0.
    * @return a filtered list of timestamps
    */
   @GET
-  @Path("/subsequent-interval")
-  @Produces("application/vnd.api+json")
-  public List<Timestamp> getSubsequentTimestamps(@QueryParam("after") final long afterTimestamp,
-      @QueryParam("intervalSize") final int intervalSize) {
-    final List<Timestamp> timestamps = this.landscapeRepo.getAllTimestamps();
+  @Produces(MEDIA_TYPE)
+  public List<Timestamp> getTimestamps(@QueryParam("startTimestamp") final long startTimestamp,
+      @QueryParam("intervalSize") final int intervalSize,
+      @QueryParam("returnUploadedTimestamps") final boolean returnUploadedTimestamps,
+      @QueryParam("maxLength") final int maxLength) {
 
-    return this.filterTimestampsAfterTimestamp(timestamps, afterTimestamp, intervalSize);
-  }
+    if (maxLength < 0) {
+      throw new BadRequestException("MaxLength must not be negative.");
+    }
 
-  /**
-   * Returns a List of all uploaded {@link net.explorviz.landscape.model.store.Timestamp}.
-   *
-   * @return a list of all uploaded timestamps
-   */
-  @GET
-  @Path("/all-uploaded")
-  @Produces("application/vnd.api+json")
-  public List<Timestamp> getUploadedTimestamps() {
-    return this.replayRepo.getAllTimestamps();
-  }
+    if (intervalSize < 0) {
+      throw new BadRequestException("Interval size must not be negative.");
+    }
 
+    List<Timestamp> timestamps = this.landscapeRepo.getAllTimestamps();
 
-  /**
-   * Retrieves timestamps AFTER a passed
-   * {@link net.explorviz.shared.landscape.model.store.Timestamp}.
-   *
-   * @param allTimestamps - All timestamps within the system
-   * @param afterTimestamp - Define the timestamp which sets the limit
-   * @param intervalSize - The number of retrieved timestamps
-   * @return List of Timestamp
-   */
-  private List<Timestamp> filterTimestampsAfterTimestamp(final List<Timestamp> allTimestamps,
-      final long afterTimestamp, final int intervalSize) {
+    if (returnUploadedTimestamps) {
+      timestamps = this.replayRepo.getAllTimestamps();
+    }
 
-    final int timestampListSize = allTimestamps.size();
+    final List<Timestamp> tempResultList =
+        this.getTimestampInterval(timestamps, startTimestamp, intervalSize);
 
-    // search the passed timestamp
-    final Timestamp foundTimestamp = getTimestampPosition(allTimestamps, afterTimestamp);
-    final int foundTimestampPosition = allTimestamps.indexOf(foundTimestamp);
-
-    // no timestamp was found
-    if (foundTimestampPosition == -1) {
-      return new LinkedList<>();
+    if (intervalSize == 0 && maxLength > 0 && maxLength < tempResultList.size()) {
+      return tempResultList.subList(0, maxLength);
     } else {
-      try {
-        if (intervalSize == 0 || intervalSize > timestampListSize) {
-          // all timestamps starting at position
-          return allTimestamps.subList(foundTimestampPosition, timestampListSize);
-        } else {
-          if (foundTimestampPosition + intervalSize > timestampListSize) {
-            return allTimestamps.subList(foundTimestampPosition, timestampListSize);
-          } else {
-            return allTimestamps.subList(foundTimestampPosition,
-                foundTimestampPosition + intervalSize);
-          }
-        }
-      } catch (final IllegalArgumentException e) {
-        throw new WebApplicationException(e);
-      }
+      return tempResultList;
     }
   }
 
+
   /**
-   * Retrieves the a passed {@link Timestamp} within a list of timestamps if found, otherwise the
-   * following timestamp.
+   * Get an interval (List) of {@link net.explorviz.shared.landscape.model.store.Timestamp} starting
+   * at a passed timestamp value.
+   *
+   * @param allTimestamps - timestamp list
+   * @param afterTimestamp - Starting point of interval
+   * @param intervalSize - The number of retrieved timestamps, if 0 or bigger than size of (partial)
+   *        list, then returns all following timestamps
+   * @return List of Timestamp
+   */
+  private List<Timestamp> getTimestampInterval(final List<Timestamp> allTimestamps,
+      final long afterTimestamp, final int intervalSize) {
+
+    if (afterTimestamp == QUERY_PARAM_DEFAULT_VALUE_LONG) {
+      return allTimestamps;
+    }
+
+    // search the passed timestamp
+    final Optional<Timestamp> potentialStartTimestamp =
+        this.getTimestampPosition(allTimestamps, afterTimestamp);
+
+    if (!potentialStartTimestamp.isPresent()) {
+      throw new NotFoundException("The passed timestamp value does not exist in the system.");
+    }
+
+    final int potentialStartingPosition = allTimestamps.indexOf(potentialStartTimestamp.get());
+
+    final int totalTimestampListSize = allTimestamps.size();
+
+
+    if (intervalSize == 0 || potentialStartingPosition + intervalSize > totalTimestampListSize) {
+      // return all timestamps starting at desired position
+      return allTimestamps.subList(potentialStartingPosition, totalTimestampListSize);
+    } else {
+      // return exact desired interval of timestamps
+      return allTimestamps.subList(potentialStartingPosition,
+          potentialStartingPosition + intervalSize);
+    }
+  }
+
+
+  /**
+   * Retrieves the passed {@link Timestamp} within a list of timestamps if found.
    *
    * @param timestamps - a list of timestamps
    * @param searchedTimestamp - a specific timestamp to be found
-   * @return a retrieved timestamp
+   * @return an Optional containing the retrieved timestamp or empty
    */
-  private static Timestamp getTimestampPosition(final List<Timestamp> timestamps,
+  private Optional<Timestamp> getTimestampPosition(final List<Timestamp> timestamps,
       final long searchedTimestamp) {
 
-    final Iterator<Timestamp> iterator = timestamps.iterator();
-
-    while (iterator.hasNext()) {
-
-      final Timestamp currentTimestamp = iterator.next();
-
-      // searched timestamp found
-      if (currentTimestamp.getTimestamp() == searchedTimestamp) {
-        return currentTimestamp;
-
-        // next timestamp later than searched timestamp found
-      } else if (currentTimestamp.getTimestamp() > searchedTimestamp) {
-        return currentTimestamp;
+    for (final Timestamp t : timestamps) {
+      if (t.getTimestamp() == searchedTimestamp) {
+        return Optional.of(t);
       }
     }
-    return new Timestamp();
+    return Optional.empty();
   }
+
 
 }

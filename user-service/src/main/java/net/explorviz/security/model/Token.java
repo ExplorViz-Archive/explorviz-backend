@@ -10,7 +10,7 @@ public class Token {
   private String stringifiedToken;
 
   public String getToken() {
-    return stringifiedToken;
+    return this.stringifiedToken;
   }
 
   public void setToken(final String token) {

@@ -2,7 +2,6 @@ package net.explorviz.security.server.resources;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-
 import javax.ws.rs.NotFoundException;
 import net.explorviz.shared.security.model.settings.SettingDescriptor;
 import org.junit.jupiter.api.Test;

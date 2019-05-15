@@ -1,7 +1,6 @@
 package net.explorviz.security.server.resources.endpoints;
 
 import static org.junit.Assert.assertEquals;
-
 import javax.ws.rs.core.Response;
 import net.explorviz.security.server.resources.SettingsDescriptorResource;
 import net.explorviz.security.server.resources.SettingsResource;
@@ -21,11 +20,14 @@ public class SettingsEndpointTest extends EndpointTest {
 
   @Test
   public void testDefaultSettings() {
-    final Response response = this.target(BASE_URL).request()
-        .header(HttpHeader.AUTHORIZATION.asString(), this.getAdminToken()).get();
+    final Response response = this.target(BASE_URL)
+        .request()
+        .header(HttpHeader.AUTHORIZATION.asString(), this.getAdminToken())
+        .get();
 
     final UserSettings retrieved = this.getJsonApiConverter()
-        .readDocument(response.readEntity(byte[].class), UserSettings.class).get();
+        .readDocument(response.readEntity(byte[].class), UserSettings.class)
+        .get();
 
     assertEquals("Did not return default user settings", new UserSettings(), retrieved);
   }
@@ -33,8 +35,10 @@ public class SettingsEndpointTest extends EndpointTest {
   @Test
   public void testSettingDescriptor() {
     final String settingId = "showFpsCounter";
-    final Response response = this.target(BASE_URL + settingId + "/info").request()
-        .header(HttpHeader.AUTHORIZATION.asString(), this.getAdminToken()).get();
+    final Response response = this.target(BASE_URL + settingId + "/info")
+        .request()
+        .header(HttpHeader.AUTHORIZATION.asString(), this.getAdminToken())
+        .get();
 
     this.getJsonApiConverter().registerType(BooleanSettingDescriptor.class);
 

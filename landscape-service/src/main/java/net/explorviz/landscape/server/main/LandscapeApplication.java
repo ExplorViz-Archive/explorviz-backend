@@ -74,15 +74,15 @@ public class LandscapeApplication extends ResourceConfig {
     GenericTypeFinder.getTypeMap().putIfAbsent("NodeGroup", NodeGroup.class);
     GenericTypeFinder.getTypeMap().putIfAbsent("Node", Node.class);
     GenericTypeFinder.getTypeMap().putIfAbsent("Application", Application.class);
-    GenericTypeFinder.getTypeMap()
-        .putIfAbsent("ApplicationCommunication", ApplicationCommunication.class);
+    GenericTypeFinder.getTypeMap().putIfAbsent("ApplicationCommunication",
+        ApplicationCommunication.class);
     GenericTypeFinder.getTypeMap().putIfAbsent("Component", Component.class);
     GenericTypeFinder.getTypeMap().putIfAbsent("Clazz", Clazz.class);
     GenericTypeFinder.getTypeMap().putIfAbsent("ClazzCommunication", ClazzCommunication.class);
     GenericTypeFinder.getTypeMap().putIfAbsent("Trace", Trace.class);
     GenericTypeFinder.getTypeMap().putIfAbsent("TraceStep", TraceStep.class);
-    GenericTypeFinder.getTypeMap()
-        .putIfAbsent("AggregatedClazzCommunication", AggregatedClazzCommunication.class);
+    GenericTypeFinder.getTypeMap().putIfAbsent("AggregatedClazzCommunication",
+        AggregatedClazzCommunication.class);
     GenericTypeFinder.getTypeMap().putIfAbsent("DatabaseQuery", DatabaseQuery.class);
   }
 }

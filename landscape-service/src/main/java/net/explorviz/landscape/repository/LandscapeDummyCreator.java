@@ -2,6 +2,7 @@ package net.explorviz.landscape.repository;
 
 import java.util.LinkedList;
 import net.explorviz.landscape.repository.helper.DummyLandscapeHelper;
+import net.explorviz.shared.common.idgen.IdGenerator;
 import net.explorviz.shared.landscape.model.application.Application;
 import net.explorviz.shared.landscape.model.application.Clazz;
 import net.explorviz.shared.landscape.model.application.Component;
@@ -10,7 +11,7 @@ import net.explorviz.shared.landscape.model.landscape.Landscape;
 import net.explorviz.shared.landscape.model.landscape.Node;
 import net.explorviz.shared.landscape.model.landscape.NodeGroup;
 import net.explorviz.shared.landscape.model.landscape.System;
-
+import net.explorviz.shared.landscape.model.store.Timestamp;
 
 /**
  * Creates a dummy landscape for developing or demo purposes.
@@ -21,8 +22,10 @@ public final class LandscapeDummyCreator {
   // CHECKSTYLE.OFF: MagicNumberCheck - Much more readable than NOCS in many lines
 
   public static int applicationId = 0;
-  private static Landscape dummyLandscape = null;
   public static int formatFactor = 1024 * 1024 * 1024;
+
+  private static IdGenerator idGen;
+
 
   private LandscapeDummyCreator() {
     // Utility class
@@ -34,16 +37,19 @@ public final class LandscapeDummyCreator {
    *
    * @return a prepared dummy landscape
    */
-  public static Landscape createDummyLandscape() {
+  public static Landscape createDummyLandscape(final IdGenerator idGen) {
 
-    // used from second execution on
-    if (dummyLandscape != null) {
-      dummyLandscape.getTimestamp().setTotalRequests(DummyLandscapeHelper.getRandomNum(500, 25000));
-      return dummyLandscape;
-    }
+    LandscapeDummyCreator.idGen = idGen;
 
-    final Landscape landscape = new Landscape();
+    final int randomRequestCount = DummyLandscapeHelper.getRandomNum(500, 25000);
+
+    final Landscape landscape = new Landscape(LandscapeDummyCreator.idGen.generateId(),
+        new Timestamp(LandscapeDummyCreator.idGen.generateId(),
+            java.lang.System.currentTimeMillis(), randomRequestCount));
     landscape.getTimestamp().setTotalRequests(DummyLandscapeHelper.getRandomNum(500, 25000));
+
+
+    DummyLandscapeHelper.idGen = LandscapeDummyCreator.idGen;
 
     final System requestSystem = DummyLandscapeHelper.createSystem("Requests", landscape);
 
@@ -100,7 +106,7 @@ public final class LandscapeDummyCreator {
     ocnDatabaseNodeGroup2.getNodes().add(ocnDatabaseNode2);
     ocnDatabase.getNodeGroups().add(ocnDatabaseNodeGroup2);
 
-    final System kielprints = new System();
+    final System kielprints = new System(idGen.generateId());
 
     kielprints.setName("OceanRep");
     kielprints.setParent(landscape);
@@ -165,7 +171,7 @@ public final class LandscapeDummyCreator {
     pangeaNodeGroup2.getNodes().add(pangeaNode2);
     pangea.getNodeGroups().add(pangeaNodeGroup2);
 
-    final System pubflow = new System();
+    final System pubflow = new System(idGen.generateId());
 
     pubflow.setName("PubFlow");
     pubflow.setParent(landscape);
@@ -304,7 +310,6 @@ public final class LandscapeDummyCreator {
     DummyLandscapeHelper.createApplicationCommunication(provenance4, webshop, landscape, 100);
 
     landscape.createOutgoingApplicationCommunication();
-    dummyLandscape = landscape;
 
     return landscape;
   }
@@ -469,7 +474,7 @@ public final class LandscapeDummyCreator {
 
     final int maxIterations = 25;
     for (int i = 0; i < maxIterations; i++) {
-      DatabaseQuery dbQueryTmp = new DatabaseQuery();
+      DatabaseQuery dbQueryTmp = new DatabaseQuery(idGen.generateId());
       dbQueryTmp.setStatementType("Statement");
       dbQueryTmp.setSqlStatement(
           "CREATE TABLE IF NOT EXISTS `order` (oid integer PRIMARY KEY, name text NOT NULL, "
@@ -480,7 +485,7 @@ public final class LandscapeDummyCreator {
       dbQueryTmp.setParentApplication(application);
       dbQueryList.add(dbQueryTmp);
 
-      dbQueryTmp = new DatabaseQuery();
+      dbQueryTmp = new DatabaseQuery(idGen.generateId());
       dbQueryTmp.setStatementType("Statement");
       dbQueryTmp.setParentApplication(application);
       dbQueryTmp.setSqlStatement("INSERT INTO `order` (oid, name, email, odate, itemid) "
@@ -492,7 +497,7 @@ public final class LandscapeDummyCreator {
       dbQueryTmp.setParentApplication(application);
       dbQueryList.add(dbQueryTmp);
 
-      dbQueryTmp = new DatabaseQuery();
+      dbQueryTmp = new DatabaseQuery(idGen.generateId());
       dbQueryTmp.setStatementType("Statement");
       dbQueryTmp.setSqlStatement("INSERT INTO `order` (oid, name, email, odate, itemid) "
           + "VALUES('" + DummyLandscapeHelper.getNextSequenceId()
@@ -503,7 +508,7 @@ public final class LandscapeDummyCreator {
       dbQueryTmp.setParentApplication(application);
       dbQueryList.add(dbQueryTmp);
 
-      dbQueryTmp = new DatabaseQuery();
+      dbQueryTmp = new DatabaseQuery(idGen.generateId());
       dbQueryTmp.setStatementType("Statement");
       dbQueryTmp.setSqlStatement("INSERT INTO `order` (oid, name, email, odate, itemid) "
           + "VALUES('" + DummyLandscapeHelper.getNextSequenceId()
@@ -514,7 +519,7 @@ public final class LandscapeDummyCreator {
       dbQueryTmp.setParentApplication(application);
       dbQueryList.add(dbQueryTmp);
 
-      dbQueryTmp = new DatabaseQuery();
+      dbQueryTmp = new DatabaseQuery(idGen.generateId());
       dbQueryTmp.setStatementType("Statement");
       dbQueryTmp.setSqlStatement("SELECT * FROM `order` WHERE name = Carol K. Durham");
       dbQueryTmp.setReturnValue(String.valueOf(DummyLandscapeHelper.getRandomNum(5, 100)));
@@ -523,7 +528,7 @@ public final class LandscapeDummyCreator {
       dbQueryTmp.setParentApplication(application);
       dbQueryList.add(dbQueryTmp);
 
-      dbQueryTmp = new DatabaseQuery();
+      dbQueryTmp = new DatabaseQuery(idGen.generateId());
       dbQueryTmp.setStatementType("Statement");
       dbQueryTmp.setSqlStatement("SELECT * FROM `order` WHERE name = Tom B. Erichsen");
       dbQueryTmp.setReturnValue(String.valueOf(DummyLandscapeHelper.getRandomNum(5, 100)));

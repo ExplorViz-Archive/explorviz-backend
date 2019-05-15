@@ -1,3 +1,7 @@
+plugins {
+    id 'com.adarshr.test-logger' version '1.6.0' apply false
+}
+
 allprojects {
   apply plugin: 'java-library'
 }
@@ -29,6 +33,7 @@ task alljavadoc(type: Javadoc) {
 // END aggregated Javadoc in multiproject Gradle build
 subprojects {
 
+
   // BEGIN QA Tooling for subprojects
   
   buildscript {
@@ -44,7 +49,8 @@ subprojects {
   }
   
   apply plugin: 'pmd'
-  apply plugin: 'checkstyle'	
+  apply plugin: 'checkstyle'
+  apply plugin: 'com.adarshr.test-logger'
 	
   pmd {
     ruleSets = []
@@ -123,6 +129,15 @@ subprojects {
 	testImplementation 'org.junit.platform:junit-platform-runner:1.4.0'
 	testImplementation group: 'org.junit.vintage', name: 'junit-vintage-engine', version: '5.4.0'
 	testImplementation 'org.mockito:mockito-core:2.24.0'	
+	testImplementation group: 'org.mockito', name: 'mockito-junit-jupiter', version: '2.27.0'
+  }
+  
+  test {
+    useJUnitPlatform {
+        excludeTags 'slow'
+        includeEngines 'junit-jupiter', 'junit-vintage'
+    }
+    failFast = true
   }
     
 }

@@ -2,6 +2,7 @@ package net.explorviz.history.repository.persistence.mongo;
 
 import com.github.jasminb.jsonapi.exceptions.DocumentSerializationException;
 import java.util.List;
+import java.util.Optional;
 import javax.inject.Inject;
 import javax.ws.rs.InternalServerErrorException;
 import net.explorviz.history.repository.persistence.ReplayRepository;
@@ -36,33 +37,43 @@ public class MongoReplayRepository implements ReplayRepository<Landscape> {
   }
 
   @Override
-  public Landscape getByTimestamp(final long timestamp) {
-    final String jsonLandscape = this.repo.getByTimestamp(timestamp);
+  public Optional<Landscape> getByTimestamp(final long timestamp) {
+    final Optional<String> jsonLandscape = this.repo.getByTimestamp(timestamp);
+
+    if (!jsonLandscape.isPresent()) {
+      return Optional.empty();
+    }
+
     try {
-      return this.serializationHelper.deserialize(jsonLandscape);
+      return Optional.of(this.serializationHelper.deserialize(jsonLandscape.get()));
     } catch (final DocumentSerializationException e) {
       throw new InternalServerErrorException("Error serializing: " + e.getMessage(), e); // NOCS
     }
   }
 
   @Override
-  public Landscape getByTimestamp(final Timestamp timestamp) {
+  public Optional<Landscape> getByTimestamp(final Timestamp timestamp) {
     return this.getByTimestamp(timestamp.getTimestamp());
   }
 
   @Override
-  public Landscape getById(final String id) {
-    final String jsonLandscape = this.repo.getById(id);
+  public Optional<Landscape> getById(final String id) {
+    final Optional<String> jsonLandscape = this.repo.getById(id);
+
+    if (!jsonLandscape.isPresent()) {
+      return Optional.empty();
+    }
+
     try {
-      return this.serializationHelper.deserialize(jsonLandscape);
+      return Optional.of(this.serializationHelper.deserialize(jsonLandscape.get()));
     } catch (final DocumentSerializationException e) {
       throw new InternalServerErrorException("Error serializing: " + e.getMessage(), e);
     }
   }
 
   @Override
-  public int getTotalRequests(final long timestamp) {
-    return this.repo.getTotalRequests(timestamp);
+  public int getTotalRequestsByTimestamp(final long timestamp) {
+    return this.repo.getTotalRequestsByTimestamp(timestamp);
   }
 
 

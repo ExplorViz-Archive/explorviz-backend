@@ -18,6 +18,7 @@ public final class MongoHelper { // NOPMD
 
   public static final String FIELD_LANDSCAPE = "landscape"; // NOCS
   public static final String FIELD_ID = "_id";
+  public static final String FIELD_TIMESTAMP = "timestamp";
   public static final String FIELD_REQUESTS = "totalRequests";
 
   private static final Logger LOGGER = LoggerFactory.getLogger(MongoHelper.class);

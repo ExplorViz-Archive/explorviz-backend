@@ -2,6 +2,7 @@ package net.explorviz.history.repository.persistence.mongo;
 
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.atomic.AtomicInteger;
+import net.explorviz.shared.common.idgen.IdGenerator;
 import net.explorviz.shared.landscape.model.application.Application;
 import net.explorviz.shared.landscape.model.application.ApplicationCommunication;
 import net.explorviz.shared.landscape.model.application.Clazz;
@@ -19,8 +20,7 @@ import net.explorviz.shared.landscape.model.landscape.System;
  */
 public final class DummyLandscapeHelper {
 
-  // CHECKSTYLE.OFF: MultipleStringLiteralsCheck - Much more readable than NOCS in many lines
-  // CHECKSTYLE.OFF: MagicNumberCheck - Much more readable than NOCS in many lines
+  public static IdGenerator idGen;
 
   private DummyLandscapeHelper() {
     // Utility Class
@@ -51,40 +51,40 @@ public final class DummyLandscapeHelper {
   }
 
   /**
-   * Creates a new system.
+   * Creates a new system
    *
    * @param name - name of the system
    * @param parentLandscape - parent landscape
    * @return created system
    */
   public static System createSystem(final String name, final Landscape parentLandscape) {
-    final System system = new System();
+    final System system = new System(idGen.generateId());
     system.setName(name);
     system.setParent(parentLandscape);
 
     // create new system event
-    parentLandscape.createNewEvent(EEventType.NEWSYSTEM,
-        "New system '" + system.getName() + "' detected"); // NOCS
+    parentLandscape.createNewEvent(idGen.generateId(), EEventType.NEWSYSTEM,
+        "New system '" + system.getName() + "' detected");
 
     return system;
   }
 
   /**
-   * Creates a new nodeGroup.
+   * Creates a new nodeGroup
    *
    * @param name - name of the nodeGroup
    * @param system - parent system
    * @return created nodeGroup
    */
   public static NodeGroup createNodeGroup(final String name, final System system) {
-    final NodeGroup nodeGroup = new NodeGroup();
+    final NodeGroup nodeGroup = new NodeGroup(idGen.generateId());
     nodeGroup.setName(name);
     nodeGroup.setParent(system);
     return nodeGroup;
   }
 
   /**
-   * Creates a new node.
+   * Creates a new node
    *
    * @param ipAddress - ipAddress of the node
    * @param parentNodeGroup - parent nodeGroup
@@ -92,7 +92,7 @@ public final class DummyLandscapeHelper {
    */
   public static Node createNode(final String ipAddress, final NodeGroup parentNodeGroup,
       final Landscape landscape) {
-    final Node node = new Node();
+    final Node node = new Node(idGen.generateId());
     node.setIpAddress(ipAddress);
     node.setParent(parentNodeGroup);
 
@@ -102,14 +102,15 @@ public final class DummyLandscapeHelper {
     node.setUsedRAM((long) getRandomNum(1, 4) * LandscapeDummyCreator.formatFactor);
 
     // create a new node event
-    landscape.createNewEvent(EEventType.NEWNODE, "New node '" + node.getIpAddress()
-        + "' in system '" + parentNodeGroup.getParent().getName() + "' detected");
+    landscape.createNewEvent(idGen.generateId(), EEventType.NEWNODE,
+        "New node '" + node.getIpAddress() + "' in system '" + parentNodeGroup.getParent().getName()
+            + "' detected");
 
     return node;
   }
 
   /**
-   * Creates a new application.
+   * Creates a new application
    *
    * @param name - name of the application
    * @param parentNode - name of the parent node
@@ -118,7 +119,7 @@ public final class DummyLandscapeHelper {
    */
   public static Application createApplication(final String name, final Node parentNode,
       final Landscape landscape) {
-    final Application application = new Application();
+    final Application application = new Application(idGen.generateId());
 
     LandscapeDummyCreator.applicationId = LandscapeDummyCreator.applicationId + 1;
     application.setParent(parentNode);
@@ -126,7 +127,7 @@ public final class DummyLandscapeHelper {
     application.setLastUsage(java.lang.System.currentTimeMillis());
     application.setProgrammingLanguage(EProgrammingLanguage.JAVA);
 
-    if ("Eprints".equals(name)) {
+    if (name == "Eprints") {
       application.setProgrammingLanguage(EProgrammingLanguage.PERL);
     }
 
@@ -134,14 +135,14 @@ public final class DummyLandscapeHelper {
     parentNode.getApplications().add(application);
 
     // create a new application event
-    landscape.createNewEvent(EEventType.NEWNODE, "New node '" + application.getName()
-        + "' in system '" + parentNode.getName() + "' detected");
+    landscape.createNewEvent(idGen.generateId(), EEventType.NEWNODE, "New node '"
+        + application.getName() + "' in system '" + parentNode.getName() + "' detected");
 
     return application;
   }
 
   /**
-   * Create communication between applications.
+   * Create communication between applications
    *
    * @param source - sourceApplication
    * @param target - targetApplication
@@ -151,7 +152,7 @@ public final class DummyLandscapeHelper {
    */
   public static ApplicationCommunication createApplicationCommunication(final Application source,
       final Application target, final Landscape landscape, final int requests) {
-    final ApplicationCommunication communication = new ApplicationCommunication();
+    final ApplicationCommunication communication = new ApplicationCommunication(idGen.generateId());
     communication.setSourceApplication(source);
     communication.setTargetApplication(target);
     communication.setRequests(requests);
@@ -166,7 +167,7 @@ public final class DummyLandscapeHelper {
   }
 
   /**
-   * Creates a component.
+   * Creates a component
    *
    * @param name - name of the component
    * @param parent - parent component
@@ -175,7 +176,7 @@ public final class DummyLandscapeHelper {
    */
   public static Component createComponent(final String name, final Component parent,
       final Application app) {
-    final Component component = new Component();
+    final Component component = new Component(idGen.generateId());
     component.setName(name);
     component.setParentComponent(parent);
     component.setBelongingApplication(app);
@@ -189,7 +190,7 @@ public final class DummyLandscapeHelper {
   }
 
   /**
-   * Creates a clazz.
+   * Creates a clazz
    *
    * @param name - name of the clazz
    * @param component - parent component
@@ -198,7 +199,7 @@ public final class DummyLandscapeHelper {
    */
   public static Clazz createClazz(final String name, final Component component,
       final int instanceCount) {
-    final Clazz clazz = new Clazz();
+    final Clazz clazz = new Clazz(idGen.generateId());
     clazz.setName(name);
     clazz.setFullQualifiedName(component.getFullQualifiedName() + "." + name);
     clazz.setInstanceCount(instanceCount);
@@ -209,7 +210,7 @@ public final class DummyLandscapeHelper {
   }
 
   /**
-   * Creating a communication between two clazzes within the dummy landscape.
+   * Creating a communication between two clazzes within the dummy landscape
    *
    * @param traceId - id of the trace
    * @param requests - number of requests
@@ -222,11 +223,12 @@ public final class DummyLandscapeHelper {
       final Application application) {
 
     final float averageResponseTime = 0L + getRandomNum(10, 1000);
-    final float overallTraceDuration = 0L + getRandomNum(1000, 10_000);
+    final float overallTraceDuration = 0L + getRandomNum(1000, 10000);
     final String operationName = "getMethod" + getRandomNum(1, 50) + "()";
 
-    ModelHelper.addClazzCommunication(sourceClazz, targetClazz, application, requests,
-        averageResponseTime, overallTraceDuration, traceId, tracePosition, operationName);
+    ModelHelper.addClazzCommunication(idGen.generateId(), idGen.generateId(), idGen.generateId(),
+        idGen.generateId(), sourceClazz, targetClazz, application, requests, averageResponseTime,
+        overallTraceDuration, traceId, tracePosition, operationName);
   }
 
 }

@@ -4,9 +4,7 @@ import javax.inject.Inject;
 import javax.servlet.annotation.WebListener;
 import net.explorviz.landscape.repository.LandscapeRepositoryModel;
 import net.explorviz.landscape.repository.RepositoryStarter;
-import net.explorviz.shared.common.idgen.IdGenerator;
 import net.explorviz.shared.config.annotations.Config;
-import net.explorviz.shared.landscape.model.helper.BaseEntity;
 import org.glassfish.hk2.api.ServiceLocator;
 import org.glassfish.jersey.server.monitoring.ApplicationEvent;
 import org.glassfish.jersey.server.monitoring.ApplicationEvent.Type;
@@ -33,10 +31,6 @@ public class SetupApplicationListener implements ApplicationEventListener {
   @Inject
   private ServiceLocator serviceLocator;
 
-
-  @Inject
-  private IdGenerator idGenerator;
-
   LandscapeRepositoryModel model;
 
   @Config("repository.useDummyMode")
@@ -50,7 +44,6 @@ public class SetupApplicationListener implements ApplicationEventListener {
     final Type t = Type.INITIALIZATION_FINISHED;
 
     if (event.getType().equals(t)) {
-      BaseEntity.initialize(this.idGenerator);
       SetupApplicationListener.LOCATOR = this.serviceLocator;
 
       // Workaround: Can't be injected directly since BaseEntity.initialize(..) must be called

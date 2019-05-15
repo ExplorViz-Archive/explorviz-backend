@@ -34,8 +34,11 @@ public class BroadcastService {
 
   public void broadcastMessage(final List<Agent> agentList) {
     LOGGER.info("Broadcasting SSE");
-    final OutboundSseEvent event = this.sse.newEventBuilder().name("message")
-        .mediaType(APPLICATION_JSON_API_TYPE).data(agentList).build();
+    final OutboundSseEvent event = this.sse.newEventBuilder()
+        .name("message")
+        .mediaType(APPLICATION_JSON_API_TYPE)
+        .data(agentList)
+        .build();
 
     this.broadcaster.broadcast(event);
   }
@@ -43,8 +46,11 @@ public class BroadcastService {
   public void register(final SseEventSink eventSink, final List<Agent> agentList) {
     this.broadcaster.register(eventSink);
 
-    final OutboundSseEvent event = this.sse.newEventBuilder().name("message")
-        .mediaType(APPLICATION_JSON_API_TYPE).data(agentList).build();
+    final OutboundSseEvent event = this.sse.newEventBuilder()
+        .name("message")
+        .mediaType(APPLICATION_JSON_API_TYPE)
+        .data(agentList)
+        .build();
 
     eventSink.send(event);
     LOGGER.info("SseEventSink registered, sending current data to this sink.");

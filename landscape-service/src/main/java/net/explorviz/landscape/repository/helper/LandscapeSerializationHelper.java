@@ -12,9 +12,12 @@ import net.explorviz.shared.landscape.model.landscape.Landscape;
  */
 public class LandscapeSerializationHelper {
 
+  private final ResourceConverter jsonApiConverter;
 
   @Inject
-  private ResourceConverter jsonApiConverter;
+  public LandscapeSerializationHelper(final ResourceConverter jsonApiConverter) {
+    this.jsonApiConverter = jsonApiConverter;
+  }
 
 
   /**
@@ -37,8 +40,10 @@ public class LandscapeSerializationHelper {
    * @throws DocumentSerializationException if the given string can't be deserialized to a landscape
    */
   public Landscape deserialize(final String jsonApi) throws DocumentSerializationException {
+
+    final byte[] b = jsonApi.getBytes();
     final JSONAPIDocument<Landscape> landscapeDoc =
-        this.jsonApiConverter.readDocument(jsonApi.getBytes(), Landscape.class);
+        this.jsonApiConverter.readDocument(b, Landscape.class);
 
     return landscapeDoc.get();
   }
