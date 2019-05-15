@@ -11,6 +11,7 @@ import javax.inject.Singleton;
 import net.explorviz.landscape.repository.helper.DummyLandscapeHelper;
 import net.explorviz.landscape.repository.helper.LandscapeSerializationHelper;
 import net.explorviz.landscape.server.helper.LandscapeBroadcastService;
+import net.explorviz.shared.common.idgen.IdGenerator;
 import net.explorviz.shared.config.annotations.Config;
 import net.explorviz.shared.landscape.model.application.AggregatedClazzCommunication;
 import net.explorviz.shared.landscape.model.application.Application;
@@ -47,11 +48,12 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
 
   private final String kafkaTopicName;
 
+  private final IdGenerator idGen;
 
   @Inject
   public LandscapeRepositoryModel(final LandscapeBroadcastService broadcastService,
       final LandscapeSerializationHelper serializationHelper,
-      final KafkaProducer<String, String> kafkaProducer,
+      final KafkaProducer<String, String> kafkaProducer, final IdGenerator idGen,
       @Config("repository.outputIntervalSeconds") final int outputIntervalSeconds,
       @Config("repository.useDummyMode") final boolean useDummyMode,
       @Config("exchange.kafka.topic.name") final String kafkaTopicName) {
@@ -59,8 +61,10 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
     this.broadcastService = broadcastService;
     this.serializationHelper = serializationHelper;
     this.kafkaProducer = kafkaProducer;
+    this.idGen = idGen;
+
     this.useDummyMode = useDummyMode;
-    this.insertionRepositoryPart = new InsertionRepositoryPart();
+    this.insertionRepositoryPart = new InsertionRepositoryPart(idGen);
     this.remoteCallRepositoryPart = new RemoteCallRepositoryPart();
     this.outputIntervalSeconds = outputIntervalSeconds;
     this.kafkaTopicName = kafkaTopicName;
@@ -69,7 +73,8 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
   @PostConstruct
   public void init() {
 
-    this.internalLandscape = new Landscape();
+    this.internalLandscape = new Landscape(this.idGen.generateId(),
+        new Timestamp(this.idGen.generateId(), java.lang.System.currentTimeMillis(), 0));
 
     try {
       final Landscape l = this.deepCopy(this.internalLandscape);
@@ -102,9 +107,9 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
         int calculatedTotalRequests = 0;
 
         if (this.useDummyMode) {
-          final Landscape dummyLandscape = LandscapeDummyCreator.createDummyLandscape();
+          final Landscape dummyLandscape = LandscapeDummyCreator.createDummyLandscape(this.idGen);
           dummyLandscape.getTimestamp().setTimestamp(milliseconds);
-          dummyLandscape.getTimestamp().updateId();
+          dummyLandscape.getTimestamp().setId(this.idGen.generateId());
 
           calculatedTotalRequests = DummyLandscapeHelper.getRandomNum(500, 25000);
           dummyLandscape.getTimestamp().setTotalRequests(calculatedTotalRequests);
@@ -116,7 +121,10 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
 
           calculatedTotalRequests = calculateTotalRequests(this.internalLandscape);
           this.internalLandscape.getTimestamp().setTotalRequests(calculatedTotalRequests);
-          this.internalLandscape.setTimestamp(new Timestamp(milliseconds, calculatedTotalRequests));
+          this.internalLandscape.setTimestamp(
+              new Timestamp(this.idGen.generateId(), milliseconds, calculatedTotalRequests));
+
+          this.internalLandscape.setId(this.idGen.generateId());
 
           this.sendLandscapeToKafka(this.internalLandscape, this.kafkaTopicName);
 

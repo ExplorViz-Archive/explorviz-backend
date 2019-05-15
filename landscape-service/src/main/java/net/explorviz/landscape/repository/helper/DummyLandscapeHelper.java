@@ -3,6 +3,7 @@ package net.explorviz.landscape.repository.helper;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.atomic.AtomicInteger;
 import net.explorviz.landscape.repository.LandscapeDummyCreator;
+import net.explorviz.shared.common.idgen.IdGenerator;
 import net.explorviz.shared.landscape.model.application.Application;
 import net.explorviz.shared.landscape.model.application.ApplicationCommunication;
 import net.explorviz.shared.landscape.model.application.Clazz;
@@ -19,6 +20,8 @@ import net.explorviz.shared.landscape.model.landscape.System;
  * Helper class providing methods for creating a dummy landscape.
  */
 public final class DummyLandscapeHelper {
+
+  public static IdGenerator idGen;
 
   private DummyLandscapeHelper() {
     // Utility Class
@@ -56,12 +59,12 @@ public final class DummyLandscapeHelper {
    * @return created system
    */
   public static System createSystem(final String name, final Landscape parentLandscape) {
-    final System system = new System();
+    final System system = new System(idGen.generateId());
     system.setName(name);
     system.setParent(parentLandscape);
 
     // create new system event
-    parentLandscape.createNewEvent(EEventType.NEWSYSTEM,
+    parentLandscape.createNewEvent(idGen.generateId(), EEventType.NEWSYSTEM,
         "New system '" + system.getName() + "' detected");
 
     return system;
@@ -75,7 +78,7 @@ public final class DummyLandscapeHelper {
    * @return created nodeGroup
    */
   public static NodeGroup createNodeGroup(final String name, final System system) {
-    final NodeGroup nodeGroup = new NodeGroup();
+    final NodeGroup nodeGroup = new NodeGroup(idGen.generateId());
     nodeGroup.setName(name);
     nodeGroup.setParent(system);
     return nodeGroup;
@@ -90,7 +93,7 @@ public final class DummyLandscapeHelper {
    */
   public static Node createNode(final String ipAddress, final NodeGroup parentNodeGroup,
       final Landscape landscape) {
-    final Node node = new Node();
+    final Node node = new Node(idGen.generateId());
     node.setIpAddress(ipAddress);
     node.setParent(parentNodeGroup);
 
@@ -100,8 +103,9 @@ public final class DummyLandscapeHelper {
     node.setUsedRAM((long) getRandomNum(1, 4) * LandscapeDummyCreator.formatFactor);
 
     // create a new node event
-    landscape.createNewEvent(EEventType.NEWNODE, "New node '" + node.getIpAddress()
-        + "' in system '" + parentNodeGroup.getParent().getName() + "' detected");
+    landscape.createNewEvent(idGen.generateId(), EEventType.NEWNODE,
+        "New node '" + node.getIpAddress() + "' in system '" + parentNodeGroup.getParent().getName()
+            + "' detected");
 
     return node;
   }
@@ -116,7 +120,7 @@ public final class DummyLandscapeHelper {
    */
   public static Application createApplication(final String name, final Node parentNode,
       final Landscape landscape) {
-    final Application application = new Application();
+    final Application application = new Application(idGen.generateId());
 
     LandscapeDummyCreator.applicationId = LandscapeDummyCreator.applicationId + 1;
     application.setParent(parentNode);
@@ -132,8 +136,8 @@ public final class DummyLandscapeHelper {
     parentNode.getApplications().add(application);
 
     // create a new application event
-    landscape.createNewEvent(EEventType.NEWNODE, "New node '" + application.getName()
-        + "' in system '" + parentNode.getName() + "' detected");
+    landscape.createNewEvent(idGen.generateId(), EEventType.NEWNODE, "New node '"
+        + application.getName() + "' in system '" + parentNode.getName() + "' detected");
 
     return application;
   }
@@ -149,7 +153,7 @@ public final class DummyLandscapeHelper {
    */
   public static ApplicationCommunication createApplicationCommunication(final Application source,
       final Application target, final Landscape landscape, final int requests) {
-    final ApplicationCommunication communication = new ApplicationCommunication();
+    final ApplicationCommunication communication = new ApplicationCommunication(idGen.generateId());
     communication.setSourceApplication(source);
     communication.setTargetApplication(target);
     communication.setRequests(requests);
@@ -173,7 +177,7 @@ public final class DummyLandscapeHelper {
    */
   public static Component createComponent(final String name, final Component parent,
       final Application app) {
-    final Component component = new Component();
+    final Component component = new Component(idGen.generateId());
     component.setName(name);
     component.setParentComponent(parent);
     component.setBelongingApplication(app);
@@ -196,7 +200,7 @@ public final class DummyLandscapeHelper {
    */
   public static Clazz createClazz(final String name, final Component component,
       final int instanceCount) {
-    final Clazz clazz = new Clazz();
+    final Clazz clazz = new Clazz(idGen.generateId());
     clazz.setName(name);
     clazz.setFullQualifiedName(component.getFullQualifiedName() + "." + name);
     clazz.setInstanceCount(instanceCount);
@@ -223,8 +227,9 @@ public final class DummyLandscapeHelper {
     final float overallTraceDuration = 0L + getRandomNum(1000, 10000);
     final String operationName = "getMethod" + getRandomNum(1, 50) + "()";
 
-    ModelHelper.addClazzCommunication(sourceClazz, targetClazz, application, requests,
-        averageResponseTime, overallTraceDuration, traceId, tracePosition, operationName);
+    ModelHelper.addClazzCommunication(idGen.generateId(), idGen.generateId(), idGen.generateId(),
+        idGen.generateId(), sourceClazz, targetClazz, application, requests, averageResponseTime,
+        overallTraceDuration, traceId, tracePosition, operationName);
   }
 
 }

@@ -9,7 +9,7 @@ public class UserCredentials {
   private String password;
 
   public String getUsername() {
-    return username;
+    return this.username;
   }
 
   public void setUsername(final String username) {
@@ -17,7 +17,7 @@ public class UserCredentials {
   }
 
   public String getPassword() {
-    return password;
+    return this.password;
   }
 
   public void setPassword(final String password) {

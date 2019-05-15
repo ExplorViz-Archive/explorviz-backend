@@ -35,7 +35,10 @@ public class AgentRepository {
 
   public Agent lookupAgent(final Agent agent) {
     synchronized (this.agents) {
-      return this.agents.stream().filter(Objects::nonNull).filter(a -> a.equals(agent)).findFirst()
+      return this.agents.stream()
+          .filter(Objects::nonNull)
+          .filter(a -> a.equals(agent))
+          .findFirst()
           .orElse(null);
     }
   }

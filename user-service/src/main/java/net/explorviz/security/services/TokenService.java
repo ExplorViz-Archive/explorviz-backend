@@ -54,12 +54,19 @@ public class TokenService {
     final ZonedDateTime issuedDate = ZonedDateTime.now();
     final ZonedDateTime expirationDate = issuedDate.plusSeconds(this.validFor);
 
-    return Jwts.builder().setId(id).setIssuer(this.issuer).setAudience(this.audience)
-        .setSubject(user.getUsername()).setIssuedAt(Date.from(issuedDate.toInstant()))
-        .claim("userid", user.getId()).setExpiration(Date.from(expirationDate.toInstant()))
-        .claim(ROLES_CLAIM_IDENTIFIER, user.getRoles()).claim(REFRESH_COUNT_CLAIM_IDENTIFIER, 0)
+    return Jwts.builder()
+        .setId(id)
+        .setIssuer(this.issuer)
+        .setAudience(this.audience)
+        .setSubject(user.getUsername())
+        .setIssuedAt(Date.from(issuedDate.toInstant()))
+        .claim("userid", user.getId())
+        .setExpiration(Date.from(expirationDate.toInstant()))
+        .claim(ROLES_CLAIM_IDENTIFIER, user.getRoles())
+        .claim(REFRESH_COUNT_CLAIM_IDENTIFIER, 0)
         .claim(REFRESH_LIMITCLAIM_IDENTIFIER, this.refreshLimit)
-        .signWith(SignatureAlgorithm.HS256, this.secret).compact();
+        .signWith(SignatureAlgorithm.HS256, this.secret)
+        .compact();
   }
 
   /**
@@ -78,12 +85,15 @@ public class TokenService {
     final ZonedDateTime issuedDate = ZonedDateTime.now();
     final ZonedDateTime expirationDate = issuedDate.plusSeconds(this.validFor);
 
-    final TokenDetails newTokenDetails = new TokenDetails.Builder()
-        .withId(currentTokenDetails.getId()).withUsername(currentTokenDetails.getUsername())
-        .withAuthorities(currentTokenDetails.getRoles()).withIssuedDate(issuedDate)
-        .withExpirationDate(expirationDate)
-        .withRefreshCount(currentTokenDetails.getRefreshCount() + 1)
-        .withRefreshLimit(this.refreshLimit).build();
+    final TokenDetails newTokenDetails =
+        new TokenDetails.Builder().withId(currentTokenDetails.getId())
+            .withUsername(currentTokenDetails.getUsername())
+            .withAuthorities(currentTokenDetails.getRoles())
+            .withIssuedDate(issuedDate)
+            .withExpirationDate(expirationDate)
+            .withRefreshCount(currentTokenDetails.getRefreshCount() + 1)
+            .withRefreshLimit(this.refreshLimit)
+            .build();
 
     return this.issueRefreshmentToken(newTokenDetails);
   }
@@ -97,14 +107,18 @@ public class TokenService {
   private String issueRefreshmentToken(final TokenDetails newTokenDetails) {
     final String id = UUID.randomUUID().toString();
 
-    return Jwts.builder().setId(id).setIssuer(this.issuer).setAudience(this.audience)
+    return Jwts.builder()
+        .setId(id)
+        .setIssuer(this.issuer)
+        .setAudience(this.audience)
         .setSubject(newTokenDetails.getUsername())
         .setIssuedAt(Date.from(newTokenDetails.getIssuedDate().toInstant()))
         .setExpiration(Date.from(newTokenDetails.getExpirationDate().toInstant()))
         .claim(ROLES_CLAIM_IDENTIFIER, newTokenDetails.getRoles())
         .claim(REFRESH_COUNT_CLAIM_IDENTIFIER, newTokenDetails.getRefreshCount())
         .claim(REFRESH_LIMITCLAIM_IDENTIFIER, this.refreshLimit)
-        .signWith(SignatureAlgorithm.HS256, this.secret).compact();
+        .signWith(SignatureAlgorithm.HS256, this.secret)
+        .compact();
 
 
   }
