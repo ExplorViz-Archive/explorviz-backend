@@ -4,6 +4,7 @@ import java.util.List;
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
+import javax.ws.rs.BadRequestException;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.ForbiddenException;
 import javax.ws.rs.GET;
@@ -18,6 +19,7 @@ import net.explorviz.settings.model.UserPreference;
 import net.explorviz.settings.services.AuthorizationService;
 import net.explorviz.settings.services.UserPreferenceRepository;
 import net.explorviz.settings.services.UserPreferenceService;
+import net.explorviz.settings.services.validation.PreferenceValidationException;
 
 /**
  * Resource to access {@link UserPreference}, i.e. to handle user specific settings.
@@ -102,7 +104,11 @@ public class UserPreferencesResource {
       throw new ForbiddenException();
     }
 
-    this.customSettingService.validate(customSetting);
+    try {
+      this.customSettingService.validate(customSetting);
+    } catch (final PreferenceValidationException e) {
+      throw new BadRequestException(e.getMessage());
+    }
     this.customSettingsRepo.create(customSetting);
     return Response.ok().build();
 
