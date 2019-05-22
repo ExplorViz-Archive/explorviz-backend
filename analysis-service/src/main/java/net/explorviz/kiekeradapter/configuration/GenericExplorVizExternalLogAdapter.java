@@ -63,6 +63,9 @@ public final class GenericExplorVizExternalLogAdapter {
   private static void sendBeforeGeneric(final byte ID, final long timestamp, final long traceId,
       final int orderIndex, final int objectId, final String operationSignature, final String clazz,
       final String implementedInterface) {
+
+    // System.out.println("hi");
+
     EXPLORVIZ_BUFFER.put(ID);
     EXPLORVIZ_BUFFER.putLong(traceId);
     EXPLORVIZ_BUFFER.putInt(orderIndex);

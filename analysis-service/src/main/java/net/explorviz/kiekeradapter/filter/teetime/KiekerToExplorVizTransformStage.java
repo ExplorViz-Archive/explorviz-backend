@@ -16,19 +16,19 @@ import kieker.common.record.flow.trace.operation.constructor.BeforeConstructorEv
 import kieker.common.record.system.CPUUtilizationRecord;
 import kieker.common.record.system.MemSwapUsageRecord;
 import net.explorviz.kiekeradapter.configuration.GenericExplorVizExternalLogAdapter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import teetime.framework.AbstractConsumerStage;
 
 /**
  * Kieker Analysis Filter: Transforms Kieker Records to ExplorViz Records
- * 
+ *
  * @author Christian Zirkelbach (czi@informatik.uni-kiel.de)
  *
  */
 public class KiekerToExplorVizTransformStage extends AbstractConsumerStage<IMonitoringRecord> {
 
-  final Logger logger = LoggerFactory.getLogger(KiekerToExplorVizTransformStage.class.getName());
+  // private static final Logger LOGGER =
+  // LoggerFactory.getLogger(KiekerToExplorVizTransformStage.class);
+
   private final Stack<IMonitoringRecord> stack = new Stack<>();
 
   @Override
@@ -37,6 +37,8 @@ public class KiekerToExplorVizTransformStage extends AbstractConsumerStage<IMoni
   }
 
   public void inputKiekerRecords(final IMonitoringRecord kiekerRecord) {
+
+
 
     // TODO Is a generic KiekerMetaDataRecord necessary?
 
