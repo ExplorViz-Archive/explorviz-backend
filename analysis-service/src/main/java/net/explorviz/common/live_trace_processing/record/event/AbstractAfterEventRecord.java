@@ -8,48 +8,44 @@ import net.explorviz.common.live_trace_processing.record.trace.HostApplicationMe
 import net.explorviz.common.live_trace_processing.writer.IRecordSender;
 
 public abstract class AbstractAfterEventRecord extends AbstractEventRecord {
-	public static final int COMPRESSED_BYTE_LENGTH = AbstractEventRecord.COMPRESSED_BYTE_LENGTH + 8;
-	public static final int COMPRESSED_BYTE_LENGTH_WITH_CLAZZ_ID = 1 + COMPRESSED_BYTE_LENGTH;
+  public static final int COMPRESSED_BYTE_LENGTH = AbstractEventRecord.COMPRESSED_BYTE_LENGTH + 8;
+  public static final int COMPRESSED_BYTE_LENGTH_WITH_CLAZZ_ID = 1 + COMPRESSED_BYTE_LENGTH;
 
-	public static final int BYTE_LENGTH = AbstractEventRecord.BYTE_LENGTH + 8;
-	protected static final int BYTE_LENGTH_WITH_CLAZZ_ID = 1 + BYTE_LENGTH;
+  public static final int BYTE_LENGTH = AbstractEventRecord.BYTE_LENGTH + 8;
+  protected static final int BYTE_LENGTH_WITH_CLAZZ_ID = 1 + BYTE_LENGTH;
 
-	private final long methodDuration;
+  private final long methodDuration;
 
-	public AbstractAfterEventRecord(final long methodDuration,
-			final long traceId, final int orderIndex,
-			final HostApplicationMetaDataRecord hostApplicationMetadata) {
-		super(traceId, orderIndex, hostApplicationMetadata);
-		this.methodDuration = methodDuration;
-	}
+  public AbstractAfterEventRecord(final long methodDuration, final long traceId,
+      final int orderIndex, final HostApplicationMetaDataRecord hostApplicationMetadata) {
+    super(traceId, orderIndex, hostApplicationMetadata);
+    this.methodDuration = methodDuration;
+  }
 
-	public AbstractAfterEventRecord(final ByteBuffer buffer,
-			final StringRegistryReceiver stringRegistry)
-			throws IdNotAvailableException {
-		super(buffer, stringRegistry);
-		methodDuration = buffer.getLong();
-	}
+  public AbstractAfterEventRecord(final ByteBuffer buffer,
+      final StringRegistryReceiver stringRegistry) throws IdNotAvailableException {
+    super(buffer, stringRegistry);
+    this.methodDuration = buffer.getLong();
+  }
 
-	public long getMethodDuration() {
-		return methodDuration;
-	}
+  public long getMethodDuration() {
+    return this.methodDuration;
+  }
 
-	@Override
-	public void putIntoByteBuffer(final ByteBuffer buffer,
-			final StringRegistrySender stringRegistry,
-			final IRecordSender writer) {
-		super.putIntoByteBuffer(buffer, stringRegistry, writer);
-		buffer.putLong(getMethodDuration());
-	}
+  @Override
+  public void putIntoByteBuffer(final ByteBuffer buffer, final StringRegistrySender stringRegistry,
+      final IRecordSender writer) {
+    super.putIntoByteBuffer(buffer, stringRegistry, writer);
+    buffer.putLong(this.getMethodDuration());
+  }
 
-	@Override
-	public int getRecordSizeInBytes() {
-		return 8 + super.getRecordSizeInBytes();
-	}
+  @Override
+  public int getRecordSizeInBytes() {
+    return 8 + super.getRecordSizeInBytes();
+  }
 
-	@Override
-	public String toString() {
-		return AbstractAfterEventRecord.class.getSimpleName() + " - "
-				+ super.toString();
-	}
+  @Override
+  public String toString() {
+    return AbstractAfterEventRecord.class.getSimpleName() + " - " + super.toString();
+  }
 }

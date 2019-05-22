@@ -5,55 +5,53 @@ import org.jctools.queues.QueueFactory;
 import org.jctools.queues.spec.ConcurrentQueueSpec;
 
 public class SinglePipeConnector<T> {
-	private boolean terminated = false;
+  private boolean terminated = false;
 
-	private final Queue<T> queue;
+  private final Queue<T> queue;
 
-	private IPipeReceiver<T> receiver;
+  private IPipeReceiver<T> receiver;
 
-	public SinglePipeConnector(final int capacity) {
-		queue = QueueFactory.newQueue(ConcurrentQueueSpec
-				.createBoundedSpsc(capacity));
-	}
+  public SinglePipeConnector(final int capacity) {
+    this.queue = QueueFactory.newQueue(ConcurrentQueueSpec.createBoundedSpsc(capacity));
+  }
 
-	public Queue<T> registerProducer() {
-		return queue;
-	}
+  public Queue<T> registerProducer() {
+    return this.queue;
+  }
 
-	/**
-	 * Deregister the created queue. CAUTION: Do not write to the queue after
-	 * deregistering it!
-	 *
-	 * @param queue
-	 */
-	public void deregisterProducer(final Queue<T> queue) {
-		terminate();
-	}
+  /**
+   * Deregister the created queue. CAUTION: Do not write to the queue after deregistering it!
+   *
+   * @param queue
+   */
+  public void deregisterProducer(final Queue<T> queue) {
+    this.terminate();
+  }
 
-	public void process(final IPipeReceiver<T> receiver) {
-		this.receiver = receiver;
-		while (!terminated) {
-			processLoop();
-		}
-	}
+  public void process(final IPipeReceiver<T> receiver) {
+    this.receiver = receiver;
+    while (!this.terminated) {
+      this.processLoop();
+    }
+  }
 
-	private void processLoop() {
-		final T maybeArrayEvent = queue.poll();
-		if (maybeArrayEvent != null) {
-			try {
-				receiver.processRecord(maybeArrayEvent);
-			} catch (final Exception e) {
-				e.printStackTrace();
-			}
-		} else {
-			try {
-				Thread.sleep(1);
-			} catch (final InterruptedException e) {
-			}
-		}
-	}
+  private void processLoop() {
+    final T maybeArrayEvent = this.queue.poll();
+    if (maybeArrayEvent != null) {
+      try {
+        this.receiver.processRecord(maybeArrayEvent);
+      } catch (final Exception e) {
+        e.printStackTrace();
+      }
+    } else {
+      try {
+        Thread.sleep(1);
+      } catch (final InterruptedException e) {
+      }
+    }
+  }
 
-	public void terminate() {
-		terminated = true;
-	}
+  public void terminate() {
+    this.terminated = true;
+  }
 }

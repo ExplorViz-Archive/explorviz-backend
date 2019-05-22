@@ -2,28 +2,29 @@ package net.explorviz.monitoring.live_trace_processing.probe.distributed;
 
 
 public class DistributedMonitoringTempDisabler {
-	private boolean monitoringEnabled = true;
+  private boolean monitoringEnabled = true;
 
-	static final private ThreadLocal<DistributedMonitoringTempDisabler> probeController = new ThreadLocal<DistributedMonitoringTempDisabler>() {
-		@Override
-		public DistributedMonitoringTempDisabler initialValue() {
-			return new DistributedMonitoringTempDisabler();
-		}
-	};
+  static final private ThreadLocal<DistributedMonitoringTempDisabler> probeController =
+      new ThreadLocal<DistributedMonitoringTempDisabler>() {
+        @Override
+        public DistributedMonitoringTempDisabler initialValue() {
+          return new DistributedMonitoringTempDisabler();
+        }
+      };
 
-	public static DistributedMonitoringTempDisabler getProbeController() {
-		return DistributedMonitoringTempDisabler.probeController.get();
-	}
+  public static DistributedMonitoringTempDisabler getProbeController() {
+    return DistributedMonitoringTempDisabler.probeController.get();
+  }
 
-	public boolean isMonitoringEnabled() {
-		return monitoringEnabled;
-	}
+  public boolean isMonitoringEnabled() {
+    return this.monitoringEnabled;
+  }
 
-	public void enableMonitoring() {
-		monitoringEnabled = true;
-	}
+  public void enableMonitoring() {
+    this.monitoringEnabled = true;
+  }
 
-	public void disableMonitoring() {
-		monitoringEnabled = false;
-	}
+  public void disableMonitoring() {
+    this.monitoringEnabled = false;
+  }
 }

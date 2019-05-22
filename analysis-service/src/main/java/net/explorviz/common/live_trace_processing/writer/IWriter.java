@@ -4,13 +4,13 @@ import java.io.IOException;
 import java.net.URL;
 
 public interface IWriter {
-	URL getProviderURL();
+  URL getProviderURL();
 
-	void setProviderURL(final URL providerURL);
+  void setProviderURL(final URL providerURL);
 
-	void connect() throws IOException;
+  void connect() throws IOException;
 
-	void disconnect();
+  void disconnect();
 
-	boolean isDisconnected();
+  boolean isDisconnected();
 }

@@ -17,71 +17,71 @@ import org.slf4j.LoggerFactory;
 
 public final class TCPReader implements IPeriodicTimeSignalReceiver {
 
-	private static final Logger LOG = LoggerFactory.getLogger(TCPReader.class);
+  private static final Logger LOG = LoggerFactory.getLogger(TCPReader.class);
 
-	private final int listeningPort;
-	private boolean active = true;
+  private final int listeningPort;
+  private boolean active = true;
 
-	private ServerSocketChannel serversocket;
+  private ServerSocketChannel serversocket;
 
-	private final PipesMerger<IRecord> merger;
+  private final PipesMerger<IRecord> merger;
 
-	private final Queue<IRecord> periodicSignalQueue;
+  private final Queue<IRecord> periodicSignalQueue;
 
-	private final ExecutorService threadPool;
+  private final ExecutorService threadPool;
 
-	public TCPReader(final int listeningPort, final PipesMerger<IRecord> traceReconstructionMerger) {
-		this.listeningPort = listeningPort;
+  public TCPReader(final int listeningPort, final PipesMerger<IRecord> traceReconstructionMerger) {
+    this.listeningPort = listeningPort;
 
-		merger = traceReconstructionMerger;
+    this.merger = traceReconstructionMerger;
 
-		new TimeSignalReader(TimeUnit.SECONDS.toMillis(1), this).start();
-		periodicSignalQueue = merger.registerProducer();
+    new TimeSignalReader(TimeUnit.SECONDS.toMillis(1), this).start();
+    this.periodicSignalQueue = this.merger.registerProducer();
 
-		threadPool = Executors.newCachedThreadPool();
-	}
+    this.threadPool = Executors.newCachedThreadPool();
+  }
 
-	@Override
-	public void periodicTimeSignal(final long timestamp) {
-		final TimedPeriodRecord periodRecord = new TimedPeriodRecord();
-		while ((periodicSignalQueue != null) && !periodicSignalQueue.offer(periodRecord)) {
-			try {
-				Thread.sleep(1);
-			} catch (final InterruptedException e) {
-			}
-		}
-	}
+  @Override
+  public void periodicTimeSignal(final long timestamp) {
+    final TimedPeriodRecord periodRecord = new TimedPeriodRecord();
+    while (this.periodicSignalQueue != null && !this.periodicSignalQueue.offer(periodRecord)) {
+      try {
+        Thread.sleep(1);
+      } catch (final InterruptedException e) {
+      }
+    }
+  }
 
-	public final void read() {
-		try {
-			open();
-			while (active) {
-				threadPool.execute(new TCPReaderOneClient(serversocket.accept(), merger));
-			}
-		} catch (final IOException ex) {
-			LOG.info("Error in read() " + ex.getMessage());
-		} finally {
-			try {
-				serversocket.close();
-			} catch (final IOException e) {
-				LOG.info("Error in read()" + e.getMessage());
-			}
-		}
-	}
+  public final void read() {
+    try {
+      this.open();
+      while (this.active) {
+        this.threadPool.execute(new TCPReaderOneClient(this.serversocket.accept(), this.merger));
+      }
+    } catch (final IOException ex) {
+      LOG.info("Error in read() " + ex.getMessage());
+    } finally {
+      try {
+        this.serversocket.close();
+      } catch (final IOException e) {
+        LOG.info("Error in read()" + e.getMessage());
+      }
+    }
+  }
 
-	private final void open() throws IOException {
-		serversocket = ServerSocketChannel.open();
-		serversocket.socket().bind(new InetSocketAddress(listeningPort));
-		LOG.info("Listening on port " + listeningPort);
-	}
+  private final void open() throws IOException {
+    this.serversocket = ServerSocketChannel.open();
+    this.serversocket.socket().bind(new InetSocketAddress(this.listeningPort));
+    LOG.info("Listening on port " + this.listeningPort);
+  }
 
-	public final void terminate(final boolean error) {
-		LOG.info("Shutdown of TCPReader requested.");
-		active = false;
-		try {
-			threadPool.awaitTermination(10, TimeUnit.SECONDS);
-		} catch (final InterruptedException e) {
-		}
-		threadPool.shutdown();
-	}
+  public final void terminate(final boolean error) {
+    LOG.info("Shutdown of TCPReader requested.");
+    this.active = false;
+    try {
+      this.threadPool.awaitTermination(10, TimeUnit.SECONDS);
+    } catch (final InterruptedException e) {
+    }
+    this.threadPool.shutdown();
+  }
 }

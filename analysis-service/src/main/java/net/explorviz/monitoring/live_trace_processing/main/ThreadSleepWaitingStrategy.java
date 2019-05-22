@@ -1,34 +1,32 @@
 package net.explorviz.monitoring.live_trace_processing.main;
 
 import com.lmax.disruptor.AlertException;
+import com.lmax.disruptor.Sequence;
 import com.lmax.disruptor.SequenceBarrier;
-import javax.sound.midi.Sequence;
-import org.jctools.queues.MessagePassingQueue.WaitStrategy;
+import com.lmax.disruptor.WaitStrategy;
 
 public final class ThreadSleepWaitingStrategy implements WaitStrategy {
-	@Override
-	public long waitFor(final long sequence, final Sequence cursor,
-			final Sequence dependentSequence, final SequenceBarrier barrier) throws AlertException,
-			InterruptedException {
-		long availableSequence;
+  @Override
+  public long waitFor(final long sequence, final Sequence cursor, final Sequence dependentSequence,
+      final SequenceBarrier barrier) throws AlertException, InterruptedException {
+    long availableSequence;
 
-		while ((availableSequence = dependentSequence.get()) < sequence) {
-			applyWaitMethod(barrier);
-		}
+    while ((availableSequence = dependentSequence.get()) < sequence) {
+      this.applyWaitMethod(barrier);
+    }
 
-		return availableSequence;
-	}
+    return availableSequence;
+  }
 
-	@Override
-	public void signalAllWhenBlocking() {
-	}
+  @Override
+  public void signalAllWhenBlocking() {}
 
-	private void applyWaitMethod(final SequenceBarrier barrier) throws AlertException {
-		barrier.checkAlert();
+  private void applyWaitMethod(final SequenceBarrier barrier) throws AlertException {
+    barrier.checkAlert();
 
-		try {
-			Thread.sleep(1);
-		} catch (final InterruptedException e) {
-		}
-	}
+    try {
+      Thread.sleep(1);
+    } catch (final InterruptedException e) {
+    }
+  }
 }

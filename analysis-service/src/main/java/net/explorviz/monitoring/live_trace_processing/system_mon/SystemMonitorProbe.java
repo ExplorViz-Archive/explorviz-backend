@@ -1,10 +1,12 @@
 package net.explorviz.monitoring.live_trace_processing.system_mon;
 
+import com.sun.management.OperatingSystemMXBean;
 import java.lang.management.ManagementFactory;
-import java.lang.management.OperatingSystemMXBean;
+
 
 public class SystemMonitorProbe {
-  private final static OperatingSystemMXBean osBean =
+
+  private static final OperatingSystemMXBean osBean =
       ManagementFactory.getPlatformMXBean(OperatingSystemMXBean.class);
 
   public static double getSystemCpuLoad() {

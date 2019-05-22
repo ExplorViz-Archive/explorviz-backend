@@ -10,68 +10,65 @@ import net.explorviz.common.live_trace_processing.record.trace.HostApplicationMe
 import net.explorviz.common.live_trace_processing.writer.IRecordSender;
 
 public class AfterJDBCOperationEventRecord extends AbstractAfterEventRecord {
-	public static final byte CLAZZ_ID = 21;
-	public static final byte CLAZZ_ID_FROM_WORKER = 64 + CLAZZ_ID;
+  public static final byte CLAZZ_ID = 21;
+  public static final byte CLAZZ_ID_FROM_WORKER = 64 + CLAZZ_ID;
 
-	public static final int COMPRESSED_BYTE_LENGTH = AbstractAfterEventRecord.COMPRESSED_BYTE_LENGTH + 4;
-	public static final int COMPRESSED_BYTE_LENGTH_WITH_CLAZZ_ID = 1 + COMPRESSED_BYTE_LENGTH;
+  public static final int COMPRESSED_BYTE_LENGTH =
+      AbstractAfterEventRecord.COMPRESSED_BYTE_LENGTH + 4;
+  public static final int COMPRESSED_BYTE_LENGTH_WITH_CLAZZ_ID = 1 + COMPRESSED_BYTE_LENGTH;
 
-	public static final int BYTE_LENGTH = AbstractAfterEventRecord.BYTE_LENGTH + 4;
-	protected static final int BYTE_LENGTH_WITH_CLAZZ_ID = 1 + BYTE_LENGTH;
+  public static final int BYTE_LENGTH = AbstractAfterEventRecord.BYTE_LENGTH + 4;
+  protected static final int BYTE_LENGTH_WITH_CLAZZ_ID = 1 + BYTE_LENGTH;
 
-	private final String formattedReturnValue;
+  private final String formattedReturnValue;
 
-	public AfterJDBCOperationEventRecord(final long timestamp,
-			final long traceId, final int orderIndex,
-			final String formattedReturnValue,
-			final HostApplicationMetaDataRecord hostApplicationMetadata) {
-		super(timestamp, traceId, orderIndex, hostApplicationMetadata);
+  public AfterJDBCOperationEventRecord(final long timestamp, final long traceId,
+      final int orderIndex, final String formattedReturnValue,
+      final HostApplicationMetaDataRecord hostApplicationMetadata) {
+    super(timestamp, traceId, orderIndex, hostApplicationMetadata);
 
-		this.formattedReturnValue = formattedReturnValue;
-	}
+    this.formattedReturnValue = formattedReturnValue;
+  }
 
-	public AfterJDBCOperationEventRecord(final ByteBuffer buffer,
-			final StringRegistryReceiver stringRegistry)
-			throws IdNotAvailableException {
-		super(buffer, stringRegistry);
+  public AfterJDBCOperationEventRecord(final ByteBuffer buffer,
+      final StringRegistryReceiver stringRegistry) throws IdNotAvailableException {
+    super(buffer, stringRegistry);
 
-		formattedReturnValue = stringRegistry.getStringFromId(buffer.getInt());
-	}
+    this.formattedReturnValue = stringRegistry.getStringFromId(buffer.getInt());
+  }
 
-	@Override
-	public void putIntoByteBuffer(final ByteBuffer buffer,
-			final StringRegistrySender stringRegistry,
-			final IRecordSender writer) {
-		buffer.put(CLAZZ_ID_FROM_WORKER);
-		buffer.putInt(getRecordSizeInBytes());
-		super.putIntoByteBuffer(buffer, stringRegistry, writer);
+  @Override
+  public void putIntoByteBuffer(final ByteBuffer buffer, final StringRegistrySender stringRegistry,
+      final IRecordSender writer) {
+    buffer.put(CLAZZ_ID_FROM_WORKER);
+    buffer.putInt(this.getRecordSizeInBytes());
+    super.putIntoByteBuffer(buffer, stringRegistry, writer);
 
-		buffer.putInt(stringRegistry.getIdForString(getFormattedReturnValue()));
-	}
+    buffer.putInt(stringRegistry.getIdForString(this.getFormattedReturnValue()));
+  }
 
-	@Override
-	public int compareTo(final IRecord o) {
-		if (o instanceof AfterJDBCOperationEventRecord) {
-			final AfterJDBCOperationEventRecord record2 = (AfterJDBCOperationEventRecord) o;
-			final int cmpReturnVal = getFormattedReturnValue().compareTo(
-					record2.getFormattedReturnValue());
-			if (cmpReturnVal != 0) {
-				return cmpReturnVal;
-			}
+  @Override
+  public int compareTo(final IRecord o) {
+    if (o instanceof AfterJDBCOperationEventRecord) {
+      final AfterJDBCOperationEventRecord record2 = (AfterJDBCOperationEventRecord) o;
+      final int cmpReturnVal =
+          this.getFormattedReturnValue().compareTo(record2.getFormattedReturnValue());
+      if (cmpReturnVal != 0) {
+        return cmpReturnVal;
+      }
 
-			return super.compareTo(o);
-		}
-		return -1;
-	}
+      return super.compareTo(o);
+    }
+    return -1;
+  }
 
-	@Override
-	public String toString() {
-		return AfterJDBCOperationEventRecord.class.getSimpleName() + " - "
-				+ super.toString() + ", getFormattedReturnValue()="
-				+ getFormattedReturnValue();
-	}
+  @Override
+  public String toString() {
+    return AfterJDBCOperationEventRecord.class.getSimpleName() + " - " + super.toString()
+        + ", getFormattedReturnValue()=" + this.getFormattedReturnValue();
+  }
 
-	public String getFormattedReturnValue() {
-		return formattedReturnValue;
-	}
+  public String getFormattedReturnValue() {
+    return this.formattedReturnValue;
+  }
 }

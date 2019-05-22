@@ -7,73 +7,70 @@ import net.explorviz.common.live_trace_processing.writer.IWriter;
 
 public class LoadBalancer implements ILoadBalancerIPReceiver {
 
-	private URL loadBalancerURL;
-	private final int loadBalancerWaitTimeInMillis;
-	private LoadBalancerIPFetcher loadBalancerIPFetcher;
-	private final IWriter writer;
+  private URL loadBalancerURL;
+  private final int loadBalancerWaitTimeInMillis;
+  private LoadBalancerIPFetcher loadBalancerIPFetcher;
+  private final IWriter writer;
 
-	public LoadBalancer(final String loadBalancerHostname,
-			final int loadBalancerPort, final int loadBalancerWaitTimeInMillis,
-			final String scalingGroupName, final IWriter writer) {
-		this.writer = writer;
+  public LoadBalancer(final String loadBalancerHostname, final int loadBalancerPort,
+      final int loadBalancerWaitTimeInMillis, final String scalingGroupName, final IWriter writer) {
+    this.writer = writer;
 
-		try {
-			loadBalancerURL = new URL("http://" + loadBalancerHostname + ":"
-					+ loadBalancerPort + "?group=" + scalingGroupName);
-		} catch (final MalformedURLException e) {
-			e.printStackTrace();
-		}
+    try {
+      this.loadBalancerURL = new URL(
+          "http://" + loadBalancerHostname + ":" + loadBalancerPort + "?group=" + scalingGroupName);
+    } catch (final MalformedURLException e) {
+      e.printStackTrace();
+    }
 
-		this.loadBalancerWaitTimeInMillis = loadBalancerWaitTimeInMillis;
+    this.loadBalancerWaitTimeInMillis = loadBalancerWaitTimeInMillis;
 
-		createLoadBalancer();
-	}
+    this.createLoadBalancer();
+  }
 
-	private void createLoadBalancer() {
-		writer.setProviderURL(null);
-		if (loadBalancerIPFetcher != null) {
-			loadBalancerIPFetcher.interrupt();
-		}
+  private void createLoadBalancer() {
+    this.writer.setProviderURL(null);
+    if (this.loadBalancerIPFetcher != null) {
+      this.loadBalancerIPFetcher.interrupt();
+    }
 
-		loadBalancerIPFetcher = new LoadBalancerIPFetcher(loadBalancerURL,
-				loadBalancerWaitTimeInMillis, this);
-		loadBalancerIPFetcher.start();
-	}
+    this.loadBalancerIPFetcher =
+        new LoadBalancerIPFetcher(this.loadBalancerURL, this.loadBalancerWaitTimeInMillis, this);
+    this.loadBalancerIPFetcher.start();
+  }
 
-	public final void cleanup() {
-		if (loadBalancerIPFetcher != null) {
-			loadBalancerIPFetcher.interrupt();
-		}
+  public final void cleanup() {
+    if (this.loadBalancerIPFetcher != null) {
+      this.loadBalancerIPFetcher.interrupt();
+    }
 
-		writer.disconnect();
-	}
+    this.writer.disconnect();
+  }
 
-	@Override
-	public final void receivedNewIp(final URL newProviderURL) {
-		synchronized (this) {
-			if (writer.getProviderURL() == null || writer.isDisconnected()) {
-				setProviderURLAndConnect(newProviderURL);
-				return;
-			}
+  @Override
+  public final void receivedNewIp(final URL newProviderURL) {
+    synchronized (this) {
+      if (this.writer.getProviderURL() == null || this.writer.isDisconnected()) {
+        this.setProviderURLAndConnect(newProviderURL);
+        return;
+      }
 
-			if (!newProviderURL.getHost().equals(
-					writer.getProviderURL().getHost())
-					|| newProviderURL.getPort() != writer.getProviderURL()
-							.getPort()) {
-				writer.disconnect();
-				setProviderURLAndConnect(newProviderURL);
-			}
+      if (!newProviderURL.getHost().equals(this.writer.getProviderURL().getHost())
+          || newProviderURL.getPort() != this.writer.getProviderURL().getPort()) {
+        this.writer.disconnect();
+        this.setProviderURLAndConnect(newProviderURL);
+      }
 
-		}
-	}
+    }
+  }
 
-	public void setProviderURLAndConnect(final URL newProviderURL) {
-		try {
-			writer.setProviderURL(newProviderURL);
-			writer.connect();
-		} catch (final IOException e) {
-			writer.setProviderURL(null);
-			e.printStackTrace();
-		}
-	}
+  public void setProviderURLAndConnect(final URL newProviderURL) {
+    try {
+      this.writer.setProviderURL(newProviderURL);
+      this.writer.connect();
+    } catch (final IOException e) {
+      this.writer.setProviderURL(null);
+      e.printStackTrace();
+    }
+  }
 }

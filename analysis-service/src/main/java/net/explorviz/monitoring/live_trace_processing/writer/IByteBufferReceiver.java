@@ -4,6 +4,6 @@ import net.explorviz.monitoring.live_trace_processing.main.ByteBufferEvent;
 
 public interface IByteBufferReceiver {
 
-	void onEvent(ByteBufferEvent event);
+  void onEvent(ByteBufferEvent event);
 
 }

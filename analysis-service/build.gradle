@@ -1,7 +1,10 @@
+import org.gradle.plugins.ide.eclipse.model.AccessRule
+
 plugins {
 	id "application"
 	id "com.github.johnrengelman.shadow" version "4.0.4"
 	id "com.github.spotbugs" version "1.6.10"
+	id "eclipse"
 }
 
 // Force new Dependencies 
@@ -36,6 +39,19 @@ dependencies {
 
   // Kieker Monitoring Framework
   implementation group: 'net.kieker-monitoring', name: 'kieker', version: '1.14-SNAPSHOT'
+}
+
+// allow com.sun on classpath
+eclipse {
+    classpath {
+        file {
+            whenMerged {
+                def jre = entries.find { it.path.contains 'org.eclipse.jdt.launching.JRE_CONTAINER' }
+                jre.accessRules.add(new AccessRule('0', 'com/sun/**'))
+                //jre.accessRules.add(new AccessRule('0', 'sun/**'))
+            }
+        }
+    }
 }
 
 assemble.dependsOn shadowJar

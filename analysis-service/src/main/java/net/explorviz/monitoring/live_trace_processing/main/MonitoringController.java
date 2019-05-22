@@ -46,11 +46,10 @@ public class MonitoringController {
         configuration.getBooleanProperty(ConfigurationFactory.SYSTEM_MONITORING_ENABLED);
 
     TraceRegistry.init(configuration);
-
     final ExecutorService exec = Executors.newSingleThreadExecutor();
-    final Disruptor<ByteBufferEvent> disruptor = new Disruptor<ByteBufferEvent>(
-        ByteBufferEvent.EVENT_FACTORY, Constants.MONITORING_CONTROLLER_DISRUPTOR_SIZE, exec,
-        ProducerType.MULTI, new ThreadSleepWaitingStrategy());
+    final Disruptor<ByteBufferEvent> disruptor = new Disruptor<>(ByteBufferEvent.EVENT_FACTORY,
+        Constants.MONITORING_CONTROLLER_DISRUPTOR_SIZE, exec, ProducerType.MULTI,
+        new ThreadSleepWaitingStrategy());
 
     final boolean androidMonitoring =
         configuration.getBooleanProperty(ConfigurationFactory.ANDROID_MONITORING);

@@ -8,67 +8,68 @@ import net.explorviz.monitoring.live_trace_processing.probe.tracemanagement.Prob
 import net.explorviz.monitoring.live_trace_processing.probe.tracemanagement.TraceRegistry;
 import org.aspectj.lang.ProceedingJoinPoint;
 
-//@Aspect
+// @Aspect
 public class HttpURLConnectionProbe {
-	// @Around("call(void java.net.URLConnection+.connect()) || call(* java.net.HttpURLConnection+.getResponseCode())")
-	public Object messageAction(final ProceedingJoinPoint thisJoinPoint) throws Throwable {
-		final DistributedMonitoringTempDisabler probeController = DistributedMonitoringTempDisabler
-				.getProbeController();
-		if (!probeController.isMonitoringEnabled() || !MonitoringController.isMonitoringEnabled()) {
-			return thisJoinPoint.proceed();
-		}
+  // @Around("call(void java.net.URLConnection+.connect()) || call(*
+  // java.net.HttpURLConnection+.getResponseCode())")
+  public Object messageAction(final ProceedingJoinPoint thisJoinPoint) throws Throwable {
+    final DistributedMonitoringTempDisabler probeController =
+        DistributedMonitoringTempDisabler.getProbeController();
+    if (!probeController.isMonitoringEnabled() || !MonitoringController.isMonitoringEnabled()) {
+      return thisJoinPoint.proceed();
+    }
 
-		probeController.disableMonitoring();
+    probeController.disableMonitoring();
 
-		if (!(thisJoinPoint.getTarget() instanceof HttpURLConnection)) {
-			probeController.enableMonitoring();
-			return thisJoinPoint.proceed();
-		}
-		final HttpURLConnection target = (HttpURLConnection) thisJoinPoint.getTarget();
+    if (!(thisJoinPoint.getTarget() instanceof HttpURLConnection)) {
+      probeController.enableMonitoring();
+      return thisJoinPoint.proceed();
+    }
+    final HttpURLConnection target = (HttpURLConnection) thisJoinPoint.getTarget();
 
-		final ProbeTraceMetaData trace = TraceRegistry.getTrace();
-		trace.incrementStackDepth();
+    final ProbeTraceMetaData trace = TraceRegistry.getTrace();
+    trace.incrementStackDepth();
 
-		final Long ownTraceId = trace.getTraceId();
-		boolean sentRecordWasSent = true;
+    final Long ownTraceId = trace.getTraceId();
+    boolean sentRecordWasSent = true;
 
-		try {
-			target.addRequestProperty(ServletProbe.TRACE_ID_HEADER, ownTraceId.toString());
-			final Integer ownOrderId = trace.getNextOrderId();
-			target.addRequestProperty(ServletProbe.ORDER_ID_HEADER, ownOrderId.toString());
+    try {
+      target.addRequestProperty(ServletProbe.TRACE_ID_HEADER, ownTraceId.toString());
+      final Integer ownOrderId = trace.getNextOrderId();
+      target.addRequestProperty(ServletProbe.ORDER_ID_HEADER, ownOrderId.toString());
 
-			DistributedMonitoringRecordWriter.writeBeforeSentRecord(ownTraceId, ownOrderId,
-					target.getURL().toString());
-		} catch (final Exception e) {
-			sentRecordWasSent = false;
-		}
+      DistributedMonitoringRecordWriter
+          .writeBeforeSentRecord(ownTraceId, ownOrderId, target.getURL().toString());
+    } catch (final Exception e) {
+      sentRecordWasSent = false;
+    }
 
-		probeController.enableMonitoring();
-		final Object result = thisJoinPoint.proceed();
-		probeController.disableMonitoring();
+    probeController.enableMonitoring();
+    final Object result = thisJoinPoint.proceed();
+    probeController.disableMonitoring();
 
-		if (sentRecordWasSent) {
-			final Integer ownOrderId = trace.getNextOrderId();
-			boolean unknownReceivedRecord = true;
-			try {
-				final long traceId = Long.parseLong(target
-						.getHeaderField(ServletProbe.TRACE_ID_HEADER));
-				final int orderId = Integer.parseInt(target
-						.getHeaderField(ServletProbe.ORDER_ID_HEADER));
+    if (sentRecordWasSent) {
+      final Integer ownOrderId = trace.getNextOrderId();
+      boolean unknownReceivedRecord = true;
+      try {
+        final long traceId = Long.parseLong(target.getHeaderField(ServletProbe.TRACE_ID_HEADER));
+        final int orderId = Integer.parseInt(target.getHeaderField(ServletProbe.ORDER_ID_HEADER));
 
-				DistributedMonitoringRecordWriter.writeBeforeReceivedRecord(ownTraceId,
-						ownOrderId, traceId, orderId);
-				unknownReceivedRecord = false;
-			} catch (final Exception e) {
-			} finally {
-				if (unknownReceivedRecord) {
-					DistributedMonitoringRecordWriter.writeBeforeUnknownReceivedRecord(
-							ownTraceId, ownOrderId, "", target.getURL().toString());
-				}
-			}
-		}
+        DistributedMonitoringRecordWriter
+            .writeBeforeReceivedRecord(ownTraceId, ownOrderId, traceId, orderId);
+        unknownReceivedRecord = false;
+      } catch (final Exception e) {
+      } finally {
+        if (unknownReceivedRecord) {
+          DistributedMonitoringRecordWriter.writeBeforeUnknownReceivedRecord(ownTraceId,
+              ownOrderId,
+              "",
+              target.getURL().toString());
+        }
+      }
+    }
 
-		probeController.enableMonitoring();
-		return result;
-	}
+    probeController.enableMonitoring();
+    return result;
+  }
 }

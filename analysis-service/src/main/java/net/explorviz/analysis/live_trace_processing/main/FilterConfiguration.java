@@ -13,22 +13,22 @@ import net.explorviz.common.live_trace_processing.filter.SinglePipeConnector;
 import net.explorviz.common.live_trace_processing.record.IRecord;
 
 public class FilterConfiguration {
-	public static void configureAndStartFilters(final Configuration configuration,
-			final Queue<IRecord> sink) {
-		final SinglePipeConnector<IRecord> traceReductionConnector = new SinglePipeConnector<IRecord>(
-				Constants.TRACE_RECONSTRUCTION_DISRUPTOR_SIZE);
+  public static void configureAndStartFilters(final Configuration configuration,
+      final Queue<IRecord> sink) {
+    final SinglePipeConnector<IRecord> traceReductionConnector =
+        new SinglePipeConnector<>(Constants.TRACE_RECONSTRUCTION_DISRUPTOR_SIZE);
 
-		new TracesSummarizationFilter(traceReductionConnector, TimeUnit.SECONDS.toNanos(1), sink)
-		.start();
+    new TracesSummarizationFilter(traceReductionConnector, TimeUnit.SECONDS.toNanos(1), sink)
+        .start();
 
-		final PipesMerger<IRecord> traceReconstructionMerger = new PipesMerger<IRecord>(
-				Constants.TCP_READER_DISRUPTOR_SIZE);
+    final PipesMerger<IRecord> traceReconstructionMerger =
+        new PipesMerger<>(Constants.TCP_READER_DISRUPTOR_SIZE);
 
-		new TraceReconstructionFilter(traceReconstructionMerger,
-				traceReductionConnector.registerProducer(),
-				Constants.TRACE_RECONSTRUCTION_TIMEOUT_IN_SEC).start();
+    new TraceReconstructionFilter(traceReconstructionMerger,
+        traceReductionConnector.registerProducer(), Constants.TRACE_RECONSTRUCTION_TIMEOUT_IN_SEC)
+            .start();
 
-		new TCPReader(configuration.getIntProperty(ConfigurationFactory.READER_LISTENING_PORT,
-				10133), traceReconstructionMerger).read();
-	}
+    new TCPReader(configuration.getIntProperty(ConfigurationFactory.READER_LISTENING_PORT, 10133),
+        traceReconstructionMerger).read();
+  }
 }

@@ -9,54 +9,49 @@ import net.explorviz.common.live_trace_processing.record.event.AbstractAfterEven
 import net.explorviz.common.live_trace_processing.record.trace.HostApplicationMetaDataRecord;
 import net.explorviz.common.live_trace_processing.writer.IRecordSender;
 
-public class AfterUnknownReceivedRemoteCallRecord extends
-		AbstractAfterEventRecord {
-	public static final byte CLAZZ_ID = 17;
-	public static final byte CLAZZ_ID_FROM_WORKER = CLAZZ_ID + 64;
+public class AfterUnknownReceivedRemoteCallRecord extends AbstractAfterEventRecord {
+  public static final byte CLAZZ_ID = 17;
+  public static final byte CLAZZ_ID_FROM_WORKER = CLAZZ_ID + 64;
 
-	public static final int COMPRESSED_BYTE_LENGTH = AbstractAfterEventRecord.COMPRESSED_BYTE_LENGTH;
-	public static final int COMPRESSED_BYTE_LENGTH_WITH_CLAZZ_ID = 1 + COMPRESSED_BYTE_LENGTH;
+  public static final int COMPRESSED_BYTE_LENGTH = AbstractAfterEventRecord.COMPRESSED_BYTE_LENGTH;
+  public static final int COMPRESSED_BYTE_LENGTH_WITH_CLAZZ_ID = 1 + COMPRESSED_BYTE_LENGTH;
 
-	public static final int BYTE_LENGTH = AbstractAfterEventRecord.BYTE_LENGTH;
-	protected static final int BYTE_LENGTH_WITH_CLAZZ_ID = 1 + BYTE_LENGTH;
+  public static final int BYTE_LENGTH = AbstractAfterEventRecord.BYTE_LENGTH;
+  protected static final int BYTE_LENGTH_WITH_CLAZZ_ID = 1 + BYTE_LENGTH;
 
-	public AfterUnknownReceivedRemoteCallRecord(final long timestamp,
-			final long traceId, final int orderIndex,
-			final HostApplicationMetaDataRecord thisHost) {
-		super(timestamp, traceId, orderIndex, thisHost);
-	}
+  public AfterUnknownReceivedRemoteCallRecord(final long timestamp, final long traceId,
+      final int orderIndex, final HostApplicationMetaDataRecord thisHost) {
+    super(timestamp, traceId, orderIndex, thisHost);
+  }
 
-	public AfterUnknownReceivedRemoteCallRecord(final ByteBuffer buffer,
-			final StringRegistryReceiver stringRegistry)
-			throws IdNotAvailableException {
-		super(buffer, stringRegistry);
-	}
+  public AfterUnknownReceivedRemoteCallRecord(final ByteBuffer buffer,
+      final StringRegistryReceiver stringRegistry) throws IdNotAvailableException {
+    super(buffer, stringRegistry);
+  }
 
-	@Override
-	public int getRecordSizeInBytes() {
-		return BYTE_LENGTH_WITH_CLAZZ_ID;
-	}
+  @Override
+  public int getRecordSizeInBytes() {
+    return BYTE_LENGTH_WITH_CLAZZ_ID;
+  }
 
-	@Override
-	public void putIntoByteBuffer(final ByteBuffer buffer,
-			final StringRegistrySender stringRegistry,
-			final IRecordSender writer) {
-		buffer.put(CLAZZ_ID_FROM_WORKER);
-		buffer.putInt(getRecordSizeInBytes());
-		super.putIntoByteBuffer(buffer, stringRegistry, writer);
-	}
+  @Override
+  public void putIntoByteBuffer(final ByteBuffer buffer, final StringRegistrySender stringRegistry,
+      final IRecordSender writer) {
+    buffer.put(CLAZZ_ID_FROM_WORKER);
+    buffer.putInt(this.getRecordSizeInBytes());
+    super.putIntoByteBuffer(buffer, stringRegistry, writer);
+  }
 
-	@Override
-	public int compareTo(final IRecord o) {
-		if (o instanceof AfterUnknownReceivedRemoteCallRecord) {
-			return super.compareTo(o);
-		}
-		return -1;
-	}
+  @Override
+  public int compareTo(final IRecord o) {
+    if (o instanceof AfterUnknownReceivedRemoteCallRecord) {
+      return super.compareTo(o);
+    }
+    return -1;
+  }
 
-	@Override
-	public String toString() {
-		return BeforeSentRemoteCallRecord.class.getSimpleName() + " - "
-				+ super.toString();
-	}
+  @Override
+  public String toString() {
+    return BeforeSentRemoteCallRecord.class.getSimpleName() + " - " + super.toString();
+  }
 }
