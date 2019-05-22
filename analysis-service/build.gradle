@@ -31,7 +31,6 @@ dependencies {
   implementation group: 'org.apache.activemq', name: 'activemq-broker', version: '5.9.1'
   implementation group: 'org.apache.activemq', name: 'activemq-client', version: '5.9.1'
   
-  implementation group: 'com.sun.jmx', name: 'jmxri', version: '1.2.1'
   implementation group: 'com.lmax', name: 'disruptor', version: '3.3.0'
   
   implementation group: 'org.hsqldb', name: 'hsqldb', version: '2.3.1'
