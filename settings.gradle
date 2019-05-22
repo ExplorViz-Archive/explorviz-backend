@@ -3,14 +3,12 @@ rootProject.name = 'explorviz-backend'
 
 if(useRemoteSharedProject.toBoolean()) {
 	include ':landscape-service', 
-	':kiekeradapter', 
 	':user-service', 
 	':analysis-service', 
 	':discovery-service',
 	':history-service'
 } else {
 	include ':landscape-service', 
-	':kiekeradapter', 
 	':user-service', 
 	':analysis-service', 
 	':discovery-service', 

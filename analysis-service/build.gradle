@@ -14,13 +14,26 @@ repositories {
 }
 
 dependencies {
-  // explorviz-kieker-adapter
-  implementation project(':kiekeradapter')
 
   // Teetime Pipe and Filter Framework
   implementation group: 'net.sourceforge.teetime', name: 'teetime', version: '3.0-SNAPSHOT'	
   implementation group: 'net.sourceforge.teetime-stages', name: 'teetime-stages', version: '3.0-SNAPSHOT'
-	
+
+  // BEGIN legacy dependencies
+  implementation group: 'net.sf.trove4j', name: 'trove4j', version: '3.0.3'	
+
+  implementation group: 'org.aspectj', name: 'aspectjtools', version: '1.8.5'
+  implementation group: 'org.aspectj', name: 'aspectjweaver', version: '1.8.5'
+
+  implementation group: 'org.apache.activemq', name: 'activemq-broker', version: '5.9.1'
+  implementation group: 'org.apache.activemq', name: 'activemq-client', version: '5.9.1'
+  
+  implementation group: 'com.sun.jmx', name: 'jmxri', version: '1.2.1'
+  implementation group: 'com.lmax', name: 'disruptor', version: '3.3.0'
+  
+  implementation group: 'org.hsqldb', name: 'hsqldb', version: '2.3.1'
+  // END legacy dependencies
+
   // Kieker Monitoring Framework
   implementation group: 'net.kieker-monitoring', name: 'kieker', version: '1.14-SNAPSHOT'
 }
