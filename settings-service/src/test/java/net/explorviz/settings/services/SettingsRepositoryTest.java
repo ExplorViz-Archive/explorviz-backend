@@ -103,14 +103,13 @@ public class SettingsRepositoryTest {
 
   @Test
   public void testRemove() {
-    when(this.ds.delete(Setting.class, this.flagSettings.get(0).getId()))
-        .then(new Answer<WriteResult>() {
-          @Override
-          public WriteResult answer(final InvocationOnMock invocation) throws Throwable {
-            SettingsRepositoryTest.this.flagSettings.remove(0);
-            return new WriteResult(1, false, null);
-          }
-        });
+    when(this.ds.delete(RangeSetting.class, this.flagSettings.get(0).getId())).then(i -> {
+      return new WriteResult(0, false, null);
+    });
+    when(this.ds.delete(FlagSetting.class, this.flagSettings.get(0).getId())).then(i -> {
+      SettingsRepositoryTest.this.flagSettings.remove(0);
+      return new WriteResult(1, false, null);
+    });
 
     this.sps.delete(this.flagSettings.get(0).getId());
     assertNull(this.sps.find("bid").orElse(null));
