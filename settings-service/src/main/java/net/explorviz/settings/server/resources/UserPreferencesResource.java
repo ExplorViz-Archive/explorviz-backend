@@ -20,6 +20,8 @@ import net.explorviz.settings.services.AuthorizationService;
 import net.explorviz.settings.services.UserPreferenceRepository;
 import net.explorviz.settings.services.UserPreferenceService;
 import net.explorviz.settings.services.validation.PreferenceValidationException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Resource to access {@link UserPreference}, i.e. to handle user specific settings.
@@ -28,6 +30,7 @@ import net.explorviz.settings.services.validation.PreferenceValidationException;
 @Path("v1/settings/custom")
 public class UserPreferencesResource {
 
+  private static final Logger LOGGER = LoggerFactory.getLogger(UserPreferencesResource.class);
   private static final String MEDIA_TYPE = "application/vnd.api+json";
 
 
@@ -81,6 +84,10 @@ public class UserPreferencesResource {
 
 
     if (!this.authService.isSameUser(uid, headers.getHeaderString(HttpHeaders.AUTHORIZATION))) {
+      if (LOGGER.isInfoEnabled()) {
+        LOGGER.info(String.format(
+            "Blocked attempt of user with id %s trying to access settings of other user", uid));
+      }
       throw new ForbiddenException();
     }
 
@@ -101,12 +108,18 @@ public class UserPreferencesResource {
     // Users can only update preferences for themselves
     if (!this.authService.isSameUser(customSetting.getUserId(),
         headers.getHeaderString(HttpHeaders.AUTHORIZATION))) {
+      if (LOGGER.isInfoEnabled()) {
+        LOGGER.info("Blocked attempt of user trying to create preference for other user");
+      }
       throw new ForbiddenException();
     }
 
     try {
       this.customSettingService.validate(customSetting);
     } catch (final PreferenceValidationException e) {
+      if (LOGGER.isDebugEnabled()) {
+        LOGGER.debug("Invalid preference: %s", e.getMessage());
+      }
       throw new BadRequestException(e.getMessage());
     }
     this.customSettingsRepo.create(customSetting);

@@ -19,8 +19,7 @@ import xyz.morphia.Datastore;
 public class UserPreferenceRepository
     implements MongoRepository<UserPreference, UserPreference.CustomSettingId> {
 
-  private static final Logger LOGGER =
-      LoggerFactory.getLogger(SettingsRepository.class.getSimpleName());
+  private static final Logger LOGGER = LoggerFactory.getLogger(SettingsRepository.class);
 
 
   private final Datastore datastore;

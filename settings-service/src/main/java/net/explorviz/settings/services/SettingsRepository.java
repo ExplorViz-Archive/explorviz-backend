@@ -25,8 +25,7 @@ import xyz.morphia.query.Query;
 public class SettingsRepository implements MongoRepository<Setting, String> {
 
 
-  private static final Logger LOGGER =
-      LoggerFactory.getLogger(SettingsRepository.class.getSimpleName());
+  private static final Logger LOGGER = LoggerFactory.getLogger(SettingsRepository.class);
 
   private final IdGenerator idgen;
 
@@ -45,7 +44,7 @@ public class SettingsRepository implements MongoRepository<Setting, String> {
    */
   @Override
   public List<Setting> findAll() {
-    // Morphia can't query for subtypes, this has to be done manuall
+    // Morphia can't query for subtypes, this has to be done manually
     // See https://github.com/MorphiaOrg/morphia/issues/22
     final Query<RangeSetting> qRange = this.datastore.find(RangeSetting.class);
     final Query<FlagSetting> qFlags = this.datastore.find(FlagSetting.class);
@@ -67,6 +66,9 @@ public class SettingsRepository implements MongoRepository<Setting, String> {
   public Optional<Setting> find(final String id) {
     // Problem: Each subtype is stored within a seperate collection, thus allowing ids to occur
     // multiple times
+    if (id == null || id.isEmpty()) {
+      return Optional.empty();
+    }
 
     final Class[] types = {RangeSetting.class, FlagSetting.class};
 
@@ -134,6 +136,9 @@ public class SettingsRepository implements MongoRepository<Setting, String> {
    * @param setting the setting to create
    */
   public void createOrOverride(final Setting setting) {
+    if (this.find(setting.getId()).isPresent() && LOGGER.isInfoEnabled()) {
+      LOGGER.info(String.format("Overwriting setting with id %s", setting.getId()));
+    }
     this.datastore.save(setting);
     if (LOGGER.isInfoEnabled()) {
       LOGGER.info(String.format("Saved setting with id %s", setting.getId()));

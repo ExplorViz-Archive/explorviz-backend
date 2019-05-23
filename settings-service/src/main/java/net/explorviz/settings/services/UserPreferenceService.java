@@ -8,6 +8,8 @@ import net.explorviz.settings.model.UserPreference;
 import net.explorviz.settings.services.validation.PreferenceValidationException;
 import net.explorviz.settings.services.validation.PreferenceValidator;
 import org.jvnet.hk2.annotations.Service;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This is a helper service for accessing preferences of specific users.
@@ -16,6 +18,7 @@ import org.jvnet.hk2.annotations.Service;
 @Service
 public class UserPreferenceService {
 
+  private final static Logger LOGGER = LoggerFactory.getLogger(UserPreferenceService.class);
 
   private final UserPreferenceRepository prefRepo;
   private final SettingsRepository settingRepo;
@@ -63,7 +66,10 @@ public class UserPreferenceService {
     // Validate preference against the settings
     final PreferenceValidator validator = new PreferenceValidator(customSetting);
     validator.validate(s);
-
+    if (LOGGER.isDebugEnabled()) {
+      LOGGER.debug(String.format("Validation successful for preference with id %s",
+          customSetting.getId().toString()));
+    }
   }
 
 }
