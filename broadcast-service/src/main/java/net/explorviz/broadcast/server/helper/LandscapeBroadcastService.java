@@ -1,4 +1,4 @@
-package net.explorviz.frontend.landscape.server.helper;
+package net.explorviz.broadcast.server.helper;
 
 import javax.inject.Singleton;
 import javax.ws.rs.core.Context;

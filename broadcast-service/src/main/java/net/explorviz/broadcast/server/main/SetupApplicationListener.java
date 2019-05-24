@@ -1,8 +1,8 @@
-package net.explorviz.frontend.landscape.server.main;
+package net.explorviz.broadcast.server.main;
 
 import javax.inject.Inject;
 import javax.servlet.annotation.WebListener;
-import net.explorviz.frontend.landscape.kafka.KafkaLandscapeExchangeService;
+import net.explorviz.broadcast.kafka.KafkaLandscapeExchangeService;
 import org.glassfish.jersey.server.monitoring.ApplicationEvent;
 import org.glassfish.jersey.server.monitoring.ApplicationEvent.Type;
 import org.glassfish.jersey.server.monitoring.ApplicationEventListener;

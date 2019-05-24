@@ -1,9 +1,9 @@
-package net.explorviz.frontend.landscape.server.main;
+package net.explorviz.broadcast.server.main;
 
 import javax.inject.Singleton;
-import net.explorviz.frontend.landscape.kafka.KafkaLandscapeExchangeService;
-import net.explorviz.frontend.landscape.kafka.LandscapeSerializationHelper;
-import net.explorviz.frontend.landscape.server.helper.LandscapeBroadcastService;
+import net.explorviz.broadcast.kafka.KafkaLandscapeExchangeService;
+import net.explorviz.broadcast.kafka.LandscapeSerializationHelper;
+import net.explorviz.broadcast.server.helper.LandscapeBroadcastService;
 import net.explorviz.shared.common.idgen.RedisServiceIdGenerator;
 import net.explorviz.shared.common.idgen.ServiceIdGenerator;
 import net.explorviz.shared.common.injection.CommonDependencyInjectionBinder;

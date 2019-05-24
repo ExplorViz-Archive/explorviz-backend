@@ -1,4 +1,4 @@
-package net.explorviz.frontend.landscape.server.main;
+package net.explorviz.broadcast.server.main;
 
 import net.explorviz.shared.config.helper.PropertyHelper;
 import org.eclipse.jetty.server.Server;
@@ -73,7 +73,7 @@ public final class Main {
   }
 
   private static ResourceConfig createJaxRsApp() {
-    return new ResourceConfig(new FrontendLandscapeApplication());
+    return new ResourceConfig(new BroadcastApplication());
   }
 
 }

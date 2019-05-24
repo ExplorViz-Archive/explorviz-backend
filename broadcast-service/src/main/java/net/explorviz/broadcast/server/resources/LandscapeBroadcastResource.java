@@ -1,4 +1,4 @@
-package net.explorviz.frontend.landscape.server.resources;
+package net.explorviz.broadcast.server.resources;
 
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
@@ -9,7 +9,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.sse.SseEventSink;
-import net.explorviz.frontend.landscape.server.helper.LandscapeBroadcastService;
+import net.explorviz.broadcast.server.helper.LandscapeBroadcastService;
 
 @Path("v1/landscapes/broadcast")
 @RolesAllowed({"admin"})

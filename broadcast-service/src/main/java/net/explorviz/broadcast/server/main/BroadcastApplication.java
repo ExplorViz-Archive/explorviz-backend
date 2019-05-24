@@ -1,6 +1,6 @@
-package net.explorviz.frontend.landscape.server.main;
+package net.explorviz.broadcast.server.main;
 
-import net.explorviz.frontend.landscape.server.resources.LandscapeBroadcastResource;
+import net.explorviz.broadcast.server.resources.LandscapeBroadcastResource;
 import net.explorviz.shared.common.provider.GenericTypeFinder;
 import net.explorviz.shared.common.provider.JsonApiListProvider;
 import net.explorviz.shared.common.provider.JsonApiProvider;
@@ -16,8 +16,8 @@ import org.glassfish.jersey.server.ResourceConfig;
  * Starting configuration for the backend - includes registring models, resources, exception
  * handers, providers, and embedds extensions.
  */
-public class FrontendLandscapeApplication extends ResourceConfig {
-  public FrontendLandscapeApplication() {
+public class BroadcastApplication extends ResourceConfig {
+  public BroadcastApplication() {
 
     // register Landscape Model classes, since we want to use them
     TypeProvider.getExplorVizCoreTypesAsMap().forEach((classname, classRef) -> {

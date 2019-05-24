@@ -1,4 +1,4 @@
-package net.explorviz.frontend.landscape.kafka;
+package net.explorviz.broadcast.kafka;
 
 import com.github.jasminb.jsonapi.JSONAPIDocument;
 import com.github.jasminb.jsonapi.ResourceConverter;

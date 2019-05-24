@@ -1,10 +1,10 @@
-package net.explorviz.frontend.landscape.kafka;
+package net.explorviz.broadcast.kafka;
 
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.Properties;
 import javax.inject.Inject;
-import net.explorviz.frontend.landscape.server.helper.LandscapeBroadcastService;
+import net.explorviz.broadcast.server.helper.LandscapeBroadcastService;
 import net.explorviz.shared.config.annotations.Config;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
