@@ -5,6 +5,8 @@ import net.explorviz.shared.common.provider.GenericTypeFinder;
 import net.explorviz.shared.common.provider.JsonApiListProvider;
 import net.explorviz.shared.common.provider.JsonApiProvider;
 import net.explorviz.shared.exceptions.mapper.GeneralExceptionMapper;
+import net.explorviz.shared.exceptions.mapper.InvalidJsonApiResourceExceptionHandler;
+import net.explorviz.shared.exceptions.mapper.UnregisteredTypeExceptionHandler;
 import net.explorviz.shared.exceptions.mapper.WebApplicationExceptionMapper;
 import net.explorviz.shared.landscape.model.application.AggregatedClazzCommunication;
 import net.explorviz.shared.landscape.model.application.Application;
@@ -60,6 +62,8 @@ public class LandscapeApplication extends ResourceConfig {
 
     // exception handling (mind the order !)
     this.register(WebApplicationExceptionMapper.class);
+    this.register(InvalidJsonApiResourceExceptionHandler.class);
+    this.register(UnregisteredTypeExceptionHandler.class);
     this.register(GeneralExceptionMapper.class);
 
     this.register(SetupApplicationListener.class);

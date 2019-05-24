@@ -8,6 +8,8 @@ import net.explorviz.shared.common.provider.JsonApiProvider;
 import net.explorviz.shared.discovery.model.Agent;
 import net.explorviz.shared.discovery.model.Procezz;
 import net.explorviz.shared.exceptions.mapper.GeneralExceptionMapper;
+import net.explorviz.shared.exceptions.mapper.InvalidJsonApiResourceExceptionHandler;
+import net.explorviz.shared.exceptions.mapper.UnregisteredTypeExceptionHandler;
 import net.explorviz.shared.exceptions.mapper.WebApplicationExceptionMapper;
 import net.explorviz.shared.security.filters.AuthenticationFilter;
 import net.explorviz.shared.security.filters.AuthorizationFilter;
@@ -37,6 +39,8 @@ class Application extends ResourceConfig {
     this.register(ProcezzResource.class);
 
     // exception handling (mind the order !)
+    this.register(InvalidJsonApiResourceExceptionHandler.class);
+    this.register(UnregisteredTypeExceptionHandler.class);
     this.register(WebApplicationExceptionMapper.class);
     this.register(GeneralExceptionMapper.class);
 
