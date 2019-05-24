@@ -4,7 +4,6 @@ import javax.inject.Singleton;
 import net.explorviz.landscape.injection.KafkaProducerFactory;
 import net.explorviz.landscape.repository.LandscapeRepositoryModel;
 import net.explorviz.landscape.repository.helper.LandscapeSerializationHelper;
-import net.explorviz.landscape.server.helper.LandscapeBroadcastService;
 import net.explorviz.shared.common.idgen.RedisServiceIdGenerator;
 import net.explorviz.shared.common.idgen.ServiceIdGenerator;
 import net.explorviz.shared.common.injection.CommonDependencyInjectionBinder;
@@ -39,8 +38,5 @@ public class DependencyInjectionBinder extends CommonDependencyInjectionBinder {
     this.bind(LandscapeRepositoryModel.class).to(LandscapeRepositoryModel.class)
         .in(Singleton.class);
 
-    // Broadcast Mechanism
-    this.bind(LandscapeBroadcastService.class).to(LandscapeBroadcastService.class)
-        .in(Singleton.class);
   }
 }
