@@ -24,7 +24,7 @@
 <booleanAttribute key="org.eclipse.debug.core.launchGroup.4.adoptIfRunning" value="false"/>
 <booleanAttribute key="org.eclipse.debug.core.launchGroup.4.enabled" value="true"/>
 <stringAttribute key="org.eclipse.debug.core.launchGroup.4.mode" value="inherit"/>
-<stringAttribute key="org.eclipse.debug.core.launchGroup.4.name" value="ExplorViz-Frontend-Landscape-Service"/>
+<stringAttribute key="org.eclipse.debug.core.launchGroup.4.name" value="ExplorViz-Broadcast-Service"/>
 <stringAttribute key="org.eclipse.debug.core.launchGroup.5.action" value="NONE"/>
 <booleanAttribute key="org.eclipse.debug.core.launchGroup.5.adoptIfRunning" value="false"/>
 <booleanAttribute key="org.eclipse.debug.core.launchGroup.5.enabled" value="true"/>
