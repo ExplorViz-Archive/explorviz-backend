@@ -19,8 +19,23 @@ dependencies {
 	implementation group: 'com.github.jasminb', name: 'jsonapi-converter', version:'0.9'
 }
 
+pmd {
+    ruleSets = []
+    ruleSetFiles = files("../../conf/pmd.xml")
+    ignoreFailures = true
+    toolVersion = "6.7.0"
+  }
+	
+  checkstyle {
+    configDir = file("../../conf")
+    configFile = file("../../conf/checkstyle.xml")
+    maxWarnings = 0
+    ignoreFailures = true
+    toolVersion = "8.12"
+  }	
+
 spotbugs {
-  excludeFilter = file("../conf/spotbugs-exclude-filter.xml")
+  excludeFilter = file("../../conf/spotbugs-exclude-filter.xml")
   reportLevel = "low"
   effort = "max"
   ignoreFailures = true
