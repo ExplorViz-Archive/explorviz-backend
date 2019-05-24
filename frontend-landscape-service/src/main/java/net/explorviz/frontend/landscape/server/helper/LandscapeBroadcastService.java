@@ -1,4 +1,4 @@
-package net.explorviz.landscape.server.helper;
+package net.explorviz.frontend.landscape.server.helper;
 
 import javax.inject.Singleton;
 import javax.ws.rs.core.Context;
@@ -34,6 +34,16 @@ public class LandscapeBroadcastService {
   public void broadcastMessage(final Landscape landscape) {
     final OutboundSseEvent event = this.sse.newEventBuilder().name("message")
         .mediaType(APPLICATION_JSON_API_TYPE).data(landscape).build();
+
+    this.broadcaster.broadcast(event);
+    if (LOGGER.isDebugEnabled()) {
+      LOGGER.debug("Broadcast new landscape to clients.");
+    }
+  }
+
+  public void broadcastMessage(final String jsonApiLandscape) {
+    final OutboundSseEvent event = this.sse.newEventBuilder().name("message")
+        .mediaType(APPLICATION_JSON_API_TYPE).data(jsonApiLandscape).build();
 
     this.broadcaster.broadcast(event);
     if (LOGGER.isDebugEnabled()) {

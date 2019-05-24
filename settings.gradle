@@ -16,7 +16,7 @@ if(useRemoteSharedProject.toBoolean()) {
 	':analysis-service', 
 	':discovery-service', 
 	':history-service',
-	':frontend-landscape-service' 
+	':frontend-landscape-service',
 	':landscape-model', 
 	':config-injection', 
 	':common-concerns', 

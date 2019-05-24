@@ -10,7 +10,6 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import net.explorviz.landscape.repository.helper.DummyLandscapeHelper;
 import net.explorviz.landscape.repository.helper.LandscapeSerializationHelper;
-import net.explorviz.landscape.server.helper.LandscapeBroadcastService;
 import net.explorviz.shared.common.idgen.IdGenerator;
 import net.explorviz.shared.config.annotations.Config;
 import net.explorviz.shared.landscape.model.application.AggregatedClazzCommunication;
@@ -39,7 +38,6 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
   private final RemoteCallRepositoryPart remoteCallRepositoryPart;
   private final int outputIntervalSeconds;
 
-  private final LandscapeBroadcastService broadcastService;
   private final LandscapeSerializationHelper serializationHelper;
 
   private final boolean useDummyMode;
@@ -51,14 +49,12 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
   private final IdGenerator idGen;
 
   @Inject
-  public LandscapeRepositoryModel(final LandscapeBroadcastService broadcastService,
-      final LandscapeSerializationHelper serializationHelper,
+  public LandscapeRepositoryModel(final LandscapeSerializationHelper serializationHelper,
       final KafkaProducer<String, String> kafkaProducer, final IdGenerator idGen,
       @Config("repository.outputIntervalSeconds") final int outputIntervalSeconds,
       @Config("repository.useDummyMode") final boolean useDummyMode,
       @Config("exchange.kafka.topic.name") final String kafkaTopicName) {
 
-    this.broadcastService = broadcastService;
     this.serializationHelper = serializationHelper;
     this.kafkaProducer = kafkaProducer;
     this.idGen = idGen;
@@ -136,9 +132,6 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
             LOGGER.error("Error while deep-copying landscape.", e);
           }
         }
-
-        // broadcast latest landscape to registered clients
-        this.broadcastService.broadcastMessage(this.lastPeriodLandscape);
 
         this.remoteCallRepositoryPart.checkForTimedoutRemoteCalls();
         this.resetCommunication();
