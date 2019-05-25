@@ -13,11 +13,18 @@ import net.explorviz.shared.security.filters.CorsResponseFilter;
 import org.glassfish.jersey.server.ResourceConfig;
 
 /**
- * Starting configuration for the backend - includes registring models, resources, exception
+ * Starting configuration for this service - includes registring models, resources, exception
  * handers, providers, and embedds extensions.
  */
 public class BroadcastApplication extends ResourceConfig {
+
+  /**
+   * Starting configuration for this service - includes registring models, resources, exception
+   * handers, providers, and embedds extensions.
+   */
   public BroadcastApplication() {
+
+    super();
 
     // register Landscape Model classes, since we want to use them
     TypeProvider.getExplorVizCoreTypesAsMap().forEach((classname, classRef) -> {
