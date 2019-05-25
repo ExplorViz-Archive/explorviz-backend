@@ -40,13 +40,13 @@ jar.enabled = false
 jar {
   manifest {
     attributes(
-      'Main-Class': 'net.explorviz.discovery.server.main.Main'
+      'Main-Class': 'net.explorviz.broadcast.server.main.Main'
     )
   }
 }
 
 application {
-    mainClassName = 'net.explorviz.discovery.server.main.Main'
+    mainClassName = 'net.explorviz.broadcast.server.main.Main'
 }
 
 shadowJar {
