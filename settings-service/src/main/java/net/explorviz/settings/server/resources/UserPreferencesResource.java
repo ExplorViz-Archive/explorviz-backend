@@ -14,7 +14,6 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.Response;
 import net.explorviz.settings.model.UserPreference;
 import net.explorviz.settings.services.AuthorizationService;
 import net.explorviz.settings.services.UserPreferenceRepository;
@@ -102,7 +101,8 @@ public class UserPreferencesResource {
    */
   @POST
   @Consumes(MEDIA_TYPE)
-  public Response createCustomSetting(final UserPreference customSetting,
+  @PermitAll
+  public UserPreference createPreference(final UserPreference customSetting,
       @Context final HttpHeaders headers) {
 
     // Users can only update preferences for themselves
@@ -122,9 +122,7 @@ public class UserPreferencesResource {
       }
       throw new BadRequestException(e.getMessage());
     }
-    this.customSettingsRepo.create(customSetting);
-    return Response.ok().build();
-
+    return this.customSettingsRepo.create(customSetting);
   }
 
 
