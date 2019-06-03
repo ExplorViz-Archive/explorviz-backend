@@ -129,7 +129,7 @@ public class SettingsRepositoryTest {
       }
 
     });
-    this.sps.create(s);
+    this.sps.createOrUpdate(s);
 
     assertNotNull(this.sps.find(s.getId()));
   }
@@ -139,7 +139,7 @@ public class SettingsRepositoryTest {
   public void testExisting() {
     final FlagSetting s = new FlagSetting("id", "testname", "a test setting", "default", false);
 
-    assertThrows(IllegalArgumentException.class, () -> this.sps.create(s));
+    assertThrows(IllegalArgumentException.class, () -> this.sps.createOrUpdate(s));
 
   }
 

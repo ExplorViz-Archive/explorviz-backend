@@ -16,7 +16,7 @@ public interface MongoRepository<T, K> {
    *
    * @param entity the object to persist
    */
-  T create(T entity);
+  T createOrUpdate(T entity);
 
   /**
    * Searches the repository for an entity with the given id

@@ -33,4 +33,16 @@ public class AuthorizationService {
     return details.getUserId().equals(id);
   }
 
+  /**
+   * Checks whether the token belongs to a user with admin role.
+   *
+   * @param authHeader authorization header
+   * @return if and only if the list of roles in the token contains the admin right
+   */
+  public boolean isAdmin(final String authHeader) {
+    final TokenDetails details = this.tps.parseToken(authHeader.substring(7));
+    return details.getRoles().stream().map(r -> r.getDescriptor().toLowerCase())
+        .anyMatch(r -> r.equals("admin"));
+  }
+
 }

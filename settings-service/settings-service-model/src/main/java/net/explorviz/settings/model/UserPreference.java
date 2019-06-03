@@ -5,11 +5,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.github.jasminb.jsonapi.annotations.Id;
 import com.github.jasminb.jsonapi.annotations.Type;
 import com.mongodb.DBObject;
-import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
 import xyz.morphia.annotations.Converters;
-import xyz.morphia.annotations.Embedded;
 import xyz.morphia.annotations.Entity;
 import xyz.morphia.annotations.PreLoad;
 
@@ -18,19 +15,23 @@ import xyz.morphia.annotations.PreLoad;
  * With UserPreferences the default values of setting are overridden for a given user.
  *
  */
-@Type("userpreference") // 
+@Type("userpreference") //
 @Converters(UserPreferenceConverter.class)
 @Entity("UserPreference")
 public class UserPreference {
 
   private static final String VALUE = "value";
-  
+
   @Id
   @xyz.morphia.annotations.Id
-  @Embedded
-  private CustomSettingId id;
+  private String id;
+
+  private String userId;
+  private String settingId;
 
   private Object value;
+
+
 
   /**
    * Creates a new user preference.
@@ -40,14 +41,17 @@ public class UserPreference {
    * @param value the value the given user has set for the given setting
    */
   @JsonCreator
-  public UserPreference(@JsonProperty("userId") final String userId,
-      @JsonProperty("settingId") final String settingId,
+  public UserPreference(@JsonProperty("id") final String id,
+      @JsonProperty("userid") final String userId,
+      @JsonProperty("settingid") final String settingId,
       @JsonProperty("value") final Object value) {
     super();
-    this.id = new CustomSettingId(userId, settingId);
+    this.id = id;
     this.value = value;
+    this.userId = userId;
+    this.settingId = settingId;
   }
-  
+
   @SuppressWarnings("unused")
   private UserPreference() {
     // Morphia
@@ -55,7 +59,11 @@ public class UserPreference {
 
   @Override
   public String toString() {
-    return new ToStringBuilder(this).append("id", this.id).append(this.value).build();
+    return new ToStringBuilder(this).append("id", this.id)
+        .append("userId", this.userId)
+        .append("settingId", this.settingId)
+        .append(this.value)
+        .build();
   }
 
   @PreLoad
@@ -68,82 +76,31 @@ public class UserPreference {
     obj.removeField(VALUE);
   }
 
- 
+
 
   public String getUserId() {
-    return this.id.userId;
+    return this.userId;
   }
 
-  public CustomSettingId getId() {
+  public String getId() {
     return this.id;
   }
 
   public String getSettingId() {
-    return this.id.settingId;
+    return this.settingId;
+  }
+
+  public void setId(String id) {
+    this.id = id;
   }
 
   public Object getValue() {
     return this.value;
   }
 
-  /**
-   * A user preference is identified by the user it belongs to as well as the setting 
-   * its associated to.
-   * This class represents the corresponding composite key.
-   */
-  @Entity(noClassnameStored = true)
-  public static class CustomSettingId {
-
-    private String userId;
-    private String settingId;
-
-    public CustomSettingId(final String userId, final String settingId) {
-      this.userId = userId;
-      this.settingId = settingId;
-    }
-
-    @SuppressWarnings("unused")
-    private CustomSettingId() {
-      // Morphia
-    }
-    
-    public String getUserId() {
-      return this.userId;
-    }
-
-    public String getSettingId() {
-      return this.settingId;
-    }
-
-    
-
-    @Override
-    public String toString() {
-      return new ToStringBuilder(this, ToStringStyle.NO_CLASS_NAME_STYLE)
-          .append("userId", this.userId)
-          .append("settingId", this.settingId).build();
-    }
-
-    @Override
-    public boolean equals(final Object obj) {
-      if (obj != null) {
-        if (obj instanceof UserPreference.CustomSettingId) {
-          final CustomSettingId rhs = (CustomSettingId) obj;
-          return new EqualsBuilder().append(this.userId, rhs.userId)
-              .append(this.settingId, rhs.settingId).build();
-        }
-      }
-      return false;
-    }
-    
-    @Override
-    public int hashCode() {
-      return super.hashCode();
-    }
-    
-
+  public void setValue(Object value) {
+    this.value = value;
   }
-
 
 }
 

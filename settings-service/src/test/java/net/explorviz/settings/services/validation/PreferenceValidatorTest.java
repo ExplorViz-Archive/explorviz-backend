@@ -37,7 +37,7 @@ public class PreferenceValidatorTest {
 
   @Test
   public void testFlagValid() {
-    final UserPreference up = new UserPreference("1", NAME, true);
+    final UserPreference up = new UserPreference("id", "1", NAME, true);
     this.validator = new PreferenceValidator(up);
     try {
       this.validator.validate(this.flag);
@@ -49,7 +49,7 @@ public class PreferenceValidatorTest {
 
   @Test
   public void testFlagInvalidType() {
-    final UserPreference up = new UserPreference("1", NAME, 0.5);
+    final UserPreference up = new UserPreference("id", "1", NAME, 0.5);
     this.validator = new PreferenceValidator(up);
     assertThrows(PreferenceValidationException.class, () -> this.validator.validate(this.flag));
 
@@ -57,7 +57,7 @@ public class PreferenceValidatorTest {
 
   @Test
   public void testRangeValid() {
-    final UserPreference up = new UserPreference("1", NAME, 1);
+    final UserPreference up = new UserPreference("id", "1", NAME, 1);
     this.validator = new PreferenceValidator(up);
     try {
       this.validator.validate(this.range);
@@ -70,21 +70,21 @@ public class PreferenceValidatorTest {
 
   @Test
   public void testRangeLessThanMin() {
-    final UserPreference up = new UserPreference("1", NAME, MIN - 0.1);
+    final UserPreference up = new UserPreference("id", "1", NAME, MIN - 0.1);
     this.validator = new PreferenceValidator(up);
     assertThrows(PreferenceValidationException.class, () -> this.validator.validate(this.range));
   }
 
   @Test
   public void testRangeGreatherThanMax() {
-    final UserPreference up = new UserPreference("1", NAME, MAX + 0.1);
+    final UserPreference up = new UserPreference("id", "1", NAME, MAX + 0.1);
     this.validator = new PreferenceValidator(up);
     assertThrows(PreferenceValidationException.class, () -> this.validator.validate(this.range));
   }
 
   @Test
   public void testRangeInvalidType() {
-    final UserPreference up = new UserPreference("1", NAME, "notadouble");
+    final UserPreference up = new UserPreference("id", "1", NAME, "notadouble");
     this.validator = new PreferenceValidator(up);
     assertThrows(PreferenceValidationException.class, () -> this.validator.validate(this.range));
   }

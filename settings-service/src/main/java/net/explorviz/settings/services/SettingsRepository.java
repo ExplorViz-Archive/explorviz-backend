@@ -113,7 +113,7 @@ public class SettingsRepository implements MongoRepository<Setting, String> {
    * @throws IllegalArgumentException if the setting has already an id assigned
    */
   @Override
-  public Setting create(final Setting setting) {
+  public Setting createOrUpdate(final Setting setting) {
 
     if (setting.getId() != null && !setting.getId().isEmpty()) {
       throw new IllegalArgumentException("This instance already has an id, can't create");

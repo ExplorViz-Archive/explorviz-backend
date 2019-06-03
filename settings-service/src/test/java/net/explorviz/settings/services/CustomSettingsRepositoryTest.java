@@ -12,6 +12,7 @@ import java.util.Arrays;
 import java.util.List;
 import net.explorviz.settings.model.Setting;
 import net.explorviz.settings.model.UserPreference;
+import net.explorviz.shared.common.idgen.IdGenerator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -35,6 +36,9 @@ public class CustomSettingsRepositoryTest {
   @Mock
   private Datastore ds;
 
+  @Mock
+  private IdGenerator idgen;
+
   private UserPreferenceRepository uss;
 
   private List<UserPreference> userSettings;
@@ -45,9 +49,11 @@ public class CustomSettingsRepositoryTest {
   @BeforeEach
   public void setUp() {
     assert this.ds != null;
-    this.uss = new UserPreferenceRepository(this.ds);
-    this.userSettings = new ArrayList<>(Arrays.asList(new UserPreference("1", "bid", Boolean.TRUE),
-        new UserPreference("1", "sid", "val"), new UserPreference("1", "did", 0.4)));
+    this.uss = new UserPreferenceRepository(this.ds, this.idgen);
+    this.userSettings =
+        new ArrayList<>(Arrays.asList(new UserPreference("id1", "1", "bid", Boolean.TRUE),
+            new UserPreference("id2", "1", "sid", "val"),
+            new UserPreference("id3", "2", "did", 0.4)));
   }
 
 
@@ -90,7 +96,7 @@ public class CustomSettingsRepositoryTest {
 
   @Test
   public void testCreate() {
-    final UserPreference uset = new UserPreference("1", "test", false);
+    final UserPreference uset = new UserPreference(null, "1", "test", false);
     when(this.ds.save(uset)).then(new Answer<Key<Setting>>() {
 
       @Override
@@ -101,7 +107,8 @@ public class CustomSettingsRepositoryTest {
 
     });
 
-    this.uss.create(uset);
+    when(this.idgen.generateId()).thenReturn("testid");
+    this.uss.createOrUpdate(uset);
 
     assertNotNull(this.uss.find(uset.getId()));
   }
