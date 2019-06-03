@@ -1,5 +1,6 @@
 package net.explorviz.settings.server.main;
 
+
 import net.explorviz.settings.model.FlagSetting;
 import net.explorviz.settings.model.RangeSetting;
 import net.explorviz.settings.model.Setting;
