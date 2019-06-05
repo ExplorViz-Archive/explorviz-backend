@@ -201,7 +201,12 @@ public class UserPreferencesResource {
       }
       throw new BadRequestException(e.getMessage());
     }
-    return this.userPrefRepo.createOrUpdate(preference);
+    try {
+      return this.userPrefRepo.createOrUpdate(preference);
+    } catch (final IllegalStateException e) {
+      throw new BadRequestException(e.getMessage());
+    }
+
   }
 
   /**

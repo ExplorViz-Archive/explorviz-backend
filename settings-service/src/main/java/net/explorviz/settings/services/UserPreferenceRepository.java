@@ -44,9 +44,20 @@ public class UserPreferenceRepository implements MongoRepository<UserPreference,
     return Optional.ofNullable(u);
   }
 
+  /**
+   * {@inheritDoc}
+   *
+   * @throws IllegalStateException if a preference with the same userId and settingId already
+   *         exists.
+   */
   @Override
   public UserPreference createOrUpdate(final UserPreference pref) {
+
+
     if (pref.getId() == null || pref.getId().isEmpty()) {
+      if (this.prefExist(pref.getUserId(), pref.getSettingId())) {
+        throw new IllegalStateException("A preference for this user and setting already exists.");
+      }
       // generate new id
       pref.setId(this.idgen.generateId());
       if (LOGGER.isInfoEnabled()) {
@@ -56,6 +67,19 @@ public class UserPreferenceRepository implements MongoRepository<UserPreference,
     this.datastore.save(pref);
 
     return pref;
+  }
+
+  /**
+   * Checks whether a preference for given user and setting exists.
+   *
+   * @param uid user id
+   * @param sid setting id
+   * @return
+   */
+  private boolean prefExist(final String uid, final String sid) {
+    final long c = this.datastore.find(UserPreference.class).filter("userId ==", uid)
+        .filter("settingId ==", sid).count();
+    return c > 0;
   }
 
   @Override
