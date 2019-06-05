@@ -2,7 +2,6 @@ package net.explorviz.security.server.resources;
 
 import com.mongodb.DuplicateKeyException;
 import com.mongodb.MongoException;
-import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
@@ -56,6 +55,9 @@ public class UserResource {
 
   @Inject
   private TokenService tokenService;
+
+  @Inject
+  private BatchRequestSubResource batchSubResource;
 
   // CHECKSTYLE.OFF: Cyclomatic
 
@@ -115,36 +117,10 @@ public class UserResource {
   }
 
 
-  /**
-   * Creates all users in a list.
-   *
-   * @param users the list of users to create
-   * @return a list of users objects, that were saved
-   */
-  @POST
-  @Consumes(MEDIA_TYPE)
-  @Produces(MEDIA_TYPE)
-  @Path("batch") // Todo: Find more suitable path
-  @RolesAllowed({ADMIN_ROLE})
-  public List<User> createAll(final List<User> users) {
-    /*
-     * Currently, if a user object in the given list does not survive input validation, it will be
-     * ignored. No error will be given to the caller, since json api does not allow data and error
-     * in one response.
-     *
-     */
 
-    final List<User> createdUsers = new ArrayList<>();
-    for (final User u : users) {
-      try {
-        createdUsers.add(this.newUser(u));
-      } catch (final BadRequestException ex) {
-        // Do nothing
-        continue;
-      }
-    }
-
-    return createdUsers;
+  @Path("batch")
+  public BatchRequestSubResource createAll() {
+    return this.batchSubResource;
   }
 
   /**

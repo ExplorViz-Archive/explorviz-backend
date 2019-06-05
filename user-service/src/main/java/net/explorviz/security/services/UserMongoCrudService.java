@@ -1,5 +1,6 @@
 package net.explorviz.security.services;
 
+import com.mongodb.MongoException;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -34,8 +35,7 @@ public class UserMongoCrudService implements MongoCrudService<User> {
   private final Datastore datastore;
 
 
-  @Inject
-  private IdGenerator idGenerator;
+  private final IdGenerator idGenerator;
 
   /**
    * Creates a new UserMongoDB
@@ -43,8 +43,8 @@ public class UserMongoCrudService implements MongoCrudService<User> {
    * @param datastore - the datastore instance
    */
   @Inject
-  public UserMongoCrudService(final Datastore datastore) {
-
+  public UserMongoCrudService(final Datastore datastore, final IdGenerator idGenerator) {
+    this.idGenerator = idGenerator;
     this.datastore = datastore;
   }
 
@@ -61,16 +61,28 @@ public class UserMongoCrudService implements MongoCrudService<User> {
    * @param user - a user entity
    * @return an Optional, which contains a User or is empty
    */
-  public Optional<User> saveNewEntity(final User user) {
+  public Optional<User> saveNewEntity(User user) {
+    Optional<User> result;
+
     // Generate an id
     user.setId(this.idGenerator.generateId());
 
-    this.datastore.save(user);
-
-    if (LOGGER.isInfoEnabled()) {
-      LOGGER.info("Inserted new user with id " + user.getId());
+    try {
+      this.datastore.save(user);
+      result = Optional.ofNullable(user);
+      if (LOGGER.isInfoEnabled()) {
+        LOGGER.info("Inserted new user with id " + user.getId());
+      }
+    } catch (final MongoException e) {
+      if (LOGGER.isErrorEnabled()) {
+        LOGGER.error("Could not save user: " + e.getMessage());
+      }
+      user = null;
+      result = Optional.empty();
     }
-    return Optional.ofNullable(user);
+
+
+    return result;
   }
 
   @Override

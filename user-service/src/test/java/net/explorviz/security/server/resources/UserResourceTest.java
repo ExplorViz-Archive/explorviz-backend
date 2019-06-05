@@ -151,37 +151,6 @@ public class UserResourceTest {
   }
 
 
-  @Test
-  public void testListOfNewUsers() {
-    this.roles.add(new Role("role"));
-    final List<Role> roles = Arrays.asList(new Role("role"));
-    final User u1 = new User(null, "u1", "pw", roles);
-    final User u2 = new User(null, "u2", "pw", roles);
-    final User u3 = new User(null, "u3", "pw", roles);
-
-    this.userResource.createAll(Arrays.asList(u1, u2, u3));
-
-    final List<User> created = this.userCrudService.getUsersByRole("role");
-
-    // Check if 3 users where created
-    assertEquals(3, created.size());
-  }
-
-  @Test
-  public void testListOfNewUsersWithInvalidUser() {
-    this.roles.add(new Role("role"));
-    final List<Role> roles = Arrays.asList(new Role("role"));
-    final User u1 = new User(null, "u1", "", roles);
-    final User u2 = new User(null, "u2", "pw", roles);
-    final User u3 = new User(null, "u3", "pw", roles);
-
-    this.userResource.createAll(Arrays.asList(u1, u2, u3));
-
-    final List<User> created = this.userCrudService.getUsersByRole("role");
-
-    // Check if 3 users where created
-    assertEquals(2, created.size());
-  }
 
   @Test
   public void testUserByRole() {

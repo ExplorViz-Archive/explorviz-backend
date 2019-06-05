@@ -1,5 +1,6 @@
 package net.explorviz.security.server.main;
 
+import net.explorviz.security.model.UserBatchRequest;
 import net.explorviz.security.server.filter.AuthenticationFilter;
 import net.explorviz.security.server.providers.UserJsonApiDeserializer;
 import net.explorviz.security.server.resources.RoleResource;
@@ -40,6 +41,7 @@ public class Application extends ResourceConfig {
     GenericTypeFinder.getTypeMap().put("BooleanSettingDescriptor", BooleanSettingDescriptor.class);
     GenericTypeFinder.getTypeMap().put("NumericSettingDescriptor", NumericSettingDescriptor.class);
     GenericTypeFinder.getTypeMap().put("StringSettingDescriptor", StringSettingDescriptor.class);
+    GenericTypeFinder.getTypeMap().put("UserBatchRquest", UserBatchRequest.class);
 
     // register CDI
     this.register(new DependencyInjectionBinder());
