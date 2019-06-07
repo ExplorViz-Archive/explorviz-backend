@@ -14,7 +14,8 @@ import javax.ws.rs.core.Response;
 import net.explorviz.security.server.main.DependencyInjectionBinder;
 import net.explorviz.security.server.resources.UserResource;
 import net.explorviz.security.services.RoleService;
-import net.explorviz.security.services.UserMongoCrudService;
+import net.explorviz.security.services.UserCrudException;
+import net.explorviz.security.services.UserService;
 import net.explorviz.security.testutils.TestDatasourceFactory;
 import net.explorviz.shared.exceptions.ErrorObjectHelper;
 import net.explorviz.shared.exceptions.JsonApiErrorObjectHelper;
@@ -39,7 +40,7 @@ public class UserResourceEndpointTest extends EndpointTest {
   private static final String BASE_URL = "v1/users/";
 
   @Inject
-  private UserMongoCrudService userCrudService;
+  private UserService userCrudService;
 
   @Inject
   private RoleService roleService;
@@ -79,10 +80,7 @@ public class UserResourceEndpointTest extends EndpointTest {
       public void configure() {
         this.bind(JsonApiErrorObjectHelper.class).to(ErrorObjectHelper.class).in(Singleton.class);
 
-        this.bind(UserMongoCrudService.class)
-            .to(UserMongoCrudService.class)
-            .in(Singleton.class)
-            .ranked(10);
+        this.bind(UserService.class).to(UserService.class).in(Singleton.class).ranked(10);
         this.bindFactory(TestDatasourceFactory.class)
             .to(Datastore.class)
             .in(Singleton.class)
@@ -243,7 +241,7 @@ public class UserResourceEndpointTest extends EndpointTest {
 
 
   @Test
-  public void updateUser() throws DocumentSerializationException {
+  public void updateUser() throws DocumentSerializationException, UserCrudException {
 
     // Create user to update afterwards
     final User createdUser = new User(null, "u", "pw", null);
@@ -281,7 +279,7 @@ public class UserResourceEndpointTest extends EndpointTest {
 
 
   @Test
-  public void findById() throws DocumentSerializationException {
+  public void findById() throws DocumentSerializationException, UserCrudException {
 
     final User u =
         new User(null, "name", "pw", Arrays.asList(this.roleService.getAllRoles().get(0)));
@@ -309,7 +307,7 @@ public class UserResourceEndpointTest extends EndpointTest {
 
   // ByRole
   @Test
-  public void findByRole() throws DocumentSerializationException {
+  public void findByRole() throws DocumentSerializationException, UserCrudException {
 
     // Somehow the admin user is created after the setup method dropped the table
     this.datastore.getCollection(User.class).drop();
@@ -338,7 +336,7 @@ public class UserResourceEndpointTest extends EndpointTest {
 
 
   @Test
-  public void removeUser() throws DocumentSerializationException {
+  public void removeUser() throws DocumentSerializationException, UserCrudException {
 
     final User u = new User("1", "user1", "pw", null);
 
@@ -358,7 +356,7 @@ public class UserResourceEndpointTest extends EndpointTest {
   }
 
   @Test
-  public void removeLastAdmin() {
+  public void removeLastAdmin() throws UserCrudException {
     final User u = new User(null, "admin", "pw", Arrays.asList(new Role("admin")));
     this.userCrudService.saveNewEntity(u);
     final Response deleteResponse = this.target("v1/users/" + u.getId())
@@ -370,7 +368,7 @@ public class UserResourceEndpointTest extends EndpointTest {
   }
 
   @Test
-  public void testRetrieveSettings() throws DocumentSerializationException {
+  public void testRetrieveSettings() throws DocumentSerializationException, UserCrudException {
     final UserSettings settings = new UserSettings();
     final User u = new User("1", "user1", "pw", null, settings);
 

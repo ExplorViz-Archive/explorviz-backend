@@ -17,7 +17,7 @@ import javax.ws.rs.BadRequestException;
 import net.explorviz.security.server.resources.endpoints.UserResourceEndpointTest;
 import net.explorviz.security.services.RoleService;
 import net.explorviz.security.services.UserCrudException;
-import net.explorviz.security.services.UserMongoCrudService;
+import net.explorviz.security.services.UserService;
 import net.explorviz.security.util.PasswordStorage;
 import net.explorviz.security.util.PasswordStorage.CannotPerformOperationException;
 import net.explorviz.security.util.PasswordStorage.InvalidHashException;
@@ -44,7 +44,7 @@ public class UserResourceTest {
   private UserResource userResource;
 
   @Mock
-  private UserMongoCrudService userCrudService;
+  private UserService userCrudService;
 
   @Mock
   private RoleService roleService;
@@ -69,7 +69,7 @@ public class UserResourceTest {
       final String id = Long.toString(++this.lastId);
       final User newUser = new User(id, u.getUsername(), u.getPassword(), u.getRoles());
       this.users.put(id, newUser);
-      return Optional.ofNullable(newUser);
+      return newUser;
     });
 
     when(this.userCrudService.getEntityById(any())).thenAnswer(inv -> {

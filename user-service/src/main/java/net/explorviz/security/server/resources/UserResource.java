@@ -21,7 +21,7 @@ import javax.ws.rs.core.Response;
 import net.explorviz.security.services.RoleService;
 import net.explorviz.security.services.TokenService;
 import net.explorviz.security.services.UserCrudException;
-import net.explorviz.security.services.UserMongoCrudService;
+import net.explorviz.security.services.UserService;
 import net.explorviz.security.util.PasswordStorage;
 import net.explorviz.security.util.PasswordStorage.CannotPerformOperationException;
 import net.explorviz.shared.security.model.User;
@@ -48,7 +48,7 @@ public class UserResource {
   private static final String ADMIN_ROLE = "admin";
 
   @Inject
-  private UserMongoCrudService userCrudService;
+  private UserService userCrudService;
 
   @Inject
   private RoleService roleService;
@@ -109,10 +109,11 @@ public class UserResource {
     }
 
     try {
-      return this.userCrudService.saveNewEntity(user)
-          .orElseThrow(() -> new InternalServerErrorException());
+      return this.userCrudService.saveNewEntity(user);
     } catch (final DuplicateKeyException ex) {
       throw new BadRequestException("User already exists", ex);
+    } catch (final UserCrudException ex) {
+      throw new InternalServerErrorException();
     }
   }
 

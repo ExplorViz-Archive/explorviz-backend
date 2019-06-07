@@ -1,5 +1,6 @@
 package net.explorviz.security.services;
 
+import com.mongodb.DuplicateKeyException;
 import com.mongodb.MongoException;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -26,9 +27,9 @@ import xyz.morphia.Datastore;
  *
  */
 @Service
-public class UserMongoCrudService implements MongoCrudService<User> {
+public class UserService {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(UserMongoCrudService.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(UserService.class);
 
 
 
@@ -43,54 +44,55 @@ public class UserMongoCrudService implements MongoCrudService<User> {
    * @param datastore - the datastore instance
    */
   @Inject
-  public UserMongoCrudService(final Datastore datastore, final IdGenerator idGenerator) {
+  public UserService(final Datastore datastore, final IdGenerator idGenerator) {
     this.idGenerator = idGenerator;
     this.datastore = datastore;
   }
 
 
-  @Override
   public List<User> getAll() {
     return this.datastore.createQuery(User.class).asList();
   }
 
-  @Override
+
   /**
    * Persists an user entity
    *
    * @param user - a user entity
    * @return an Optional, which contains a User or is empty
+   * @throws UserCrudException if the user could not be saved
    */
-  public Optional<User> saveNewEntity(User user) {
-    Optional<User> result;
+  public User saveNewEntity(final User user) throws UserCrudException {
+    final Optional<User> result;
 
     // Generate an id
     user.setId(this.idGenerator.generateId());
 
     try {
       this.datastore.save(user);
-      result = Optional.ofNullable(user);
+
       if (LOGGER.isInfoEnabled()) {
         LOGGER.info("Inserted new user with id " + user.getId());
       }
+    } catch (final DuplicateKeyException e) {
+      throw new DuplicateUserException(
+          String.format("User with %s already exists", user.getUsername()));
     } catch (final MongoException e) {
       if (LOGGER.isErrorEnabled()) {
         LOGGER.error("Could not save user: " + e.getMessage());
       }
-      user = null;
-      result = Optional.empty();
+      throw new UserCrudException("Could no save user", e);
     }
 
 
-    return result;
+    return user;
   }
 
-  @Override
   public void updateEntity(final User user) {
     this.datastore.save(user);
   }
 
-  @Override
+
   public Optional<User> getEntityById(final String id) {
 
     final User userObject = this.datastore.get(User.class, id);
@@ -98,7 +100,13 @@ public class UserMongoCrudService implements MongoCrudService<User> {
     return Optional.ofNullable(userObject);
   }
 
-  @Override
+  /**
+   * Tries to delete the user with the given id. If such a user does not exists, nothing happens.
+   *
+   * @param id id of the user to delete
+   * @throws UserCrudException if the id belongs to the a user with the admin role and there are no
+   *         other admin users. This prevents the deletion of the last admin.
+   */
   public void deleteEntityById(final String id) throws UserCrudException {
 
     if (this.isLastAdmin(id)) {
@@ -146,7 +154,7 @@ public class UserMongoCrudService implements MongoCrudService<User> {
 
   }
 
-  @Override
+
   public Optional<User> findEntityByFieldValue(final String field, final Object value) {
 
     final User foundUser = this.datastore.createQuery(User.class).filter(field, value).get();

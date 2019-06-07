@@ -4,7 +4,8 @@ import static org.junit.Assert.assertEquals;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import net.explorviz.security.server.main.DependencyInjectionBinder;
-import net.explorviz.security.services.UserMongoCrudService;
+import net.explorviz.security.services.UserCrudException;
+import net.explorviz.security.services.UserService;
 import net.explorviz.security.testutils.TestDatasourceFactory;
 import net.explorviz.shared.security.model.User;
 import net.explorviz.shared.security.model.settings.UserSettings;
@@ -23,7 +24,7 @@ import xyz.morphia.Datastore;
 public class UserSettingsTest {
 
   @Inject
-  private UserMongoCrudService userCrudService;
+  private UserService userCrudService;
 
   @Inject
   private Datastore datastore;
@@ -44,7 +45,7 @@ public class UserSettingsTest {
   }
 
   @Test
-  public void testUpdateNewSettings() {
+  public void testUpdateNewSettings() throws UserCrudException {
 
     final User u = new User("testuser");
     u.setPassword("testPassword");

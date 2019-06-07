@@ -2,9 +2,10 @@ package net.explorviz.security.services;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import javax.inject.Inject;
 import net.explorviz.security.model.UserBatchRequest;
+import net.explorviz.security.util.PasswordStorage;
+import net.explorviz.security.util.PasswordStorage.CannotPerformOperationException;
 import net.explorviz.shared.security.model.User;
 import net.explorviz.shared.security.model.roles.Role;
 import org.jvnet.hk2.annotations.Service;
@@ -20,11 +21,11 @@ public class BatchCreationService {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(BatchCreationService.class);
 
-  private final UserMongoCrudService userService;
+  private final UserService userService;
 
 
   @Inject
-  public BatchCreationService(final UserMongoCrudService userService) {
+  public BatchCreationService(final UserService userService) {
     this.userService = userService;
   }
 

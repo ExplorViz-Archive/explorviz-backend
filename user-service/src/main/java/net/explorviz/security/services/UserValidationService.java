@@ -24,7 +24,7 @@ public class UserValidationService {
 
 
   @Inject
-  private UserMongoCrudService userCrudService;
+  private UserService userCrudService;
 
   /**
    * This method validates the passed {@link UserCredentials}, therefore enables overall

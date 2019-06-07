@@ -31,7 +31,7 @@ public class BatchCreationServiceTest {
 
   private final AtomicInteger id = new AtomicInteger(0);
 
-  private UserMongoCrudService userService;
+  private UserService userService;
 
   private BatchCreationService bcs;
 
@@ -39,14 +39,16 @@ public class BatchCreationServiceTest {
 
   @BeforeEach
   public void setUp() {
-    this.userService = new UserMongoCrudService(this.ds, this.idGenerator);
+    this.userService = new UserService(this.ds, this.idGenerator);
     this.bcs = new BatchCreationService(this.userService);
   }
 
   @Test
-  public void testCreateAll() {
+  public void testCreateAll() throws UserCrudException {
     final int size = 120;
-    final UserBatchRequest batch = new UserBatchRequest("test", 120, "pw", Arrays.asList(new Role("admin")));
+    final List<String> passwords = Arrays.asList("abc", "abc", "bac");
+    final UserBatchRequest batch =
+        new UserBatchRequest("test", 3, passwords, Arrays.asList(new Role("admin")));
 
     Mockito.doAnswer(new Answer<Void>() {
 

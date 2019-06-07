@@ -6,7 +6,8 @@ import javax.inject.Singleton;
 import javax.ws.rs.ForbiddenException;
 import net.explorviz.security.server.main.DependencyInjectionBinder;
 import net.explorviz.security.services.TokenService;
-import net.explorviz.security.services.UserMongoCrudService;
+import net.explorviz.security.services.UserCrudException;
+import net.explorviz.security.services.UserService;
 import net.explorviz.security.testutils.TestDatasourceFactory;
 import net.explorviz.shared.security.model.User;
 import net.explorviz.shared.security.model.settings.UserSettings;
@@ -33,7 +34,7 @@ public class UserSettingsResourceEndpointTest extends EndpointTest {
   private TokenService tokenService;
 
   @Inject
-  private UserMongoCrudService userService;
+  private UserService userService;
 
   @Inject
   private Datastore datastore;
@@ -65,10 +66,7 @@ public class UserSettingsResourceEndpointTest extends EndpointTest {
       @Override
       public void configure() {
         super.configure();
-        this.bind(UserMongoCrudService.class)
-            .to(UserMongoCrudService.class)
-            .in(Singleton.class)
-            .ranked(10);
+        this.bind(UserService.class).to(UserService.class).in(Singleton.class).ranked(10);
         this.bindFactory(TestDatasourceFactory.class)
             .to(Datastore.class)
             .in(Singleton.class)
@@ -105,7 +103,7 @@ public class UserSettingsResourceEndpointTest extends EndpointTest {
 
   @Test
   @Ignore // User always knows its own settings
-  public void testOwnSettings() {
+  public void testOwnSettings() throws UserCrudException {
 
     final User user = new User("someuser");
     user.setPassword("abc");

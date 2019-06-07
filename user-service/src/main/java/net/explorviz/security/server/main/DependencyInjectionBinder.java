@@ -6,7 +6,7 @@ import net.explorviz.security.server.resources.BatchRequestSubResource;
 import net.explorviz.security.services.BatchCreationService;
 import net.explorviz.security.services.RoleService;
 import net.explorviz.security.services.TokenService;
-import net.explorviz.security.services.UserMongoCrudService;
+import net.explorviz.security.services.UserService;
 import net.explorviz.security.services.UserValidationService;
 import net.explorviz.shared.common.idgen.IdGenerator;
 import net.explorviz.shared.common.injection.CommonDependencyInjectionBinder;
@@ -27,7 +27,7 @@ public class DependencyInjectionBinder extends CommonDependencyInjectionBinder {
 
     this.bind(TokenService.class).to(TokenService.class).in(Singleton.class);
     this.bind(UserValidationService.class).to(UserValidationService.class).in(Singleton.class);
-    this.bind(UserMongoCrudService.class).to(UserMongoCrudService.class).in(Singleton.class);
+    this.bind(UserService.class).to(UserService.class).in(Singleton.class);
 
     this.bind(RoleService.class).to(RoleService.class).in(Singleton.class);
 
