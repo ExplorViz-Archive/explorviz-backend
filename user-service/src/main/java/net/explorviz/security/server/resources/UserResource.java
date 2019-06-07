@@ -49,7 +49,7 @@ public class UserResource {
   private static final String ADMIN_ROLE = "admin";
 
   @Inject
-  private UserMongoCrudService userCrudService;
+  private UserMongoCrudService userService;
 
   @Inject
   private RoleService roleService;
@@ -107,7 +107,7 @@ public class UserResource {
     }
 
     try {
-      return this.userCrudService.saveNewEntity(user)
+      return this.userService.saveNewEntity(user)
           .orElseThrow(() -> new InternalServerErrorException());
     } catch (final DuplicateKeyException ex) {
       throw new BadRequestException("User already exists", ex);
@@ -165,8 +165,7 @@ public class UserResource {
 
     User targetUser = null;
     try {
-      targetUser =
-          this.userCrudService.getEntityById(id).orElseThrow(() -> new NotFoundException());
+      targetUser = this.userService.getEntityById(id).orElseThrow(() -> new NotFoundException());
     } catch (final MongoException ex) {
       if (LOGGER.isErrorEnabled()) {
         LOGGER.error(MSG_USER_NOT_RETRIEVED + ex.getMessage() + " (" + ex.getCode() + ")");
@@ -221,7 +220,7 @@ public class UserResource {
     }
 
     try {
-      this.userCrudService.updateEntity(targetUser);
+      this.userService.updateEntity(targetUser);
     } catch (final DuplicateKeyException ex) {
       throw new BadRequestException("Username already exists", ex);
 
@@ -245,9 +244,9 @@ public class UserResource {
 
     // Return all users if role parameter is omitted
     if (role == null) {
-      return this.userCrudService.getAll();
+      return this.userService.getAll();
     }
-    return this.userCrudService.getUsersByRole(role);
+    return this.userService.getUsersByRole(role);
 
 
   }
@@ -270,13 +269,13 @@ public class UserResource {
     User foundUser = null;
 
 
-    foundUser = this.userCrudService.getEntityById(id).orElseThrow(() -> new NotFoundException());
+    foundUser = this.userService.getEntityById(id).orElseThrow(() -> new NotFoundException());
 
 
 
     // Cleanup settings
     DefaultSettings.makeConform(foundUser.getSettings());
-    this.userCrudService.updateEntity(foundUser);
+    this.userService.updateEntity(foundUser);
 
 
     return foundUser;
@@ -294,16 +293,13 @@ public class UserResource {
   @RolesAllowed({ADMIN_ROLE})
   public Response removeUser(@PathParam("id") final String id) {
     try {
-      this.userCrudService.deleteEntityById(id);
-
+      this.userService.deleteEntityById(id);
     } catch (final UserCrudException ex) {
-      if (LOGGER.isInfoEnabled()) {
-        LOGGER.info("Tried to delete last admin");
+      if (LOGGER.isWarnEnabled()) {
+        LOGGER.warn("Tried to delete last admin");
       }
       throw new BadRequestException(ex);
     }
-
-
     return Response.status(HttpStatus.NO_CONTENT_204).build();
   }
 
