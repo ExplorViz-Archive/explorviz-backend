@@ -19,7 +19,7 @@ def exportedProjects= [
 		':analysis-service',
 		':discovery-service',
 		':history-service',
-		':settings-service'
+		':settings-service',
 		':broadcast-service'
 ]
 
