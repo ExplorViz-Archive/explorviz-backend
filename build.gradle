@@ -30,6 +30,13 @@ task alljavadoc(type: Javadoc) {
     options.setFooter(footerText)
 }
 
+sourceSets {
+    main {
+        resources {
+            srcDirs = ["src/main/resources"]
+        }
+    }
+}
 
 // END aggregated Javadoc in multiproject Gradle build
 subprojects {
@@ -96,7 +103,7 @@ subprojects {
   dependencies {
 
 	// SL4J
-	implementation group: 'org.slf4j', name: 'slf4j-simple', version: '1.6.1'
+	implementation group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
     
     if (project.name == 'user-service' || project.name == 'landscape-service' || project.name == 'discovery-service' || project.name == 'history-service' || project.name == 'broadcast-service') {
     	// subprojects, which are supposed to be a JAX-RS-based microservice
