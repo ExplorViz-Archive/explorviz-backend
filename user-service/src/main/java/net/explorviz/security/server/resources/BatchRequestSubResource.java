@@ -1,14 +1,18 @@
 package net.explorviz.security.server.resources;
 
+import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.ws.rs.BadRequestException;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.InternalServerErrorException;
 import javax.ws.rs.POST;
 import javax.ws.rs.Produces;
 import net.explorviz.security.model.UserBatchRequest;
 import net.explorviz.security.services.BatchCreationService;
+import net.explorviz.security.services.DuplicateUserException;
+import net.explorviz.security.services.UserCrudException;
 import net.explorviz.shared.security.model.User;
 
 public class BatchRequestSubResource {
@@ -42,10 +46,19 @@ public class BatchRequestSubResource {
     if (batch.getPrefix() == null || batch.getPrefix().isEmpty()) {
       throw new BadRequestException("Prefix can't be empty");
     }
-    if (batch.getPassword() == null || batch.getPassword().isEmpty()) {
-      throw new BadRequestException("Password can't be empty");
+    if (batch.getPasswords() == null || batch.getPasswords().size() != batch.getCount()) {
+      throw new BadRequestException("Passwords must match size of users to create");
     }
-    final List<User> created = this.bcs.create(batch);
+
+    List<User> created = new ArrayList<>();
+    try {
+      created = this.bcs.create(batch);
+    } catch (final DuplicateUserException e) {
+      throw new BadRequestException(
+          "At least one of the users to create already exists. No user was created");
+    } catch (final UserCrudException e) {
+      throw new InternalServerErrorException();
+    }
 
     return created;
   }

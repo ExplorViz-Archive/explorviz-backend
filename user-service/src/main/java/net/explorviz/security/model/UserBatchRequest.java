@@ -21,16 +21,17 @@ public class UserBatchRequest {
   private final String prefix;
   private final int count;
   private final List<Role> roles;
-  private final String password;
+  private final List<String> passwords;
 
   @JsonCreator
   public UserBatchRequest(@JsonProperty("prefix") final String prefix,
-      @JsonProperty("count") final int count, @JsonProperty("password") final String password,
+      @JsonProperty("count") final int count,
+      @JsonProperty("password") final List<String> passwords,
       @JsonProperty("roles") final List<Role> roles) {
     this.prefix = prefix;
     this.count = count;
     this.roles = roles;
-    this.password = password;
+    this.passwords = passwords;
   }
 
   public String getPrefix() {
@@ -45,8 +46,8 @@ public class UserBatchRequest {
     return this.roles;
   }
 
-  public String getPassword() {
-    return this.password;
+  public List<String> getPasswords() {
+    return this.passwords;
   }
 
   @Override

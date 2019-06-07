@@ -34,17 +34,44 @@ public class BatchCreationService {
    *
    * @param batch the batch request
    * @return as list of all users created
+   * @throws UserCrudException if the batch creation was unsuccessful. If this exception is thrown,
+   *         no user is persisted.
    */
-  public List<User> create(final UserBatchRequest batch) {
+  public List<User> create(final UserBatchRequest batch) throws UserCrudException {
+
+    if (batch.getPasswords().size() != batch.getCount()) {
+      throw new UserCrudException(
+          "Amount of passwords does not match the amount of users to create.");
+    }
+
     final List<User> created = new ArrayList<>();
     for (int i = 0; i < batch.getCount(); i++) {
-      final User newUser =
-          this.newUser(batch.getPrefix(), i, batch.getPassword(), batch.getRoles());
 
-      final Optional<User> currentCreated = this.userService.saveNewEntity(newUser);
-      if (currentCreated.isPresent()) {
-        created.add(currentCreated.get());
+      User newUser = null;
+      try {
+        newUser = this.newUser(batch.getPrefix(), i, batch.getPasswords().get(i), batch.getRoles());
+      } catch (final CannotPerformOperationException e1) {
+        if (LOGGER.isErrorEnabled()) {
+          LOGGER.error("Batch request failed, rolling back.");
+        }
+        this.rollbackBatch(created);
+        throw new UserCrudException("Could not hash password");
       }
+
+
+      User currentCreated = null;
+      try {
+        currentCreated = this.userService.saveNewEntity(newUser);
+      } catch (final UserCrudException e) {
+        if (LOGGER.isWarnEnabled()) {
+          LOGGER.warn("Batch request failed, rolling back.");
+        }
+        this.rollbackBatch(created);
+        throw e;
+      }
+
+      created.add(currentCreated);
+
     }
     if (LOGGER.isInfoEnabled()) {
       LOGGER.info(String.format("Created a batch of %d users", created.size()));
@@ -53,11 +80,29 @@ public class BatchCreationService {
   }
 
 
+  private void rollbackBatch(final List<User> created) {
+    for (final User user : created) {
+      try {
+        this.userService.deleteEntityById(user.getId());
+      } catch (final UserCrudException e) {
+        // This should never happen
+        if (LOGGER.isErrorEnabled()) {
+          LOGGER.error(String.format("Rollback failed for user with id", user.getId()), e);
+        }
+      }
+    }
+  }
+
   private User newUser(final String pref, final int num, final String password,
-      final List<Role> roles) {
+      final List<Role> roles) throws CannotPerformOperationException {
     final StringBuilder sb = new StringBuilder();
     final String name = sb.append(pref).append('-').append(num).toString();
-    return new User(null, name, password, roles);
+
+    // hash password
+    final String hashed = PasswordStorage.createHash(password);
+
+
+    return new User(null, name, hashed, roles);
   }
 
 }
