@@ -8,6 +8,9 @@ import java.util.List;
 import net.explorviz.shared.security.model.roles.Role;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
+/**
+ * Class that represents a batch request.
+ */
 @Type("userbatchrequest")
 public class UserBatchRequest {
 
@@ -23,6 +26,14 @@ public class UserBatchRequest {
   private final List<Role> roles;
   private final List<String> passwords;
 
+  /**
+   * Creates a new batch request.
+   * 
+   * @param prefix the prefix of names of all users that will be created with this requests.
+   * @param count the amount of users to created
+   * @param passwords a password for each user.
+   * @param roles the roles each created user will have.
+   */
   @JsonCreator
   public UserBatchRequest(@JsonProperty("prefix") final String prefix,
       @JsonProperty("count") final int count,

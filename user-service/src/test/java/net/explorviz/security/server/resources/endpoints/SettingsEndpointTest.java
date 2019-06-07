@@ -13,7 +13,6 @@ import org.junit.Test;
  * Endpoint test for {@link SettingsResource} as well as {@link SettingsDescriptorResource}.
  */
 public class SettingsEndpointTest extends EndpointTest {
-  private static final String MEDIA_TYPE = "application/vnd.api+json";
   private static final String BASE_URL = "v1/settings/";
 
 

@@ -29,6 +29,8 @@ import xyz.morphia.Datastore;
 @Service
 public class UserService {
 
+  private static final String ADMIN = "admin";
+
   private static final Logger LOGGER = LoggerFactory.getLogger(UserService.class);
 
 
@@ -39,7 +41,7 @@ public class UserService {
   private final IdGenerator idGenerator;
 
   /**
-   * Creates a new UserMongoDB
+   * Creates a new UserMongoDB.
    *
    * @param datastore - the datastore instance
    */
@@ -56,15 +58,13 @@ public class UserService {
 
 
   /**
-   * Persists an user entity
+   * Persists an user entity.
    *
    * @param user - a user entity
    * @return an Optional, which contains a User or is empty
    * @throws UserCrudException if the user could not be saved
    */
   public User saveNewEntity(final User user) throws UserCrudException {
-    final Optional<User> result;
-
     // Generate an id
     user.setId(this.idGenerator.generateId());
 
@@ -92,7 +92,13 @@ public class UserService {
     this.datastore.save(user);
   }
 
-
+  /**
+   * Returns the user with the given id.
+   *
+   * @param id the id of the user to retrieve
+   * @return and {@link Optional} which contains the user with given id or is empty if such a user
+   *         does not exist
+   */
   public Optional<User> getEntityById(final String id) {
 
     final User userObject = this.datastore.get(User.class, id);
@@ -137,7 +143,7 @@ public class UserService {
     }
 
     final boolean isadmin =
-        user.getRoles().stream().filter(r -> r.getDescriptor().equals("admin")).count() == 1;
+        user.getRoles().stream().filter(r -> r.getDescriptor().equals(ADMIN)).count() == 1;
 
     final boolean otheradmin = this.getAll()
         .stream()
@@ -145,7 +151,7 @@ public class UserService {
             .stream()
             .map(r -> r.getDescriptor())
             .collect(Collectors.toList())
-            .contains("admin"))
+            .contains(ADMIN))
         .filter(u -> !u.getId().equals(id))
         .count() > 0;
 
@@ -155,6 +161,13 @@ public class UserService {
   }
 
 
+  /**
+   * Find the first user that satisfies the condition specified in the paramters.
+   *
+   * @param field the field to compare
+   * @param value the value to compare with
+   * @return the first user which's field contains the given value.
+   */
   public Optional<User> findEntityByFieldValue(final String field, final Object value) {
 
     final User foundUser = this.datastore.createQuery(User.class).filter(field, value).get();

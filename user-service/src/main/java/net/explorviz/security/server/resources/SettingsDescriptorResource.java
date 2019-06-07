@@ -9,10 +9,11 @@ import net.explorviz.shared.security.model.settings.SettingDescriptor;
 
 public class SettingsDescriptorResource {
 
+  private static final String MEDIA_TYPE = "application/vnd.api+json";
 
   private final String id;
 
-  private static final String MEDIA_TYPE = "application/vnd.api+json";
+
 
   public SettingsDescriptorResource(final String id) {
     this.id = id;

@@ -15,6 +15,10 @@ import net.explorviz.security.services.DuplicateUserException;
 import net.explorviz.security.services.UserCrudException;
 import net.explorviz.shared.security.model.User;
 
+/**
+ * Resource that handle batch creation requests.
+ *
+ */
 public class BatchRequestSubResource {
 
   private static final String ADMIN_ROLE = "admin";
@@ -30,8 +34,8 @@ public class BatchRequestSubResource {
 
   /**
    * Creates all users in a list.
-   *
-   * @param users the list of users to create
+   * 
+   * @param batch a {@link UserBatchRequest} that defines the users to create
    * @return a list of users objects, that were saved
    */
   @POST

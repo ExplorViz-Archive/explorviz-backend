@@ -20,6 +20,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.stubbing.Answer;
 import xyz.morphia.Datastore;
 
+/**
+ * Unit test for {@link BatchCreationService}.
+ *
+ */
 @ExtendWith(MockitoExtension.class)
 public class BatchCreationServiceTest {
 

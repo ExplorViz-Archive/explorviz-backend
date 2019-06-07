@@ -8,6 +8,11 @@ import org.glassfish.hk2.api.Factory;
 import xyz.morphia.Datastore;
 import xyz.morphia.Morphia;
 
+/**
+ * Factory for morphia {@link Datastore}.
+ *
+ *
+ */
 public class TestDatasourceFactory implements Factory<Datastore> {
 
   // @Config("mongo.port")
@@ -15,6 +20,12 @@ public class TestDatasourceFactory implements Factory<Datastore> {
 
   private final Datastore datastore;
 
+  /**
+   * Initializes the {@link Datastore}.
+   *
+   * @param host the MongoDB host
+   * @param port the port MongoDB listens on
+   */
   @Config("mongo.host")
   @Config("mongo.port")
   public TestDatasourceFactory(final String host, final String port) {

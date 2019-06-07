@@ -38,6 +38,7 @@ public class UserResourceEndpointTest extends EndpointTest {
 
   private static final String MEDIA_TYPE = "application/vnd.api+json";
   private static final String BASE_URL = "v1/users/";
+  private static final String ADMIN = "admin";
 
   @Inject
   private UserService userCrudService;
@@ -99,12 +100,10 @@ public class UserResourceEndpointTest extends EndpointTest {
     super.tearDown();
   }
 
-
-
+  // Nees User class without restricted access rights to password, otherwise the
+  // password won't be parsed
   @Test
-  @org.junit.Ignore // Nees User class without restricted access rights to password, otherwise the
-                    // password
-  // won't be parsed
+  @org.junit.Ignore //
   public void createUserAsAdminTest() throws InterruptedException, DocumentSerializationException {
     final User u = new User(null, "newuser", "pw", null);
 
@@ -323,7 +322,7 @@ public class UserResourceEndpointTest extends EndpointTest {
     this.userCrudService.saveNewEntity(u3);
 
     final byte[] rawResponseBody = this.target(BASE_URL)
-        .queryParam("role", "admin")
+        .queryParam("role", ADMIN)
         .request()
         .header(HttpHeader.AUTHORIZATION.asString(), this.getAdminToken())
         .get(byte[].class);
@@ -357,7 +356,7 @@ public class UserResourceEndpointTest extends EndpointTest {
 
   @Test
   public void removeLastAdmin() throws UserCrudException {
-    final User u = new User(null, "admin", "pw", Arrays.asList(new Role("admin")));
+    final User u = new User(null, ADMIN, "pw", Arrays.asList(new Role(ADMIN)));
     this.userCrudService.saveNewEntity(u);
     final Response deleteResponse = this.target("v1/users/" + u.getId())
         .request()

@@ -19,7 +19,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import net.explorviz.security.services.RoleService;
-import net.explorviz.security.services.TokenService;
 import net.explorviz.security.services.UserCrudException;
 import net.explorviz.security.services.UserService;
 import net.explorviz.security.util.PasswordStorage;
@@ -53,8 +52,6 @@ public class UserResource {
   @Inject
   private RoleService roleService;
 
-  @Inject
-  private TokenService tokenService;
 
   @Inject
   private BatchRequestSubResource batchSubResource;

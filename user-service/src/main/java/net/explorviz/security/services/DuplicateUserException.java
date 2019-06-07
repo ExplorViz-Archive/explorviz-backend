@@ -5,6 +5,7 @@ package net.explorviz.security.services;
  * already exists.
  *
  */
+@SuppressWarnings("serial")
 public class DuplicateUserException extends UserCrudException {
 
   public DuplicateUserException() {
