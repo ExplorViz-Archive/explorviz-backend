@@ -1,15 +1,13 @@
-package net.explorviz.landscape.server.main;
+package net.explorviz.broadcast.server.main;
 
 import javax.inject.Singleton;
-import net.explorviz.landscape.injection.KafkaProducerFactory;
-import net.explorviz.landscape.repository.LandscapeRepositoryModel;
-import net.explorviz.landscape.repository.helper.LandscapeSerializationHelper;
+import net.explorviz.broadcast.kafka.KafkaLandscapeExchangeService;
+import net.explorviz.broadcast.kafka.LandscapeSerializationHelper;
+import net.explorviz.broadcast.server.helper.LandscapeBroadcastService;
 import net.explorviz.shared.common.idgen.RedisServiceIdGenerator;
 import net.explorviz.shared.common.idgen.ServiceIdGenerator;
 import net.explorviz.shared.common.injection.CommonDependencyInjectionBinder;
 import net.explorviz.shared.config.helper.PropertyHelper;
-import org.apache.kafka.clients.producer.KafkaProducer;
-import org.glassfish.hk2.api.TypeLiteral;
 
 /**
  * Configures the dependency binding setup for inject during runtime.
@@ -29,14 +27,14 @@ public class DependencyInjectionBinder extends CommonDependencyInjectionBinder {
           .ranked(1000); // NOCS
     }
 
-    this.bindFactory(KafkaProducerFactory.class)
-        .to(new TypeLiteral<KafkaProducer<String, String>>() {});
-
     this.bind(LandscapeSerializationHelper.class).to(LandscapeSerializationHelper.class)
         .in(Singleton.class);
 
-    this.bind(LandscapeRepositoryModel.class).to(LandscapeRepositoryModel.class)
+    // Broadcast Mechanism
+    this.bind(LandscapeBroadcastService.class).to(LandscapeBroadcastService.class)
         .in(Singleton.class);
 
+    this.bind(KafkaLandscapeExchangeService.class).to(KafkaLandscapeExchangeService.class)
+        .in(Singleton.class);
   }
 }

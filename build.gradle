@@ -20,6 +20,7 @@ def exportedProjects= [
 		':discovery-service',
 		':history-service',
 		':settings-service'
+		':broadcast-service'
 ]
 
 task alljavadoc(type: Javadoc) {
@@ -102,7 +103,7 @@ subprojects {
     implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.9'
     
     
-    if (project.name == 'user-service' || project.name == 'landscape-service' || project.name == 'discovery-service' || project.name == 'settings-service' || project.name == 'history-service') {
+    if (project.name == 'user-service' || project.name == 'landscape-service' || project.name == 'discovery-service' || project.name == 'settings-service' || project.name == 'history-service' || project.name == 'broadcast-service') {
     	// subprojects, which are supposed to be a JAX-RS-based microservice
     
     	// Jersey and Servlet

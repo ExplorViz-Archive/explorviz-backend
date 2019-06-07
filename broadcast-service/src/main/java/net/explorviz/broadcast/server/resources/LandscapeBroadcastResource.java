@@ -1,4 +1,4 @@
-package net.explorviz.landscape.server.resources;
+package net.explorviz.broadcast.server.resources;
 
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
@@ -9,8 +9,13 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.sse.SseEventSink;
-import net.explorviz.landscape.server.helper.LandscapeBroadcastService;
+import net.explorviz.broadcast.server.helper.LandscapeBroadcastService;
 
+/**
+ * Resource class that contains an endpoint which clients, e.g., the ExplorViz Frontend, can use to
+ * registered to landscape updates.
+ *
+ */
 @Path("v1/landscapes/broadcast")
 @RolesAllowed({"admin"})
 public class LandscapeBroadcastResource {
@@ -26,6 +31,12 @@ public class LandscapeBroadcastResource {
   // "Content-Type:
   // text/event-stream"
 
+  /**
+   * Endpoint that clients can use to register for landscape updates.
+   *
+   * @param eventSink - The to-be registered event sink.
+   * @param response - {@link HttpServletResponse} which is enriched with header information.
+   */
   @GET
   @Produces(MediaType.SERVER_SENT_EVENTS)
   public void listenToBroadcast(@Context final SseEventSink eventSink,
