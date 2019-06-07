@@ -49,10 +49,10 @@ public class BatchCreationServiceTest {
 
   @Test
   public void testCreateAll() throws UserCrudException {
-    final int size = 120;
+    final int size = 3;
     final List<String> passwords = Arrays.asList("abc", "abc", "bac");
     final UserBatchRequest batch =
-        new UserBatchRequest("test", 3, passwords, Arrays.asList(new Role("admin")));
+        new UserBatchRequest("test", size, passwords, Arrays.asList(new Role("admin")));
 
     Mockito.doAnswer(new Answer<Void>() {
 

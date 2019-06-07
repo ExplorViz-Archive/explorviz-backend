@@ -11,6 +11,8 @@ configurations.all {
 
 dependencies {
 	
+	compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.9'
+	
 	// ExplorViz Shared Dependencies
 	if(useRemoteSharedProject.toBoolean()) {
 		implementation "com.github.explorviz.explorviz-backend-shared:user:${sharedProjectVersion}"
