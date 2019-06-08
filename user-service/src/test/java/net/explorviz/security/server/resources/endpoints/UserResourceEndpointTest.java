@@ -20,7 +20,6 @@ import net.explorviz.shared.exceptions.ErrorObjectHelper;
 import net.explorviz.shared.exceptions.JsonApiErrorObjectHelper;
 import net.explorviz.shared.security.model.User;
 import net.explorviz.shared.security.model.roles.Role;
-import net.explorviz.shared.security.model.settings.UserSettings;
 import org.eclipse.jetty.http.HttpHeader;
 import org.eclipse.jetty.http.HttpStatus;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
@@ -136,47 +135,6 @@ public class UserResourceEndpointTest extends EndpointTest {
     assertFalse(respuser.getId().equals("0"));
   }
 
-
-
-  @Test
-  public void createUserWithUnknownSettings() throws DocumentSerializationException {
-    final User user = new User("someuser");
-    user.setPassword("abc");
-    user.getSettings().getBooleanAttributes().put("unknownkey", false);
-    // Marshall to json api object
-    final JSONAPIDocument<User> userDoc = new JSONAPIDocument<>(user);
-    final byte[] converted = this.getJsonApiConverter().writeDocument(userDoc);
-
-    // Send request
-    final Entity<byte[]> userEntity = Entity.entity(converted, MEDIA_TYPE);
-    final Response response = this.target(BASE_URL)
-        .request()
-        .header(HttpHeader.AUTHORIZATION.asString(), this.getAdminToken())
-        .post(userEntity);
-
-    assertEquals(HttpStatus.BAD_REQUEST_400, response.getStatus());
-
-  }
-
-  @Test
-  public void createUserWithInvalidettingsRange() throws DocumentSerializationException {
-    final User user = new User("someuser");
-    user.setPassword("abc");
-    user.getSettings().getNumericAttributes().put("appVizTransparencyIntensity", 1.0);
-    // Marshall to json api object
-    final JSONAPIDocument<User> userDoc = new JSONAPIDocument<>(user);
-    final byte[] converted = this.getJsonApiConverter().writeDocument(userDoc);
-
-    // Send request
-    final Entity<byte[]> userEntity = Entity.entity(converted, MEDIA_TYPE);
-    final Response response = this.target(BASE_URL)
-        .request()
-        .header(HttpHeader.AUTHORIZATION.asString(), this.getAdminToken())
-        .post(userEntity);
-
-    assertEquals(HttpStatus.BAD_REQUEST_400, response.getStatus());
-
-  }
 
 
   @Test
@@ -369,23 +327,6 @@ public class UserResourceEndpointTest extends EndpointTest {
     assertEquals("Last admin was deleted", 400, deleteResponse.getStatus());
   }
 
-  @Test
-  public void testRetrieveSettings() throws DocumentSerializationException {
-    final UserSettings settings = new UserSettings();
-    final User u = new User("1", "user1", "pw", null, settings);
 
-    this.userCrudService.saveNewEntity(u);
-
-    final byte[] retrievedUserRaw = this.target("v1/users/" + u.getId())
-        .request()
-        .header(HttpHeader.AUTHORIZATION.asString(), this.getAdminToken())
-        .get(byte[].class);
-
-    final User retrievedUser =
-        this.getJsonApiConverter().readDocument(retrievedUserRaw, User.class).get();
-
-    assertEquals("Settings do not match", settings, retrievedUser.getSettings());
-
-  }
 
 }
