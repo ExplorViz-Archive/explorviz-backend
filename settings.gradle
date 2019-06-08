@@ -8,11 +8,15 @@ if(useRemoteSharedProject.toBoolean()) {
 	':analysis-service', 
 	':discovery-service',
 	':history-service',
+	':settings-service',
+	'settings-service:settings-service-model',
 	':broadcast-service'
 } else {
 	include ':landscape-service', 
 	':kiekeradapter', 
 	':user-service', 
+	':settings-service',
+	'settings-service:settings-service-model',
 	':analysis-service', 
 	':discovery-service',
 	':history-service',

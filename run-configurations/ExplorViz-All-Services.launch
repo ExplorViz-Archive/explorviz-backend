@@ -29,5 +29,10 @@
 <booleanAttribute key="org.eclipse.debug.core.launchGroup.5.adoptIfRunning" value="false"/>
 <booleanAttribute key="org.eclipse.debug.core.launchGroup.5.enabled" value="true"/>
 <stringAttribute key="org.eclipse.debug.core.launchGroup.5.mode" value="inherit"/>
-<stringAttribute key="org.eclipse.debug.core.launchGroup.5.name" value="ExplorViz-Landscape-Service"/>
+<stringAttribute key="org.eclipse.debug.core.launchGroup.5.name" value="ExplorViz-Settings-Service"/>
+<stringAttribute key="org.eclipse.debug.core.launchGroup.6.action" value="NONE"/>
+<booleanAttribute key="org.eclipse.debug.core.launchGroup.6.adoptIfRunning" value="false"/>
+<booleanAttribute key="org.eclipse.debug.core.launchGroup.6.enabled" value="true"/>
+<stringAttribute key="org.eclipse.debug.core.launchGroup.6.mode" value="inherit"/>
+<stringAttribute key="org.eclipse.debug.core.launchGroup.6.name" value="ExplorViz-Landscape-Service"/>
 </launchConfiguration>
