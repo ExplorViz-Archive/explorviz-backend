@@ -25,7 +25,6 @@ import net.explorviz.security.util.PasswordStorage;
 import net.explorviz.security.util.PasswordStorage.CannotPerformOperationException;
 import net.explorviz.shared.security.model.User;
 import net.explorviz.shared.security.model.roles.Role;
-import net.explorviz.shared.security.model.settings.DefaultSettings;
 import org.eclipse.jetty.http.HttpStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -98,12 +97,6 @@ public class UserResource {
       throw new InternalServerErrorException(e);
     }
 
-    try {
-      user.getSettings().validate();
-
-    } catch (final IllegalStateException e) {
-      throw new BadRequestException(e.getMessage());
-    }
 
     try {
       return this.userCrudService.saveNewEntity(user);
@@ -184,15 +177,6 @@ public class UserResource {
       targetUser.setRoles(updatedUser.getRoles());
     }
 
-    if (updatedUser.getSettings() != null) {
-
-      try {
-        updatedUser.getSettings().validate();
-      } catch (final IllegalStateException e) {
-        throw new BadRequestException(e.getMessage());
-      }
-      targetUser.setSettings(updatedUser.getSettings());
-    }
 
     try {
       this.userCrudService.updateEntity(targetUser);
@@ -246,10 +230,6 @@ public class UserResource {
 
     foundUser = this.userCrudService.getEntityById(id).orElseThrow(() -> new NotFoundException());
 
-
-
-    // Cleanup settings
-    DefaultSettings.makeConform(foundUser.getSettings());
     this.userCrudService.updateEntity(foundUser);
 
 
