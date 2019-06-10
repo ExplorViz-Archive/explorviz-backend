@@ -105,6 +105,9 @@ subprojects {
 
 	// SL4J
 	implementation group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
+	
+	// Logstash Logback
+	implementation group: 'net.logstash.logback', name: 'logstash-logback-encoder', version: '6.0'
     
     // Apache Commons
     implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.9'

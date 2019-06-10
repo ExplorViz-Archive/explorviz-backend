@@ -10,9 +10,10 @@
       <destination>127.0.0.1:4560</destination>
       
       <encoder class="net.logstash.logback.encoder.LogstashEncoder">
-      	<customFields>{"service": "user-service"}</customFields>
+      	<customFields>{"service": "settings-service"}</customFields>
       </encoder>
   </appender>
+
 
 
   <root level="DEBUG">

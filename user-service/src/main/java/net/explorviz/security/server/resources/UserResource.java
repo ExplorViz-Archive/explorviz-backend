@@ -255,7 +255,7 @@ public class UserResource {
 
     foundUser = this.userService.getEntityById(id).orElseThrow(() -> new NotFoundException());
 
-    this.userCrudService.updateEntity(foundUser);
+    this.userService.updateEntity(foundUser);
 
 
     return foundUser;
