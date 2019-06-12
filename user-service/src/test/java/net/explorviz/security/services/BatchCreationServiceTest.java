@@ -44,15 +44,17 @@ public class BatchCreationServiceTest {
   @BeforeEach
   public void setUp() {
     this.userService = new UserService(this.ds, this.idGenerator);
-    this.bcs = new BatchCreationService(this.userService);
+    this.bcs = new BatchCreationService(this.userService, null, "");
   }
 
   @Test
   public void testCreateAll() throws UserCrudException {
     final int size = 3;
     final List<String> passwords = Arrays.asList("abc", "abc", "bac");
+
+
     final UserBatchRequest batch =
-        new UserBatchRequest("test", size, passwords, Arrays.asList(new Role("admin")));
+        new UserBatchRequest("test", size, passwords, Arrays.asList(new Role("admin")), null);
 
     Mockito.doAnswer(new Answer<Void>() {
 
@@ -72,6 +74,7 @@ public class BatchCreationServiceTest {
 
     assertEquals(size, this.users.size());
 
-
   }
+
+
 }

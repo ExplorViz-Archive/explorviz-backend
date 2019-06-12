@@ -28,9 +28,13 @@ public class AuthorizationService {
    * @return if and only if the user id is the same as the id given in the authorization header
    */
   public boolean isSameUser(final String id, final String authHeader) {
-    final TokenDetails details = this.tps.parseToken(authHeader.substring(7));
-
-    return details.getUserId().equals(id);
+    try {
+      final TokenDetails details = this.tps.parseToken(authHeader.substring(7));
+      return details.getUserId().equals(id);
+    } catch (final NullPointerException e) {
+      // No token given
+      return false;
+    }
   }
 
   /**
@@ -40,9 +44,14 @@ public class AuthorizationService {
    * @return if and only if the list of roles in the token contains the admin right
    */
   public boolean isAdmin(final String authHeader) {
-    final TokenDetails details = this.tps.parseToken(authHeader.substring(7));
-    return details.getRoles().stream().map(r -> r.getDescriptor().toLowerCase())
-        .anyMatch(r -> r.equals("admin"));
+    try {
+      final TokenDetails details = this.tps.parseToken(authHeader.substring(7));
+      return details.getRoles().stream().map(r -> r.getDescriptor().toLowerCase())
+          .anyMatch(r -> r.equals("admin"));
+    } catch (final NullPointerException e) {
+      // No token
+      return false;
+    }
   }
 
 }

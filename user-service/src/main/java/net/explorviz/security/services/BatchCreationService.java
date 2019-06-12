@@ -1,13 +1,31 @@
 package net.explorviz.security.services;
 
+import com.github.jasminb.jsonapi.ResourceConverter;
+import java.net.ConnectException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import javax.inject.Inject;
+import javax.ws.rs.ProcessingException;
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.Invocation;
+import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.MultivaluedHashMap;
+import javax.ws.rs.core.Response;
 import net.explorviz.security.model.UserBatchRequest;
 import net.explorviz.security.util.PasswordStorage;
 import net.explorviz.security.util.PasswordStorage.CannotPerformOperationException;
+import net.explorviz.settings.model.UserPreference;
+import net.explorviz.shared.common.jsonapi.ResourceConverterFactory;
+import net.explorviz.shared.common.provider.JsonApiProvider;
+import net.explorviz.shared.config.annotations.Config;
 import net.explorviz.shared.security.model.User;
 import net.explorviz.shared.security.model.roles.Role;
+import org.eclipse.jetty.http.HttpStatus;
 import org.jvnet.hk2.annotations.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,31 +38,46 @@ import org.slf4j.LoggerFactory;
 public class BatchCreationService {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(BatchCreationService.class);
+  private static final String MEDIA_TYPE = "application/vnd.api+json";
 
   private final UserService userService;
 
 
+  private final ResourceConverter converter;
+
+
+  private final String settingsServiceHost;
+
+
+
   @Inject
-  public BatchCreationService(final UserService userService) {
+  public BatchCreationService(final UserService userService, final ResourceConverter converter,
+      @Config("services.settings") final String settingServiceHost) {
     this.userService = userService;
+    this.settingsServiceHost = settingServiceHost;
+    this.converter = converter;
   }
 
   /**
    * Creates and persists a set of users.
    *
    * @param batch the batch request
+   * @param token of an admin user
    * @return as list of all users created
    * @throws UserCrudException if the batch creation was unsuccessful. If this exception is thrown,
    *         no user is persisted.
    */
-  public List<User> create(final UserBatchRequest batch) throws UserCrudException {
+  public List<User> create(final UserBatchRequest batch, final String authHeader)
+      throws UserCrudException {
 
     if (batch.getPasswords().size() != batch.getCount()) {
       throw new UserCrudException(
           "Amount of passwords does not match the amount of users to create.");
     }
 
-    final List<User> created = new ArrayList<>();
+
+    final List<User> createdUsers = new ArrayList<>();
+    final List<String> createdPrefs = new ArrayList<>();
     for (int i = 0; i < batch.getCount(); i++) {
 
       User newUser = null;
@@ -54,7 +87,7 @@ public class BatchCreationService {
         if (LOGGER.isErrorEnabled()) {
           LOGGER.error("Batch request failed, rolling back.");
         }
-        this.rollbackBatch(created);
+        this.rollbackUsers(createdUsers);
         throw new UserCrudException("Could not hash password");
       }
 
@@ -62,25 +95,25 @@ public class BatchCreationService {
       User currentCreated = null;
       try {
         currentCreated = this.userService.saveNewEntity(newUser);
+        createdUsers.add(currentCreated);
+        createdPrefs.addAll(this.createPrefs(newUser, batch.getPreferences(), authHeader));
       } catch (final UserCrudException e) {
         if (LOGGER.isWarnEnabled()) {
           LOGGER.warn("Batch request failed, rolling back.");
         }
-        this.rollbackBatch(created);
+        this.rollbackUsers(createdUsers);
+        this.rollbackPrefs(createdPrefs, authHeader);
         throw e;
       }
-
-      created.add(currentCreated);
-
     }
     if (LOGGER.isInfoEnabled()) {
-      LOGGER.info(String.format("Created a batch of %d users", created.size()));
+      LOGGER.info(String.format("Created a batch of %d users", createdUsers.size()));
     }
-    return created;
+    return createdUsers;
   }
 
 
-  private void rollbackBatch(final List<User> created) {
+  private void rollbackUsers(final List<User> created) {
     for (final User user : created) {
       try {
         this.userService.deleteEntityById(user.getId());
@@ -91,6 +124,103 @@ public class BatchCreationService {
         }
       }
     }
+  }
+
+  private void rollbackPrefs(final List<String> created, final String auth) {
+    final Client c = ClientBuilder.newClient();
+    final WebTarget baseTarget =
+        c.target("http://" + this.settingsServiceHost).path("v1/settings/preferences/");
+    final MultivaluedHashMap<String, Object> headers = new MultivaluedHashMap<>();
+    headers.putSingle(HttpHeaders.AUTHORIZATION, auth);
+    for (final String id : created) {
+      final WebTarget currentTarget = baseTarget.path(id);
+
+      final Invocation.Builder invocationBuilder = currentTarget.request().headers(headers);
+      System.out.println(auth);
+      final Invocation i = invocationBuilder.buildDelete();
+
+      final Response r = i.invoke();
+
+      if (r.getStatus() != HttpStatus.NO_CONTENT_204) {
+        LOGGER.error("Deletion of a preference failed, id: " + id);
+      }
+    }
+  }
+
+
+  /**
+   * Creates the preferences defined in {@code prefs} for the given user, by dispatching an HTTP
+   * request to the Settings-Service.
+   *
+   * @param user the user to create the preferences for
+   * @param prefs the settings with the values
+   *
+   * @return a list of the ids of the created settings
+   *
+   * @throws UserCrudException if the creation of a single preference failed
+   */
+  private List<String> createPrefs(final User user, final Map<String, Object> prefs,
+      final String auth) throws UserCrudException {
+
+    final Client c = ClientBuilder.newBuilder()
+        .register(ResourceConverterFactory.class)
+        .register(new JsonApiProvider<UserPreference>(this.converter))
+        .build();
+
+
+
+    final WebTarget target =
+        c.target("http://" + this.settingsServiceHost).path("v1/settings/preferences");
+    final Invocation.Builder invocationBuilder =
+        target.request(MEDIA_TYPE).header(HttpHeaders.AUTHORIZATION, auth);
+
+
+
+    final List<String> ids = new ArrayList<>();
+
+    // Create a request for each entry
+    for (final Entry<String, Object> pref : prefs.entrySet()) {
+      final UserPreference up =
+          new UserPreference("", user.getId(), pref.getKey(), pref.getValue());
+
+      try {
+        // perform post request
+        final Response r = invocationBuilder.post(Entity.entity(up, MEDIA_TYPE));
+
+        // check if successful and if not throw exception which will result in a rollback
+        if (r.getStatus() / 100 == 4) {
+          // delete all prefs created in this call since they won't get returned
+          this.rollbackPrefs(ids, auth);
+          // Status code is 4XX -> Client side error
+          throw new MalformedBatchRequestException(
+              "Preference not created, settings-service replied with code " + r.getStatus());
+        } else if (r.getStatus() != HttpStatus.OK_200) {
+          // Internal error
+          // delete all prefs created in this call since they won't get returned
+          this.rollbackPrefs(ids, auth);
+          throw new UserCrudException("Internal Error: " + r.getStatus());
+        }
+
+        // add id of new preference to list
+        ids.add(r.readEntity(UserPreference.class).getId());
+
+      } catch (final ProcessingException e) {
+        // delete all prefs created in this call since they won't get returned
+        this.rollbackPrefs(ids, auth);
+
+        // happens if the service is unreachable
+        if (e.getCause().getClass().equals(ConnectException.class)) {
+          LOGGER.error("Could not create preferences due to unreachable settings-service");
+          throw new UserCrudException("Settings-Service unreachable", e);
+        } else {
+          LOGGER.error("Could not create preferences: " + e.getMessage());
+          throw new UserCrudException("Could not create preferences");
+        }
+      }
+    }
+
+    // return list of all ids of the created preferences
+    return ids;
   }
 
   private User newUser(final String pref, final int num, final String password,

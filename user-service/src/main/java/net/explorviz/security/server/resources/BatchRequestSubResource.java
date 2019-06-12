@@ -9,11 +9,16 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.InternalServerErrorException;
 import javax.ws.rs.POST;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.HttpHeaders;
 import net.explorviz.security.model.UserBatchRequest;
 import net.explorviz.security.services.BatchCreationService;
 import net.explorviz.security.services.DuplicateUserException;
+import net.explorviz.security.services.MalformedBatchRequestException;
 import net.explorviz.security.services.UserCrudException;
 import net.explorviz.shared.security.model.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Resource that handle batch creation requests.
@@ -21,8 +26,11 @@ import net.explorviz.shared.security.model.User;
  */
 public class BatchRequestSubResource {
 
+  private static final Logger LOGGER = LoggerFactory.getLogger(BatchRequestSubResource.class);
+
   private static final String ADMIN_ROLE = "admin";
   private static final String MEDIA_TYPE = "application/vnd.api+json";
+  private static final int MAX_COUNT = 300;
 
 
   private final BatchCreationService bcs;
@@ -34,7 +42,7 @@ public class BatchRequestSubResource {
 
   /**
    * Creates all users in a list.
-   * 
+   *
    * @param batch a {@link UserBatchRequest} that defines the users to create
    * @return a list of users objects, that were saved
    */
@@ -42,29 +50,38 @@ public class BatchRequestSubResource {
   @Consumes(MEDIA_TYPE)
   @Produces(MEDIA_TYPE)
   @RolesAllowed({ADMIN_ROLE})
-  public List<User> batchCreate(final UserBatchRequest batch) {
-    System.out.println(batch);
-    if (batch.getCount() == 0) {
-      throw new BadRequestException("Count must be bigger than 0");
-    }
-    if (batch.getPrefix() == null || batch.getPrefix().isEmpty()) {
-      throw new BadRequestException("Prefix can't be empty");
-    }
-    if (batch.getPasswords() == null || batch.getPasswords().size() != batch.getCount()) {
-      throw new BadRequestException("Passwords must match size of users to create");
-    }
-
-    List<User> created = new ArrayList<>();
+  public List<User> batchCreate(@Context final HttpHeaders headers, final UserBatchRequest batch) {
     try {
-      created = this.bcs.create(batch);
+      if (batch.getCount() > MAX_COUNT) {
+        throw new MalformedBatchRequestException("Count must be smaller than" + MAX_COUNT);
+      }
+
+      if (batch.getCount() == 0) {
+        throw new MalformedBatchRequestException("Count must be bigger than 0");
+      }
+      if (batch.getPrefix() == null || batch.getPrefix().isEmpty()) {
+        throw new MalformedBatchRequestException("Prefix can't be empty");
+      }
+      if (batch.getPasswords() == null || batch.getPasswords().size() != batch.getCount()) {
+        throw new MalformedBatchRequestException("Passwords must match size of users to create");
+      }
+
+      List<User> created = new ArrayList<>();
+
+      created = this.bcs.create(batch, headers.getHeaderString(HttpHeaders.AUTHORIZATION));
+      return created;
     } catch (final DuplicateUserException e) {
       throw new BadRequestException(
           "At least one of the users to create already exists. No user was created");
+    } catch (final MalformedBatchRequestException e) {
+      LOGGER.error(e.getMessage());
+      throw new BadRequestException(e.getMessage());
     } catch (final UserCrudException e) {
-      throw new InternalServerErrorException();
+      LOGGER.error(e.getMessage());
+      throw new InternalServerErrorException("No user created.");
     }
 
-    return created;
+
   }
 
 }
