@@ -44,13 +44,14 @@ public class BatchRequestSubResource {
    * Creates all users in a list.
    *
    * @param batch a {@link UserBatchRequest} that defines the users to create
-   * @return a list of users objects, that were saved
+   * @return the given batch object including a list of users objects that were saved
    */
   @POST
   @Consumes(MEDIA_TYPE)
   @Produces(MEDIA_TYPE)
   @RolesAllowed({ADMIN_ROLE})
-  public List<User> batchCreate(@Context final HttpHeaders headers, final UserBatchRequest batch) {
+  public UserBatchRequest batchCreate(@Context final HttpHeaders headers,
+      final UserBatchRequest batch) {
     try {
       if (batch.getCount() > MAX_COUNT) {
         throw new MalformedBatchRequestException("Count must be smaller than" + MAX_COUNT);
@@ -69,7 +70,8 @@ public class BatchRequestSubResource {
       List<User> created = new ArrayList<>();
 
       created = this.bcs.create(batch, headers.getHeaderString(HttpHeaders.AUTHORIZATION));
-      return created;
+      batch.setUsers(created);
+      return batch;
     } catch (final DuplicateUserException e) {
       throw new BadRequestException(
           "At least one of the users to create already exists. No user was created");

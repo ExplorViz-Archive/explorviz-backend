@@ -3,9 +3,12 @@ package net.explorviz.security.model;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.github.jasminb.jsonapi.annotations.Id;
+import com.github.jasminb.jsonapi.annotations.Relationship;
 import com.github.jasminb.jsonapi.annotations.Type;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import net.explorviz.shared.security.model.User;
 import net.explorviz.shared.security.model.roles.Role;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
@@ -28,6 +31,9 @@ public class UserBatchRequest {
   private final List<String> passwords;
 
   private final Map<String, Object> preferences;
+
+  @Relationship("users")
+  private List<User> users = new ArrayList<>();
 
   /**
    * Creates a new batch request.
@@ -63,10 +69,12 @@ public class UserBatchRequest {
     return this.roles;
   }
 
-
-
   public List<String> getPasswords() {
     return this.passwords;
+  }
+
+  public void setUsers(final List<User> users) {
+    this.users = users;
   }
 
   @Override
