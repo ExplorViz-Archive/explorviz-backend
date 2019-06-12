@@ -70,7 +70,7 @@ public class BatchCreationServiceTest {
     Mockito.when(this.idGenerator.generateId())
         .thenReturn(Long.toString(this.id.incrementAndGet()));
 
-    this.bcs.create(batch);
+    this.bcs.create(batch, "");
 
     assertEquals(size, this.users.size());
 

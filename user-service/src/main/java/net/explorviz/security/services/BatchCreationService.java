@@ -1,6 +1,8 @@
 package net.explorviz.security.services;
 
 import com.github.jasminb.jsonapi.ResourceConverter;
+import com.github.jasminb.jsonapi.models.errors.Error;
+import com.github.jasminb.jsonapi.models.errors.Errors;
 import java.net.ConnectException;
 import java.util.ArrayList;
 import java.util.List;
@@ -49,7 +51,13 @@ public class BatchCreationService {
   private final String settingsServiceHost;
 
 
-
+  /**
+   * Creates a new service.
+   *
+   * @param userService instance of {@link UserService}
+   * @param converter instance of {@link ResourceConverter}
+   * @param settingServiceHost host of the settings service
+   */
   @Inject
   public BatchCreationService(final UserService userService, final ResourceConverter converter,
       @Config("services.settings") final String settingServiceHost) {
@@ -62,7 +70,7 @@ public class BatchCreationService {
    * Creates and persists a set of users.
    *
    * @param batch the batch request
-   * @param token of an admin user
+   * @param authHeader of an admin user
    * @return as list of all users created
    * @throws UserCrudException if the batch creation was unsuccessful. If this exception is thrown,
    *         no user is persisted.
@@ -70,14 +78,11 @@ public class BatchCreationService {
   public List<User> create(final UserBatchRequest batch, final String authHeader)
       throws UserCrudException {
 
-    if (batch.getPasswords().size() != batch.getCount()) {
-      throw new UserCrudException(
-          "Amount of passwords does not match the amount of users to create.");
-    }
-
 
     final List<User> createdUsers = new ArrayList<>();
     final List<String> createdPrefs = new ArrayList<>();
+
+
     for (int i = 0; i < batch.getCount(); i++) {
 
       User newUser = null;
@@ -92,15 +97,13 @@ public class BatchCreationService {
       }
 
 
-      User currentCreated = null;
       try {
-        currentCreated = this.userService.saveNewEntity(newUser);
-        createdUsers.add(currentCreated);
-        createdPrefs.addAll(this.createPrefs(newUser, batch.getPreferences(), authHeader));
+        // Create user and preferences
+        final User u = this.userService.saveNewEntity(newUser);
+        createdUsers.add(u);
+        createdPrefs.addAll(this.createPrefs(u, batch.getPreferences(), authHeader));
       } catch (final UserCrudException e) {
-        if (LOGGER.isWarnEnabled()) {
-          LOGGER.warn("Batch request failed, rolling back.");
-        }
+        LOGGER.warn("Batch request failed, rolling back.");
         this.rollbackUsers(createdUsers);
         this.rollbackPrefs(createdPrefs, authHeader);
         throw e;
@@ -113,6 +116,11 @@ public class BatchCreationService {
   }
 
 
+  /**
+   * Rolls back previously created users.
+   *
+   * @param created users to delete
+   */
   private void rollbackUsers(final List<User> created) {
     for (final User user : created) {
       try {
@@ -126,17 +134,29 @@ public class BatchCreationService {
     }
   }
 
+  /**
+   * Rolls back all preferences given by dispatching DELETE requests.
+   *
+   * @param created preferences to delete
+   * @param auth http auth header header to authorize at the settings service
+   */
   private void rollbackPrefs(final List<String> created, final String auth) {
+
+    if (created == null || created.isEmpty()) {
+      return;
+    }
+
+    // Initialize client
     final Client c = ClientBuilder.newClient();
     final WebTarget baseTarget =
         c.target("http://" + this.settingsServiceHost).path("v1/settings/preferences/");
     final MultivaluedHashMap<String, Object> headers = new MultivaluedHashMap<>();
     headers.putSingle(HttpHeaders.AUTHORIZATION, auth);
+
     for (final String id : created) {
       final WebTarget currentTarget = baseTarget.path(id);
 
       final Invocation.Builder invocationBuilder = currentTarget.request().headers(headers);
-      System.out.println(auth);
       final Invocation i = invocationBuilder.buildDelete();
 
       final Response r = i.invoke();
@@ -162,21 +182,23 @@ public class BatchCreationService {
   private List<String> createPrefs(final User user, final Map<String, Object> prefs,
       final String auth) throws UserCrudException {
 
+    final List<String> ids = new ArrayList<>();
+
+    if (prefs == null || prefs.isEmpty()) {
+      return ids;
+    }
+
+    // Initialize client
     final Client c = ClientBuilder.newBuilder()
         .register(ResourceConverterFactory.class)
         .register(new JsonApiProvider<UserPreference>(this.converter))
         .build();
-
-
-
     final WebTarget target =
         c.target("http://" + this.settingsServiceHost).path("v1/settings/preferences");
     final Invocation.Builder invocationBuilder =
         target.request(MEDIA_TYPE).header(HttpHeaders.AUTHORIZATION, auth);
 
 
-
-    final List<String> ids = new ArrayList<>();
 
     // Create a request for each entry
     for (final Entry<String, Object> pref : prefs.entrySet()) {
@@ -188,22 +210,24 @@ public class BatchCreationService {
         final Response r = invocationBuilder.post(Entity.entity(up, MEDIA_TYPE));
 
         // check if successful and if not throw exception which will result in a rollback
-        if (r.getStatus() / 100 == 4) {
+
+        if (r.getStatus() == HttpStatus.OK_200) {
+          // add id of new preference to list
+          ids.add(r.readEntity(UserPreference.class).getId());
+        } else {
           // delete all prefs created in this call since they won't get returned
           this.rollbackPrefs(ids, auth);
-          // Status code is 4XX -> Client side error
-          throw new MalformedBatchRequestException(
-              "Preference not created, settings-service replied with code " + r.getStatus());
-        } else if (r.getStatus() != HttpStatus.OK_200) {
-          // Internal error
-          // delete all prefs created in this call since they won't get returned
-          this.rollbackPrefs(ids, auth);
-          throw new UserCrudException("Internal Error: " + r.getStatus());
+          final Errors errs = r.readEntity(Errors.class);
+          // Only throws a single error object
+          final Error err = errs.getErrors().get(0);
+          if (r.getStatus() == HttpStatus.BAD_REQUEST_400
+              || r.getStatus() == HttpStatus.NOT_FOUND_404) {
+            throw new MalformedBatchRequestException(err.getDetail());
+          } else {
+            LOGGER.error("Unkown settings-service error: " + err.getDetail());
+            throw new UserCrudException(err.getDetail());
+          }
         }
-
-        // add id of new preference to list
-        ids.add(r.readEntity(UserPreference.class).getId());
-
       } catch (final ProcessingException e) {
         // delete all prefs created in this call since they won't get returned
         this.rollbackPrefs(ids, auth);
@@ -213,7 +237,7 @@ public class BatchCreationService {
           LOGGER.error("Could not create preferences due to unreachable settings-service");
           throw new UserCrudException("Settings-Service unreachable", e);
         } else {
-          LOGGER.error("Could not create preferences: " + e.getMessage());
+          LOGGER.error("Could not create preferences: ", e);
           throw new UserCrudException("Could not create preferences");
         }
       }
