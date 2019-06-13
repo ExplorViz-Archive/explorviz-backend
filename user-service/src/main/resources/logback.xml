@@ -6,7 +6,7 @@
     </encoder>
   </appender>
   
-  <appender name="LOGSTASH" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+  <appender name="LOGSTASH_EVENT" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
       <destination>127.0.0.1:4560</destination>
       
       <encoder class="net.logstash.logback.encoder.LogstashEncoder">
@@ -14,9 +14,21 @@
       </encoder>
   </appender>
 
+  <appender name="LOGSTASH_ACCESS" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+  	<destination>127.0.0.1:4561</destination>
+  	
+  	<encoder class="net.logstash.logback.encoder.LogstashEncoder">
+      	<customFields>{"service": "user-service"}</customFields>
+      </encoder>
+  </appender>
+  
+  <logger name="net.explorviz.accesslog" level = "INFO">
+    <appender-ref ref="LOGSTASH_ACCESS" /> 
+  </logger>
 
-  <root level="DEBUG">
+
+  <root level="TRACE">
       <appender-ref ref="CONSOLE" />
-      <appender-ref ref="LOGSTASH" />
+      <appender-ref ref="LOGSTASH_EVENT" />
   </root>
 </configuration>
