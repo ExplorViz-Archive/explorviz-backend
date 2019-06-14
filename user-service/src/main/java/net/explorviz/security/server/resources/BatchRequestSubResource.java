@@ -1,6 +1,5 @@
 package net.explorviz.security.server.resources;
 
-import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
@@ -67,11 +66,13 @@ public class BatchRequestSubResource {
         throw new MalformedBatchRequestException("Passwords must match size of users to create");
       }
 
-      List<User> created = new ArrayList<>();
+      final List<User> created =
+          this.bcs.create(batch, headers.getHeaderString(HttpHeaders.AUTHORIZATION));
 
-      created = this.bcs.create(batch, headers.getHeaderString(HttpHeaders.AUTHORIZATION));
       batch.setUsers(created);
+
       return batch;
+
     } catch (final DuplicateUserException e) {
       throw new BadRequestException(
           "At least one of the users to create already exists. No user was created");
