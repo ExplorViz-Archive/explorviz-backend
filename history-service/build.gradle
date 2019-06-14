@@ -39,13 +39,13 @@ jar.enabled = false
 jar {
   manifest {
     attributes(
-      'Main-Class': 'net.explorviz.history.server.Main'
+      'Main-Class': 'net.explorviz.history.server.main.Main'
     )
   }
 }
 
 application {
-    mainClassName = 'net.explorviz.history.server.Main'
+    mainClassName = 'net.explorviz.history.server.main.Main'
 }
 
 shadowJar {
