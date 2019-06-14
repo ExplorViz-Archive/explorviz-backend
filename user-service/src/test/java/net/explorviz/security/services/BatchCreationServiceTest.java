@@ -44,7 +44,7 @@ public class BatchCreationServiceTest {
 
   @BeforeEach
   public void setUp() {
-    this.userService = new UserService(this.ds, this.idGenerator);
+    this.userService = new UserService(this.ds, this.idGenerator, null);
     this.bcs = new BatchCreationService(this.userService, null, "");
   }
 

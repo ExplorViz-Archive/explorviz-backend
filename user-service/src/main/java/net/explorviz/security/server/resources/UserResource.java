@@ -20,6 +20,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import net.explorviz.security.services.RoleService;
 import net.explorviz.security.services.UserService;
+import net.explorviz.security.services.exceptions.DuplicateUserException;
 import net.explorviz.security.services.exceptions.UserCrudException;
 import net.explorviz.security.util.PasswordStorage;
 import net.explorviz.security.util.PasswordStorage.CannotPerformOperationException;
@@ -100,9 +101,10 @@ public class UserResource {
 
     try {
       return this.userCrudService.saveNewEntity(user);
-    } catch (final DuplicateKeyException ex) {
+    } catch (final DuplicateUserException ex) {
       throw new BadRequestException("User already exists", ex);
     } catch (final UserCrudException ex) {
+      LOGGER.error("Error saving user", ex);
       throw new InternalServerErrorException();
     }
   }

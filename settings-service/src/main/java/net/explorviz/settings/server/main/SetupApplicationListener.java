@@ -9,6 +9,7 @@ import net.explorviz.settings.model.FlagSetting;
 import net.explorviz.settings.model.RangeSetting;
 import net.explorviz.settings.model.Setting;
 import net.explorviz.settings.services.SettingsRepository;
+import net.explorviz.settings.services.UserEventListener;
 import org.glassfish.jersey.server.monitoring.ApplicationEvent;
 import org.glassfish.jersey.server.monitoring.ApplicationEvent.Type;
 import org.glassfish.jersey.server.monitoring.ApplicationEventListener;
@@ -34,6 +35,9 @@ public class SetupApplicationListener implements ApplicationEventListener {
   @Inject
   private SettingsRepository settingRepo;
 
+  @Inject
+  private UserEventListener userEventListener;
+
   @Override
   public void onEvent(final ApplicationEvent event) {
 
@@ -45,6 +49,8 @@ public class SetupApplicationListener implements ApplicationEventListener {
     if (event.getType().equals(t)) {
       this.addDefaultSettings();
     }
+
+    new Thread(this.userEventListener).start();
 
   }
 

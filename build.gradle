@@ -103,6 +103,9 @@ subprojects {
     implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.9'
     
     
+    // Kafka
+    implementation group: 'org.apache.kafka', name: 'kafka_2.12', version: '2.2.0'
+    
     if (project.name == 'user-service' || project.name == 'landscape-service' || project.name == 'discovery-service' || project.name == 'settings-service' || project.name == 'history-service' || project.name == 'broadcast-service') {
     	// subprojects, which are supposed to be a JAX-RS-based microservice
     
