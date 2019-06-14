@@ -54,7 +54,7 @@ public class BatchRequestSubResource {
       final UserBatchRequest batch) {
     try {
       if (batch.getCount() > MAX_COUNT) {
-        throw new MalformedBatchRequestException("Count must be smaller than" + MAX_COUNT);
+        throw new MalformedBatchRequestException("Count must be smaller than " + MAX_COUNT);
       }
 
       if (batch.getCount() == 0) {
