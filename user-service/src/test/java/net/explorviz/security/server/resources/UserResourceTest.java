@@ -17,7 +17,7 @@ import javax.ws.rs.BadRequestException;
 import net.explorviz.security.server.resources.endpoints.UserResourceEndpointTest;
 import net.explorviz.security.services.RoleService;
 import net.explorviz.security.services.UserCrudException;
-import net.explorviz.security.services.UserMongoCrudService;
+import net.explorviz.security.services.UserService;
 import net.explorviz.security.util.PasswordStorage;
 import net.explorviz.security.util.PasswordStorage.CannotPerformOperationException;
 import net.explorviz.security.util.PasswordStorage.InvalidHashException;
@@ -48,7 +48,7 @@ public class UserResourceTest {
   private UserResource userResource;
 
   @Mock
-  private UserMongoCrudService userCrudService;
+  private UserService userCrudService;
 
   @Mock
   private RoleService roleService;
@@ -73,7 +73,7 @@ public class UserResourceTest {
       final String id = Long.toString(++this.lastId);
       final User newUser = new User(id, u.getUsername(), u.getPassword(), u.getRoles());
       this.users.put(id, newUser);
-      return Optional.ofNullable(newUser);
+      return newUser;
     });
 
     Mockito.lenient().when(this.userCrudService.getEntityById(any())).thenAnswer(inv -> {
@@ -163,37 +163,6 @@ public class UserResourceTest {
   }
 
 
-  @Test
-  public void testListOfNewUsers() {
-    this.roles.add(new Role("role"));
-    final List<Role> roles = Arrays.asList(new Role("role"));
-    final User u1 = new User(null, "u1", "pw", roles);
-    final User u2 = new User(null, "u2", "pw", roles);
-    final User u3 = new User(null, "u3", "pw", roles);
-
-    this.userResource.createAll(Arrays.asList(u1, u2, u3));
-
-    final List<User> created = this.userCrudService.getUsersByRole("role");
-
-    // Check if 3 users where created
-    assertEquals(3, created.size());
-  }
-
-  @Test
-  public void testListOfNewUsersWithInvalidUser() {
-    this.roles.add(new Role("role"));
-    final List<Role> roles = Arrays.asList(new Role("role"));
-    final User u1 = new User(null, "u1", "", roles);
-    final User u2 = new User(null, "u2", "pw", roles);
-    final User u3 = new User(null, "u3", "pw", roles);
-
-    this.userResource.createAll(Arrays.asList(u1, u2, u3));
-
-    final List<User> created = this.userCrudService.getUsersByRole("role");
-
-    // Check if 3 users where created
-    assertEquals(2, created.size());
-  }
 
   @Test
   public void testUserByRole() {

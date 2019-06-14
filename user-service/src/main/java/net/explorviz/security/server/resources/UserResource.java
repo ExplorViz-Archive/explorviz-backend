@@ -2,7 +2,6 @@ package net.explorviz.security.server.resources;
 
 import com.mongodb.DuplicateKeyException;
 import com.mongodb.MongoException;
-import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
@@ -20,9 +19,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import net.explorviz.security.services.RoleService;
-import net.explorviz.security.services.TokenService;
 import net.explorviz.security.services.UserCrudException;
-import net.explorviz.security.services.UserMongoCrudService;
+import net.explorviz.security.services.UserService;
 import net.explorviz.security.util.PasswordStorage;
 import net.explorviz.security.util.PasswordStorage.CannotPerformOperationException;
 import net.explorviz.shared.security.model.User;
@@ -48,13 +46,14 @@ public class UserResource {
   private static final String ADMIN_ROLE = "admin";
 
   @Inject
-  private UserMongoCrudService userCrudService;
+  private UserService userCrudService;
 
   @Inject
   private RoleService roleService;
 
+
   @Inject
-  private TokenService tokenService;
+  private BatchRequestSubResource batchSubResource;
 
   // CHECKSTYLE.OFF: Cyclomatic
 
@@ -100,44 +99,19 @@ public class UserResource {
 
 
     try {
-      return this.userCrudService.saveNewEntity(user)
-          .orElseThrow(() -> new InternalServerErrorException());
+      return this.userCrudService.saveNewEntity(user);
     } catch (final DuplicateKeyException ex) {
       throw new BadRequestException("User already exists", ex);
+    } catch (final UserCrudException ex) {
+      throw new InternalServerErrorException();
     }
   }
 
 
-  /**
-   * Creates all users in a list.
-   *
-   * @param users the list of users to create
-   * @return a list of users objects, that were saved
-   */
-  @POST
-  @Consumes(MEDIA_TYPE)
-  @Produces(MEDIA_TYPE)
-  @Path("batch") // Todo: Find more suitable path
-  @RolesAllowed({ADMIN_ROLE})
-  public List<User> createAll(final List<User> users) {
-    /*
-     * Currently, if a user object in the given list does not survive input validation, it will be
-     * ignored. No error will be given to the caller, since json api does not allow data and error
-     * in one response.
-     *
-     */
 
-    final List<User> createdUsers = new ArrayList<>();
-    for (final User u : users) {
-      try {
-        createdUsers.add(this.newUser(u));
-      } catch (final BadRequestException ex) {
-        // Do nothing
-        continue;
-      }
-    }
-
-    return createdUsers;
+  @Path("batch")
+  public BatchRequestSubResource createAll() {
+    return this.batchSubResource;
   }
 
   /**

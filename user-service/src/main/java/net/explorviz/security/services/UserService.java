@@ -1,5 +1,7 @@
 package net.explorviz.security.services;
 
+import com.mongodb.DuplicateKeyException;
+import com.mongodb.MongoException;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -25,60 +27,78 @@ import xyz.morphia.Datastore;
  *
  */
 @Service
-public class UserMongoCrudService implements MongoCrudService<User> {
+public class UserService {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(UserMongoCrudService.class);
+  private static final String ADMIN = "admin";
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(UserService.class);
 
 
 
   private final Datastore datastore;
 
 
-  @Inject
-  private IdGenerator idGenerator;
+  private final IdGenerator idGenerator;
 
   /**
-   * Creates a new UserMongoDB
+   * Creates a new UserMongoDB.
    *
    * @param datastore - the datastore instance
    */
   @Inject
-  public UserMongoCrudService(final Datastore datastore) {
-
+  public UserService(final Datastore datastore, final IdGenerator idGenerator) {
+    this.idGenerator = idGenerator;
     this.datastore = datastore;
   }
 
 
-  @Override
   public List<User> getAll() {
     return this.datastore.createQuery(User.class).asList();
   }
 
-  @Override
+
   /**
-   * Persists an user entity
+   * Persists an user entity.
    *
    * @param user - a user entity
    * @return an Optional, which contains a User or is empty
+   * @throws UserCrudException if the user could not be saved
    */
-  public Optional<User> saveNewEntity(final User user) {
+  public User saveNewEntity(final User user) throws UserCrudException {
     // Generate an id
     user.setId(this.idGenerator.generateId());
 
-    this.datastore.save(user);
+    try {
+      this.datastore.save(user);
 
-    if (LOGGER.isInfoEnabled()) {
-      LOGGER.info("Inserted new user with id " + user.getId());
+      if (LOGGER.isInfoEnabled()) {
+        LOGGER.info("Inserted new user with id " + user.getId());
+      }
+    } catch (final DuplicateKeyException e) {
+      throw new DuplicateUserException(
+          String.format("User with %s already exists", user.getUsername()));
+    } catch (final MongoException e) {
+      if (LOGGER.isErrorEnabled()) {
+        LOGGER.error("Could not save user: " + e.getMessage());
+      }
+      throw new UserCrudException("Could no save user", e);
     }
-    return Optional.ofNullable(user);
+
+
+    return user;
   }
 
-  @Override
   public void updateEntity(final User user) {
     this.datastore.save(user);
   }
 
-  @Override
+  /**
+   * Returns the user with the given id.
+   *
+   * @param id the id of the user to retrieve
+   * @return and {@link Optional} which contains the user with given id or is empty if such a user
+   *         does not exist
+   */
   public Optional<User> getEntityById(final String id) {
 
     final User userObject = this.datastore.get(User.class, id);
@@ -86,7 +106,13 @@ public class UserMongoCrudService implements MongoCrudService<User> {
     return Optional.ofNullable(userObject);
   }
 
-  @Override
+  /**
+   * Tries to delete the user with the given id. If such a user does not exists, nothing happens.
+   *
+   * @param id id of the user to delete
+   * @throws UserCrudException if the id belongs to the a user with the admin role and there are no
+   *         other admin users. This prevents the deletion of the last admin.
+   */
   public void deleteEntityById(final String id) throws UserCrudException {
 
     if (this.isLastAdmin(id)) {
@@ -117,7 +143,7 @@ public class UserMongoCrudService implements MongoCrudService<User> {
     }
 
     final boolean isadmin =
-        user.getRoles().stream().filter(r -> r.getDescriptor().equals("admin")).count() == 1;
+        user.getRoles().stream().filter(r -> r.getDescriptor().equals(ADMIN)).count() == 1;
 
     final boolean otheradmin = this.getAll()
         .stream()
@@ -125,7 +151,7 @@ public class UserMongoCrudService implements MongoCrudService<User> {
             .stream()
             .map(r -> r.getDescriptor())
             .collect(Collectors.toList())
-            .contains("admin"))
+            .contains(ADMIN))
         .filter(u -> !u.getId().equals(id))
         .count() > 0;
 
@@ -134,7 +160,14 @@ public class UserMongoCrudService implements MongoCrudService<User> {
 
   }
 
-  @Override
+
+  /**
+   * Find the first user that satisfies the condition specified in the paramters.
+   *
+   * @param field the field to compare
+   * @param value the value to compare with
+   * @return the first user which's field contains the given value.
+   */
   public Optional<User> findEntityByFieldValue(final String field, final Object value) {
 
     final User foundUser = this.datastore.createQuery(User.class).filter(field, value).get();
