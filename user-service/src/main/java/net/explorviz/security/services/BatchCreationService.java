@@ -19,6 +19,8 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MultivaluedHashMap;
 import javax.ws.rs.core.Response;
 import net.explorviz.security.model.UserBatchRequest;
+import net.explorviz.security.services.exceptions.MalformedBatchRequestException;
+import net.explorviz.security.services.exceptions.UserCrudException;
 import net.explorviz.security.util.PasswordStorage;
 import net.explorviz.security.util.PasswordStorage.CannotPerformOperationException;
 import net.explorviz.settings.model.UserPreference;

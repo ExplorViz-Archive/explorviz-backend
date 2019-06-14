@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import net.explorviz.security.model.UserBatchRequest;
+import net.explorviz.security.services.exceptions.UserCrudException;
 import net.explorviz.shared.common.idgen.IdGenerator;
 import net.explorviz.shared.security.model.User;
 import net.explorviz.shared.security.model.roles.Role;

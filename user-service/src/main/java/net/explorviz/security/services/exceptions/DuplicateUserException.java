@@ -1,4 +1,4 @@
-package net.explorviz.security.services;
+package net.explorviz.security.services.exceptions;
 
 /**
  * Sub-Exception of {@link UserCrudException} that is thrown when a user is tried to persist, that

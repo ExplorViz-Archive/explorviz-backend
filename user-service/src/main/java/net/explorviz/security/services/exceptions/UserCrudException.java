@@ -1,4 +1,4 @@
-package net.explorviz.security.services;
+package net.explorviz.security.services.exceptions;
 
 /**
  * Exception for all errors that occur during user CRUD operations.

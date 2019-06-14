@@ -7,6 +7,8 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.inject.Inject;
+import net.explorviz.security.services.exceptions.DuplicateUserException;
+import net.explorviz.security.services.exceptions.UserCrudException;
 import net.explorviz.shared.common.idgen.IdGenerator;
 import net.explorviz.shared.security.model.User;
 import net.explorviz.shared.security.model.roles.Role;

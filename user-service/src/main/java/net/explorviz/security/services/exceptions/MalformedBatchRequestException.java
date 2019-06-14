@@ -1,4 +1,4 @@
-package net.explorviz.security.services;
+package net.explorviz.security.services.exceptions;
 
 import net.explorviz.security.model.UserBatchRequest;
 
