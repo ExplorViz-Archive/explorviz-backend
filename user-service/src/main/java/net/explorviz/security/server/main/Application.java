@@ -1,10 +1,12 @@
 package net.explorviz.security.server.main;
 
+import net.explorviz.security.model.UserBatchRequest;
 import net.explorviz.security.server.filter.AuthenticationFilter;
 import net.explorviz.security.server.providers.UserJsonApiDeserializer;
 import net.explorviz.security.server.resources.RoleResource;
 import net.explorviz.security.server.resources.TokenResource;
 import net.explorviz.security.server.resources.UserResource;
+import net.explorviz.settings.model.UserPreference;
 import net.explorviz.shared.common.jsonapi.ResourceConverterFactory;
 import net.explorviz.shared.common.provider.GenericTypeFinder;
 import net.explorviz.shared.common.provider.JsonApiListProvider;
@@ -31,6 +33,8 @@ public class Application extends ResourceConfig {
 
     GenericTypeFinder.getTypeMap().put("User", User.class);
     GenericTypeFinder.getTypeMap().put("Role", Role.class);
+    GenericTypeFinder.getTypeMap().put("UserBatchRequest", UserBatchRequest.class);
+    GenericTypeFinder.getTypeMap().put("UserPreference", UserPreference.class);
 
     // register CDI
     this.register(new DependencyInjectionBinder());
