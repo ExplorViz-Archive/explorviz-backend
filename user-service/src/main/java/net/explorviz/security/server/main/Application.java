@@ -1,11 +1,12 @@
 package net.explorviz.security.server.main;
 
+import net.explorviz.security.model.UserBatchRequest;
 import net.explorviz.security.server.filter.AuthenticationFilter;
 import net.explorviz.security.server.providers.UserJsonApiDeserializer;
 import net.explorviz.security.server.resources.RoleResource;
-import net.explorviz.security.server.resources.SettingsResource;
 import net.explorviz.security.server.resources.TokenResource;
 import net.explorviz.security.server.resources.UserResource;
+import net.explorviz.settings.model.UserPreference;
 import net.explorviz.shared.common.jsonapi.ResourceConverterFactory;
 import net.explorviz.shared.common.provider.GenericTypeFinder;
 import net.explorviz.shared.common.provider.JsonApiListProvider;
@@ -19,10 +20,6 @@ import net.explorviz.shared.security.filters.AuthorizationFilter;
 import net.explorviz.shared.security.filters.CorsResponseFilter;
 import net.explorviz.shared.security.model.User;
 import net.explorviz.shared.security.model.roles.Role;
-import net.explorviz.shared.security.model.settings.BooleanSettingDescriptor;
-import net.explorviz.shared.security.model.settings.NumericSettingDescriptor;
-import net.explorviz.shared.security.model.settings.StringSettingDescriptor;
-import net.explorviz.shared.security.model.settings.UserSettings;
 import org.glassfish.jersey.server.ResourceConfig;
 
 /**
@@ -39,10 +36,8 @@ public class Application extends ResourceConfig {
 
     GenericTypeFinder.getTypeMap().put("User", User.class);
     GenericTypeFinder.getTypeMap().put("Role", Role.class);
-    GenericTypeFinder.getTypeMap().put("UserSettings", UserSettings.class);
-    GenericTypeFinder.getTypeMap().put("BooleanSettingDescriptor", BooleanSettingDescriptor.class);
-    GenericTypeFinder.getTypeMap().put("NumericSettingDescriptor", NumericSettingDescriptor.class);
-    GenericTypeFinder.getTypeMap().put("StringSettingDescriptor", StringSettingDescriptor.class);
+    GenericTypeFinder.getTypeMap().put("UserBatchRequest", UserBatchRequest.class);
+    GenericTypeFinder.getTypeMap().put("UserPreference", UserPreference.class);
 
     // register CDI
     this.register(new DependencyInjectionBinder());
@@ -70,7 +65,6 @@ public class Application extends ResourceConfig {
     this.register(TokenResource.class);
     this.register(UserResource.class);
     this.register(RoleResource.class);
-    this.register(SettingsResource.class);
   }
 
 

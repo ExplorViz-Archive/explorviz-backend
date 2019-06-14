@@ -47,6 +47,18 @@ jobs:
       jdk: openjdk8
       script: cd history-service && ../.travis/docker_push.sh
     
+    - stage: deploy
+      name: "Docker Image: Broadcast Service"
+      if: (type = push) AND ((branch = dev-1) OR (branch = master))
+      jdk: openjdk8
+      script: cd broadcast-service && ../.travis/docker_push.sh
+
+    - stage: deploy
+      name: "Docker Image: Settings Service"
+      if: (type = push) AND ((branch = dev-1) OR (branch = master))
+      jdk: openjdk8
+      script: cd settings-service && ../.travis/docker_push.sh
+    
     - stage: documentation
       name: "Publish documentation"
       if: (type = push) AND (branch = master)

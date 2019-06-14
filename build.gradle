@@ -18,7 +18,9 @@ def exportedProjects= [
 		':user-service',
 		':analysis-service',
 		':discovery-service',
-		':history-service'
+		':history-service',
+		':settings-service',
+		':broadcast-service'
 ]
 
 task alljavadoc(type: Javadoc) {
@@ -97,11 +99,16 @@ subprojects {
 	// SL4J
 	implementation group: 'org.slf4j', name: 'slf4j-simple', version: '1.6.1'
     
-    if (project.name == 'user-service' || project.name == 'landscape-service' || project.name == 'discovery-service' || project.name == 'history-service') {
+    // Apache Commons
+    implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.9'
+    
+    
+    if (project.name == 'user-service' || project.name == 'landscape-service' || project.name == 'discovery-service' || project.name == 'settings-service' || project.name == 'history-service' || project.name == 'broadcast-service') {
     	// subprojects, which are supposed to be a JAX-RS-based microservice
     
     	// Jersey and Servlet
 		implementation group: 'org.glassfish.jersey.containers', name: 'jersey-container-servlet', version:'2.27'
+		compile group: 'org.glassfish.jersey.core', name: 'jersey-client', version: '2.28'
 		implementation group: 'javax.servlet', name: 'javax.servlet-api', version:'3.0.1'
 		implementation group: 'org.glassfish.jersey.inject', name: 'jersey-hk2', version:'2.27'
 		// compile group: 'org.glassfish.jersey.test-framework.providers', name: 'jersey-test-framework-provider-jdk-http', version: '2.27'
@@ -123,6 +130,8 @@ subprojects {
 		// Database
 		compile group: 'org.mongodb', name: 'mongo-java-driver', version: '3.9.1'
 	}
+	
+	
 	
 	// Testing and Mocking
 	testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.4.0'

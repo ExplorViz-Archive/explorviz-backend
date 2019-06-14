@@ -3,6 +3,7 @@ package net.explorviz.security.services;
 /**
  * Exception for all errors that occur during user CRUD operations.
  */
+@SuppressWarnings("serial")
 public class UserCrudException extends Exception {
 
   public UserCrudException() {
