@@ -44,7 +44,7 @@ public final class Main {
     // Request Log Handler
     final RequestLogHandler requestLogsHandler = new RequestLogHandler();
     final Slf4jRequestLog log = new Slf4jRequestLog();
-    log.setLoggerName("net.explorviz.accesslog");
+    log.setLoggerName("net.explorviz.requestlog");
     requestLogsHandler.setRequestLog(log);
     handlers.addHandler(requestLogsHandler);
 

@@ -14,7 +14,7 @@
       </encoder>
   </appender>
 
-  <appender name="LOGSTASH_ACCESS" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+  <appender name="LOGSTASH_REQUEST" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
   	<destination>127.0.0.1:4561</destination>
   	
   	<encoder class="net.logstash.logback.encoder.LogstashEncoder">
@@ -22,8 +22,8 @@
       </encoder>
   </appender>
   
-  <logger name="net.explorviz.accesslog" level = "INFO">
-    <appender-ref ref="LOGSTASH_ACCESS" /> 
+  <logger name="net.explorviz.requestlog" level = "INFO" additivity = "false">
+    <appender-ref ref="LOGSTASH_REQUEST" />
   </logger>
 
 
