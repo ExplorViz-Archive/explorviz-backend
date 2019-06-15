@@ -64,7 +64,7 @@ public class SetupApplicationListener implements ApplicationEventListener {
     final List<Setting> defaults = new ArrayList<Setting>(Arrays.asList(
         new FlagSetting("showFpsCounter", "Show FPS Counter",
             "\'Frames Per Second\' metrics in visualizations", origin, false),
-        new FlagSetting("appVizTransparency", "App Viz Transparency",
+        new FlagSetting("appVizTransparency", "Enable Transparent Components",
             "Transparency effect for selection (left click) in application visualization", origin,
             true),
         new FlagSetting("keepHighlightingOnOpenOrClose", "Keep Highlighting On Open Or Close",
@@ -78,8 +78,11 @@ public class SetupApplicationListener implements ApplicationEventListener {
             5.0),
         new RangeSetting("appVizTransparencyIntensity",
             "Transparency Intensity in Application Visualization",
-            "Transparency effect intensity (\'App Viz Transparency\' must be enabled)", origin, 0.1,
-            0.1, 0.5)));
+            "Transparency effect intensity (\'Enable Transparent Components\' must be enabled)",
+            origin, 0.1, 0.1, 0.5),
+        new RangeSetting("appVizCurvyCommHeight", "Curviness of the Communication Lines",
+            "If greater 0.0, communication lines are rendered arc-shaped with set height (Straight lines: 0.0)",
+            origin, 0.0, 0.0, 50.0)));
 
     defaults.stream().forEach(this.settingRepo::createOrOverride);
 
