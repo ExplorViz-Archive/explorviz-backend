@@ -21,6 +21,8 @@ public class PaginationFilter implements ContainerResponseFilter {
   private static final int DEFAULT_PAGE_VALUE = 0;
   private static final int DEFAULT_PER_PAGE_VALUE = 100;
 
+  private List<Object> finalResultList = new ArrayList<>();
+
   @Override
   public void filter(final ContainerRequestContext requestContext,
       final ContainerResponseContext responseContext) throws IOException {
@@ -53,10 +55,11 @@ public class PaginationFilter implements ContainerResponseFilter {
       final List<List<Object>> resultList = this.splitListIntoChunks(entityList, perPageParamValue);
 
       if (pageParamValue <= resultList.size()) {
-        responseContext.setEntity(resultList.get(pageParamValue));
+        this.finalResultList = resultList.get(pageParamValue);
       } else {
-        responseContext.setEntity(resultList.get(0));
+        this.finalResultList = resultList.get(0);
       }
+      responseContext.setEntity(this.finalResultList);
     }
   }
 
@@ -72,6 +75,10 @@ public class PaginationFilter implements ContainerResponseFilter {
       resultList.get(resultList.size() - 1).add(o);
     }
     return resultList;
+  }
+
+  public List<Object> getFinalResultList() {
+    return this.finalResultList;
   }
 
 }
