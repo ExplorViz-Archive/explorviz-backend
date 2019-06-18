@@ -1,10 +1,23 @@
 package net.explorviz.settings.services.kafka;
 
-import net.explorviz.settings.services.kafka.UserEventConsumer.UserEvent;
-
+/**
+ * Handler for user events.
+ *
+ */
 public interface UserEventHandler {
 
+  /**
+   * Called each time a user has been deleted
+   * 
+   * @param userId the id of the deleted user
+   */
+  void onDelete(String userId);
 
-  void handle(UserEvent event);
+  /**
+   * Called each time a new user was created
+   * 
+   * @param userId id of the deleted user
+   */
+  void onCreate(String userId);
 
 }

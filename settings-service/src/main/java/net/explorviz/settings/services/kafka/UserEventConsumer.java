@@ -4,9 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.time.Duration;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Properties;
 import net.explorviz.shared.config.annotations.Config;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -29,7 +27,7 @@ public class UserEventConsumer implements Runnable {
 
   private final KafkaConsumer<String, String> kafkaConsumer;
 
-  private final List<UserEventHandler> handler = new ArrayList();
+  private UserEventHandler handler;
 
 
   public UserEventConsumer(
@@ -48,8 +46,8 @@ public class UserEventConsumer implements Runnable {
     this.kafkaConsumer = new KafkaConsumer<>(properties);
   }
 
-  public void register(final UserEventHandler handler) {
-    this.handler.add(handler);
+  public void setHandler(final UserEventHandler handler) {
+    this.handler = handler;
   }
 
   @Override
@@ -82,7 +80,15 @@ public class UserEventConsumer implements Runnable {
   }
 
   private void notifyHandler(final UserEvent event) {
-    this.handler.forEach(h -> h.handle(event));
+    if (this.handler != null) {
+      switch (event.getEvent()) {
+        case CREATED:
+          this.handler.onCreate(event.getId());
+          break;
+        case DELETED:
+          this.handler.onDelete(event.getId());
+      }
+    }
   }
 
   static class UserEvent {

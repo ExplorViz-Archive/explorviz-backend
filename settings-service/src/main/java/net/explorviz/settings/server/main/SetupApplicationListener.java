@@ -10,6 +10,7 @@ import net.explorviz.settings.model.RangeSetting;
 import net.explorviz.settings.model.Setting;
 import net.explorviz.settings.services.SettingsRepository;
 import net.explorviz.settings.services.kafka.UserEventConsumer;
+import net.explorviz.settings.services.kafka.UserEventHandler;
 import org.glassfish.jersey.server.monitoring.ApplicationEvent;
 import org.glassfish.jersey.server.monitoring.ApplicationEvent.Type;
 import org.glassfish.jersey.server.monitoring.ApplicationEventListener;
@@ -17,7 +18,6 @@ import org.glassfish.jersey.server.monitoring.RequestEvent;
 import org.glassfish.jersey.server.monitoring.RequestEventListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import xyz.morphia.Datastore;
 
 /**
  * Primary starting class - executed, when the servlet context is started.
@@ -30,13 +30,13 @@ public class SetupApplicationListener implements ApplicationEventListener {
   private static final String ADMIN_NAME = "admin";
 
   @Inject
-  private Datastore datastore;
-
-  @Inject
   private SettingsRepository settingRepo;
 
   @Inject
   private UserEventConsumer userEventListener;
+
+  @Inject
+  private UserEventHandler userEventHandler;
 
   @Override
   public void onEvent(final ApplicationEvent event) {
@@ -48,6 +48,7 @@ public class SetupApplicationListener implements ApplicationEventListener {
 
     if (event.getType().equals(t)) {
       this.addDefaultSettings();
+      this.userEventListener.setHandler(this.userEventHandler);
       new Thread(this.userEventListener).start();
     }
 
