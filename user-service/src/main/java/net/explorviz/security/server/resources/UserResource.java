@@ -195,21 +195,30 @@ public class UserResource {
    * Retrieves all users that have a specific role.
    *
    * @param role - the role to be searched for
+   * @param batchId - the batchId to search for
    * @return a list of all users with the given role
    */
   @GET
   @RolesAllowed({ADMIN_ROLE})
   @Produces(MEDIA_TYPE)
-  public List<User> usersByRole(@QueryParam("role") final String role) {
+  public List<User> allUsers(@QueryParam("role") final String role,
+      @QueryParam("batchid") final String batchId) {
 
-
+    List<User> users;
     // Return all users if role parameter is omitted
     if (role == null) {
-      return this.userCrudService.getAll();
+      users = this.userCrudService.getAll();
+    } else {
+      users = this.userCrudService.getUsersByRole(role);
     }
-    return this.userCrudService.getUsersByRole(role);
 
-
+    if (batchId != null && !batchId.isEmpty()) {
+      users = users.stream()
+          .filter(u -> u.getBatchId() != null)
+          .filter(u -> u.getBatchId().contentEquals(batchId))
+          .collect(Collectors.toList());
+    }
+    return users;
   }
 
   /**
