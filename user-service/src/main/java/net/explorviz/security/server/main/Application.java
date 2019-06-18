@@ -12,11 +12,15 @@ import net.explorviz.shared.common.provider.GenericTypeFinder;
 import net.explorviz.shared.common.provider.JsonApiListProvider;
 import net.explorviz.shared.common.provider.JsonApiProvider;
 import net.explorviz.shared.exceptions.mapper.GeneralExceptionMapper;
+import net.explorviz.shared.exceptions.mapper.InvalidJsonApiResourceExceptionMapper;
+import net.explorviz.shared.exceptions.mapper.UnregisteredTypeExceptionMapper;
 import net.explorviz.shared.exceptions.mapper.WebApplicationExceptionMapper;
+// import net.explorviz.shared.exceptions.mapper.;
 import net.explorviz.shared.security.filters.AuthorizationFilter;
 import net.explorviz.shared.security.filters.CorsResponseFilter;
 import net.explorviz.shared.security.model.User;
 import net.explorviz.shared.security.model.roles.Role;
+import org.glassfish.jersey.jackson.JacksonFeature;
 import org.glassfish.jersey.server.ResourceConfig;
 
 /**
@@ -46,10 +50,15 @@ public class Application extends ResourceConfig {
     this.register(AuthorizationFilter.class);
 
     // exception handling (mind the order !)
+    this.register(InvalidJsonApiResourceExceptionMapper.class);
+    this.register(UnregisteredTypeExceptionMapper.class);
     this.register(WebApplicationExceptionMapper.class);
     this.register(GeneralExceptionMapper.class);
 
     this.register(SetupApplicationListener.class);
+
+    // necessary for plain Json provider, e.g., messagebodyreader in TokenResource
+    this.register(JacksonFeature.class);
 
     this.register(UserJsonApiDeserializer.class);
     this.register(JsonApiProvider.class);
