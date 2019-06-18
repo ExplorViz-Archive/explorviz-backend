@@ -3,6 +3,7 @@ package net.explorviz.security.server.resources;
 import com.mongodb.DuplicateKeyException;
 import com.mongodb.MongoException;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.ws.rs.BadRequestException;
@@ -269,6 +270,20 @@ public class UserResource {
     }
 
 
+    return Response.status(HttpStatus.NO_CONTENT_204).build();
+  }
+
+  /**
+   * Deletes all given users.
+   *
+   * @param users the users to delete
+   * @return 204 if no error occured
+   */
+  @DELETE
+  @RolesAllowed({ADMIN_ROLE})
+  public Response removeAll(final List<User> users) {
+
+    users.forEach(u -> this.removeUser(u.getId()));
     return Response.status(HttpStatus.NO_CONTENT_204).build();
   }
 
