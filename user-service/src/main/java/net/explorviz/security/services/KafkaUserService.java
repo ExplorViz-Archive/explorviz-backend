@@ -11,6 +11,9 @@ import org.jvnet.hk2.annotations.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Pushes user events to a kafka topic.
+ */
 @Service
 public class KafkaUserService {
 
@@ -27,6 +30,12 @@ public class KafkaUserService {
     this.producer = producer;
   }
 
+  /**
+   * Publish that a user has been deleted.
+   *
+   * @param deletedId the id of the created user
+   * @throws JsonProcessingException if the event could not be serialized
+   */
   public void publishDeleted(final String deletedId) throws JsonProcessingException {
     final UserEvent event = new UserEvent(EventType.DELETED, deletedId);
     final ObjectMapper om = new ObjectMapper();
@@ -38,6 +47,12 @@ public class KafkaUserService {
     LOGGER.info("Published deletion event to kafka");
   }
 
+  /**
+   * Publish that a user has been created.
+   *
+   * @param createdId the id of the created user
+   * @throws JsonProcessingException if the event could not be serialized
+   */
   public void publishCreated(final String createdId) throws JsonProcessingException {
     final UserEvent event = new UserEvent(EventType.DELETED, createdId);
     final ObjectMapper om = new ObjectMapper();

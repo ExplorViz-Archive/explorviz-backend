@@ -1,10 +1,12 @@
-package net.explorviz.settings.services;
+package net.explorviz.settings.services.kafka;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Properties;
 import net.explorviz.shared.config.annotations.Config;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -16,16 +18,21 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Consumes User Events published on Kafka
+ * Consumes user events published on Kafka
  *
  */
 @Service
-public class UserEventListener implements Runnable {
-  private static final Logger LOGGER = LoggerFactory.getLogger(UserEventListener.class);
+public class UserEventConsumer implements Runnable {
+  private static final Logger LOGGER = LoggerFactory.getLogger(UserEventConsumer.class);
   private static final String TOPIC = "user-events";
+
+
   private final KafkaConsumer<String, String> kafkaConsumer;
 
-  public UserEventListener(
+  private final List<UserEventHandler> handler = new ArrayList();
+
+
+  public UserEventConsumer(
       @Config("exchange.kafka.bootstrap.servers") final String kafkaBootStrapServerList,
       @Config("exchange.kafka.group.id") final String groupId) {
 
@@ -39,6 +46,10 @@ public class UserEventListener implements Runnable {
         "org.apache.kafka.common.serialization.StringDeserializer");
 
     this.kafkaConsumer = new KafkaConsumer<>(properties);
+  }
+
+  public void register(final UserEventHandler handler) {
+    this.handler.add(handler);
   }
 
   @Override
@@ -62,14 +73,16 @@ public class UserEventListener implements Runnable {
         try {
           e = mapper.readValue(serializedUserEvent, UserEvent.class);
           LOGGER.info("Received User Event: " + e.toString());
-        } catch (final IOException e1) {
-          LOGGER.error("Could not deserialize value");
+          this.notifyHandler(e);
+        } catch (final IOException ex) {
+          LOGGER.error("Could not deserialize value", ex);
         }
-
-
       }
     }
+  }
 
+  private void notifyHandler(final UserEvent event) {
+    this.handler.forEach(h -> h.handle(event));
   }
 
   static class UserEvent {
@@ -79,15 +92,18 @@ public class UserEventListener implements Runnable {
     }
 
     @JsonProperty("event")
-    private final EventType event;
+    private EventType event;
 
     @JsonProperty("id")
-    private final String id;
+    private String id;
+
 
     public UserEvent(final EventType event, final String id) {
       this.event = event;
       this.id = id;
     }
+
+    public UserEvent() {}
 
     public EventType getEvent() {
       return this.event;
