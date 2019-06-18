@@ -2,6 +2,7 @@ package net.explorviz.security.server.main;
 
 import net.explorviz.security.model.UserBatchRequest;
 import net.explorviz.security.server.filter.AuthenticationFilter;
+import net.explorviz.security.server.filter.PaginationFilter;
 import net.explorviz.security.server.providers.UserJsonApiDeserializer;
 import net.explorviz.security.server.resources.RoleResource;
 import net.explorviz.security.server.resources.TokenResource;
@@ -48,6 +49,8 @@ public class Application extends ResourceConfig {
 
     this.register(net.explorviz.shared.security.filters.AuthenticationFilter.class);
     this.register(AuthorizationFilter.class);
+
+    this.register(PaginationFilter.class);
 
     // exception handling (mind the order !)
     this.register(InvalidJsonApiResourceExceptionMapper.class);
