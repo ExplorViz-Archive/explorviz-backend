@@ -118,7 +118,7 @@ public class UserResourceTest {
     u2.setPassword("testPassword");
     this.userResource.newUser(u2);
 
-    final List<User> usersFound = this.userResource.usersByRole(null);
+    final List<User> usersFound = this.userResource.allUsers(null, null);
     assertEquals(2, usersFound.size());
 
   }
@@ -182,13 +182,13 @@ public class UserResourceTest {
     this.userResource.newUser(u1);
     this.userResource.newUser(u2);
 
-    final List<User> role1Users = this.userResource.usersByRole("role1");
+    final List<User> role1Users = this.userResource.allUsers("role1", "");
     assertEquals(2, role1Users.size());
 
-    final List<User> role2Users = this.userResource.usersByRole("role2");
+    final List<User> role2Users = this.userResource.allUsers("role2", "");
     assertEquals(1, role2Users.size());
 
-    final List<User> role3Users = this.userResource.usersByRole("role3");
+    final List<User> role3Users = this.userResource.allUsers("role3", "");
     assertEquals(0, role3Users.size());
 
   }

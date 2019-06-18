@@ -19,7 +19,6 @@ import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.stubbing.Answer;
-import xyz.morphia.Datastore;
 
 /**
  * Unit test for {@link BatchCreationService}.
@@ -29,7 +28,7 @@ import xyz.morphia.Datastore;
 public class BatchCreationServiceTest {
 
   @Mock
-  private Datastore ds;
+  private UserService us;
 
   @Mock
   private IdGenerator idGenerator;
@@ -44,8 +43,7 @@ public class BatchCreationServiceTest {
 
   @BeforeEach
   public void setUp() {
-    this.userService = new UserService(this.ds, this.idGenerator, null);
-    this.bcs = new BatchCreationService(this.userService, null, "");
+    this.bcs = new BatchCreationService(this.us, null, this.idGenerator, "");
   }
 
   @Test
@@ -57,16 +55,18 @@ public class BatchCreationServiceTest {
     final UserBatchRequest batch =
         new UserBatchRequest("test", size, passwords, Arrays.asList(new Role("admin")), null);
 
-    Mockito.doAnswer(new Answer<Void>() {
+    Mockito.doAnswer(new Answer<User>() {
 
       @Override
-      public Void answer(final InvocationOnMock invocation) throws Throwable {
+      public User answer(final InvocationOnMock invocation) throws Throwable {
         final User u = invocation.getArgument(0);
         BatchCreationServiceTest.this.users.add(u);
-        return null;
+        return u;
       }
 
-    }).when(this.ds).save(ArgumentMatchers.any(User.class));
+    }).when(this.us).saveNewEntity(ArgumentMatchers.any(User.class));
+
+
 
     Mockito.when(this.idGenerator.generateId())
         .thenReturn(Long.toString(this.id.incrementAndGet()));

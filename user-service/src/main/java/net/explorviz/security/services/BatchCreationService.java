@@ -24,6 +24,7 @@ import net.explorviz.security.services.exceptions.UserCrudException;
 import net.explorviz.security.util.PasswordStorage;
 import net.explorviz.security.util.PasswordStorage.CannotPerformOperationException;
 import net.explorviz.settings.model.UserPreference;
+import net.explorviz.shared.common.idgen.IdGenerator;
 import net.explorviz.shared.common.jsonapi.ResourceConverterFactory;
 import net.explorviz.shared.common.provider.JsonApiProvider;
 import net.explorviz.shared.config.annotations.Config;
@@ -52,6 +53,7 @@ public class BatchCreationService {
 
   private final String settingsServiceHost;
 
+  private final IdGenerator idGenerator;
 
   /**
    * Creates a new service.
@@ -62,10 +64,11 @@ public class BatchCreationService {
    */
   @Inject
   public BatchCreationService(final UserService userService, final ResourceConverter converter,
-      @Config("services.settings") final String settingServiceHost) {
+      final IdGenerator idGen, @Config("services.settings") final String settingServiceHost) {
     this.userService = userService;
     this.settingsServiceHost = settingServiceHost;
     this.converter = converter;
+    this.idGenerator = idGen;
   }
 
   /**
@@ -83,13 +86,15 @@ public class BatchCreationService {
 
     final List<User> createdUsers = new ArrayList<>();
     final List<String> createdPrefs = new ArrayList<>();
-
+    final String batchId = this.idGenerator.generateId();
+    batch.setId(batchId);
 
     for (int i = 0; i < batch.getCount(); i++) {
 
       User newUser = null;
       try {
-        newUser = this.newUser(batch.getPrefix(), i, batch.getPasswords().get(i), batch.getRoles());
+        newUser = this
+            .newUser(batch.getPrefix(), i, batch.getPasswords().get(i), batch.getRoles(), batchId);
       } catch (final CannotPerformOperationException e1) {
         if (LOGGER.isErrorEnabled()) {
           LOGGER.error("Batch request failed, rolling back.");
@@ -250,7 +255,7 @@ public class BatchCreationService {
   }
 
   private User newUser(final String pref, final int num, final String password,
-      final List<Role> roles) throws CannotPerformOperationException {
+      final List<Role> roles, final String batchId) throws CannotPerformOperationException {
     final StringBuilder sb = new StringBuilder();
     final String name = sb.append(pref).append('-').append(num).toString();
 
@@ -258,7 +263,7 @@ public class BatchCreationService {
     final String hashed = PasswordStorage.createHash(password);
 
 
-    return new User(null, name, hashed, roles);
+    return new User(null, name, hashed, roles, batchId);
   }
 
 }

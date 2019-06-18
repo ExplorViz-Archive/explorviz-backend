@@ -18,12 +18,9 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 @Type("userbatchrequest")
 public class UserBatchRequest {
 
-  /*
-   * There is actually no need for an id since such object are only transmitted from the client to
-   * the server. JSON-API enforces the existence of an @Id field.
-   */
+
   @Id
-  private final String id = "const";
+  private String id;
 
   private final String prefix;
   private final int count;
@@ -88,6 +85,11 @@ public class UserBatchRequest {
 
   public Map<String, Object> getPreferences() {
     return this.preferences;
+  }
+
+  public void setId(final String batchId) {
+    this.id = batchId;
+
   }
 
 
