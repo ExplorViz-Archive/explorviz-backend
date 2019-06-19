@@ -45,15 +45,26 @@ public class UserResource {
   private static final String MSG_USER_NOT_RETRIEVED = "Could not retrieve user ";
   private static final String ADMIN_ROLE = "admin";
 
-  @Inject
-  private UserService userCrudService;
+  private final UserService userCrudService;
 
-  @Inject
-  private RoleService roleService;
+  private final RoleService roleService;
 
+  private final BatchRequestSubResource batchSubResource;
 
+  /**
+   * Constructor for this class.
+   *
+   * @param userCrudService - Service to obtain actual users.
+   * @param roleService - Service to obtain all Roles.
+   * @param batchSubResource - Sub Resource Class.
+   */
   @Inject
-  private BatchRequestSubResource batchSubResource;
+  public UserResource(final UserService userCrudService, final RoleService roleService,
+      final BatchRequestSubResource batchSubResource) {
+    this.userCrudService = userCrudService;
+    this.roleService = roleService;
+    this.batchSubResource = batchSubResource;
+  }
 
   // CHECKSTYLE.OFF: Cyclomatic
 
