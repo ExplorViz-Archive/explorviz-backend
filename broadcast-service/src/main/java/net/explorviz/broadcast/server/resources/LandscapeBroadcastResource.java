@@ -17,7 +17,7 @@ import net.explorviz.broadcast.server.helper.LandscapeBroadcastService;
  *
  */
 @Path("v1/landscapes/broadcast")
-@RolesAllowed({"admin"})
+@RolesAllowed({"admin", "user"})
 public class LandscapeBroadcastResource {
 
   private final LandscapeBroadcastService broadcastService;
