@@ -45,6 +45,7 @@ public class UserResource {
   private static final String MSG_INVALID_PASSWORD = "Invalid password";
   private static final String MSG_INVALID_USERNAME = "Invalid username";
   private static final String MSG_USER_NOT_RETRIEVED = "Could not retrieve user ";
+  private static final String MSG_UNKOWN_ROLE = "Unknown role";
   private static final String ADMIN_ROLE = "admin";
 
   @Inject
@@ -85,7 +86,7 @@ public class UserResource {
 
     for (final Role r : user.getRoles()) {
       if (!this.roleService.getAllRoles().contains(r)) {
-        throw new BadRequestException("Unknown role: " + r);
+        throw new BadRequestException(MSG_UNKOWN_ROLE + ": " + r);
       }
     }
 
