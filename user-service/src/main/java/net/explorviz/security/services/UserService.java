@@ -8,12 +8,16 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.inject.Inject;
 import net.explorviz.shared.common.idgen.IdGenerator;
+import net.explorviz.shared.querying.Query;
+import net.explorviz.shared.querying.QueryResult;
+import net.explorviz.shared.querying.Queryable;
 import net.explorviz.shared.security.model.User;
 import net.explorviz.shared.security.model.roles.Role;
 import org.jvnet.hk2.annotations.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import xyz.morphia.Datastore;
+import xyz.morphia.query.FindOptions;
 
 /**
  * Offers CRUD operations on user objects, backed by a MongoDB instance as persistence layer. Each
@@ -27,7 +31,7 @@ import xyz.morphia.Datastore;
  *
  */
 @Service
-public class UserService {
+public class UserService implements Queryable<User> {
 
   private static final String ADMIN = "admin";
 
@@ -193,6 +197,37 @@ public class UserService {
         userList.stream().filter(u -> u.getRoles().contains(role)).collect(Collectors.toList());
 
     return userList;
+  }
+
+
+  @Override
+  public QueryResult<User> query(final Query<User> query) {
+    final xyz.morphia.query.Query<User> q = this.datastore.createQuery(User.class);
+
+    final FindOptions options = new FindOptions();
+    options.limit(query.getPageLength());
+    options.skip(query.getPageIndex() * query.getPageLength());
+    final List<User> ret = q.asList(options);
+    return new QueryResult<User>(query, ret) {
+
+      @Override
+      public Integer getNextPage() {
+        if (ret.size() > 0) {
+          return query.getPageIndex() + 1;
+        } else {
+          return null;
+        }
+      }
+
+      @Override
+      public Integer getPreviousPage() {
+        if (query.getPageIndex() != null && query.getPageIndex() > 0) {
+          return query.getPageIndex() - 1;
+        } else {
+          return null;
+        }
+      }
+    };
   }
 
 
