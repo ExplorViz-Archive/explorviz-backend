@@ -2,8 +2,8 @@ package net.explorviz.security.server.resources;
 
 import com.mongodb.DuplicateKeyException;
 import com.mongodb.MongoException;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.ws.rs.BadRequestException;
@@ -20,9 +20,9 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import net.explorviz.security.services.RoleService;
-import net.explorviz.security.services.TokenService;
-import net.explorviz.security.services.UserCrudException;
-import net.explorviz.security.services.UserMongoCrudService;
+import net.explorviz.security.services.UserService;
+import net.explorviz.security.services.exceptions.DuplicateUserException;
+import net.explorviz.security.services.exceptions.UserCrudException;
 import net.explorviz.security.util.PasswordStorage;
 import net.explorviz.security.util.PasswordStorage.CannotPerformOperationException;
 import net.explorviz.shared.security.model.User;
@@ -45,16 +45,18 @@ public class UserResource {
   private static final String MSG_INVALID_PASSWORD = "Invalid password";
   private static final String MSG_INVALID_USERNAME = "Invalid username";
   private static final String MSG_USER_NOT_RETRIEVED = "Could not retrieve user ";
+  private static final String MSG_UNKOWN_ROLE = "Unknown role";
   private static final String ADMIN_ROLE = "admin";
 
   @Inject
-  private UserMongoCrudService userService;
+  private UserService userCrudService;
 
   @Inject
   private RoleService roleService;
 
+
   @Inject
-  private TokenService tokenService;
+  private BatchRequestSubResource batchSubResource;
 
   // CHECKSTYLE.OFF: Cyclomatic
 
@@ -84,7 +86,7 @@ public class UserResource {
 
     for (final Role r : user.getRoles()) {
       if (!this.roleService.getAllRoles().contains(r)) {
-        throw new BadRequestException("Unknown role: " + r);
+        throw new BadRequestException(MSG_UNKOWN_ROLE + ": " + r);
       }
     }
 
@@ -100,44 +102,20 @@ public class UserResource {
 
 
     try {
-      return this.userService.saveNewEntity(user)
-          .orElseThrow(() -> new InternalServerErrorException());
-    } catch (final DuplicateKeyException ex) {
+      return this.userCrudService.saveNewEntity(user);
+    } catch (final DuplicateUserException ex) {
       throw new BadRequestException("User already exists", ex);
+    } catch (final UserCrudException ex) {
+      LOGGER.error("Error saving user", ex);
+      throw new InternalServerErrorException();
     }
   }
 
 
-  /**
-   * Creates all users in a list.
-   *
-   * @param users the list of users to create
-   * @return a list of users objects, that were saved
-   */
-  @POST
-  @Consumes(MEDIA_TYPE)
-  @Produces(MEDIA_TYPE)
-  @Path("batch") // Todo: Find more suitable path
-  @RolesAllowed({ADMIN_ROLE})
-  public List<User> createAll(final List<User> users) {
-    /*
-     * Currently, if a user object in the given list does not survive input validation, it will be
-     * ignored. No error will be given to the caller, since json api does not allow data and error
-     * in one response.
-     *
-     */
 
-    final List<User> createdUsers = new ArrayList<>();
-    for (final User u : users) {
-      try {
-        createdUsers.add(this.newUser(u));
-      } catch (final BadRequestException ex) {
-        // Do nothing
-        continue;
-      }
-    }
-
-    return createdUsers;
+  @Path("batch")
+  public BatchRequestSubResource createAll() {
+    return this.batchSubResource;
   }
 
   /**
@@ -218,21 +196,30 @@ public class UserResource {
    * Retrieves all users that have a specific role.
    *
    * @param role - the role to be searched for
+   * @param batchId - the batchId to search for
    * @return a list of all users with the given role
    */
   @GET
   @RolesAllowed({ADMIN_ROLE})
   @Produces(MEDIA_TYPE)
-  public List<User> usersByRole(@QueryParam("role") final String role) {
+  public List<User> allUsers(@QueryParam("role") final String role,
+      @QueryParam("batchid") final String batchId) {
 
-
+    List<User> users;
     // Return all users if role parameter is omitted
     if (role == null) {
-      return this.userService.getAll();
+      users = this.userCrudService.getAll();
+    } else {
+      users = this.userCrudService.getUsersByRole(role);
     }
-    return this.userService.getUsersByRole(role);
 
-
+    if (batchId != null && !batchId.isEmpty()) {
+      users = users.stream()
+          .filter(u -> u.getBatchId() != null)
+          .filter(u -> u.getBatchId().contentEquals(batchId))
+          .collect(Collectors.toList());
+    }
+    return users;
   }
 
   /**
@@ -280,6 +267,20 @@ public class UserResource {
       }
       throw new BadRequestException(ex);
     }
+    return Response.status(HttpStatus.NO_CONTENT_204).build();
+  }
+
+  /**
+   * Deletes all given users.
+   *
+   * @param users the users to delete
+   * @return 204 if no error occured
+   */
+  @DELETE
+  @RolesAllowed({ADMIN_ROLE})
+  public Response removeAll(final List<User> users) {
+
+    users.forEach(u -> this.removeUser(u.getId()));
     return Response.status(HttpStatus.NO_CONTENT_204).build();
   }
 

@@ -22,8 +22,8 @@ public class DatastoreFactory implements Factory<Datastore> {
   /**
    * Creates new Datastore, which will be used for injection.
    *
-   * @param host
-   * @param port
+   * @param host the mongo db host
+   * @param port the port
    */
   @Config("mongo.host")
   @Config("mongo.port")

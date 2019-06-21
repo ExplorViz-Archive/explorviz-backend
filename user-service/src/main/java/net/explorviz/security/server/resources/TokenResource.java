@@ -12,7 +12,7 @@ import javax.ws.rs.core.MediaType;
 import net.explorviz.security.model.Token;
 import net.explorviz.security.model.UserCredentials;
 import net.explorviz.security.services.TokenService;
-import net.explorviz.security.services.UserValidationService;
+import net.explorviz.security.services.exceptions.UserValidationService;
 import net.explorviz.shared.security.TokenBasedSecurityContext;
 import net.explorviz.shared.security.annotations.Secured;
 import net.explorviz.shared.security.model.TokenDetails;
