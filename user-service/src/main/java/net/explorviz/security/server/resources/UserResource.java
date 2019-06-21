@@ -49,7 +49,7 @@ public class UserResource {
   private static final String ADMIN_ROLE = "admin";
 
   @Inject
-  private UserService userCrudService;
+  private UserService userService;
 
   @Inject
   private RoleService roleService;
@@ -102,7 +102,7 @@ public class UserResource {
 
 
     try {
-      return this.userCrudService.saveNewEntity(user);
+      return this.userService.saveNewEntity(user);
     } catch (final DuplicateUserException ex) {
       throw new BadRequestException("User already exists", ex);
     } catch (final UserCrudException ex) {
@@ -208,9 +208,9 @@ public class UserResource {
     List<User> users;
     // Return all users if role parameter is omitted
     if (role == null) {
-      users = this.userCrudService.getAll();
+      users = this.userService.getAll();
     } else {
-      users = this.userCrudService.getUsersByRole(role);
+      users = this.userService.getUsersByRole(role);
     }
 
     if (batchId != null && !batchId.isEmpty()) {
