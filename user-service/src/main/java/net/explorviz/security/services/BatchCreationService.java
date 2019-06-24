@@ -52,8 +52,8 @@ public class BatchCreationService {
 
   private final ResourceConverter converter;
 
-
   private final String settingsServiceHost;
+  private final String settingsPrefPath;
 
   private final IdGenerator idGenerator;
 
@@ -66,9 +66,11 @@ public class BatchCreationService {
    */
   @Inject
   public BatchCreationService(final UserService userService, final ResourceConverter converter,
-      final IdGenerator idGen, @Config("services.settings") final String settingServiceHost) {
+      final IdGenerator idGen, @Config("services.settings") final String settingServiceHost,
+      @Config("services.settings.preferences") final String settingsPrefPath) {
     this.userService = userService;
     this.settingsServiceHost = settingServiceHost;
+    this.settingsPrefPath = settingsPrefPath;
     this.converter = converter;
     this.idGenerator = idGen;
   }
@@ -158,7 +160,7 @@ public class BatchCreationService {
     // Initialize client
     final Client c = ClientBuilder.newClient();
     final WebTarget baseTarget =
-        c.target(HTTP + this.settingsServiceHost).path("v1/settings/preferences/");
+        c.target(HTTP + this.settingsServiceHost).path(this.settingsPrefPath + "/");
     final MultivaluedHashMap<String, Object> headers = new MultivaluedHashMap<>();
     headers.putSingle(HttpHeaders.AUTHORIZATION, auth);
 
@@ -202,12 +204,11 @@ public class BatchCreationService {
         .register(ResourceConverterFactory.class)
         .register(new JsonApiProvider<UserPreference>(this.converter))
         .build();
-    final WebTarget target =
-        c.target(HTTP + this.settingsServiceHost).path("v1/settings/preferences");
+    final WebTarget target = c.target(HTTP + this.settingsServiceHost).path(this.settingsPrefPath);
     final Invocation.Builder invocationBuilder =
         target.request(MEDIA_TYPE).header(HttpHeaders.AUTHORIZATION, auth);
 
-
+    System.out.println(HTTP + this.settingsServiceHost + this.settingsPrefPath);
 
     // Create a request for each entry
     for (final Entry<String, Object> pref : prefs.entrySet()) {

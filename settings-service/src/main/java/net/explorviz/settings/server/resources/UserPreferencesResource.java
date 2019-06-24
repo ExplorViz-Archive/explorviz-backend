@@ -14,7 +14,6 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
@@ -30,12 +29,14 @@ import org.slf4j.LoggerFactory;
  * Resource to access {@link UserPreference}, i.e. to handle user specific settings.
  *
  */
-@Path("v1/settings/preferences")
+@Path("v1/users")
 public class UserPreferencesResource {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(UserPreferencesResource.class);
   private static final String MEDIA_TYPE = "application/vnd.api+json";
 
+  private static final String NO_ADMIN_MESSAGE =
+      "Blocked attempt to access unowned settings without being admin";
 
   private final UserPreferenceRepository userPrefRepo;
   private final UserPreferenceService userPrefService;
@@ -69,8 +70,9 @@ public class UserPreferencesResource {
   @GET
   @Produces(MEDIA_TYPE)
   @PermitAll
+  @Path("{uid}/settings/preferences")
   public List<UserPreference> getPreferencesForUser(@Context final HttpHeaders headers,
-      @QueryParam("uid") final String uid) {
+      @PathParam("uid") final String uid) {
 
     if (uid == null || uid.isEmpty()) {
       throw new BadRequestException("User id is mandatory");
@@ -80,7 +82,7 @@ public class UserPreferencesResource {
 
     if (!this.canAccess(authHeader, uid)) {
       if (LOGGER.isInfoEnabled()) {
-        LOGGER.info("Blocked attempt to access unowned settings without being admin");
+        LOGGER.info(NO_ADMIN_MESSAGE);
       }
       throw new ForbiddenException();
     }
@@ -98,7 +100,7 @@ public class UserPreferencesResource {
    */
   @DELETE
   @PermitAll
-  @Path("/{id}")
+  @Path("settings/preferences/{id}")
   public Response resetToDefault(@PathParam("id") final String prefId,
       @Context final HttpHeaders headers) {
 
@@ -107,7 +109,7 @@ public class UserPreferencesResource {
 
     if (!this.canAccess(headers.getHeaderString(HttpHeaders.AUTHORIZATION), found.getUserId())) {
       if (LOGGER.isInfoEnabled()) {
-        LOGGER.info("Blocked attempt to access unowned settings without being admin");
+        LOGGER.info(NO_ADMIN_MESSAGE);
       }
       throw new ForbiddenException();
     }
@@ -120,14 +122,14 @@ public class UserPreferencesResource {
   /**
    * Updates the value of an existing setting.
    *
-   * @param uid the user id
+   * @param prefId the new preference content
    * @param headers the http headers (provided by jersey)
    * @param updatedPref the updated preference object
    * @return the {@link UserPreference} object after it has been updated
    */
   @PATCH
   @Produces(MEDIA_TYPE)
-  @Path("/{prefId}")
+  @Path("settings/preferences/{prefId}")
   @PermitAll
   public UserPreference updatePref(@PathParam("prefId") final String prefId,
       @Context final HttpHeaders headers, final UserPreference updatedPref) {
@@ -137,7 +139,7 @@ public class UserPreferencesResource {
     // Check if authorized to alter
     if (!this.canAccess(headers.getHeaderString(HttpHeaders.AUTHORIZATION), found.getUserId())) {
       if (LOGGER.isInfoEnabled()) {
-        LOGGER.info("Blocked attempt to access unowned settings without being admin");
+        LOGGER.info(NO_ADMIN_MESSAGE);
       }
       throw new ForbiddenException();
     }
@@ -180,6 +182,7 @@ public class UserPreferencesResource {
   @POST
   @Consumes(MEDIA_TYPE)
   @PermitAll
+  @Path("settings/preferences")
   public UserPreference createPreference(final UserPreference preference,
       @Context final HttpHeaders headers) {
 
