@@ -43,7 +43,7 @@ public class BatchCreationServiceTest {
 
   @BeforeEach
   public void setUp() {
-    this.bcs = new BatchCreationService(this.us, null, this.idGenerator, "");
+    this.bcs = new BatchCreationService(this.us, null, this.idGenerator, "", "");
   }
 
   @Test
