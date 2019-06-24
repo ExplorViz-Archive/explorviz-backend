@@ -49,13 +49,13 @@ services:
        - explorviz-ids-redis:/data
 
    zookeeper:
-    container_name: zookeeper
+    container_name: explorviz-zookeeper
     image: wurstmeister/zookeeper
     ports:
       - "2181:2181"
 
    kafka:
-    container_name: kafka
+    container_name: explorviz-kafka
     image: wurstmeister/kafka
     depends_on:
       - zookeeper
