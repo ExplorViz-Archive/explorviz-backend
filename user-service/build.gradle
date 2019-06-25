@@ -31,7 +31,7 @@ dependencies {
     	implementation project(':security')
     	implementation project(':exception-handling')
     	implementation project(':common-concerns')
-    	implementation project(':querying')
+    	implementation project(':query')
   }
 }
 

@@ -28,7 +28,7 @@ if(useRemoteSharedProject.toBoolean()) {
 	':exception-handling', 
 	':user', 
 	':discovery-common',
-	':querying'
+	':query'
 	
 	project(':landscape-model').projectDir = new File("../explorviz-backend-shared/landscape-model")
 	project(':config-injection').projectDir = new File("../explorviz-backend-shared/config-injection") 
@@ -37,6 +37,6 @@ if(useRemoteSharedProject.toBoolean()) {
 	project(':exception-handling').projectDir = new File("../explorviz-backend-shared/exception-handling")
 	project(':user').projectDir = new File("../explorviz-backend-shared/user")
 	project(':discovery-common').projectDir = new File("../explorviz-backend-shared/discovery-common")
-	project(':querying').projectDir = new File("../explorviz-backend-shared/querying")
+	project(':query').projectDir = new File("../explorviz-backend-shared/query")
 	
 }
