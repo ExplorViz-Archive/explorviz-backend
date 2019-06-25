@@ -204,9 +204,15 @@ public class UserService implements Queryable<User> {
   public QueryResult<User> query(final Query<User> query) {
     final xyz.morphia.query.Query<User> q = this.datastore.createQuery(User.class);
 
+
+
     final FindOptions options = new FindOptions();
-    options.limit(query.getPageLength());
-    options.skip(query.getPageIndex() * query.getPageLength());
+
+    if (query.doPaginate()) {
+      options.limit(query.getPageLength());
+      options.skip(query.getPageIndex() * query.getPageLength());
+    }
+
     final List<User> ret = q.asList(options);
     return new QueryResult<User>(query, ret) {
 

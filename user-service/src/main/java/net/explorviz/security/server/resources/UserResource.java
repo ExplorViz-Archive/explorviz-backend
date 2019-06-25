@@ -2,12 +2,12 @@ package net.explorviz.security.server.resources;
 
 import com.mongodb.DuplicateKeyException;
 import com.mongodb.MongoException;
-import java.util.List;
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.ws.rs.BadRequestException;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.InternalServerErrorException;
 import javax.ws.rs.NotFoundException;
@@ -23,6 +23,8 @@ import net.explorviz.security.services.UserCrudException;
 import net.explorviz.security.services.UserService;
 import net.explorviz.security.util.PasswordStorage;
 import net.explorviz.security.util.PasswordStorage.CannotPerformOperationException;
+import net.explorviz.shared.querying.Query;
+import net.explorviz.shared.querying.QueryResult;
 import net.explorviz.shared.security.model.User;
 import net.explorviz.shared.security.model.roles.Role;
 import org.eclipse.jetty.http.HttpStatus;
@@ -209,15 +211,31 @@ public class UserResource {
   @GET
   @RolesAllowed({ADMIN_ROLE})
   @Produces(MEDIA_TYPE)
-  public List<User> usersByRole(@QueryParam("role") final String role) {
+  public QueryResult<User> usersByRole(@QueryParam("role") final String role,
+      @DefaultValue("-1") @QueryParam("page[number]") final int pageNum,
+      @DefaultValue("-1") @QueryParam("page[size]") final int pageSize) {
 
 
-    // Return all users if role parameter is omitted
-    if (role == null) {
-      return this.userCrudService.getAll();
-    }
-    return this.userCrudService.getUsersByRole(role);
+    return this.userCrudService.query(new Query<User>() {
 
+      @Override
+      public Integer getPageLength() {
+        // TODO Auto-generated method stub
+        return pageSize;
+      }
+
+      @Override
+      public Integer getPageIndex() {
+        // TODO Auto-generated method stub
+        return pageNum;
+      }
+    });
+
+
+    /*
+     * // Return all users if role parameter is omitted if (role == null) { return
+     * this.userCrudService.getAll(); } return this.userCrudService.getUsersByRole(role);
+     */
 
   }
 
