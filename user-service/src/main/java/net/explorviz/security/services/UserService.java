@@ -3,7 +3,6 @@ package net.explorviz.security.services;
 import com.mongodb.DuplicateKeyException;
 import com.mongodb.MongoException;
 import java.util.List;
-import java.util.Map.Entry;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -180,38 +179,33 @@ public class UserService implements Queryable<User> {
     return Optional.ofNullable(foundUser);
   }
 
+
+
   /**
-   * Retrieves a list of all users, that have a specific role assigned.
-   *
-   * @param roleName role to search for
-   * @return a list of all users, that have the given role assigned
+   * {@inheritDoc}
    */
-  public List<User> getUsersByRole(final String roleName) {
-
-    // TODO find smarter (MongoDB based) way to check for roles
-
-    final Role role = this.datastore.createQuery(Role.class).filter("descriptor", roleName).get();
-
-    List<User> userList = this.datastore.createQuery(User.class).asList();
-
-    userList =
-        userList.stream().filter(u -> u.getRoles().contains(role)).collect(Collectors.toList());
-
-    return userList;
-  }
-
-
   @Override
   public QueryResult<User> query(final Query<User> query) {
     final xyz.morphia.query.Query<User> q = this.datastore.createQuery(User.class);
 
 
     if (query.doFilter()) {
-      // add filters
-      for (final Entry<String, List<String>> entry : query.getFilter().entrySet()) {
-        entry.getValue().forEach(v -> q.filter(entry.getKey() + "==", v));
+      final List<String> roles = query.getFilter().get("roles");
+      final List<String> batchIds = query.getFilter().get("batchid");
+
+      // Filter by roles
+      if (roles != null) {
+        q.field("roles")
+            .hasAllOf(roles.stream().map(r -> new Role(r)).collect(Collectors.toList()));
       }
+
+      // Filter by batch id, if more than one is give, ignore all but the first
+      if (batchIds != null) {
+        q.field("batchId").equal(batchIds.get(0));
+      }
+
     }
+
 
 
     final FindOptions options = new FindOptions();

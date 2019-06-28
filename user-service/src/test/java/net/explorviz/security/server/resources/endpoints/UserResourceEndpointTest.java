@@ -280,7 +280,65 @@ public class UserResourceEndpointTest extends EndpointTest {
     this.userCrudService.saveNewEntity(u3);
 
     final byte[] rawResponseBody = this.target(BASE_URL)
-        .queryParam("role", ADMIN)
+        .queryParam("filter[roles]", ADMIN)
+        .request()
+        .header(HttpHeader.AUTHORIZATION.asString(), this.getAdminToken())
+        .get(byte[].class);
+
+    final List<User> adminUsers =
+        this.getJsonApiConverter().readDocumentCollection(rawResponseBody, User.class).get();
+
+    assertEquals("Did not found all admin users", 2L, adminUsers.size());
+  }
+
+  @Test
+  public void findByTwoRole() throws DocumentSerializationException, UserCrudException {
+
+    // Somehow the admin user is created after the setup method dropped the table
+    this.datastore.getCollection(User.class).drop();
+
+    final User u1 = new User("1", "user1", "pw", this.roleService.getAllRoles());
+    final User u2 = new User("2", "user2", "pw", Arrays.asList(new Role(ADMIN)));
+    final User u3 = new User("3", "user3", "pw", null);
+
+    this.userCrudService.saveNewEntity(u1);
+    this.userCrudService.saveNewEntity(u2);
+    this.userCrudService.saveNewEntity(u3);
+
+    final byte[] rawResponseBody = this.target(BASE_URL)
+        .queryParam("filter[roles]", ADMIN)
+        .queryParam("filter[roles]", "user")
+        .request()
+        .header(HttpHeader.AUTHORIZATION.asString(), this.getAdminToken())
+        .get(byte[].class);
+
+    final List<User> adminUsers =
+        this.getJsonApiConverter().readDocumentCollection(rawResponseBody, User.class).get();
+
+    assertEquals("Did not found all admin users", 1L, adminUsers.size());
+  }
+
+
+  @Test
+  public void findByBatchId() throws DocumentSerializationException, UserCrudException {
+
+    // Somehow the admin user is created after the setup method dropped the table
+    this.datastore.getCollection(User.class).drop();
+
+    final String batchId = "1";
+
+    final User u1 =
+        new User("1", "user1", "pw", Arrays.asList(this.roleService.getAllRoles().get(0)), batchId);
+    final User u2 =
+        new User("2", "user2", "pw", Arrays.asList(this.roleService.getAllRoles().get(0)), batchId);
+    final User u3 = new User("3", "user3", "pw", null);
+
+    this.userCrudService.saveNewEntity(u1);
+    this.userCrudService.saveNewEntity(u2);
+    this.userCrudService.saveNewEntity(u3);
+
+    final byte[] rawResponseBody = this.target(BASE_URL)
+        .queryParam("filter[batchid]", batchId)
         .request()
         .header(HttpHeader.AUTHORIZATION.asString(), this.getAdminToken())
         .get(byte[].class);
