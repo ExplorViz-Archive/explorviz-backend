@@ -7,7 +7,6 @@ import javax.inject.Inject;
 import javax.ws.rs.BadRequestException;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
-import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.InternalServerErrorException;
 import javax.ws.rs.NotFoundException;
@@ -16,8 +15,9 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
 import net.explorviz.security.services.RoleService;
 import net.explorviz.security.services.UserCrudException;
 import net.explorviz.security.services.UserService;
@@ -205,38 +205,14 @@ public class UserResource {
   /**
    * Retrieves all users that have a specific role.
    *
-   * @param role - the role to be searched for
    * @return a list of all users with the given role
    */
   @GET
   @RolesAllowed({ADMIN_ROLE})
   @Produces(MEDIA_TYPE)
-  public QueryResult<User> usersByRole(@QueryParam("role") final String role,
-      @DefaultValue("-1") @QueryParam("page[number]") final int pageNum,
-      @DefaultValue("-1") @QueryParam("page[size]") final int pageSize) {
-
-
-    return this.userCrudService.query(new Query<User>() {
-
-      @Override
-      public Integer getPageLength() {
-        // TODO Auto-generated method stub
-        return pageSize;
-      }
-
-      @Override
-      public Integer getPageIndex() {
-        // TODO Auto-generated method stub
-        return pageNum;
-      }
-    });
-
-
-    /*
-     * // Return all users if role parameter is omitted if (role == null) { return
-     * this.userCrudService.getAll(); } return this.userCrudService.getUsersByRole(role);
-     */
-
+  public QueryResult<User> find(@Context final UriInfo uri) {
+    final Query<User> query = Query.fromParameterMap(uri.getQueryParameters(true));
+    return this.userCrudService.query(query);
   }
 
   /**

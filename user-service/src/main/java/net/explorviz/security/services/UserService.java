@@ -3,6 +3,7 @@ package net.explorviz.security.services;
 import com.mongodb.DuplicateKeyException;
 import com.mongodb.MongoException;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -205,21 +206,29 @@ public class UserService implements Queryable<User> {
     final xyz.morphia.query.Query<User> q = this.datastore.createQuery(User.class);
 
 
+    if (query.doFilter()) {
+      // add filters
+      for (final Entry<String, List<String>> entry : query.getFilter().entrySet()) {
+        entry.getValue().forEach(v -> q.filter(entry.getKey() + "==", v));
+      }
+    }
+
 
     final FindOptions options = new FindOptions();
 
     if (query.doPaginate()) {
-      options.limit(query.getPageLength());
-      options.skip(query.getPageIndex() * query.getPageLength());
+      options.limit(query.getPageSize());
+      options.skip(query.getPageNumber() * query.getPageSize());
     }
 
     final List<User> ret = q.asList(options);
+
     return new QueryResult<User>(query, ret) {
 
       @Override
       public Integer getNextPage() {
-        if (ret.size() > 0) {
-          return query.getPageIndex() + 1;
+        if (query.doPaginate() && ret.size() > 0) {
+          return query.getPageNumber() + 1;
         } else {
           return null;
         }
@@ -227,8 +236,8 @@ public class UserService implements Queryable<User> {
 
       @Override
       public Integer getPreviousPage() {
-        if (query.getPageIndex() != null && query.getPageIndex() > 0) {
-          return query.getPageIndex() - 1;
+        if (query.doPaginate()) {
+          return query.getPageNumber() - 1;
         } else {
           return null;
         }

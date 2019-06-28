@@ -2,6 +2,7 @@ package net.explorviz.security.services;
 
 import java.util.ArrayList;
 import java.util.List;
+import javax.ws.rs.core.MultivaluedHashMap;
 import net.explorviz.shared.querying.Query;
 import net.explorviz.shared.querying.QueryResult;
 import net.explorviz.shared.security.model.User;
@@ -54,20 +55,10 @@ public class UserServiceTest {
     final int pageIndex = 1;
     this.fillUsers(usersTotal);
 
-    final Query<User> paginationQuery = new Query<User>() {
-
-      @Override
-      public Integer getPageLength() {
-        // TODO Auto-generated method stub
-        return pageLen;
-      }
-
-      @Override
-      public Integer getPageIndex() {
-        // TODO Auto-generated method stub
-        return pageIndex;
-      }
-    };
+    final MultivaluedHashMap<String, String> paginationParams = new MultivaluedHashMap<>();
+    paginationParams.add("page[number]", "" + pageIndex);
+    paginationParams.add("page[size]", "" + pageLen);
+    final Query<User> paginationQuery = Query.fromParameterMap(paginationParams);
 
     final xyz.morphia.query.Query<User> q = Mockito.mock(xyz.morphia.query.Query.class);
     Mockito.when(this.store.createQuery(User.class)).thenReturn(q);
