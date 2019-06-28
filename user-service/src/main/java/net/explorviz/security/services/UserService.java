@@ -1,12 +1,16 @@
 package net.explorviz.security.services;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.mongodb.DuplicateKeyException;
 import com.mongodb.MongoException;
+import com.mongodb.WriteResult;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.inject.Inject;
+import net.explorviz.security.services.exceptions.DuplicateUserException;
+import net.explorviz.security.services.exceptions.UserCrudException;
 import net.explorviz.shared.common.idgen.IdGenerator;
 import net.explorviz.shared.querying.Query;
 import net.explorviz.shared.querying.QueryResult;
@@ -44,15 +48,19 @@ public class UserService implements Queryable<User> {
 
   private final IdGenerator idGenerator;
 
+  private final KafkaUserService kafkaService;
+
   /**
    * Creates a new UserMongoDB.
    *
    * @param datastore - the datastore instance
    */
   @Inject
-  public UserService(final Datastore datastore, final IdGenerator idGenerator) {
+  public UserService(final Datastore datastore, final IdGenerator idGenerator,
+      final KafkaUserService kafkaService) {
     this.idGenerator = idGenerator;
     this.datastore = datastore;
+    this.kafkaService = kafkaService;
   }
 
 
@@ -88,7 +96,11 @@ public class UserService implements Queryable<User> {
       throw new UserCrudException("Could no save user", e);
     }
 
-
+    try {
+      this.kafkaService.publishCreated(user.getId());
+    } catch (final JsonProcessingException e) {
+      LOGGER.warn("New user no published to kafka", e);
+    }
     return user;
   }
 
@@ -123,11 +135,19 @@ public class UserService implements Queryable<User> {
       throw new UserCrudException("Can not delete last admin");
     }
 
-    this.datastore.delete(User.class, id);
+    final WriteResult w = this.datastore.delete(User.class, id);
 
-    if (LOGGER.isInfoEnabled()) {
-      LOGGER.info("Deleted user with id " + id);
+    if (w.getN() > 0) {
+      if (LOGGER.isInfoEnabled()) {
+        LOGGER.info("Deleted user with id " + id);
+      }
+      try {
+        this.kafkaService.publishDeleted(id);
+      } catch (final JsonProcessingException e) {
+        LOGGER.warn("New user no published to kafka", e);
+      }
     }
+
 
   }
 
@@ -166,7 +186,7 @@ public class UserService implements Queryable<User> {
 
 
   /**
-   * Find the first user that satisfies the condition specified in the paramters.
+   * Find the first user that satisfies the condition specified in the parameters.
    *
    * @param field the field to compare
    * @param value the value to compare with

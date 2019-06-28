@@ -42,7 +42,7 @@ dependencies {
   // multipart/form-data type
   implementation group: 'org.glassfish.jersey.media', name:'jersey-media-multipart', version:'2.26'
   
-  implementation group: 'org.apache.kafka', name: 'kafka_2.12', version: '2.2.0'
+  
   
 }
 

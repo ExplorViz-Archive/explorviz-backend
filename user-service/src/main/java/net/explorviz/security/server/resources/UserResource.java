@@ -2,6 +2,8 @@ package net.explorviz.security.server.resources;
 
 import com.mongodb.DuplicateKeyException;
 import com.mongodb.MongoException;
+import java.util.List;
+import java.util.stream.Collectors;
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.ws.rs.BadRequestException;
@@ -19,8 +21,9 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import net.explorviz.security.services.RoleService;
-import net.explorviz.security.services.UserCrudException;
 import net.explorviz.security.services.UserService;
+import net.explorviz.security.services.exceptions.DuplicateUserException;
+import net.explorviz.security.services.exceptions.UserCrudException;
 import net.explorviz.security.util.PasswordStorage;
 import net.explorviz.security.util.PasswordStorage.CannotPerformOperationException;
 import net.explorviz.shared.querying.Query;
@@ -45,6 +48,7 @@ public class UserResource {
   private static final String MSG_INVALID_PASSWORD = "Invalid password";
   private static final String MSG_INVALID_USERNAME = "Invalid username";
   private static final String MSG_USER_NOT_RETRIEVED = "Could not retrieve user ";
+  private static final String MSG_UNKOWN_ROLE = "Unknown role";
   private static final String ADMIN_ROLE = "admin";
 
   private final UserService userCrudService;
@@ -96,7 +100,7 @@ public class UserResource {
 
     for (final Role r : user.getRoles()) {
       if (!this.roleService.getAllRoles().contains(r)) {
-        throw new BadRequestException("Unknown role: " + r);
+        throw new BadRequestException(MSG_UNKOWN_ROLE + ": " + r);
       }
     }
 
@@ -113,9 +117,10 @@ public class UserResource {
 
     try {
       return this.userCrudService.saveNewEntity(user);
-    } catch (final DuplicateKeyException ex) {
+    } catch (final DuplicateUserException ex) {
       throw new BadRequestException("User already exists", ex);
     } catch (final UserCrudException ex) {
+      LOGGER.error("Error saving user", ex);
       throw new InternalServerErrorException();
     }
   }
@@ -263,6 +268,20 @@ public class UserResource {
     }
 
 
+    return Response.status(HttpStatus.NO_CONTENT_204).build();
+  }
+
+  /**
+   * Deletes all given users.
+   *
+   * @param users the users to delete
+   * @return 204 if no error occured
+   */
+  @DELETE
+  @RolesAllowed({ADMIN_ROLE})
+  public Response removeAll(final List<User> users) {
+
+    users.forEach(u -> this.removeUser(u.getId()));
     return Response.status(HttpStatus.NO_CONTENT_204).build();
   }
 

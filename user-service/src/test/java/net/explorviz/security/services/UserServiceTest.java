@@ -45,7 +45,7 @@ public class UserServiceTest {
 
   @BeforeEach
   public void setUp() {
-    this.userService = new UserService(this.store, null);
+    this.userService = new UserService(this.store, null, null);
   }
 
   @Test

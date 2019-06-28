@@ -19,9 +19,12 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MultivaluedHashMap;
 import javax.ws.rs.core.Response;
 import net.explorviz.security.model.UserBatchRequest;
+import net.explorviz.security.services.exceptions.MalformedBatchRequestException;
+import net.explorviz.security.services.exceptions.UserCrudException;
 import net.explorviz.security.util.PasswordStorage;
 import net.explorviz.security.util.PasswordStorage.CannotPerformOperationException;
 import net.explorviz.settings.model.UserPreference;
+import net.explorviz.shared.common.idgen.IdGenerator;
 import net.explorviz.shared.common.jsonapi.ResourceConverterFactory;
 import net.explorviz.shared.common.provider.JsonApiProvider;
 import net.explorviz.shared.config.annotations.Config;
@@ -41,15 +44,18 @@ public class BatchCreationService {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(BatchCreationService.class);
   private static final String MEDIA_TYPE = "application/vnd.api+json";
+  private static final String HTTP = "http://";
+  private static final String MSG_FAIL = "Batch request failed, rolling back";
 
   private final UserService userService;
 
 
   private final ResourceConverter converter;
 
-
   private final String settingsServiceHost;
+  private final String settingsPrefPath;
 
+  private final IdGenerator idGenerator;
 
   /**
    * Creates a new service.
@@ -60,10 +66,13 @@ public class BatchCreationService {
    */
   @Inject
   public BatchCreationService(final UserService userService, final ResourceConverter converter,
-      @Config("services.settings") final String settingServiceHost) {
+      final IdGenerator idGen, @Config("services.settings") final String settingServiceHost,
+      @Config("services.settings.preferences") final String settingsPrefPath) {
     this.userService = userService;
     this.settingsServiceHost = settingServiceHost;
+    this.settingsPrefPath = settingsPrefPath;
     this.converter = converter;
+    this.idGenerator = idGen;
   }
 
   /**
@@ -81,16 +90,18 @@ public class BatchCreationService {
 
     final List<User> createdUsers = new ArrayList<>();
     final List<String> createdPrefs = new ArrayList<>();
-
+    final String batchId = this.idGenerator.generateId();
+    batch.setId(batchId);
 
     for (int i = 0; i < batch.getCount(); i++) {
 
       User newUser = null;
       try {
-        newUser = this.newUser(batch.getPrefix(), i, batch.getPasswords().get(i), batch.getRoles());
+        newUser = this
+            .newUser(batch.getPrefix(), i, batch.getPasswords().get(i), batch.getRoles(), batchId);
       } catch (final CannotPerformOperationException e1) {
         if (LOGGER.isErrorEnabled()) {
-          LOGGER.error("Batch request failed, rolling back.");
+          LOGGER.error(MSG_FAIL);
         }
         this.rollbackUsers(createdUsers);
         throw new UserCrudException("Could not hash password");
@@ -103,7 +114,7 @@ public class BatchCreationService {
         createdUsers.add(u);
         createdPrefs.addAll(this.createPrefs(u, batch.getPreferences(), authHeader));
       } catch (final UserCrudException e) {
-        LOGGER.warn("Batch request failed, rolling back.");
+        LOGGER.warn(MSG_FAIL);
         this.rollbackUsers(createdUsers);
         this.rollbackPrefs(createdPrefs, authHeader);
         throw e;
@@ -149,7 +160,7 @@ public class BatchCreationService {
     // Initialize client
     final Client c = ClientBuilder.newClient();
     final WebTarget baseTarget =
-        c.target("http://" + this.settingsServiceHost).path("v1/settings/preferences/");
+        c.target(HTTP + this.settingsServiceHost).path(this.settingsPrefPath + "/");
     final MultivaluedHashMap<String, Object> headers = new MultivaluedHashMap<>();
     headers.putSingle(HttpHeaders.AUTHORIZATION, auth);
 
@@ -193,12 +204,11 @@ public class BatchCreationService {
         .register(ResourceConverterFactory.class)
         .register(new JsonApiProvider<UserPreference>(this.converter))
         .build();
-    final WebTarget target =
-        c.target("http://" + this.settingsServiceHost).path("v1/settings/preferences");
+    final WebTarget target = c.target(HTTP + this.settingsServiceHost).path(this.settingsPrefPath);
     final Invocation.Builder invocationBuilder =
         target.request(MEDIA_TYPE).header(HttpHeaders.AUTHORIZATION, auth);
 
-
+    System.out.println(HTTP + this.settingsServiceHost + this.settingsPrefPath);
 
     // Create a request for each entry
     for (final Entry<String, Object> pref : prefs.entrySet()) {
@@ -248,7 +258,7 @@ public class BatchCreationService {
   }
 
   private User newUser(final String pref, final int num, final String password,
-      final List<Role> roles) throws CannotPerformOperationException {
+      final List<Role> roles, final String batchId) throws CannotPerformOperationException {
     final StringBuilder sb = new StringBuilder();
     final String name = sb.append(pref).append('-').append(num).toString();
 
@@ -256,7 +266,7 @@ public class BatchCreationService {
     final String hashed = PasswordStorage.createHash(password);
 
 
-    return new User(null, name, hashed, roles);
+    return new User(null, name, hashed, roles, batchId);
   }
 
 }
