@@ -70,10 +70,10 @@ public class SettingsRepository implements MongoRepository<Setting, String> {
       return Optional.empty();
     }
 
-    final Class[] types = {RangeSetting.class, FlagSetting.class};
+    final Class<?>[] types = {RangeSetting.class, FlagSetting.class};
 
-    for (final Class<? extends Setting> t : types) {
-      final Setting setting = this.datastore.get(t, id);
+    for (final Class<?> t : types) {
+      final Setting setting = (Setting) this.datastore.get(t, id);
       final Optional<Setting> res = Optional.ofNullable(setting);
 
       if (res.isPresent()) {

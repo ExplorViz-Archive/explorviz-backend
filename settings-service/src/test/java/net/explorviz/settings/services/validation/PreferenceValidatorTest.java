@@ -24,7 +24,7 @@ public class PreferenceValidatorTest {
   private static final String ERROR = "Valid preference but exception thrown";
 
 
-  private static final double DEFAULT = 0.001;
+  // private static final double DEFAULT = 0.001;
   private static final double MIN = -10.01;
   private static final double MAX = 102;
 
