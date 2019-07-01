@@ -1,3 +1,7 @@
+plugins {
+    id 'com.adarshr.test-logger' version '1.6.0' apply false
+}
+
 allprojects {
   apply plugin: 'java-library'
 }
@@ -9,11 +13,14 @@ def footerText = '<span>Copyright 2013 - 2019</span> by the <a href="https://www
 
 // BEGIN aggregated Javadoc in multiproject Gradle build
 def exportedProjects= [
-		':landscape',
+		':landscape-service',
 		':kiekeradapter',
-		':authentication',
-		':analysis',
-		':discovery'
+		':user-service',
+		':analysis-service',
+		':discovery-service',
+		':history-service',
+		':settings-service',
+		':broadcast-service'
 ]
 
 task alljavadoc(type: Javadoc) {
@@ -24,14 +31,10 @@ task alljavadoc(type: Javadoc) {
     options.setFooter(footerText)
 }
 
-ext {
-	// Version tag for the Explorviz-Backend-Shared project dependency
-	// https://github.com/ExplorViz/explorviz-backend-shared
-    explorvizSharedVersion = 'v1.3.1'
-  }
 
 // END aggregated Javadoc in multiproject Gradle build
 subprojects {
+
 
   // BEGIN QA Tooling for subprojects
   
@@ -48,7 +51,8 @@ subprojects {
   }
   
   apply plugin: 'pmd'
-  apply plugin: 'checkstyle'	
+  apply plugin: 'checkstyle'
+  apply plugin: 'com.adarshr.test-logger'
 	
   pmd {
     ruleSets = []
@@ -95,11 +99,19 @@ subprojects {
 	// SL4J
 	implementation group: 'org.slf4j', name: 'slf4j-simple', version: '1.6.1'
     
-    if (project.name == 'authentication' || project.name == 'landscape' || project.name == 'discovery') {
+    // Apache Commons
+    implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.9'
+    
+    
+    // Kafka
+    implementation group: 'org.apache.kafka', name: 'kafka_2.12', version: '2.2.0'
+    
+    if (project.name == 'user-service' || project.name == 'landscape-service' || project.name == 'discovery-service' || project.name == 'settings-service' || project.name == 'history-service' || project.name == 'broadcast-service') {
     	// subprojects, which are supposed to be a JAX-RS-based microservice
     
     	// Jersey and Servlet
 		implementation group: 'org.glassfish.jersey.containers', name: 'jersey-container-servlet', version:'2.27'
+		compile group: 'org.glassfish.jersey.core', name: 'jersey-client', version: '2.28'
 		implementation group: 'javax.servlet', name: 'javax.servlet-api', version:'3.0.1'
 		implementation group: 'org.glassfish.jersey.inject', name: 'jersey-hk2', version:'2.27'
 		// compile group: 'org.glassfish.jersey.test-framework.providers', name: 'jersey-test-framework-provider-jdk-http', version: '2.27'
@@ -122,10 +134,22 @@ subprojects {
 		compile group: 'org.mongodb', name: 'mongo-java-driver', version: '3.9.1'
 	}
 	
+	
+	
 	// Testing and Mocking
 	testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.4.0'
 	testImplementation 'org.junit.platform:junit-platform-runner:1.4.0'
+	testImplementation group: 'org.junit.vintage', name: 'junit-vintage-engine', version: '5.4.0'
 	testImplementation 'org.mockito:mockito-core:2.24.0'	
+	testImplementation group: 'org.mockito', name: 'mockito-junit-jupiter', version: '2.27.0'
+  }
+  
+  test {
+    useJUnitPlatform {
+        excludeTags 'slow'
+        includeEngines 'junit-jupiter', 'junit-vintage'
+    }
+    failFast = true
   }
     
 }

@@ -1,0 +1,114 @@
+plugins {
+	id "application"
+	id "com.github.johnrengelman.shadow" version "4.0.4"
+	id "com.github.spotbugs" version "1.6.10"
+}
+
+// Force new Dependencies 
+configurations.all {
+  resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+}
+
+
+dependencies {
+
+  // ExplorViz Shared Dependencies
+  if(useRemoteSharedProject.toBoolean()) {
+    implementation "com.github.explorviz.explorviz-backend-shared:config-injection:${sharedProjectVersion}"
+    implementation "com.github.explorviz.explorviz-backend-shared:discovery-common:${sharedProjectVersion}"
+    implementation "com.github.explorviz.explorviz-backend-shared:security:${sharedProjectVersion}"
+    implementation "com.github.explorviz.explorviz-backend-shared:exception-handling:${sharedProjectVersion}"
+    implementation "com.github.explorviz.explorviz-backend-shared:common-concerns:${sharedProjectVersion}"
+  }
+  else { 
+    implementation project(':config-injection')
+    implementation project(':discovery-common')
+    implementation project(':security')
+    implementation project(':exception-handling')
+    implementation project(':common-concerns')
+  } 
+  
+  // SSE context for injection
+  implementation group: 'org.glassfish.jersey.media', name: 'jersey-media-sse', version: '2.27'  
+}
+
+assemble.dependsOn shadowJar
+jar.enabled = false
+
+jar {
+  manifest {
+    attributes(
+      'Main-Class': 'net.explorviz.discovery.server.main.Main'
+    )
+  }
+}
+
+application {
+    mainClassName = 'net.explorviz.discovery.server.main.Main'
+}
+
+shadowJar {
+  archiveName = "explorviz-${project.name}.${extension}"
+}
+
+spotbugs {
+  excludeFilter = file("../conf/spotbugs-exclude-filter.xml")
+  reportLevel = "low"
+  effort = "max"
+  ignoreFailures = true
+  toolVersion = '3.1.7'
+}
+
+// Per default XML reports for SpotBugs are generated
+// Include this to generate HTML reports
+tasks.withType(com.github.spotbugs.SpotBugsTask) {
+  reports {
+    // Either HTML or XML reports can be activated
+    html.enabled true
+    xml.enabled false
+  }
+}
+
+task spotbugs {
+  group 'Quality Assurance'
+  description 'Run SpotBugs'
+  
+  dependsOn 'spotbugsMain'
+  dependsOn 'spotbugsTest'
+}
+
+artifacts {
+  archives shadowJar
+}
+
+// START environment task
+task updateEnvPropsInBuildDir {
+
+	// run with:
+	// .././gradlew run -Penvironment=production
+
+	doLast {
+		if (project.hasProperty("environment")) {
+   			def environment = project.findProperty("environment")
+   	
+   			if(environment.equals("production")) {
+   				println("Using the production properties file")
+   				delete("${buildDir}/resources/main/explorviz.properties")
+    		
+    			copy { 
+      				from "${buildDir}/resources/main" 
+    				into "${buildDir}/resources/main"
+    				rename "explorviz.production.properties", "explorviz.properties" 
+    			}
+    		
+    			delete("${buildDir}/resources/main/explorviz.production.properties")        		
+			}
+		} else {
+    		println("Using default properties file")
+		}
+	}
+}
+
+run.dependsOn updateEnvPropsInBuildDir
+updateEnvPropsInBuildDir.shouldRunAfter classes
+// END environment task

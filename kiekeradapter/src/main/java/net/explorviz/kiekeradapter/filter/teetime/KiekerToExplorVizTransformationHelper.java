@@ -6,38 +6,38 @@ import kieker.common.record.flow.trace.operation.BeforeOperationEvent;
 import net.explorviz.kiekeradapter.main.KiekerAdapter;
 
 /**
- *
- * Kieker Analysis Transformation Filter Helper
- * 
- * @author Christian Zirkelbach (czi@informatik.uni-kiel.de)
- *
+ * Kieker Analysis Transformation Filter Helper.
  */
 public final class KiekerToExplorVizTransformationHelper {
 
-	public static String getInterface(final IMonitoringRecord kiekerRecord) {
-		if (kiekerRecord instanceof IInterfaceRecord) {
-			final IInterfaceRecord iInterfaceRecord = (IInterfaceRecord) kiekerRecord;
-			final String interfaceImpl = iInterfaceRecord.getInterface();
+  private KiekerToExplorVizTransformationHelper() {
+    // Utility class
+  }
 
-			if (!interfaceImpl.isEmpty() && !interfaceImpl.equals("[]")) {
-				final int indexOfSeperator = interfaceImpl.indexOf(", ");
+  public static String getInterface(final IMonitoringRecord kiekerRecord) {
+    if (kiekerRecord instanceof IInterfaceRecord) {
+      final IInterfaceRecord iInterfaceRecord = (IInterfaceRecord) kiekerRecord;
+      final String interfaceImpl = iInterfaceRecord.getInterface();
 
-				if (indexOfSeperator > 0) {
-					return interfaceImpl.substring(1, indexOfSeperator);
-				} else {
-					return interfaceImpl.substring(1, interfaceImpl.length() - 1);
-				}
-			}
-		}
-		return "";
-	}
+      if (!interfaceImpl.isEmpty() && !"[]".equals(interfaceImpl)) {
+        final int indexOfSeperator = interfaceImpl.indexOf(", ");
 
-	public static String convertSignatureToExplorViz(final BeforeOperationEvent kiekerBefore) {
-		if (KiekerAdapter.getSignatureConverter() != null) {
-			return KiekerAdapter.getSignatureConverter().convertSignatureToExplorViz(kiekerBefore);
-		}
+        if (indexOfSeperator > 0) {
+          return interfaceImpl.substring(1, indexOfSeperator);
+        } else {
+          return interfaceImpl.substring(1, interfaceImpl.length() - 1);
+        }
+      }
+    }
+    return "";
+  }
 
-		return kiekerBefore.getOperationSignature();
-	}
-	
+  public static String convertSignatureToExplorViz(final BeforeOperationEvent kiekerBefore) {
+    if (KiekerAdapter.getSignatureConverter() != null) {
+      return KiekerAdapter.getSignatureConverter().convertSignatureToExplorViz(kiekerBefore);
+    }
+
+    return kiekerBefore.getOperationSignature();
+  }
+
 }
