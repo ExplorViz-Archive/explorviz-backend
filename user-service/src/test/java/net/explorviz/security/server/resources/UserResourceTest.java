@@ -100,20 +100,7 @@ public class UserResourceTest {
             .filter(u -> u.getRoles().stream().anyMatch(r -> r.getDescriptor().equals(role)))
             .collect(Collectors.toList());
       }
-      return new QueryResult<User>(inv.getArgument(0), data) {
-
-        @Override
-        public Integer getNextPage() {
-          // TODO Auto-generated method stub
-          return null;
-        }
-
-        @Override
-        public Integer getPreviousPage() {
-          // TODO Auto-generated method stub
-          return null;
-        }
-      };
+      return new QueryResult<>(inv.getArgument(0), data);
 
     });
 

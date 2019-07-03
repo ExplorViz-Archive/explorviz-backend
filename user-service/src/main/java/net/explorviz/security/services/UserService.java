@@ -237,26 +237,7 @@ public class UserService implements Queryable<User> {
 
     final List<User> ret = q.asList(options);
 
-    return new QueryResult<User>(query, ret) {
-
-      @Override
-      public Integer getNextPage() {
-        if (query.doPaginate() && ret.size() > 0) {
-          return query.getPageNumber() + 1;
-        } else {
-          return null;
-        }
-      }
-
-      @Override
-      public Integer getPreviousPage() {
-        if (query.doPaginate()) {
-          return query.getPageNumber() - 1;
-        } else {
-          return null;
-        }
-      }
-    };
+    return new QueryResult<>(query, ret);
   }
 
 
