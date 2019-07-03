@@ -1,6 +1,5 @@
 package net.explorviz.settings.server.resources;
 
-import java.util.List;
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.ws.rs.BadRequestException;
@@ -12,9 +11,13 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
 import net.explorviz.settings.model.Setting;
 import net.explorviz.settings.services.SettingsRepository;
+import net.explorviz.shared.querying.Query;
+import net.explorviz.shared.querying.QueryResult;
 
 /**
  * API for handling {@link Setting}s and their associated information.
@@ -41,8 +44,10 @@ public class SettingsInfoResource {
    */
   @GET
   @Produces(MEDIA_TYPE)
-  public List<Setting> getAll() {
-    return this.repo.findAll();
+  public QueryResult<Setting> getAll(@Context final UriInfo uriInfo) {
+    final Query<Setting> query = Query.fromParameterMap(uriInfo.getQueryParameters(true));
+
+    return this.repo.query(query);
   }
 
   /**

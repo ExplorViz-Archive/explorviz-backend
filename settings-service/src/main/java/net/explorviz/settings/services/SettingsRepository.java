@@ -4,11 +4,14 @@ package net.explorviz.settings.services;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import javax.inject.Inject;
 import net.explorviz.settings.model.FlagSetting;
 import net.explorviz.settings.model.RangeSetting;
 import net.explorviz.settings.model.Setting;
 import net.explorviz.shared.common.idgen.IdGenerator;
+import net.explorviz.shared.querying.QueryResult;
+import net.explorviz.shared.querying.Queryable;
 import org.jvnet.hk2.annotations.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,7 +25,7 @@ import xyz.morphia.query.Query;
  *
  */
 @Service
-public class SettingsRepository implements MongoRepository<Setting, String> {
+public class SettingsRepository implements MongoRepository<Setting, String>, Queryable<Setting> {
 
 
   private static final Logger LOGGER = LoggerFactory.getLogger(SettingsRepository.class);
@@ -46,12 +49,11 @@ public class SettingsRepository implements MongoRepository<Setting, String> {
   public List<Setting> findAll() {
     // Morphia can't query for subtypes, this has to be done manually
     // See https://github.com/MorphiaOrg/morphia/issues/22
-    final Query<RangeSetting> qRange = this.datastore.find(RangeSetting.class);
-    final Query<FlagSetting> qFlags = this.datastore.find(FlagSetting.class);
 
     final List<Setting> all = new ArrayList<>();
-    all.addAll(qRange.asList());
-    all.addAll(qFlags.asList());
+    for (final Class<? extends Setting> settingCls : Setting.TYPES) {
+      all.addAll(this.datastore.find(settingCls).asList());
+    }
 
     return all;
   }
@@ -143,6 +145,63 @@ public class SettingsRepository implements MongoRepository<Setting, String> {
     if (LOGGER.isInfoEnabled()) {
       LOGGER.info(String.format("Saved setting with id %s", setting.getId()));
     }
+  }
+
+  @Override
+  public QueryResult<Setting> query(final net.explorviz.shared.querying.Query<Setting> query) {
+    final String originField = "origin";
+    final String typeField = "type";
+
+    String originFilter = null;
+
+
+    List<Class<? extends Setting>> classes = new ArrayList<Class<? extends Setting>>(Setting.TYPES);
+
+    if (query.getFilter().get(typeField) != null) {
+      if (query.getFilter().get(typeField).size() == 1) {
+        // Reduce the subclasses to process to only contain the class filtered for
+        final String typeFilter = query.getFilter().get(typeField).get(0);
+        classes =
+            classes.stream().filter(c -> c.getSimpleName().toLowerCase().contentEquals(typeFilter))
+                .collect(Collectors.toList());
+      } else {
+        // Filters work conjunctive and settings can only be of a single type
+        // thus the query result is empty
+        return new QueryResult<Setting>(query, new ArrayList<Setting>());
+      }
+    }
+
+    if (query.getFilter().get(originField) != null) {
+      if (query.getFilter().get(originField).size() == 1) {
+        originFilter = query.getFilter().get(originField).get(0);
+      } else {
+        // Filters work conjunctive and settings can only be of a origin type
+        // thus the query result is empty
+        return new QueryResult<Setting>(query, new ArrayList<Setting>());
+      }
+    }
+
+
+    List<Setting> data = new ArrayList<Setting>();
+
+
+    for (final Class<?> cls : classes) {
+      final xyz.morphia.query.Query<Setting> q = (Query<Setting>) this.datastore.createQuery(cls);
+      if (originFilter != null) {
+        q.field(originField).contains(originFilter);
+      }
+      data.addAll(q.asList());
+    }
+
+
+    if (query.doPaginate()) {
+      final int from = Math.min(query.getPageNumber() * query.getPageSize(), data.size());
+      final int to =
+          Math.min(query.getPageNumber() * query.getPageSize() + query.getPageSize(), data.size());
+      data = data.subList(from, to);
+    }
+
+    return new QueryResult<Setting>(query, data);
   }
 
 

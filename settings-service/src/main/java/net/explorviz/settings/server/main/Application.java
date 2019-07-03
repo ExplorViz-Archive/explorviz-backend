@@ -31,7 +31,7 @@ public class Application extends ResourceConfig {
     GenericTypeFinder.getTypeMap().put("Setting", Setting.class);
     GenericTypeFinder.getTypeMap().put("RangeSetting", RangeSetting.class);
     GenericTypeFinder.getTypeMap().put("FlagSetting", FlagSetting.class);
-    GenericTypeFinder.getTypeMap().put("CustomSetting", UserPreference.class);
+    GenericTypeFinder.getTypeMap().put("UserPreference", UserPreference.class);
 
 
 
