@@ -116,9 +116,10 @@ public class UserPreferenceRepository
       options.skip(query.getPageSize() * query.getPageNumber());
     }
 
+    final long total = q.count();
     final List<UserPreference> data = q.asList(options);
 
-    return new QueryResult<UserPreference>(query, data);
+    return new QueryResult<UserPreference>(query, data, total);
 
   }
 

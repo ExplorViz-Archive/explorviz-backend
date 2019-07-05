@@ -167,7 +167,7 @@ public class SettingsRepository implements MongoRepository<Setting, String>, Que
       } else {
         // Filters work conjunctive and settings can only be of a single type
         // thus the query result is empty
-        return new QueryResult<Setting>(query, new ArrayList<Setting>());
+        return new QueryResult<Setting>(query, new ArrayList<Setting>(), 0);
       }
     }
 
@@ -177,7 +177,7 @@ public class SettingsRepository implements MongoRepository<Setting, String>, Que
       } else {
         // Filters work conjunctive and settings can only be of a origin type
         // thus the query result is empty
-        return new QueryResult<Setting>(query, new ArrayList<Setting>());
+        return new QueryResult<Setting>(query, new ArrayList<Setting>(), 0);
       }
     }
 
@@ -193,6 +193,7 @@ public class SettingsRepository implements MongoRepository<Setting, String>, Que
       data.addAll(q.asList());
     }
 
+    final int total = data.size();
 
     if (query.doPaginate()) {
       final int from = Math.min(query.getPageNumber() * query.getPageSize(), data.size());
@@ -201,7 +202,7 @@ public class SettingsRepository implements MongoRepository<Setting, String>, Que
       data = data.subList(from, to);
     }
 
-    return new QueryResult<Setting>(query, data);
+    return new QueryResult<Setting>(query, data, total);
   }
 
 

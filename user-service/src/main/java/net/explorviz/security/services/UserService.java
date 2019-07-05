@@ -235,9 +235,10 @@ public class UserService implements Queryable<User> {
       options.skip(query.getPageNumber() * query.getPageSize());
     }
 
+    final long total = q.count();
     final List<User> ret = q.asList(options);
 
-    return new QueryResult<>(query, ret);
+    return new QueryResult<>(query, ret, (int) total);
   }
 
 
