@@ -11,10 +11,12 @@ import com.mongodb.WriteResult;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import javax.ws.rs.core.MultivaluedHashMap;
 import net.explorviz.settings.model.FlagSetting;
 import net.explorviz.settings.model.RangeSetting;
 import net.explorviz.settings.model.Setting;
 import net.explorviz.shared.common.idgen.IdGenerator;
+import net.explorviz.shared.querying.QueryResult;
 import org.hamcrest.CoreMatchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -63,7 +65,7 @@ public class SettingsRepositoryTest {
     this.rangeSettings = new ArrayList<>(Arrays.asList(new RangeSetting("r", "Double Setting",
         "Range Setting Description", "testoriging", 0.5, -1, 1)));
     this.flagSettings = new ArrayList<FlagSetting>(Arrays.asList(new FlagSetting("b",
-        "Boolean Setting", "Boolean Setting Description", "someorigin", false)));
+        "Boolean Setting", "Boolean Setting Description", "flag_origin", false)));
 
     this.union = new ArrayList<Setting>();
     this.union.addAll(this.rangeSettings);
@@ -140,6 +142,44 @@ public class SettingsRepositoryTest {
     final FlagSetting s = new FlagSetting("id", "testname", "a test setting", "default", false);
 
     assertThrows(IllegalArgumentException.class, () -> this.sps.createOrUpdate(s));
+
+  }
+
+  @Test
+  public void filterByType() {
+    final MultivaluedHashMap<String, String> params = new MultivaluedHashMap<String, String>();
+    params.putSingle("filter[type]", "flagsetting");
+
+    final Query<FlagSetting> q = mock(Query.class);
+
+    when(this.ds.createQuery(FlagSetting.class)).thenReturn(q);
+    when(q.asList()).thenReturn(this.flagSettings);
+    final QueryResult<Setting> res =
+        this.sps.query(net.explorviz.shared.querying.Query.fromParameterMap(params));
+  }
+
+  @Test
+  public void testPagination() {
+    this.flagSettings.add(new FlagSetting("Name", "Desc", "Some", false));
+    final MultivaluedHashMap<String, String> params = new MultivaluedHashMap<String, String>();
+    params.putSingle("page[number]", "1");
+    params.putSingle("page[size]", "1");
+
+    final net.explorviz.shared.querying.Query<Setting> q =
+        net.explorviz.shared.querying.Query.fromParameterMap(params);
+
+    final Query<FlagSetting> qFlag = mock(Query.class);
+    final Query<RangeSetting> qRange = mock(Query.class);
+    when(this.ds.createQuery(FlagSetting.class)).thenReturn(qFlag);
+    when(this.ds.createQuery(RangeSetting.class)).thenReturn(qRange);
+    when(qFlag.asList()).thenReturn(this.flagSettings);
+    when(qRange.asList()).thenReturn(this.rangeSettings);
+
+    final QueryResult<Setting> res = this.sps.query(q);
+
+    assertEquals(1, res.getData().size());
+    assertEquals(0, res.getPreviousPage());
+    assertEquals(2, res.getNextPage());
 
   }
 
