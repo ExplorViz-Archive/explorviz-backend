@@ -210,8 +210,8 @@ public class UserService implements Queryable<User> {
 
 
     if (query.doFilter()) {
-      final List<String> roles = query.getFilter().get("roles");
-      final List<String> batchIds = query.getFilter().get("batchid");
+      final List<String> roles = query.getFilters().get("roles");
+      final List<String> batchIds = query.getFilters().get("batchid");
 
       // Filter by roles
       if (roles != null) {

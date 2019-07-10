@@ -81,7 +81,7 @@ public class UserPreferencesResource {
 
     // Workaround to query only for a specific user
     // Technically the path parameter 'uid' is handled as a query parameter
-    query.getFilter().put("userId", Arrays.asList(uid));
+    query.getFilters().put("userId", Arrays.asList(uid));
 
     final String authHeader = headers.getHeaderString(HttpHeaders.AUTHORIZATION);
 

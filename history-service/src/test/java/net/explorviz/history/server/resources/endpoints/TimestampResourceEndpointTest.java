@@ -11,6 +11,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import net.explorviz.history.repository.persistence.LandscapeRepository;
 import net.explorviz.history.repository.persistence.ReplayRepository;
+import net.explorviz.history.repository.persistence.mongo.TimestampRepository;
 import net.explorviz.history.server.resources.TimestampResource;
 import net.explorviz.history.server.resources.TimestampResourceTest;
 import net.explorviz.shared.landscape.model.landscape.Landscape;
@@ -41,6 +42,8 @@ public class TimestampResourceEndpointTest extends JerseyTest {
   private LandscapeRepository<Landscape> landscapeRepo;
   private ReplayRepository<Landscape> replayRepo;
 
+  private TimestampRepository timestampRepo;
+
   private List<Timestamp> serviceGeneratedTimestamps;
   private List<Timestamp> userUploadedTimestamps;
 
@@ -70,9 +73,10 @@ public class TimestampResourceEndpointTest extends JerseyTest {
 
     landscapeRepo = Mockito.mock(LandscapeRepository.class);
     replayRepo = Mockito.mock(ReplayRepository.class);
+    timestampRepo = Mockito.mock(TimestampRepository.class);
 
-    when(this.landscapeRepo.getAllTimestamps()).thenReturn(this.serviceGeneratedTimestamps);
-    when(this.replayRepo.getAllTimestamps()).thenReturn(this.userUploadedTimestamps);
+    when(this.timestampRepo.getLandscapeTimestamps()).thenReturn(this.serviceGeneratedTimestamps);
+    when(this.timestampRepo.getReplayTimestamps()).thenReturn(this.userUploadedTimestamps);
 
     return new ResourceConfig()
         .register(new TimestampResource(this.landscapeRepo, this.replayRepo));

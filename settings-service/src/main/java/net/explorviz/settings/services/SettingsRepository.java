@@ -157,10 +157,10 @@ public class SettingsRepository implements MongoRepository<Setting, String>, Que
 
     List<Class<? extends Setting>> classes = new ArrayList<Class<? extends Setting>>(Setting.TYPES);
 
-    if (query.getFilter().get(typeField) != null) {
-      if (query.getFilter().get(typeField).size() == 1) {
+    if (query.getFilters().get(typeField) != null) {
+      if (query.getFilters().get(typeField).size() == 1) {
         // Reduce the subclasses to process to only contain the class filtered for
-        final String typeFilter = query.getFilter().get(typeField).get(0);
+        final String typeFilter = query.getFilters().get(typeField).get(0);
         classes =
             classes.stream().filter(c -> c.getSimpleName().toLowerCase().contentEquals(typeFilter))
                 .collect(Collectors.toList());
@@ -171,9 +171,9 @@ public class SettingsRepository implements MongoRepository<Setting, String>, Que
       }
     }
 
-    if (query.getFilter().get(originField) != null) {
-      if (query.getFilter().get(originField).size() == 1) {
-        originFilter = query.getFilter().get(originField).get(0);
+    if (query.getFilters().get(originField) != null) {
+      if (query.getFilters().get(originField).size() == 1) {
+        originFilter = query.getFilters().get(originField).get(0);
       } else {
         // Filters work conjunctive and settings can only be of a origin type
         // thus the query result is empty

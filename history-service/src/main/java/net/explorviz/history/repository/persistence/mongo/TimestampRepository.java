@@ -1,0 +1,145 @@
+package net.explorviz.history.repository.persistence.mongo;
+
+import com.mongodb.client.FindIterable;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.model.Projections;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+import javax.inject.Inject;
+import net.explorviz.shared.landscape.model.store.Timestamp;
+import net.explorviz.shared.querying.Query;
+import net.explorviz.shared.querying.QueryException;
+import net.explorviz.shared.querying.QueryResult;
+import net.explorviz.shared.querying.Queryable;
+import org.bson.Document;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+/**
+ * Auxiliary repository for accessing timestamps of persistent landscapes objects.
+ *
+ *
+ */
+public class TimestampRepository implements Queryable<Timestamp> {
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(TimestampRepository.class);
+
+  private final MongoHelper mongoHelper;
+
+
+  @Inject
+  public TimestampRepository(final MongoHelper helper) {
+    this.mongoHelper = helper;
+  }
+
+
+  @Override
+  public QueryResult<Timestamp> query(final Query<Timestamp> query) throws QueryException {
+    final String filterArgType = "type";
+    final String filterArgFrom = "from";
+
+    List<Timestamp> result = new ArrayList<Timestamp>();
+
+    if (query.getFilters().get(filterArgType) != null) {
+      for (final String type : query.getFilters().get(filterArgType)) {
+        if (type.toLowerCase().contentEquals("landscape")) {
+          result.addAll(getLandscapeTimestamps());
+        } else if (type.toLowerCase().contentEquals("replay")) {
+          result.addAll(getReplayTimestamps());
+        } else {
+          LOGGER.warn(
+              String.format("Ignoring the filter type=%s, since the value is unknown.", type));
+        }
+      }
+    } else {
+      // Add all
+      result.addAll(getReplayTimestamps());
+      result.addAll(getLandscapeTimestamps());
+    }
+    if (query.getFilters().get(filterArgFrom) != null) {
+      if (query.getFilters().get(filterArgFrom).size() > 1) {
+        LOGGER.warn("More than one 'from' given, only applying the first");
+      }
+
+      try {
+        final long fromTs = Long.parseLong(query.getFilters().get(filterArgFrom).get(0));
+        result = result.parallelStream()
+            .filter(t -> fromTs <= t.getTimestamp())
+            .collect(Collectors.toList());
+      } catch (final NumberFormatException e) {
+        throw new QueryException("Filter 'from' must be integral", e);
+      }
+
+    }
+
+
+    final long total = result.size();
+    if (query.doPaginate()) {
+      final int pageFrom = Math.min(query.getPageNumber() * query.getPageSize(), result.size());
+      final int pageTo =
+          Math.min(query.getPageSize() * query.getPageSize() + query.getPageSize(), result.size());
+
+      result = result.subList(pageFrom, pageTo);
+    }
+
+    return new QueryResult<Timestamp>(query, result, total);
+  }
+
+
+  /**
+   * Retrieves all landscape timestamps currently stored in the db. Each timestamp is a unique
+   * identifier of an object.
+   *
+   * @return list of all timestamps
+   */
+  public List<Timestamp> getLandscapeTimestamps() {
+    final MongoCollection<Document> landscapeCollection = this.mongoHelper.getLandscapeCollection();
+
+
+    final FindIterable<Document> documents = landscapeCollection.find()
+        .projection(Projections.include(MongoHelper.FIELD_TIMESTAMP,
+            MongoHelper.FIELD_ID,
+            MongoHelper.FIELD_REQUESTS));
+
+    final List<Timestamp> resultList = new ArrayList<>();
+
+    for (final Document doc : documents) {
+      final String id = (String) doc.get(MongoHelper.FIELD_ID);
+      final long timestamp = (long) doc.get(MongoHelper.FIELD_TIMESTAMP);
+      final int totalRequests = (int) doc.get(MongoHelper.FIELD_REQUESTS);
+
+      resultList.add(new Timestamp(id, timestamp, totalRequests)); // NOPMD
+    }
+
+    return resultList;
+  }
+
+  /**
+   * Retrieves all replay landscape timestamps currently stored in the db. Each timestamp is a
+   * unique identifier of an object.
+   *
+   * @return list of all timestamps
+   */
+  public List<Timestamp> getReplayTimestamps() {
+    final MongoCollection<Document> landscapeCollection = this.mongoHelper.getReplayCollection();
+
+    final FindIterable<Document> documents = landscapeCollection.find()
+        .projection(Projections.include(MongoHelper.FIELD_ID,
+            MongoHelper.FIELD_TIMESTAMP,
+            MongoHelper.FIELD_REQUESTS));
+
+    final List<Timestamp> resultList = new ArrayList<>();
+
+    for (final Document doc : documents) {
+      final String id = String.valueOf(doc.get(MongoHelper.FIELD_ID));
+      final long timestamp = (long) doc.get(MongoHelper.FIELD_TIMESTAMP);
+      final int totalRequests = (int) doc.get(MongoHelper.FIELD_REQUESTS);
+
+      resultList.add(new Timestamp(id, timestamp, totalRequests)); // NOPMD
+    }
+
+    return resultList;
+  }
+
+}

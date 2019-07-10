@@ -21,6 +21,7 @@ dependencies {
     implementation "com.github.explorviz.explorviz-backend-shared:security:${sharedProjectVersion}"
     implementation "com.github.explorviz.explorviz-backend-shared:exception-handling:${sharedProjectVersion}"
     implementation "com.github.explorviz.explorviz-backend-shared:common-concerns:${sharedProjectVersion}"
+	implementation "com.github.explorviz.explorviz-backend-shared:querying:${sharedProjectVersion}"
   }
   else {
     implementation project(':landscape-model')
@@ -28,6 +29,7 @@ dependencies {
     implementation project(':security')
     implementation project(':exception-handling')
     implementation project(':common-concerns')
+	implementation project(':query')
   } 
   
   implementation group: 'org.apache.kafka', name: 'kafka_2.12', version: '2.2.0'

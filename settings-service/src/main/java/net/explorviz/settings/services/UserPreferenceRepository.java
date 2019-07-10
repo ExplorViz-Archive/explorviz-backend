@@ -103,7 +103,7 @@ public class UserPreferenceRepository
 
 
     // Filter for user
-    final List<String> userFilter = query.getFilter().get(userIdField);
+    final List<String> userFilter = query.getFilters().get(userIdField);
 
     if (userFilter != null && userFilter.size() == 1) {
       q.field(userIdField).contains(userFilter.get(0));

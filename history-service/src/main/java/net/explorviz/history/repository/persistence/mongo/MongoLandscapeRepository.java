@@ -1,7 +1,6 @@
 package net.explorviz.history.repository.persistence.mongo;
 
 import com.github.jasminb.jsonapi.exceptions.DocumentSerializationException;
-import java.util.List;
 import java.util.Optional;
 import javax.inject.Inject;
 import javax.ws.rs.InternalServerErrorException;
@@ -93,11 +92,6 @@ public class MongoLandscapeRepository implements LandscapeRepository<Landscape> 
   @Override
   public int getTotalRequests(final long timestamp) {
     return this.repo.getTotalRequests(timestamp);
-  }
-
-  @Override
-  public List<Timestamp> getAllTimestamps() {
-    return this.repo.getAllTimestamps();
   }
 
 

@@ -94,13 +94,13 @@ public class UserResourceTest {
       final Query<User> query = (Query<User>) inv.getArgument(0);
       Collection<User> data = this.users.values();
       if (query.doFilter()) {
-        final String role = query.getFilter().get("role").get(0);
+        final String role = query.getFilters().get("role").get(0);
         data = this.users.values()
             .stream()
             .filter(u -> u.getRoles().stream().anyMatch(r -> r.getDescriptor().equals(role)))
             .collect(Collectors.toList());
       }
-      return new QueryResult<>(inv.getArgument(0), data);
+      return new QueryResult<>(inv.getArgument(0), data, data.size());
 
     });
 
