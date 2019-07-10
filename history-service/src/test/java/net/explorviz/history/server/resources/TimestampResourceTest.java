@@ -1,24 +1,22 @@
 package net.explorviz.history.server.resources;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
-
 import java.util.ArrayList;
 import java.util.List;
-import javax.ws.rs.BadRequestException;
-import javax.ws.rs.NotFoundException;
-import net.explorviz.history.repository.persistence.LandscapeRepository;
-import net.explorviz.history.repository.persistence.ReplayRepository;
+import javax.ws.rs.core.MultivaluedHashMap;
+import javax.ws.rs.core.UriInfo;
 import net.explorviz.history.repository.persistence.mongo.TimestampRepository;
 import net.explorviz.history.server.resources.endpoints.TimestampResourceEndpointTest;
-import net.explorviz.shared.landscape.model.landscape.Landscape;
 import net.explorviz.shared.landscape.model.store.Timestamp;
+import net.explorviz.shared.querying.QueryException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 /**
@@ -31,11 +29,7 @@ public class TimestampResourceTest {
 
   private TimestampResource timestampResource;
 
-  @Mock(lenient = true)
-  private LandscapeRepository<Landscape> landscapeRepo;
 
-  @Mock(lenient = true)
-  private ReplayRepository<Landscape> replayRepo;
 
   @Mock(lenient = true)
   private TimestampRepository timestampRepo;
@@ -44,58 +38,71 @@ public class TimestampResourceTest {
   private List<Timestamp> userUploadedTimestamps;
 
   @BeforeEach
-  public void setUp() {
+  public void setUp() throws QueryException {
 
     // CHECKSTYLE.OFF: MagicNumber
     this.serviceGeneratedTimestamps = new ArrayList<>();
-    this.serviceGeneratedTimestamps.add(new Timestamp("1", 1_556_302_800L, 300));
-    this.serviceGeneratedTimestamps.add(new Timestamp("2", 1_556_302_810L, 400));
-    this.serviceGeneratedTimestamps.add(new Timestamp("3", 1_556_302_820L, 500));
-    this.serviceGeneratedTimestamps.add(new Timestamp("4", 1_556_302_830L, 600));
-    this.serviceGeneratedTimestamps.add(new Timestamp("5", 1_556_302_840L, 700));
-    this.serviceGeneratedTimestamps.add(new Timestamp("6", 1_556_302_850L, 800));
+    this.serviceGeneratedTimestamps.add(new Timestamp("1", 1556302800L, 300));
+    this.serviceGeneratedTimestamps.add(new Timestamp("2", 1556302810L, 400));
+    this.serviceGeneratedTimestamps.add(new Timestamp("3", 1556302820L, 500));
+    this.serviceGeneratedTimestamps.add(new Timestamp("4", 1556302830L, 600));
+    this.serviceGeneratedTimestamps.add(new Timestamp("5", 1556302840L, 700));
+    this.serviceGeneratedTimestamps.add(new Timestamp("6", 1556302850L, 800));
 
     this.userUploadedTimestamps = new ArrayList<>();
-    this.userUploadedTimestamps.add(new Timestamp("7", 1_556_302_860L, 600));
-    this.userUploadedTimestamps.add(new Timestamp("8", 1_556_302_870L, 700));
-    this.userUploadedTimestamps.add(new Timestamp("9", 1_556_302_880L, 800));
-    this.userUploadedTimestamps.add(new Timestamp("10", 1_556_302_890L, 900));
-    this.userUploadedTimestamps.add(new Timestamp("11", 1_556_302_900L, 1000));
-    this.userUploadedTimestamps.add(new Timestamp("12", 1_556_302_910L, 1100));
+    this.userUploadedTimestamps.add(new Timestamp("7", 1556302860L, 600));
+    this.userUploadedTimestamps.add(new Timestamp("8", 1556302870L, 700));
+    this.userUploadedTimestamps.add(new Timestamp("9", 1556302880L, 800));
+    this.userUploadedTimestamps.add(new Timestamp("10", 1556302890L, 900));
+    this.userUploadedTimestamps.add(new Timestamp("11", 1556302900L, 1000));
+    this.userUploadedTimestamps.add(new Timestamp("12", 1556302910L, 1100));
     // CHECKSTYLE.ON: MagicNumber
 
     when(this.timestampRepo.getLandscapeTimestamps()).thenReturn(this.serviceGeneratedTimestamps);
     when(this.timestampRepo.getReplayTimestamps()).thenReturn(this.userUploadedTimestamps);
-
-    this.timestampResource = new TimestampResource(this.landscapeRepo, this.replayRepo);
+    when(this.timestampRepo.query(ArgumentMatchers.any())).thenCallRealMethod();
+    this.timestampResource = new TimestampResource(timestampRepo);
 
   }
 
   @Test
   @DisplayName("Return all service-generated timestamps.")
   public void giveAllServiceGenerated() {
+    MultivaluedHashMap<String, String> params = new MultivaluedHashMap<String, String>();
+    params.add("filter[type]", "landscape");
+    UriInfo ui = Mockito.mock(UriInfo.class);
+    when(ui.getQueryParameters(true)).thenReturn(params);
     assertEquals(this.serviceGeneratedTimestamps,
-        this.timestampResource.getTimestampsOld(0L, 0, false, 0),
+        this.timestampResource.getTimestamps(ui),
         "No params returned wrong value for timestamp resource.");
   }
 
   @Test
   @DisplayName("Return all user-uploaded timestamps.")
   public void giveAllUserUploadedOnlyFlag() {
+    MultivaluedHashMap<String, String> params = new MultivaluedHashMap<String, String>();
+    params.add("filter[type]", "replay");
+    UriInfo ui = Mockito.mock(UriInfo.class);
+    when(ui.getQueryParameters(true)).thenReturn(params);
     assertEquals(this.userUploadedTimestamps,
-        this.timestampResource.getTimestampsOld(0L, 0, true, 0),
+        this.timestampResource.getTimestamps(ui),
         "User-uploaded flag returned wrong value for timestamp resource.");
   }
 
   @Test
   @DisplayName("Return first two service-generated timestamps.")
   public void giveServiceGeneratedBasedOnMaxLength() {
-
-    final List<Timestamp> resultList = this.timestampResource.getTimestampsOld(0L, 0, false, 2);
+    MultivaluedHashMap<String, String> params = new MultivaluedHashMap<String, String>();
+    params.add("page[number]", "0");
+    params.add("page[size]", "2");
+    UriInfo ui = Mockito.mock(UriInfo.class);
+    when(ui.getQueryParameters(true)).thenReturn(params);
+    final List<Timestamp> resultList =
+        (List<Timestamp>) this.timestampResource.getTimestamps(ui).getData();
 
     final List<Timestamp> expectedList = new ArrayList<>();
-    expectedList.add(new Timestamp("1", 1_556_302_800L, 300)); // NOCS
-    expectedList.add(new Timestamp("2", 1_556_302_810L, 400)); // NOCS
+    expectedList.add(new Timestamp("1", 1556302800L, 300)); // NOCS
+    expectedList.add(new Timestamp("2", 1556302810L, 400)); // NOCS
 
     assertEquals(expectedList, resultList, "MaxLength returned wrong value.");
   }
@@ -104,13 +111,21 @@ public class TimestampResourceTest {
   @DisplayName("Return first two user-uploaded timestamps.")
   public void giveUserUploadedOnlyFlagBasedOnMaxLength() {
 
-    final List<Timestamp> resultList = this.timestampResource.getTimestampsOld(0L, 0, true, 2);
+    MultivaluedHashMap<String, String> params = new MultivaluedHashMap<String, String>();
+    params.add("page[number]", "0");
+    params.add("page[size]", "2");
+    params.add("filter[type]", "replay");
+    UriInfo ui = Mockito.mock(UriInfo.class);
+    when(ui.getQueryParameters(true)).thenReturn(params);
+    final List<Timestamp> resultList =
+        (List<Timestamp>) this.timestampResource.getTimestamps(ui).getData();
 
     final List<Timestamp> expectedList = new ArrayList<>();
-    expectedList.add(new Timestamp("7", 1_556_302_860L, 600)); // NOCS
-    expectedList.add(new Timestamp("8", 1_556_302_870L, 700)); // NOCS
+    expectedList.add(new Timestamp("7", 1556302860L, 600)); // NOCS
+    expectedList.add(new Timestamp("8", 1556302870L, 700)); // NOCS
 
-    assertEquals(expectedList, resultList,
+    assertEquals(expectedList,
+        resultList,
         "User-uploaded flag and maxLength returned wrong value.");
   }
 
@@ -118,16 +133,23 @@ public class TimestampResourceTest {
   @DisplayName("Return all service-generated timestamps, which come after the passed one.")
   public void giveAllServiceTimestampsAfterPassedTimestamp() {
 
+    MultivaluedHashMap<String, String> params = new MultivaluedHashMap<String, String>();
+    params.add("filter[from]", "1556302820");
+    params.add("filter[type]", "landscape");
+    UriInfo ui = Mockito.mock(UriInfo.class);
+    when(ui.getQueryParameters(true)).thenReturn(params);
+
     final List<Timestamp> resultList =
-        this.timestampResource.getTimestampsOld(1_556_302_820L, 0, false, 0);
+        (List<Timestamp>) this.timestampResource.getTimestamps(ui).getData();
 
     final List<Timestamp> expectedList = new ArrayList<>();
-    expectedList.add(new Timestamp("3", 1_556_302_820L, 500)); // NOCS
-    expectedList.add(new Timestamp("4", 1_556_302_830L, 600)); // NOCS
-    expectedList.add(new Timestamp("5", 1_556_302_840L, 700)); // NOCS
-    expectedList.add(new Timestamp("6", 1_556_302_850L, 800)); // NOCS
+    expectedList.add(new Timestamp("3", 1556302820L, 500)); // NOCS
+    expectedList.add(new Timestamp("4", 1556302830L, 600)); // NOCS
+    expectedList.add(new Timestamp("5", 1556302840L, 700)); // NOCS
+    expectedList.add(new Timestamp("6", 1556302850L, 800)); // NOCS
 
-    assertEquals(expectedList, resultList,
+    assertEquals(expectedList,
+        resultList,
         "Invalid return value for filtered service-generated timestamps.");
   }
 
@@ -135,16 +157,24 @@ public class TimestampResourceTest {
   @DisplayName("Return all user-uploaded timestamps, which come after the passed one.")
   public void giveAllUserUploadedAllParams() {
 
+
+    MultivaluedHashMap<String, String> params = new MultivaluedHashMap<String, String>();
+    params.add("filter[from]", "1556302880");
+    params.add("filter[type]", "replay");
+    UriInfo ui = Mockito.mock(UriInfo.class);
+    when(ui.getQueryParameters(true)).thenReturn(params);
+
     final List<Timestamp> resultList =
-        this.timestampResource.getTimestampsOld(1_556_302_880L, 0, true, 0);
+        (List<Timestamp>) this.timestampResource.getTimestamps(ui).getData();
 
     final List<Timestamp> expectedList = new ArrayList<>();
-    expectedList.add(new Timestamp("9", 1_556_302_880L, 800)); // NOCS
-    expectedList.add(new Timestamp("10", 1_556_302_890L, 900)); // NOCS
-    expectedList.add(new Timestamp("11", 1_556_302_900L, 1000)); // NOCS
-    expectedList.add(new Timestamp("12", 1_556_302_910L, 1100)); // NOCS
+    expectedList.add(new Timestamp("9", 1556302880L, 800)); // NOCS
+    expectedList.add(new Timestamp("10", 1556302890L, 900)); // NOCS
+    expectedList.add(new Timestamp("11", 1556302900L, 1000)); // NOCS
+    expectedList.add(new Timestamp("12", 1556302910L, 1100)); // NOCS
 
-    assertEquals(expectedList, resultList,
+    assertEquals(expectedList,
+        resultList,
         "Invalid return value for filtered user-uploaded timestamps.");
   }
 
@@ -152,15 +182,24 @@ public class TimestampResourceTest {
   @DisplayName("Return concrete interval of user-uploaded timestamps.")
   public void giveConcreteIntervalOfUserUploadedTimestamps() {
 
+    MultivaluedHashMap<String, String> params = new MultivaluedHashMap<String, String>();
+    params.add("filter[from]", "1556302880L");
+    params.add("filter[type]", "replay");
+    params.add("page[size]", "3");
+    params.add("page[number]", "0");
+    UriInfo ui = Mockito.mock(UriInfo.class);
+    when(ui.getQueryParameters(true)).thenReturn(params);
+
     final List<Timestamp> resultList =
-        this.timestampResource.getTimestampsOld(1_556_302_880L, 3, true, 0);
+        (List<Timestamp>) this.timestampResource.getTimestamps(ui).getData();
 
     final List<Timestamp> expectedList = new ArrayList<>();
-    expectedList.add(new Timestamp("9", 1_556_302_880L, 800)); // NOCS
-    expectedList.add(new Timestamp("10", 1_556_302_890L, 900)); // NOCS
-    expectedList.add(new Timestamp("11", 1_556_302_900L, 1000)); // NOCS
+    expectedList.add(new Timestamp("9", 1556302880L, 800)); // NOCS
+    expectedList.add(new Timestamp("10", 1556302890L, 900)); // NOCS
+    expectedList.add(new Timestamp("11", 1556302900L, 1000)); // NOCS
 
-    assertEquals(expectedList, resultList,
+    assertEquals(expectedList,
+        resultList,
         "Invalid return value for concrete interval of user-uploaded timestamps.");
   }
 
@@ -168,36 +207,51 @@ public class TimestampResourceTest {
   @DisplayName("Return remaining interval of user-uploaded timestamps.")
   public void giveRemainingIntervalOfUserUploadedTimestamps() {
 
+    MultivaluedHashMap<String, String> params = new MultivaluedHashMap<String, String>();
+    params.add("filter[from]", "1556302880");
+    params.add("filter[type]", "replay");
+
+    UriInfo ui = Mockito.mock(UriInfo.class);
+    when(ui.getQueryParameters(true)).thenReturn(params);
+
     final List<Timestamp> resultList =
-        this.timestampResource.getTimestampsOld(1_556_302_880L, 100, true, 0);
+        (List<Timestamp>) this.timestampResource.getTimestamps(ui).getData();
 
     final List<Timestamp> expectedList = new ArrayList<>();
-    expectedList.add(new Timestamp("9", 1_556_302_880L, 800)); // NOCS
-    expectedList.add(new Timestamp("10", 1_556_302_890L, 900)); // NOCS
-    expectedList.add(new Timestamp("11", 1_556_302_900L, 1000)); // NOCS
-    expectedList.add(new Timestamp("12", 1_556_302_910L, 1100)); // NOCS
+    expectedList.add(new Timestamp("9", 1556302880L, 800)); // NOCS
+    expectedList.add(new Timestamp("10", 1556302890L, 900)); // NOCS
+    expectedList.add(new Timestamp("11", 1556302900L, 1000)); // NOCS
+    expectedList.add(new Timestamp("12", 1556302910L, 1100)); // NOCS
 
 
-    assertEquals(expectedList, resultList,
+    assertEquals(expectedList,
+        resultList,
         "Invalid return value for remaining interval of user-uploaded timestamps.");
   }
 
   @Test
   @DisplayName("Return concrete interval of service-generated timestamps.")
   public void giveConcreteIntervalOfServiceGeneratedTimestamps() {
+    MultivaluedHashMap<String, String> params = new MultivaluedHashMap<String, String>();
+    params.add("filter[from]", "1556302810");
+    params.add("filter[type]", "landscape");
+    UriInfo ui = Mockito.mock(UriInfo.class);
+    when(ui.getQueryParameters(true)).thenReturn(params);
+
 
     final List<Timestamp> resultList =
-        this.timestampResource.getTimestampsOld(1_556_302_810L, 100, false, 0);
+        (List<Timestamp>) this.timestampResource.getTimestamps(ui).getData();
 
     final List<Timestamp> expectedList = new ArrayList<>();
-    expectedList.add(new Timestamp("2", 1_556_302_810L, 400)); // NOCS
-    expectedList.add(new Timestamp("3", 1_556_302_820L, 500)); // NOCS
-    expectedList.add(new Timestamp("4", 1_556_302_830L, 600)); // NOCS
-    expectedList.add(new Timestamp("5", 1_556_302_840L, 700)); // NOCS
-    expectedList.add(new Timestamp("6", 1_556_302_850L, 800)); // NOCS
+    expectedList.add(new Timestamp("2", 1556302810L, 400)); // NOCS
+    expectedList.add(new Timestamp("3", 1556302820L, 500)); // NOCS
+    expectedList.add(new Timestamp("4", 1556302830L, 600)); // NOCS
+    expectedList.add(new Timestamp("5", 1556302840L, 700)); // NOCS
+    expectedList.add(new Timestamp("6", 1556302850L, 800)); // NOCS
 
 
-    assertEquals(expectedList, resultList,
+    assertEquals(expectedList,
+        resultList,
         "Invalid return value for concrete interval of service-generated timestamps.");
   }
 
@@ -205,16 +259,25 @@ public class TimestampResourceTest {
   @DisplayName("Return remaining interval of service-generated timestamps.")
   public void giveRemainingIntervalOfServiceGeneratedTimestamps() {
 
+    MultivaluedHashMap<String, String> params = new MultivaluedHashMap<String, String>();
+    params.add("filter[from]", "1556302810");
+    params.add("filter[type]", "landscape");
+    params.add("page[number]", "0");
+    params.add("page[size]", "4");
+    UriInfo ui = Mockito.mock(UriInfo.class);
+    when(ui.getQueryParameters(true)).thenReturn(params);
+
     final List<Timestamp> resultList =
-        this.timestampResource.getTimestampsOld(1_556_302_810L, 4, false, 0);
+        (List<Timestamp>) this.timestampResource.getTimestamps(ui).getData();
 
     final List<Timestamp> expectedList = new ArrayList<>();
-    expectedList.add(new Timestamp("2", 1_556_302_810L, 400)); // NOCS
-    expectedList.add(new Timestamp("3", 1_556_302_820L, 500)); // NOCS
-    expectedList.add(new Timestamp("4", 1_556_302_830L, 600)); // NOCS
-    expectedList.add(new Timestamp("5", 1_556_302_840L, 700)); // NOCS
+    expectedList.add(new Timestamp("2", 1556302810L, 400)); // NOCS
+    expectedList.add(new Timestamp("3", 1556302820L, 500)); // NOCS
+    expectedList.add(new Timestamp("4", 1556302830L, 600)); // NOCS
+    expectedList.add(new Timestamp("5", 1556302840L, 700)); // NOCS
 
-    assertEquals(expectedList, resultList,
+    assertEquals(expectedList,
+        resultList,
         "Invalid return value for remaining interval of service-generated timestamps.");
   }
 
@@ -222,13 +285,22 @@ public class TimestampResourceTest {
   @DisplayName("Return interval of user-uploaded timestamps starting at oldest, when no timestamp was passed.") // NOCS
   public void giveMaxLengthIntervalOfUserPloadedTimestamps() {
 
-    final List<Timestamp> resultList = this.timestampResource.getTimestampsOld(0L, 0, true, 2);
+    MultivaluedHashMap<String, String> params = new MultivaluedHashMap<String, String>();
+    params.add("filter[type]", "replay");
+    params.add("page[number]", "0");
+    params.add("page[size]", "2");
+    UriInfo ui = Mockito.mock(UriInfo.class);
+    when(ui.getQueryParameters(true)).thenReturn(params);
+
+    final List<Timestamp> resultList =
+        (List<Timestamp>) this.timestampResource.getTimestamps(ui).getData();
 
     final List<Timestamp> expectedList = new ArrayList<>();
-    expectedList.add(new Timestamp("7", 1_556_302_860L, 600)); // NOCS
-    expectedList.add(new Timestamp("8", 1_556_302_870L, 700)); // NOCS
+    expectedList.add(new Timestamp("7", 1556302860L, 600)); // NOCS
+    expectedList.add(new Timestamp("8", 1556302870L, 700)); // NOCS
 
-    assertEquals(expectedList, resultList,
+    assertEquals(expectedList,
+        resultList,
         "Invalid return value for interval of user-uploaded timestamps.");
   }
 
@@ -236,48 +308,25 @@ public class TimestampResourceTest {
   @DisplayName("Return interval of service-generated timestamps starting at oldest, when no timestamp was passed.") // NOCS
   public void giveMaxLengthIntervalOfServiceGeneratedTimestamps() {
 
-    final List<Timestamp> resultList = this.timestampResource.getTimestampsOld(0L, 0, false, 2);
+    MultivaluedHashMap<String, String> params = new MultivaluedHashMap<String, String>();
+    params.add("filter[type]", "timestamp");
+    params.add("page[number]", "0");
+    params.add("page[size]", "2");
+    UriInfo ui = Mockito.mock(UriInfo.class);
+    when(ui.getQueryParameters(true)).thenReturn(params);
+
+    final List<Timestamp> resultList =
+        (List<Timestamp>) this.timestampResource.getTimestamps(ui).getData();
 
     final List<Timestamp> expectedList = new ArrayList<>();
-    expectedList.add(new Timestamp("1", 1_556_302_800L, 300)); // NOCS
-    expectedList.add(new Timestamp("2", 1_556_302_810L, 400)); // NOCS
+    expectedList.add(new Timestamp("1", 1556302800L, 300)); // NOCS
+    expectedList.add(new Timestamp("2", 1556302810L, 400)); // NOCS
 
-    assertEquals(expectedList, resultList,
+    assertEquals(expectedList,
+        resultList,
         "Invalid return value for interval of service-generated timestamps.");
   }
 
-
-  @Test
-  @DisplayName("Unknown passed user-uploaded timestamp throws exception.")
-  public void throwExceptionOnUnknownUserTimestamp() {
-    assertThrows(NotFoundException.class, () -> {
-      this.timestampResource.getTimestampsOld(5L, 42, true, 0); // NOCS
-    });
-  }
-
-  @Test
-  @DisplayName("Unknown passed service-generated timestamp throws exception.")
-  public void throwExceptionOnUnknownServiceTimestamp() {
-    assertThrows(NotFoundException.class, () -> {
-      this.timestampResource.getTimestampsOld(5L, 42, false, 0); // NOCS
-    });
-  }
-
-  @Test
-  @DisplayName("Negative interval throws exception.")
-  public void throwExceptionOnNegativeInterval() {
-    assertThrows(BadRequestException.class, () -> {
-      this.timestampResource.getTimestampsOld(1_556_302_810L, -1, false, 0); // NOCS
-    });
-  }
-
-  @Test
-  @DisplayName("Negative maxLength throws exception.")
-  public void throwExceptionOnNegativeMaxLength() {
-    assertThrows(BadRequestException.class, () -> {
-      this.timestampResource.getTimestampsOld(1_556_302_810L, 0, false, -1); // NOCS
-    });
-  }
 
 
 }

@@ -2,7 +2,6 @@ package net.explorviz.history.server.resources.endpoints;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
-
 import java.util.ArrayList;
 import java.util.List;
 import javax.ws.rs.core.Application;
@@ -78,43 +77,52 @@ public class TimestampResourceEndpointTest extends JerseyTest {
     when(this.timestampRepo.getLandscapeTimestamps()).thenReturn(this.serviceGeneratedTimestamps);
     when(this.timestampRepo.getReplayTimestamps()).thenReturn(this.userUploadedTimestamps);
 
-    return new ResourceConfig()
-        .register(new TimestampResource(this.landscapeRepo, this.replayRepo));
+    return new ResourceConfig().register(new TimestampResource(this.timestampRepo));
   }
 
   @Test
   public void checkOkStatusCodes() { // NOPMD
     Response response = target().path(BASE_URL).request().get();
     assertEquals("Wrong HTTP Status code for all service-generated timestamps: ",
-        Status.OK.getStatusCode(), response.getStatus());
+        Status.OK.getStatusCode(),
+        response.getStatus());
 
-    response = target().path(BASE_URL).queryParam(QUERY_PARAM_START_TIMESTAMP, 1_556_302_800L) // NOCS
-        .request().get();
+    response = target().path(BASE_URL)
+        .queryParam(QUERY_PARAM_START_TIMESTAMP, 1_556_302_800L) // NOCS
+        .request()
+        .get();
     assertEquals("Wrong HTTP Status code for service-generated timestamps with starting timestamp",
-        Status.OK.getStatusCode(), response.getStatus());
+        Status.OK.getStatusCode(),
+        response.getStatus());
 
-    response = target().path(BASE_URL).queryParam(QUERY_PARAM_START_TIMESTAMP, 1_556_302_800L) // NOCS
+    response = target().path(BASE_URL)
+        .queryParam(QUERY_PARAM_START_TIMESTAMP, 1_556_302_800L) // NOCS
         .queryParam(QUERY_PARAM_INTERVAL_SIZE, 2) // NOCS
-        .request().get();
+        .request()
+        .get();
     assertEquals(
         "Wrong HTTP Status code for service-generated timestamps"
             + "with starting timestamp and intervalsize",
-        Status.OK.getStatusCode(), response.getStatus());
+        Status.OK.getStatusCode(),
+        response.getStatus());
 
     response = target().path(BASE_URL).queryParam(QUERY_PARAM_USER_UPLOADED, true).request().get();
     assertEquals("Wrong HTTP Status code for all user-uploaded timestamps: ",
-        Status.OK.getStatusCode(), response.getStatus());
+        Status.OK.getStatusCode(),
+        response.getStatus());
   }
 
   @Test
   public void checkBadRequestStatusCodes() { // NOPMD
     Response response =
         target().path(BASE_URL).queryParam(QUERY_PARAM_MAX_LENGTH, -1).request().get();
-    assertEquals(GENERIC_STATUS_ERROR_MESSAGE, Status.BAD_REQUEST.getStatusCode(),
+    assertEquals(GENERIC_STATUS_ERROR_MESSAGE,
+        Status.BAD_REQUEST.getStatusCode(),
         response.getStatus());
 
     response = target().path(BASE_URL).queryParam(QUERY_PARAM_INTERVAL_SIZE, -1).request().get();
-    assertEquals(GENERIC_STATUS_ERROR_MESSAGE, Status.BAD_REQUEST.getStatusCode(),
+    assertEquals(GENERIC_STATUS_ERROR_MESSAGE,
+        Status.BAD_REQUEST.getStatusCode(),
         response.getStatus());
   }
 
@@ -122,14 +130,16 @@ public class TimestampResourceEndpointTest extends JerseyTest {
   public void checkNotFoundStatusCodeForUnknownTimestamp() {
     final Response response =
         target().path(BASE_URL).queryParam(QUERY_PARAM_START_TIMESTAMP, 2L).request().get();
-    assertEquals(GENERIC_STATUS_ERROR_MESSAGE, Status.NOT_FOUND.getStatusCode(),
+    assertEquals(GENERIC_STATUS_ERROR_MESSAGE,
+        Status.NOT_FOUND.getStatusCode(),
         response.getStatus());
   }
 
   @Test
   public void checkNotAcceptableMediaTypeStatusCode() {
     final Response response = target().path(BASE_URL).request().accept(MediaType.TEXT_PLAIN).get();
-    assertEquals(GENERIC_MEDIA_TYPE_ERROR_MESSAGE, Status.NOT_ACCEPTABLE.getStatusCode(),
+    assertEquals(GENERIC_MEDIA_TYPE_ERROR_MESSAGE,
+        Status.NOT_ACCEPTABLE.getStatusCode(),
         response.getStatus());
   }
 
