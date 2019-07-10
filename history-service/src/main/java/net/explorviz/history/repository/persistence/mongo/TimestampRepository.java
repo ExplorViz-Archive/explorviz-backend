@@ -4,6 +4,7 @@ import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Projections;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.inject.Inject;
@@ -72,6 +73,22 @@ public class TimestampRepository implements Queryable<Timestamp> {
       }
 
     }
+
+
+
+    // Sort descending
+    result.sort(new Comparator<Timestamp>() {
+      @Override
+      public int compare(final Timestamp t1, final Timestamp t2) {
+        // t1 > t2 -> >0
+        if (t1.getTimestamp() == t2.getTimestamp()) {
+          return 0;
+        }
+        return t1.getTimestamp() > t2.getTimestamp() ? -1 : 1;
+      }
+    });
+
+    System.out.println(result);
 
 
     final long total = result.size();
