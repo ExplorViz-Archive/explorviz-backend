@@ -4,7 +4,6 @@ import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Projections;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.inject.Inject;
@@ -39,6 +38,7 @@ public class TimestampRepository implements Queryable<Timestamp> {
   public QueryResult<Timestamp> query(final Query<Timestamp> query) throws QueryException {
     final String filterArgType = "type";
     final String filterArgFrom = "from";
+    final String filterArgTo = "to";
 
     List<Timestamp> result = new ArrayList<Timestamp>();
 
@@ -53,16 +53,15 @@ public class TimestampRepository implements Queryable<Timestamp> {
               String.format("Ignoring the filter type=%s, since the value is unknown.", type));
         }
       }
-    } else {
-      // Add all
+    } else { // Add all
       result.addAll(getReplayTimestamps());
       result.addAll(getLandscapeTimestamps());
     }
+
     if (query.getFilters().get(filterArgFrom) != null) {
       if (query.getFilters().get(filterArgFrom).size() > 1) {
         LOGGER.warn("More than one 'from' given, only applying the first");
       }
-
       try {
         final long fromTs = Long.parseLong(query.getFilters().get(filterArgFrom).get(0));
         result = result.parallelStream()
@@ -71,37 +70,43 @@ public class TimestampRepository implements Queryable<Timestamp> {
       } catch (final NumberFormatException e) {
         throw new QueryException("Filter 'from' must be integral", e);
       }
-
     }
 
-
+    if (query.getFilters().get(filterArgTo) != null) {
+      if (query.getFilters().get(filterArgTo).size() > 1) {
+        LOGGER.warn("More than one 'to' given, only applying the first");
+      }
+      try {
+        final long toTs = Long.parseLong(query.getFilters().get(filterArgTo).get(0));
+        result = result.parallelStream()
+            .filter(t -> toTs >= t.getTimestamp())
+            .collect(Collectors.toList());
+      } catch (final NumberFormatException e) {
+        throw new QueryException("Filter 'from' must be integral", e);
+      }
+    }
 
     // Sort descending
-    result.sort(new Comparator<Timestamp>() {
-      @Override
-      public int compare(final Timestamp t1, final Timestamp t2) {
-        // t1 > t2 -> >0
-        if (t1.getTimestamp() == t2.getTimestamp()) {
-          return 0;
-        }
-        return t1.getTimestamp() > t2.getTimestamp() ? -1 : 1;
+    result.sort((t1, t2) -> {
+      if (t1.getTimestamp() == t2.getTimestamp()) {
+        return 0;
       }
+      return t1.getTimestamp() > t2.getTimestamp() ? -1 : 1;
     });
 
-    System.out.println(result);
-
-
+    // Paginate
     final long total = result.size();
     if (query.doPaginate()) {
       final int pageFrom = Math.min(query.getPageNumber() * query.getPageSize(), result.size());
-      final int pageTo =
-          Math.min(query.getPageSize() * query.getPageSize() + query.getPageSize(), result.size());
+      final int pageTo = Math.min(query.getPageSize() * query.getPageNumber() + query.getPageSize(),
+          result.size());
 
-      result = result.subList(pageFrom, pageTo);
+      result = new ArrayList<>(result.subList(pageFrom, pageTo));
     }
 
     return new QueryResult<Timestamp>(query, result, total);
   }
+
 
 
   /**
