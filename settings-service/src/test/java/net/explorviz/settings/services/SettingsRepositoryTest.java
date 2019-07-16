@@ -6,7 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-
 import com.mongodb.WriteResult;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -156,6 +155,8 @@ public class SettingsRepositoryTest {
     when(q.asList()).thenReturn(this.flagSettings);
     final QueryResult<Setting> res =
         this.sps.query(net.explorviz.shared.querying.Query.fromParameterMap(params));
+
+    assertEquals(this.flagSettings, res.getData());
   }
 
   @Test

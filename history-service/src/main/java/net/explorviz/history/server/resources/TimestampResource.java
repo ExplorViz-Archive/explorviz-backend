@@ -24,7 +24,6 @@ public class TimestampResource {
 
   private static final String MEDIA_TYPE = "application/vnd.api+json";
 
-  private static final long QUERY_PARAM_DEFAULT_VALUE_LONG = 0L;
 
   private final TimestampRepository timestampRepo;
 

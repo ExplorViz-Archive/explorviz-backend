@@ -161,9 +161,9 @@ public class SettingsRepository implements MongoRepository<Setting, String>, Que
       if (query.getFilters().get(typeField).size() == 1) {
         // Reduce the subclasses to process to only contain the class filtered for
         final String typeFilter = query.getFilters().get(typeField).get(0);
-        classes =
-            classes.stream().filter(c -> c.getSimpleName().toLowerCase().contentEquals(typeFilter))
-                .collect(Collectors.toList());
+        classes = classes.stream()
+            .filter(c -> c.getSimpleName().toLowerCase().contentEquals(typeFilter))
+            .collect(Collectors.toList());
       } else {
         // Filters work conjunctive and settings can only be of a single type
         // thus the query result is empty

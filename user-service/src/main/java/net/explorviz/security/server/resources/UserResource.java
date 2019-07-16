@@ -3,7 +3,6 @@ package net.explorviz.security.server.resources;
 import com.mongodb.DuplicateKeyException;
 import com.mongodb.MongoException;
 import java.util.List;
-import java.util.stream.Collectors;
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.ws.rs.BadRequestException;

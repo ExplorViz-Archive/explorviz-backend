@@ -8,12 +8,9 @@ import javax.ws.rs.core.Application;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
-import net.explorviz.history.repository.persistence.LandscapeRepository;
-import net.explorviz.history.repository.persistence.ReplayRepository;
 import net.explorviz.history.repository.persistence.mongo.TimestampRepository;
 import net.explorviz.history.server.resources.TimestampResource;
 import net.explorviz.history.server.resources.TimestampResourceTest;
-import net.explorviz.shared.landscape.model.landscape.Landscape;
 import net.explorviz.shared.landscape.model.store.Timestamp;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
@@ -38,15 +35,11 @@ public class TimestampResourceEndpointTest extends JerseyTest {
   private static final String GENERIC_STATUS_ERROR_MESSAGE = "Wrong HTTP Status code.";
   private static final String GENERIC_MEDIA_TYPE_ERROR_MESSAGE = "Wrong media type.";
 
-  private LandscapeRepository<Landscape> landscapeRepo;
-  private ReplayRepository<Landscape> replayRepo;
-
   private TimestampRepository timestampRepo;
 
   private List<Timestamp> serviceGeneratedTimestamps;
   private List<Timestamp> userUploadedTimestamps;
 
-  @SuppressWarnings("unchecked")
   @Override
   protected Application configure() {
 
@@ -70,8 +63,6 @@ public class TimestampResourceEndpointTest extends JerseyTest {
     this.userUploadedTimestamps.add(new Timestamp("12", 1_556_302_910L, 1100));
     // CHECKSTYLE.ON: MagicNumber
 
-    landscapeRepo = Mockito.mock(LandscapeRepository.class);
-    replayRepo = Mockito.mock(ReplayRepository.class);
     timestampRepo = Mockito.mock(TimestampRepository.class);
 
     when(this.timestampRepo.getLandscapeTimestamps()).thenReturn(this.serviceGeneratedTimestamps);

@@ -86,7 +86,7 @@ public class TimestampRepositoryTest {
     addLandscapes();
     addReplays();
 
-    final MultivaluedHashMap<String, String> paramters = new MultivaluedHashMap();
+    final MultivaluedHashMap<String, String> paramters = new MultivaluedHashMap<String, String>();
     paramters.add("filter[type]", "landscape");
     final Query<Timestamp> q = Query.fromParameterMap(paramters);
     final Collection<Timestamp> result = timestampRepo.query(q).getData();
@@ -98,7 +98,7 @@ public class TimestampRepositoryTest {
     addLandscapes();
     addReplays();
 
-    final MultivaluedHashMap<String, String> paramters = new MultivaluedHashMap();
+    final MultivaluedHashMap<String, String> paramters = new MultivaluedHashMap<String, String>();
     paramters.add("filter[type]", "replay");
     final Query<Timestamp> q = Query.fromParameterMap(paramters);
     final Collection<Timestamp> result = timestampRepo.query(q).getData();
@@ -110,7 +110,7 @@ public class TimestampRepositoryTest {
     addLandscapes();
     addReplays();
 
-    final MultivaluedHashMap<String, String> paramters = new MultivaluedHashMap();
+    final MultivaluedHashMap<String, String> paramters = new MultivaluedHashMap<String, String>();
     final Query<Timestamp> q = Query.fromParameterMap(paramters);
     final Collection<Timestamp> result = timestampRepo.query(q).getData();
     assertEquals(4, result.size());
@@ -129,7 +129,7 @@ public class TimestampRepositoryTest {
     landscapeRepo.save(ts2, landscape2, 0);
     landscapeRepo.save(ts3, landscape3, 0);
 
-    final MultivaluedHashMap<String, String> paramters = new MultivaluedHashMap();
+    final MultivaluedHashMap<String, String> paramters = new MultivaluedHashMap<String, String>();
     paramters.add("filter[from]", "2");
     final Query<Timestamp> q = Query.fromParameterMap(paramters);
     final Collection<Timestamp> result = timestampRepo.query(q).getData();
@@ -142,7 +142,7 @@ public class TimestampRepositoryTest {
     addLandscapes();
     addReplays();
 
-    final MultivaluedHashMap<String, String> paramters = new MultivaluedHashMap();
+    final MultivaluedHashMap<String, String> paramters = new MultivaluedHashMap<String, String>();
     paramters.add("page[number]", "1");
     paramters.add("page[size]", "2");
     final Query<Timestamp> q = Query.fromParameterMap(paramters);
@@ -157,7 +157,7 @@ public class TimestampRepositoryTest {
     addLandscapes();
     addReplays();
 
-    final MultivaluedHashMap<String, String> paramters = new MultivaluedHashMap();
+    final MultivaluedHashMap<String, String> paramters = new MultivaluedHashMap<String, String>();
     paramters.add("filter[from]", "notanint");
     final Query<Timestamp> q = Query.fromParameterMap(paramters);
 

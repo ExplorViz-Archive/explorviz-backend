@@ -144,7 +144,7 @@ public class UserService implements Queryable<User> {
       try {
         this.kafkaService.publishDeleted(id);
       } catch (final JsonProcessingException e) {
-        LOGGER.warn("New user no published to kafka", e);
+        LOGGER.warn("User no published", e);
       }
     }
 
@@ -206,16 +206,17 @@ public class UserService implements Queryable<User> {
    */
   @Override
   public QueryResult<User> query(final Query<User> query) {
+    final String roleField = "roles";
     final xyz.morphia.query.Query<User> q = this.datastore.createQuery(User.class);
 
 
     if (query.doFilter()) {
-      final List<String> roles = query.getFilters().get("roles");
+      final List<String> roles = query.getFilters().get(roleField);
       final List<String> batchIds = query.getFilters().get("batchid");
 
       // Filter by roles
       if (roles != null) {
-        q.field("roles")
+        q.field(roleField)
             .hasAllOf(roles.stream().map(r -> new Role(r)).collect(Collectors.toList()));
       }
 
