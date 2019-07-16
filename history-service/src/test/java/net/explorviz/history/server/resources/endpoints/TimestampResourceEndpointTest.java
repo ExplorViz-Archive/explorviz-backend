@@ -12,9 +12,12 @@ import net.explorviz.history.repository.persistence.mongo.TimestampRepository;
 import net.explorviz.history.server.resources.TimestampResource;
 import net.explorviz.history.server.resources.TimestampResourceTest;
 import net.explorviz.shared.landscape.model.store.Timestamp;
+import net.explorviz.shared.querying.QueryException;
+import net.explorviz.shared.querying.QueryResult;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
 import org.junit.Test;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
 
 /**
@@ -27,13 +30,14 @@ public class TimestampResourceEndpointTest extends JerseyTest {
   private static final String MEDIA_TYPE = "application/vnd.api+json";
   private static final String BASE_URL = "v1/timestamps";
 
-  private static final String QUERY_PARAM_USER_UPLOADED = "returnUploadedTimestamps";
-  private static final String QUERY_PARAM_START_TIMESTAMP = "startTimestamp";
-  private static final String QUERY_PARAM_INTERVAL_SIZE = "intervalSize";
-  private static final String QUERY_PARAM_MAX_LENGTH = "maxLength";
-
   private static final String GENERIC_STATUS_ERROR_MESSAGE = "Wrong HTTP Status code.";
   private static final String GENERIC_MEDIA_TYPE_ERROR_MESSAGE = "Wrong media type.";
+
+  private static final String FILTER_FROM = "filter[from]";
+  private static final String FILTER_TYPE = "filter[type]";
+  private static final String PAGE_SIZE = "page[size]";
+  private static final String PAGE_NUMBER = "page[number]";
+
 
   private TimestampRepository timestampRepo;
 
@@ -72,14 +76,15 @@ public class TimestampResourceEndpointTest extends JerseyTest {
   }
 
   @Test
-  public void checkOkStatusCodes() { // NOPMD
+  public void checkOkStatusCodes() throws QueryException { // NOPMD
+    when(this.timestampRepo.query(ArgumentMatchers.any())).thenCallRealMethod();
     Response response = target().path(BASE_URL).request().get();
     assertEquals("Wrong HTTP Status code for all service-generated timestamps: ",
         Status.OK.getStatusCode(),
         response.getStatus());
 
     response = target().path(BASE_URL)
-        .queryParam(QUERY_PARAM_START_TIMESTAMP, 1_556_302_800L) // NOCS
+        .queryParam(FILTER_FROM, 1_556_302_800L) // NOCS
         .request()
         .get();
     assertEquals("Wrong HTTP Status code for service-generated timestamps with starting timestamp",
@@ -87,8 +92,9 @@ public class TimestampResourceEndpointTest extends JerseyTest {
         response.getStatus());
 
     response = target().path(BASE_URL)
-        .queryParam(QUERY_PARAM_START_TIMESTAMP, 1_556_302_800L) // NOCS
-        .queryParam(QUERY_PARAM_INTERVAL_SIZE, 2) // NOCS
+        .queryParam(FILTER_FROM, 1_556_302_800L) // NOCS
+        .queryParam(PAGE_SIZE, 2) // NOCS
+        .queryParam(PAGE_NUMBER, 0)
         .request()
         .get();
     assertEquals(
@@ -97,34 +103,27 @@ public class TimestampResourceEndpointTest extends JerseyTest {
         Status.OK.getStatusCode(),
         response.getStatus());
 
-    response = target().path(BASE_URL).queryParam(QUERY_PARAM_USER_UPLOADED, true).request().get();
+    response = target().path(BASE_URL).queryParam(FILTER_TYPE, "replay").request().get();
     assertEquals("Wrong HTTP Status code for all user-uploaded timestamps: ",
         Status.OK.getStatusCode(),
         response.getStatus());
   }
 
   @Test
-  public void checkBadRequestStatusCodes() { // NOPMD
-    Response response =
-        target().path(BASE_URL).queryParam(QUERY_PARAM_MAX_LENGTH, -1).request().get();
+  public void checkBadRequestStatusCodes() throws QueryException { // NOPMD
+    when(timestampRepo.query(ArgumentMatchers.any())).thenCallRealMethod();
+    Response response = target().path(BASE_URL).queryParam(FILTER_FROM, "nonumber").request().get();
     assertEquals(GENERIC_STATUS_ERROR_MESSAGE,
         Status.BAD_REQUEST.getStatusCode(),
         response.getStatus());
 
-    response = target().path(BASE_URL).queryParam(QUERY_PARAM_INTERVAL_SIZE, -1).request().get();
+    response = target().path(BASE_URL).queryParam(FILTER_FROM, -1).request().get();
     assertEquals(GENERIC_STATUS_ERROR_MESSAGE,
         Status.BAD_REQUEST.getStatusCode(),
         response.getStatus());
   }
 
-  @Test
-  public void checkNotFoundStatusCodeForUnknownTimestamp() {
-    final Response response =
-        target().path(BASE_URL).queryParam(QUERY_PARAM_START_TIMESTAMP, 2L).request().get();
-    assertEquals(GENERIC_STATUS_ERROR_MESSAGE,
-        Status.NOT_FOUND.getStatusCode(),
-        response.getStatus());
-  }
+
 
   @Test
   public void checkNotAcceptableMediaTypeStatusCode() {
@@ -135,13 +134,18 @@ public class TimestampResourceEndpointTest extends JerseyTest {
   }
 
   @Test
-  public void checkMediaTypeOfValidRequestAndResponse() {
+  public void checkMediaTypeOfValidRequestAndResponse() throws QueryException {
+
+    when(this.timestampRepo.query(ArgumentMatchers.any()))
+        .thenReturn(new QueryResult<Timestamp>(null, null, -1));
+
     final Response response = target().path(BASE_URL).request().get();
     assertEquals(GENERIC_MEDIA_TYPE_ERROR_MESSAGE, MEDIA_TYPE, response.getMediaType().toString());
   }
 
   @Test
-  public void checkMediaTypeOfValidRequestAndResponseWithAcceptHeader() {
+  public void checkMediaTypeOfValidRequestAndResponseWithAcceptHeader() throws QueryException {
+    when(timestampRepo.query(ArgumentMatchers.any())).thenCallRealMethod();
     final Response response = target().path(BASE_URL).request().accept(MEDIA_TYPE).get();
     assertEquals(GENERIC_MEDIA_TYPE_ERROR_MESSAGE, MEDIA_TYPE, response.getMediaType().toString());
   }

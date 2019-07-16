@@ -40,6 +40,7 @@ public class TimestampRepository implements Queryable<Timestamp> {
     final String filterArgFrom = "from";
     final String filterArgTo = "to";
 
+
     List<Timestamp> result = new ArrayList<Timestamp>();
 
     if (query.getFilters().get(filterArgType) != null) {
@@ -64,6 +65,9 @@ public class TimestampRepository implements Queryable<Timestamp> {
       }
       try {
         final long fromTs = Long.parseLong(query.getFilters().get(filterArgFrom).get(0));
+        if (fromTs <= 0) {
+          throw new QueryException("Filter 'from' must be positive");
+        }
         result = result.parallelStream()
             .filter(t -> fromTs <= t.getTimestamp())
             .collect(Collectors.toList());
@@ -78,6 +82,9 @@ public class TimestampRepository implements Queryable<Timestamp> {
       }
       try {
         final long toTs = Long.parseLong(query.getFilters().get(filterArgTo).get(0));
+        if (toTs <= 0) {
+          throw new QueryException("Filter 'to' must be positive");
+        }
         result = result.parallelStream()
             .filter(t -> toTs >= t.getTimestamp())
             .collect(Collectors.toList());
