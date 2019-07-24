@@ -50,8 +50,8 @@ public class TimestampRepository implements Queryable<Timestamp> {
         } else if (type.toLowerCase().contentEquals("replay")) {
           result.addAll(getReplayTimestamps());
         } else {
-          LOGGER.warn(
-              String.format("Ignoring the filter type=%s, since the value is unknown.", type));
+          // Unknown type
+          return new QueryResult<Timestamp>(query, new ArrayList<Timestamp>(), 0);
         }
       }
     } else { // Add all
