@@ -57,7 +57,7 @@ public class SetupApplicationListener implements ApplicationEventListener {
 
 
   /**
-   * Adds the default settings to the database
+   * Adds the default settings to the database.
    */
   private void addDefaultSettings() {
     final String origin = "backend";

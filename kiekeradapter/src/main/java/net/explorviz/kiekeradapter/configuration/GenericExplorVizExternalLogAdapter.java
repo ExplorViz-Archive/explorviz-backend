@@ -17,24 +17,20 @@ import explorviz.live_trace_processing.record.event.statics.BeforeStaticOperatio
 import explorviz.live_trace_processing.record.misc.SystemMonitoringRecord;
 import explorviz.live_trace_processing.record.trace.HostApplicationMetaDataRecord;
 import java.nio.ByteBuffer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Prepares the ByteBuffer and sends out the buffer to the backend.
  *
- * @author Christian Zirkelbach (czi@informatik.uni-kiel.de)
- *
  */
 public final class GenericExplorVizExternalLogAdapter {
 
-  private static final Logger LOGGER =
-      LoggerFactory.getLogger(GenericExplorVizExternalLogAdapter.class);
+  // private static final Logger LOGGER =
+  // LoggerFactory.getLogger(GenericExplorVizExternalLogAdapter.class);
 
-  private static final boolean REPLAY_IN_REALTIME = false;
+  // private static final boolean REPLAY_IN_REALTIME = false;
   private static final ByteBuffer EXPLORVIZ_BUFFER;
   private static long firstTimestamp = -1;
-  private static long firstWallclockTimestamp;
+  // private static long firstWallclockTimestamp;
 
   private GenericExplorVizExternalLogAdapter() {
     // private constructor
@@ -80,19 +76,19 @@ public final class GenericExplorVizExternalLogAdapter {
     if (EXPLORVIZ_BUFFER.position() > 0) {
       if (firstTimestamp == -1) {
         firstTimestamp = timestamp;
-        firstWallclockTimestamp = System.nanoTime();
+        // firstWallclockTimestamp = System.nanoTime();
       } else {
-        final long passedTime = timestamp - firstTimestamp;
+        // final long passedTime = timestamp - firstTimestamp;
 
-        while (REPLAY_IN_REALTIME && System.nanoTime() - firstWallclockTimestamp < passedTime) {
-          if (passedTime > 1000L * 1000L) {
-            try {
-              Thread.sleep(1000L);
-            } catch (final InterruptedException e) {
-              LOGGER.warn(LOGGER.getName() + ": " + e.getMessage());
-            }
-          }
-        }
+        // while (REPLAY_IN_REALTIME && System.nanoTime() - firstWallclockTimestamp < passedTime) {
+        // if (passedTime > 1000L * 1000L) {
+        // try {
+        // Thread.sleep(1000L);
+        // } catch (final InterruptedException e) {
+        // LOGGER.warn(LOGGER.getName() + ": " + e.getMessage());
+        // }
+        // }
+        // }
       }
 
       MonitoringController.sendOutBuffer(EXPLORVIZ_BUFFER);
