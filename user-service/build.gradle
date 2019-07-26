@@ -31,6 +31,10 @@ dependencies {
     	implementation project(':exception-handling')
     	implementation project(':common-concerns')
   }
+  
+  compile group: 'io.swagger.core.v3', name: 'swagger-core', version: '2.0.8'
+  compile group: 'io.swagger.core.v3', name: 'swagger-jaxrs2', version: '2.0.8' 
+  
 }
 
 assemble.dependsOn shadowJar

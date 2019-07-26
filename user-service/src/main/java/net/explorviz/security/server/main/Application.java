@@ -69,6 +69,8 @@ public class Application extends ResourceConfig {
     this.register(TokenResource.class);
     this.register(UserResource.class);
     this.register(RoleResource.class);
+
+    this.packages("io.swagger.v3.jaxrs2.integration.resources");
   }
 
 

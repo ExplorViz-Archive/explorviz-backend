@@ -1,5 +1,11 @@
 package net.explorviz.security.server.resources;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
@@ -14,6 +20,7 @@ import net.explorviz.shared.security.model.roles.Role;
  *
  */
 @Path("v1/roles")
+@Tag(name = "Role")
 public class RoleResource {
 
   // private static final Logger LOGGER = LoggerFactory.getLogger(RoleResource.class); // NOPMD
@@ -27,6 +34,9 @@ public class RoleResource {
   @GET
   @RolesAllowed({ADMIN_ROLE})
   @Produces(MEDIA_TYPE)
+  @Operation(description = "Returns a list of all available roles")
+  @ApiResponse(responseCode = "200", description = "List of all roles currently available.",
+      content = @Content(array = @ArraySchema(schema = @Schema(implementation = Role.class))))
   public List<Role> getAllRoles() {
     return this.roleService.getAllRoles();
   }
