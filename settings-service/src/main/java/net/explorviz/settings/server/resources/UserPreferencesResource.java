@@ -1,5 +1,14 @@
 package net.explorviz.settings.server.resources;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 import javax.annotation.security.PermitAll;
 import javax.inject.Inject;
@@ -30,6 +39,8 @@ import org.slf4j.LoggerFactory;
  *
  */
 @Path("v1/users")
+@Tag(name = "Preferences")
+@SecurityRequirement(name = "token")
 public class UserPreferencesResource {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(UserPreferencesResource.class);
@@ -71,8 +82,15 @@ public class UserPreferencesResource {
   @Produces(MEDIA_TYPE)
   @PermitAll
   @Path("{uid}/settings/preferences")
+  @Operation(summary = "Get a user's preferences")
+  @ApiResponse(responseCode = "200",
+      description = "Return all preferences of the user with the given id.", content = @Content(
+          array = @ArraySchema(schema = @Schema(implementation = UserPreference.class))))
+  @ApiResponse(responseCode = "403", description = "A user can only access its own preferences."
+      + " Admins can access any users preferences.")
   public List<UserPreference> getPreferencesForUser(@Context final HttpHeaders headers,
-      @PathParam("uid") final String uid) {
+      @Parameter(description = "Id of the user",
+          required = true) @PathParam("uid") final String uid) {
 
     if (uid == null || uid.isEmpty()) {
       throw new BadRequestException("User id is mandatory");
@@ -101,7 +119,14 @@ public class UserPreferencesResource {
   @DELETE
   @PermitAll
   @Path("settings/preferences/{id}")
-  public Response resetToDefault(@PathParam("id") final String prefId,
+  @Operation(summary = "Delete a preference",
+      description = "If a preference is delete, the default value of the corresponding setting applies again.")
+  @ApiResponse(responseCode = "403", description = "A user can only access its own preferences. "
+      + "Admins can access any users preferences.")
+  @ApiResponse(responseCode = "204", description = "The preference was deleted")
+  public Response resetToDefault(
+      @Parameter(description = "Id of the preference",
+          required = true) @PathParam("id") final String prefId,
       @Context final HttpHeaders headers) {
 
     // Find the preference object
@@ -131,7 +156,20 @@ public class UserPreferencesResource {
   @Produces(MEDIA_TYPE)
   @Path("settings/preferences/{prefId}")
   @PermitAll
-  public UserPreference updatePref(@PathParam("prefId") final String prefId,
+  @Operation(summary = "Update a preference value")
+  @ApiResponse(responseCode = "200",
+      description = "Value was updated, the repsonse contains the update preference.",
+      content = @Content(schema = @Schema(implementation = UserPreference.class)))
+  @ApiResponse(responseCode = "400", description = "Update request is invalid.")
+  @ApiResponse(responseCode = "403", description = "A user can only access its own preferences. "
+      + "Admins can access any users preferences.")
+  @RequestBody(content = @Content(schema = @Schema(implementation = UserPreference.class)),
+      description = "The updated preference. Only the value can be updated. "
+          + "The id of the preference object, the id of the user and, "
+          + "the id of the corresponding setting must stay the same.")
+  public UserPreference updatePref(
+      @Parameter(
+          description = "Id of the preference to update.") @PathParam("prefId") final String prefId,
       @Context final HttpHeaders headers, final UserPreference updatedPref) {
 
     final UserPreference found = this.userPrefRepo.find(prefId).orElseThrow(NotFoundException::new);
@@ -183,6 +221,19 @@ public class UserPreferencesResource {
   @Consumes(MEDIA_TYPE)
   @PermitAll
   @Path("settings/preferences")
+  @Operation(summary = "Create a preference value")
+  @ApiResponse(responseCode = "200",
+      description = "Value was updated, the repsonse contains the update preference.",
+      content = @Content(schema = @Schema(implementation = UserPreference.class)))
+  @ApiResponse(responseCode = "400",
+      description = "Can't create the preference. This is either the case if"
+          + " the constraints of the corresponding setting are not satisfied"
+          + " or a preference with the same user and setting already exists.")
+  @ApiResponse(responseCode = "403", description = "A user can only access its own preferences. "
+      + "Admins can access any users preferences.")
+  @RequestBody(content = @Content(schema = @Schema(implementation = UserPreference.class)),
+      description = "The preference to create. The id field must not be set. "
+          + "Only a single preference can exist per user and setting.")
   public UserPreference createPreference(final UserPreference preference,
       @Context final HttpHeaders headers) {
 

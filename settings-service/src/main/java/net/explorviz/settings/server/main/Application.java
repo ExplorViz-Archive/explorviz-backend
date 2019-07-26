@@ -64,6 +64,9 @@ public class Application extends ResourceConfig {
     this.register(SettingsInfoResource.class);
     this.register(UserPreferencesResource.class);
 
+    // swagger
+    this.packages("io.swagger.v3.jaxrs2.integration.resources");
+
   }
 
 }

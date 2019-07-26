@@ -1,0 +1,12 @@
+resourcePackages: # packages to consider
+   - net.explorviz.settings.server.resources
+prettyPrint: true
+cacheTTL: 0
+openAPI:
+   info:
+      version: '1.4'
+      title: ExplorViz Settings Service
+      description: This service handles then settings and preferences of users. Settings are available for all users. They consist of a display name, 
+         a description, an origin, and a default value. Settings at the moment can describe a range (RangeSetting) or a flag (FlagSetting). Once a user sets 
+         a value for a setting other than the default value, this is called a preference. Thu preferences link a user, a setting and value together. They can
+         be understood as an manifestation of a setting for a specific user.
