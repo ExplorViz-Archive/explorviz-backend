@@ -1,5 +1,12 @@
 package net.explorviz.history.server.resources;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 import java.util.Optional;
 import javax.annotation.security.RolesAllowed;
@@ -21,6 +28,8 @@ import net.explorviz.shared.landscape.model.store.Timestamp;
  */
 @Path("v1/timestamps")
 @RolesAllowed({"admin"})
+@SecurityRequirement(name = "token")
+@Tag(name = "Timestamps")
 public class TimestampResource {
 
   private static final String MEDIA_TYPE = "application/vnd.api+json";
@@ -52,6 +61,11 @@ public class TimestampResource {
    */
   @GET
   @Produces(MEDIA_TYPE)
+  @Operation(summary = "Find a range of timestamps", deprecated = true)
+  @ApiResponse(responseCode = "200",
+      description = "Response contains the timestamp satisfying the applied filters.",
+      content = @Content(array = @ArraySchema(schema = @Schema(implementation = Timestamp.class))))
+  @ApiResponse(responseCode = "400", description = "Invalid query parameters")
   public List<Timestamp> getTimestamps(@QueryParam("startTimestamp") final long startTimestamp,
       @QueryParam("intervalSize") final int intervalSize,
       @QueryParam("returnUploadedTimestamps") final boolean returnUploadedTimestamps,

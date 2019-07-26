@@ -67,6 +67,9 @@ public class HistoryApplication extends ResourceConfig {
 
     this.register(LandscapeResource.class);
     this.register(TimestampResource.class);
+
+    // swagger
+    this.packages("io.swagger.v3.jaxrs2.integration.resources");
   }
 
   /**
