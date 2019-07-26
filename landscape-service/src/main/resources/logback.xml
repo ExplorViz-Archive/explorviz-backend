@@ -10,7 +10,7 @@
       <destination>127.0.0.1:4560</destination>
       
       <encoder class="net.logstash.logback.encoder.LogstashEncoder">
-      	<customFields>{"service": "broadcast-service"}</customFields>
+      	<customFields>{"service": "landscape-service"}</customFields>
       </encoder>
   </appender>
 
@@ -18,7 +18,7 @@
   	<destination>127.0.0.1:4561</destination>
   	
   	<encoder class="net.logstash.logback.encoder.LogstashEncoder">
-      	<customFields>{"service": "broadcast-service"}</customFields>
+      	<customFields>{"service": "landscape-service"}</customFields>
       </encoder>
   </appender>
   

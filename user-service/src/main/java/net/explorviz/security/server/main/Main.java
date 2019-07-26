@@ -51,7 +51,6 @@ public final class Main {
     // Add handlers to server
     server.setHandler(handlers);
 
-
     try {
       server.start();
     } catch (final Exception e) { // NOPMD
