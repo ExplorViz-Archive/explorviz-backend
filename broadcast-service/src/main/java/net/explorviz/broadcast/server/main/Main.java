@@ -2,6 +2,9 @@ package net.explorviz.broadcast.server.main;
 
 import net.explorviz.shared.config.helper.PropertyHelper;
 import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.Slf4jRequestLog;
+import org.eclipse.jetty.server.handler.HandlerCollection;
+import org.eclipse.jetty.server.handler.RequestLogHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.glassfish.jersey.server.ResourceConfig;
@@ -28,11 +31,23 @@ public final class Main {
    */
   public static void main(final String[] args) {
 
-    final Server server = new Server(getPort());
+	  final Server server = new Server(getPort());
+	    final HandlerCollection handlers = new HandlerCollection();
 
-    final ServletHolder jerseyServlet = new ServletHolder(new ServletContainer(createJaxRsApp()));
-    final ServletContextHandler context = new ServletContextHandler(server, getContextPath());
-    context.addServlet(jerseyServlet, "/*");
+	    // JAX RS Servlet
+	    final ServletHolder jerseyServlet = new ServletHolder(new ServletContainer(createJaxRsApp()));
+	    final ServletContextHandler context = new ServletContextHandler(handlers, getContextPath());
+	    context.addServlet(jerseyServlet, "/*");
+
+	    // Request Log Handler
+	    final RequestLogHandler requestLogsHandler = new RequestLogHandler();
+	    final Slf4jRequestLog log = new Slf4jRequestLog();
+	    log.setLoggerName("net.explorviz.requestlog");
+	    requestLogsHandler.setRequestLog(log);
+	    handlers.addHandler(requestLogsHandler);
+
+	    // Add handlers to server
+	    server.setHandler(handlers);
 
     try {
       server.start();
