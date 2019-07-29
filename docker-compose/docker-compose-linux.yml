@@ -66,6 +66,14 @@ services:
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
 
+   explorviz-swagger-ui:
+    container_name: swagger-ui
+    image: swaggerapi/swagger-ui
+    ports:
+      - 8001:8080
+    env_file:
+      - apis.env
+
 
 volumes:
   explorviz-auth-mongo-data:
