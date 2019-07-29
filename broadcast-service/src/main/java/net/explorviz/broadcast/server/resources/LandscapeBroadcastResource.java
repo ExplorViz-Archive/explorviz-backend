@@ -1,5 +1,10 @@
 package net.explorviz.broadcast.server.resources;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.security.SecurityScheme;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
@@ -18,6 +23,10 @@ import net.explorviz.broadcast.server.helper.LandscapeBroadcastService;
  */
 @Path("v1/landscapes/broadcast")
 @RolesAllowed({"admin", "user"})
+@Tag(name = "Broadcasts")
+@SecurityScheme(type = SecuritySchemeType.HTTP, name = "token", scheme = "bearer",
+    bearerFormat = "JWT")
+@SecurityRequirement(name = "token")
 public class LandscapeBroadcastResource {
 
   private final LandscapeBroadcastService broadcastService;
@@ -39,6 +48,8 @@ public class LandscapeBroadcastResource {
    */
   @GET
   @Produces(MediaType.SERVER_SENT_EVENTS)
+  @Operation(description = "Endpoint that clients can use to register for landscape updates.", 
+    summary = "Register for Landscape updates")
   public void listenToBroadcast(@Context final SseEventSink eventSink,
       @Context final HttpServletResponse response) {
 
