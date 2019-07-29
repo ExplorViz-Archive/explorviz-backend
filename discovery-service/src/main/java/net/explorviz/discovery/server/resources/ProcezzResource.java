@@ -1,5 +1,7 @@
 package net.explorviz.discovery.server.resources;
 
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import java.util.List;
 import java.util.Optional;
 import javax.annotation.security.PermitAll;
@@ -45,7 +47,13 @@ public class ProcezzResource {
   @PATCH
   @Path("{id}")
   @Consumes(MEDIA_TYPE)
-  public Response updateProcess(@PathParam("id") final String procezzId, final Procezz procezz)
+  @ApiResponse(responseCode = "422", description = "No agent for this process is registered.")
+  @ApiResponse(responseCode = "200",
+      description = "Process updated successfully, the response contains the updated entity.")
+  public Response updateProcess(
+      @Parameter(description = "If of the process",
+          required = true) @PathParam("id") final String procezzId,
+      final Procezz procezz)
       throws ProcezzGenericException, AgentNotFoundException, AgentNoConnectionException {
 
     final String urlPath =

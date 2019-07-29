@@ -3,6 +3,10 @@ package net.explorviz.discovery.server.resources;
 import com.github.jasminb.jsonapi.JSONAPIDocument;
 import com.github.jasminb.jsonapi.ResourceConverter;
 import com.github.jasminb.jsonapi.exceptions.DocumentSerializationException;
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.security.SecurityScheme;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -40,6 +44,9 @@ import org.glassfish.jersey.media.sse.SseFeature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Tag(name = "Broadcasts")
+@SecurityScheme(type = SecuritySchemeType.HTTP, name = "token", scheme = "bearer",
+    bearerFormat = "JWT")
 @Path("v1/agents")
 public class AgentResource {
 
@@ -124,6 +131,7 @@ public class AgentResource {
   @PATCH
   @Path("{id}")
   @Consumes(MEDIA_TYPE)
+  @SecurityRequirement(name = "token")
   public Agent patchAgent(@PathParam("id") final String agentID, final Agent agent)
       throws AgentInternalErrorException, AgentNoConnectionException {
 
@@ -147,6 +155,7 @@ public class AgentResource {
 
   @GET
   @Produces(MEDIA_TYPE)
+  @SecurityRequirement(name = "token")
   public Response forwardAgentListRequest() throws DocumentSerializationException {
 
     final List<Agent> listToBeReturned = new ArrayList<>();
