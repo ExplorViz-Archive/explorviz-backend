@@ -13,7 +13,6 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
-import java.util.stream.Collectors;
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.ws.rs.BadRequestException;
@@ -27,14 +26,17 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
 import net.explorviz.security.services.RoleService;
 import net.explorviz.security.services.UserService;
 import net.explorviz.security.services.exceptions.DuplicateUserException;
 import net.explorviz.security.services.exceptions.UserCrudException;
 import net.explorviz.security.util.PasswordStorage;
 import net.explorviz.security.util.PasswordStorage.CannotPerformOperationException;
+import net.explorviz.shared.querying.Query;
+import net.explorviz.shared.querying.QueryResult;
 import net.explorviz.shared.security.model.User;
 import net.explorviz.shared.security.model.roles.Role;
 import org.eclipse.jetty.http.HttpStatus;
@@ -62,15 +64,26 @@ public class UserResource {
   private static final String MSG_UNKOWN_ROLE = "Unknown role";
   private static final String ADMIN_ROLE = "admin";
 
-  @Inject
-  private UserService userCrudService;
+  private final UserService userCrudService;
 
-  @Inject
-  private RoleService roleService;
+  private final RoleService roleService;
 
+  private final BatchRequestSubResource batchSubResource;
 
+  /**
+   * Constructor for this class.
+   *
+   * @param userCrudService - Service to obtain actual users.
+   * @param roleService - Service to obtain all Roles.
+   * @param batchSubResource - Sub Resource Class.
+   */
   @Inject
-  private BatchRequestSubResource batchSubResource;
+  public UserResource(final UserService userCrudService, final RoleService roleService,
+      final BatchRequestSubResource batchSubResource) {
+    this.userCrudService = userCrudService;
+    this.roleService = roleService;
+    this.batchSubResource = batchSubResource;
+  }
 
   // CHECKSTYLE.OFF: Cyclomatic
 
@@ -227,8 +240,6 @@ public class UserResource {
   /**
    * Retrieves all users that have a specific role.
    *
-   * @param role - the role to be searched for
-   * @param batchId - the batchId to search for
    * @return a list of all users with the given role
    */
   @GET
@@ -236,24 +247,9 @@ public class UserResource {
   @Produces(MEDIA_TYPE)
   @Operation(description = "List all users", deprecated = true)
   // TODO: Wait for filtering/pagination to be merged
-  public List<User> allUsers(@QueryParam("role") final String role,
-      @QueryParam("batchid") final String batchId) {
-
-    List<User> users;
-    // Return all users if role parameter is omitted
-    if (role == null) {
-      users = this.userCrudService.getAll();
-    } else {
-      users = this.userCrudService.getUsersByRole(role);
-    }
-
-    if (batchId != null && !batchId.isEmpty()) {
-      users = users.stream()
-          .filter(u -> u.getBatchId() != null)
-          .filter(u -> u.getBatchId().contentEquals(batchId))
-          .collect(Collectors.toList());
-    }
-    return users;
+  public QueryResult<User> find(@Context final UriInfo uri) {
+    final Query<User> query = Query.fromParameterMap(uri.getQueryParameters(true));
+    return this.userCrudService.query(query);
   }
 
   /**

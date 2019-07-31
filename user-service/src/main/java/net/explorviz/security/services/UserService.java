@@ -12,12 +12,16 @@ import javax.inject.Inject;
 import net.explorviz.security.services.exceptions.DuplicateUserException;
 import net.explorviz.security.services.exceptions.UserCrudException;
 import net.explorviz.shared.common.idgen.IdGenerator;
+import net.explorviz.shared.querying.Query;
+import net.explorviz.shared.querying.QueryResult;
+import net.explorviz.shared.querying.Queryable;
 import net.explorviz.shared.security.model.User;
 import net.explorviz.shared.security.model.roles.Role;
 import org.jvnet.hk2.annotations.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import xyz.morphia.Datastore;
+import xyz.morphia.query.FindOptions;
 
 /**
  * Offers CRUD operations on user objects, backed by a MongoDB instance as persistence layer. Each
@@ -31,7 +35,7 @@ import xyz.morphia.Datastore;
  *
  */
 @Service
-public class UserService {
+public class UserService implements Queryable<User> {
 
   private static final String ADMIN = "admin";
 
@@ -140,7 +144,7 @@ public class UserService {
       try {
         this.kafkaService.publishDeleted(id);
       } catch (final JsonProcessingException e) {
-        LOGGER.warn("New user no published to kafka", e);
+        LOGGER.warn("User no published", e);
       }
     }
 
@@ -195,24 +199,47 @@ public class UserService {
     return Optional.ofNullable(foundUser);
   }
 
+
+
   /**
-   * Retrieves a list of all users, that have a specific role assigned.
-   *
-   * @param roleName role to search for
-   * @return a list of all users, that have the given role assigned
+   * {@inheritDoc}
    */
-  public List<User> getUsersByRole(final String roleName) {
+  @Override
+  public QueryResult<User> query(final Query<User> query) {
+    final String roleField = "roles";
+    final xyz.morphia.query.Query<User> q = this.datastore.createQuery(User.class);
 
-    // TODO find smarter (MongoDB based) way to check for roles
 
-    final Role role = this.datastore.createQuery(Role.class).filter("descriptor", roleName).get();
+    if (query.doFilter()) {
+      final List<String> roles = query.getFilters().get(roleField);
+      final List<String> batchIds = query.getFilters().get("batchid");
 
-    List<User> userList = this.datastore.createQuery(User.class).asList();
+      // Filter by roles
+      if (roles != null) {
+        q.field(roleField)
+            .hasAllOf(roles.stream().map(r -> new Role(r)).collect(Collectors.toList()));
+      }
 
-    userList =
-        userList.stream().filter(u -> u.getRoles().contains(role)).collect(Collectors.toList());
+      // Filter by batch id, if more than one is give, ignore all but the first
+      if (batchIds != null) {
+        q.field("batchId").equal(batchIds.get(0));
+      }
 
-    return userList;
+    }
+
+
+
+    final FindOptions options = new FindOptions();
+
+    if (query.doPaginate()) {
+      options.limit(query.getPageSize());
+      options.skip(query.getPageNumber() * query.getPageSize());
+    }
+
+    final long total = q.count();
+    final List<User> ret = q.asList(options);
+
+    return new QueryResult<>(query, ret, (int) total);
   }
 
 

@@ -27,6 +27,7 @@ dependencies {
 		implementation "com.github.explorviz.explorviz-backend-shared:security:${sharedProjectVersion}"
 		implementation "com.github.explorviz.explorviz-backend-shared:exception-handling:${sharedProjectVersion}"
 		implementation "com.github.explorviz.explorviz-backend-shared:common-concerns:${sharedProjectVersion}" 
+		implementation "com.github.explorviz.explorviz-backend-shared:query:${sharedProjectVersion}"
   	}
   	else {
 	    implementation project(':user')
@@ -34,6 +35,7 @@ dependencies {
     	implementation project(':security')
     	implementation project(':exception-handling')
     	implementation project(':common-concerns')
+    	implementation project(':query')
   }
   
   

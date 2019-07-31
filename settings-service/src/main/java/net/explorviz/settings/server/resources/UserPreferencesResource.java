@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
+import java.util.Arrays;
 import javax.annotation.security.PermitAll;
 import javax.inject.Inject;
 import javax.ws.rs.BadRequestException;
@@ -26,11 +27,14 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
 import net.explorviz.settings.model.UserPreference;
 import net.explorviz.settings.services.AuthorizationService;
 import net.explorviz.settings.services.UserPreferenceRepository;
 import net.explorviz.settings.services.UserPreferenceService;
 import net.explorviz.settings.services.validation.PreferenceValidationException;
+import net.explorviz.shared.querying.Query;
+import net.explorviz.shared.querying.QueryResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -88,13 +92,14 @@ public class UserPreferencesResource {
           array = @ArraySchema(schema = @Schema(implementation = UserPreference.class))))
   @ApiResponse(responseCode = "403", description = "A user can only access its own preferences."
       + " Admins can access any users preferences.")
-  public List<UserPreference> getPreferencesForUser(@Context final HttpHeaders headers,
-      @Parameter(description = "Id of the user",
-          required = true) @PathParam("uid") final String uid) {
+  public QueryResult<UserPreference> getPreferencesForUser(@Context final HttpHeaders headers,
+      @Context final UriInfo uriInfo, @PathParam("uid") final String uid) {
 
-    if (uid == null || uid.isEmpty()) {
-      throw new BadRequestException("User id is mandatory");
-    }
+    final Query<UserPreference> query = Query.fromParameterMap(uriInfo.getQueryParameters(true));
+
+    // Workaround to query only for a specific user
+    // Technically the path parameter 'uid' is handled as a query parameter
+    query.getFilters().put("userId", Arrays.asList(uid));
 
     final String authHeader = headers.getHeaderString(HttpHeaders.AUTHORIZATION);
 
@@ -105,7 +110,7 @@ public class UserPreferencesResource {
       throw new ForbiddenException();
     }
 
-    return this.userPrefService.getPreferencesForUser(uid);
+    return this.userPrefRepo.query(query);
   }
 
 

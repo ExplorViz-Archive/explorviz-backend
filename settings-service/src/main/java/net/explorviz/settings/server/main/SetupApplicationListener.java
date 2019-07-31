@@ -23,8 +23,6 @@ import org.glassfish.jersey.server.monitoring.RequestEventListener;
 @WebListener
 public class SetupApplicationListener implements ApplicationEventListener {
 
-  // private static final Logger LOGGER = LoggerFactory.getLogger(SetupApplicationListener.class);
-
   @Inject
   private SettingsRepository settingRepo;
 

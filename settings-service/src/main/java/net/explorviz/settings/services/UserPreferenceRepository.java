@@ -6,10 +6,14 @@ import javax.inject.Inject;
 import net.explorviz.settings.model.Setting;
 import net.explorviz.settings.model.UserPreference;
 import net.explorviz.shared.common.idgen.IdGenerator;
+import net.explorviz.shared.querying.Query;
+import net.explorviz.shared.querying.QueryResult;
+import net.explorviz.shared.querying.Queryable;
 import org.jvnet.hk2.annotations.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import xyz.morphia.Datastore;
+import xyz.morphia.query.FindOptions;
 
 /**
  * This service is responsible for persisting and retrieving {@link Setting} objects. It is backed
@@ -17,7 +21,8 @@ import xyz.morphia.Datastore;
  *
  */
 @Service
-public class UserPreferenceRepository implements MongoRepository<UserPreference, String> {
+public class UserPreferenceRepository
+    implements MongoRepository<UserPreference, String>, Queryable<UserPreference> {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(SettingsRepository.class);
 
@@ -85,6 +90,37 @@ public class UserPreferenceRepository implements MongoRepository<UserPreference,
   @Override
   public void delete(final String id) {
     this.datastore.delete(this.datastore.find(UserPreference.class).filter("_id == ", id));
+  }
+
+
+
+  @Override
+  public QueryResult<UserPreference> query(final Query<UserPreference> query) {
+    final String userIdField = "userId";
+
+    final xyz.morphia.query.Query<UserPreference> q =
+        this.datastore.createQuery(UserPreference.class);
+
+
+    // Filter for user
+    final List<String> userFilter = query.getFilters().get(userIdField);
+
+    if (userFilter != null && userFilter.size() == 1) {
+      q.field(userIdField).contains(userFilter.get(0));
+    }
+
+
+    final FindOptions options = new FindOptions();
+    if (query.doPaginate()) {
+      options.limit(query.getPageSize());
+      options.skip(query.getPageSize() * query.getPageNumber());
+    }
+
+    final long total = q.count();
+    final List<UserPreference> data = q.asList(options);
+
+    return new QueryResult<UserPreference>(query, data, total);
+
   }
 
 

@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
 import com.github.jasminb.jsonapi.annotations.Id;
 import io.swagger.v3.oas.annotations.media.Schema;
+import java.util.ArrayList;
+import java.util.List;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 /**
@@ -18,6 +20,20 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 @JsonSubTypes({@Type(name = "RangeSetting", value = RangeSetting.class),
     @Type(name = "FlagSeting", value = FlagSetting.class)})
 public abstract class Setting {
+
+
+  /**
+   * Contains all Subclasses of Setting, i.e., all concrete implementations of a Setting.
+   */
+  @SuppressWarnings("serial")
+  public final static List<Class<? extends Setting>> TYPES =
+      new ArrayList<Class<? extends Setting>>() {
+        {
+          add(RangeSetting.class);
+          add(FlagSetting.class);
+        }
+      };
+
 
   @Id
   @xyz.morphia.annotations.Id

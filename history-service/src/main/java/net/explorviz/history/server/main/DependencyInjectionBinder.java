@@ -10,6 +10,7 @@ import net.explorviz.history.repository.persistence.mongo.MongoLandscapeJsonApiR
 import net.explorviz.history.repository.persistence.mongo.MongoLandscapeRepository;
 import net.explorviz.history.repository.persistence.mongo.MongoReplayJsonApiRepository;
 import net.explorviz.history.repository.persistence.mongo.MongoReplayRepository;
+import net.explorviz.history.repository.persistence.mongo.TimestampRepository;
 import net.explorviz.shared.common.injection.CommonDependencyInjectionBinder;
 import net.explorviz.shared.landscape.model.landscape.Landscape;
 import org.glassfish.hk2.api.TypeLiteral;
@@ -50,6 +51,7 @@ public class DependencyInjectionBinder extends CommonDependencyInjectionBinder {
         .in(Singleton.class);
     this.bind(MongoReplayJsonApiRepository.class).to(new TypeLiteral<ReplayRepository<String>>() {})
         .in(Singleton.class);
+    this.bind(TimestampRepository.class).to(TimestampRepository.class).in(Singleton.class);
 
   }
 }
