@@ -3,7 +3,13 @@ package net.explorviz.discovery.server.resources;
 import com.github.jasminb.jsonapi.JSONAPIDocument;
 import com.github.jasminb.jsonapi.ResourceConverter;
 import com.github.jasminb.jsonapi.exceptions.DocumentSerializationException;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -82,7 +88,8 @@ public class AgentResource {
   }
 
   @Path("{id}/procezzes")
-  public ProcezzResource getProcezzResource(@PathParam("id") final String agentID)
+  public ProcezzResource getProcezzResource(
+      @Parameter(description = "Id of the agent.") @PathParam("id") final String agentID)
       throws AgentNotFoundException {
 
     final Optional<Agent> agentOptional = this.agentRepository.lookupAgentById(agentID);
@@ -98,6 +105,9 @@ public class AgentResource {
 
   @POST
   @Consumes(MEDIA_TYPE)
+  @Operation(summary = "TODO")
+  @RequestBody(description = "TODO",
+      content = @Content(schema = @Schema(implementation = Agent.class)))
   @PermitAll
   public Agent registerAgent(final Agent newAgent) throws DocumentSerializationException {
 
@@ -132,8 +142,16 @@ public class AgentResource {
   @Path("{id}")
   @Consumes(MEDIA_TYPE)
   @SecurityRequirement(name = "token")
-  public Agent patchAgent(@PathParam("id") final String agentID, final Agent agent)
-      throws AgentInternalErrorException, AgentNoConnectionException {
+  @Operation(summary = "Update an agent")
+  @ApiResponse(responseCode = "422", description = "No agent with the given id exists.")
+  @ApiResponse(responseCode = "200",
+      description = "Update successful, response contains the updated agent.",
+      content = @Content(schema = @Schema(implementation = Agent.class)))
+  @RequestBody(description = "TODO",
+      content = @Content(schema = @Schema(implementation = Agent.class)))
+  public Agent patchAgent(
+      @Parameter(description = "Id of th agent.") @PathParam("id") final String agentID,
+      final Agent agent) throws AgentInternalErrorException, AgentNoConnectionException {
 
     final Optional<Agent> agentOptional = this.agentRepository.lookupAgentById(agentID);
 
@@ -156,6 +174,7 @@ public class AgentResource {
   @GET
   @Produces(MEDIA_TYPE)
   @SecurityRequirement(name = "token")
+  @Operation(summary = "TODO")
   public Response forwardAgentListRequest() throws DocumentSerializationException {
 
     final List<Agent> listToBeReturned = new ArrayList<>();

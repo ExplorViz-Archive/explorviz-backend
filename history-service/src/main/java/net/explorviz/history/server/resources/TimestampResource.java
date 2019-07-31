@@ -1,14 +1,15 @@
 package net.explorviz.history.server.resources;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import java.util.List;
-import java.util.Optional;
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.ws.rs.BadRequestException;
@@ -53,11 +54,22 @@ public class TimestampResource {
    */
   @GET
   @Produces(MEDIA_TYPE)
-  @Operation(summary = "Find a range of timestamps", deprecated = true)
+  @Operation(summary = "Find a range of timestamps")
   @ApiResponse(responseCode = "200",
       description = "Response contains the timestamp satisfying the applied filters.",
       content = @Content(array = @ArraySchema(schema = @Schema(implementation = Timestamp.class))))
   @ApiResponse(responseCode = "400", description = "Invalid query parameters")
+  @Parameters({
+      @Parameter(in = ParameterIn.QUERY, name = "page[size]",
+          description = "Controls the size, i.e., amount of entities, of each page."),
+      @Parameter(in = ParameterIn.QUERY, name = "page[number]",
+          description = "Index of the page to return."),
+      @Parameter(in = ParameterIn.QUERY, name = "filter[type]",
+          description = "Response only contains the given type ({landscape, replay})."),
+      @Parameter(in = ParameterIn.QUERY, name = "filter[from]",
+          description = "Lower bound for the timestamp to return."),
+      @Parameter(in = ParameterIn.QUERY, name = "filter[to]",
+          description = "Upper bound for the timestamp to return.")})
   public QueryResult<Timestamp> getTimestamps(@Context final UriInfo uriInfo) {
     final Query<Timestamp> q = Query.fromParameterMap(uriInfo.getQueryParameters(true));
     try {

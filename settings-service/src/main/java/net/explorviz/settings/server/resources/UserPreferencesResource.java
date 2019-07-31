@@ -2,6 +2,8 @@ package net.explorviz.settings.server.resources;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -9,7 +11,6 @@ import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import java.util.List;
 import java.util.Arrays;
 import javax.annotation.security.PermitAll;
 import javax.inject.Inject;
@@ -92,8 +93,14 @@ public class UserPreferencesResource {
           array = @ArraySchema(schema = @Schema(implementation = UserPreference.class))))
   @ApiResponse(responseCode = "403", description = "A user can only access its own preferences."
       + " Admins can access any users preferences.")
+  @Parameters({
+      @Parameter(in = ParameterIn.QUERY, name = "page[size]",
+          description = "Controls the size, i.e., amount of entities, of each page."),
+      @Parameter(in = ParameterIn.QUERY, name = "page[number]",
+          description = "Index of the page to return.")})
   public QueryResult<UserPreference> getPreferencesForUser(@Context final HttpHeaders headers,
-      @Context final UriInfo uriInfo, @PathParam("uid") final String uid) {
+      @Context final UriInfo uriInfo,
+      @Parameter(description = "Id of the user") @PathParam("uid") final String uid) {
 
     final Query<UserPreference> query = Query.fromParameterMap(uriInfo.getQueryParameters(true));
 
@@ -189,8 +196,8 @@ public class UserPreferencesResource {
 
     // ONLY values can change
     if (!found.getId().equals(updatedPref.getId())) {
-      throw new BadRequestException(String.format("Cannot update ids (orginal: %s, new: %s)",
-          found.getId(), updatedPref.getId()));
+      throw new BadRequestException(String
+          .format("Cannot update ids (orginal: %s, new: %s)", found.getId(), updatedPref.getId()));
     }
 
     if (!found.getSettingId().equals(updatedPref.getSettingId())

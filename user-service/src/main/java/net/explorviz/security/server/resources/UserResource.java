@@ -4,7 +4,10 @@ import com.mongodb.DuplicateKeyException;
 import com.mongodb.MongoException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
@@ -245,8 +248,19 @@ public class UserResource {
   @GET
   @RolesAllowed({ADMIN_ROLE})
   @Produces(MEDIA_TYPE)
-  @Operation(description = "List all users", deprecated = true)
-  // TODO: Wait for filtering/pagination to be merged
+  @Operation(description = "List all users")
+  @Parameters({
+      @Parameter(in = ParameterIn.QUERY, name = "page[size]",
+          description = "Controls the size, i.e., amount of entities, of each page."),
+      @Parameter(in = ParameterIn.QUERY, name = "page[number]",
+          description = "Index of the page to return."),
+      @Parameter(in = ParameterIn.QUERY, name = "filter[roles]",
+          description = "Restricts the result to the given role(s)."),
+      @Parameter(in = ParameterIn.QUERY, name = "filter[batchid]",
+          description = "Only return users that were created by the batch request "
+              + "with the specified id.")})
+  @ApiResponse(responseCode = "200", description = "List of users matching the request",
+      content = @Content(array = @ArraySchema(schema = @Schema(implementation = User.class))))
   public QueryResult<User> find(@Context final UriInfo uri) {
     final Query<User> query = Query.fromParameterMap(uri.getQueryParameters(true));
     return this.userCrudService.query(query);

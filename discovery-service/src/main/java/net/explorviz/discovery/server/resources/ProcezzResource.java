@@ -1,6 +1,11 @@
 package net.explorviz.discovery.server.resources;
 
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import java.util.List;
 import java.util.Optional;
@@ -65,6 +70,10 @@ public class ProcezzResource {
 
   @POST
   @Produces(MEDIA_TYPE)
+  @Operation(summary = "TODO")
+  @RequestBody(description = "TODO",
+      content = @Content(array = @ArraySchema(schema = @Schema(implementation = Procezz.class))))
+  @ApiResponse(responseCode = "200", description = "TODO")
   public List<Procezz> insertIdsInProcezzList(final List<Procezz> procezzList) {
     return this.agentRepository.insertIdsInProcezzList(procezzList);
   }

@@ -2,6 +2,8 @@ package net.explorviz.settings.server.resources;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -11,7 +13,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import java.util.List;
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.ws.rs.BadRequestException;
@@ -64,7 +65,16 @@ public class SettingsInfoResource {
   @ApiResponse(description = "Responds with an array of all available settings.",
       responseCode = "200",
       content = @Content(array = @ArraySchema(schema = @Schema(implementation = Setting.class))))
-  // TODO: User static array in Setting class once filtering branch merged
+  @Parameters({
+      @Parameter(in = ParameterIn.QUERY, name = "page[size]",
+          description = "Controls the size, i.e., amount of entities, of each page."),
+      @Parameter(in = ParameterIn.QUERY, name = "page[number]",
+          description = "Index of the page to return."),
+      @Parameter(in = ParameterIn.QUERY, name = "filter[origin]",
+          description = "Only return settings that were created by the specified origin."),
+      @Parameter(in = ParameterIn.QUERY, name = "filter[type]",
+          description = "The response only contains settings of the specified type, "
+              + "matching the JSON:API type")})
   public QueryResult<Setting> getAll(@Context final UriInfo uriInfo) {
     final Query<Setting> query = Query.fromParameterMap(uriInfo.getQueryParameters(true));
 
