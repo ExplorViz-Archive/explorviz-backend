@@ -2,7 +2,7 @@ version: "3.2"
 services:
 
    reverse-proxy:
-    image: explorviz/reverse-proxy:macos
+    image: explorviz/reverse-proxy:latest
     container_name: explorviz-reverse-proxy
     network_mode: "host"
 
