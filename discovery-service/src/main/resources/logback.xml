@@ -7,7 +7,7 @@
   </appender>
   
   <appender name="LOGSTASH_EVENT" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
-      <destination>127.0.0.1:4560</destination>
+      <destination>${LOGSTASH_HOST:-logstash}:4560</destination>
       
       <encoder class="net.logstash.logback.encoder.LogstashEncoder">
       	<customFields>{"service": "discovery-service"}</customFields>
@@ -15,7 +15,7 @@
   </appender>
 
   <appender name="LOGSTASH_REQUEST" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
-  	<destination>127.0.0.1:4561</destination>
+  	<destination>${LOGSTASH_HOST:-logstash}:4561</destination>
   	
   	<encoder class="net.logstash.logback.encoder.LogstashEncoder">
       	<customFields>{"service": "discovery-service"}</customFields>
