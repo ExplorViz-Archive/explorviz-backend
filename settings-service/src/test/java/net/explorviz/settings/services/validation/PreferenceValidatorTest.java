@@ -2,7 +2,6 @@ package net.explorviz.settings.services.validation;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.fail;
-
 import net.explorviz.settings.model.FlagSetting;
 import net.explorviz.settings.model.RangeSetting;
 import net.explorviz.settings.model.UserPreference;
@@ -24,7 +23,6 @@ public class PreferenceValidatorTest {
   private static final String ERROR = "Valid preference but exception thrown";
 
 
-  private static final double DEFAULT = 0.001;
   private static final double MIN = -10.01;
   private static final double MAX = 102;
 

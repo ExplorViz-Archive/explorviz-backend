@@ -1,0 +1,9 @@
+resourcePackages: # packages to consider
+   - net.explorviz.discovery.server.resources
+prettyPrint: true
+cacheTTL: 0
+openAPI:
+   info:
+      version: '1.4'
+      title: ExplorViz Discovery Service
+      description: Provides endpoints for discovery agents # TODO

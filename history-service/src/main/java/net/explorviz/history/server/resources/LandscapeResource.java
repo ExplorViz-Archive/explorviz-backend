@@ -1,5 +1,14 @@
 package net.explorviz.history.server.resources;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.security.SecurityScheme;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.Optional;
 import java.util.stream.Stream;
 import javax.annotation.security.RolesAllowed;
@@ -21,6 +30,10 @@ import net.explorviz.shared.landscape.model.landscape.Landscape;
  */
 @Path("v1/landscapes")
 @RolesAllowed({"admin"})
+@Tag(name = "Landscapes")
+@SecurityScheme(type = SecuritySchemeType.HTTP, name = "token", scheme = "bearer",
+    bearerFormat = "JWT")
+@SecurityRequirement(name = "token")
 public class LandscapeResource {
 
   private static final String MEDIA_TYPE = "application/vnd.api+json";
@@ -49,7 +62,12 @@ public class LandscapeResource {
   @GET
   @Path("{id}")
   @Produces(MEDIA_TYPE)
-  public String getLandscapeById(@PathParam("id") final String id) {
+  @Operation(summary = "Find a landscape by its id")
+  @ApiResponse(responseCode = "200", description = "Response contains the requested landscape.",
+      content = @Content(schema = @Schema(implementation = Landscape.class)))
+  @ApiResponse(responseCode = "404", description = "No landscape with such id.")
+  public String getLandscapeById(@Parameter(description = "Id of the landscape",
+      required = true) @PathParam("id") final String id) {
 
     // Check existence in landscapeRepo and replayRepo or throw Exception
     // this can be done better since Java 9
@@ -67,7 +85,13 @@ public class LandscapeResource {
    */
   @GET
   @Produces(MEDIA_TYPE)
-  public String getLandscape(@QueryParam("timestamp") final long timestamp) {
+  @Operation(summary = "Find a landscape by its timestamp")
+  @ApiResponse(responseCode = "200",
+      description = "Response contains the first landscape with the given timestamp.",
+      content = @Content(schema = @Schema(implementation = Landscape.class)))
+  @ApiResponse(responseCode = "404", description = "No landscape with the given timestamp.")
+  public String getLandscape(@Parameter(description = "The timestamp to filter by.",
+      required = true) @QueryParam("timestamp") final long timestamp) {
 
     if (timestamp == QUERY_PARAM_DEFAULT_VALUE_LONG) {
       throw new BadRequestException("Query parameter 'timestamp' is mandatory");

@@ -1,5 +1,6 @@
 package net.explorviz.discovery.server.resources;
 
+import io.swagger.v3.oas.annotations.Operation;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.servlet.http.HttpServletResponse;
@@ -32,6 +33,7 @@ public class AgentBroadcastSubResource {
 
   @GET
   @Produces(MediaType.SERVER_SENT_EVENTS)
+  @Operation(summary = "TODO")
   public void listenToBroadcast(@Context final SseEventSink eventSink,
       @Context final HttpServletResponse response) {
 

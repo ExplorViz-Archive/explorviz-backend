@@ -14,6 +14,11 @@ repositories {
 }
 
 dependencies {
+
+	// Swagger
+  	compile group: 'io.swagger.core.v3', name: 'swagger-core', version: '2.0.8'
+  	compile group: 'io.swagger.core.v3', name: 'swagger-jaxrs2', version: '2.0.8' 
+
   // ExplorViz Shared Dependencies
   if(useRemoteSharedProject.toBoolean()) {
     implementation "com.github.explorviz.explorviz-backend-shared:landscape-model:${sharedProjectVersion}"
@@ -21,6 +26,7 @@ dependencies {
     implementation "com.github.explorviz.explorviz-backend-shared:security:${sharedProjectVersion}"
     implementation "com.github.explorviz.explorviz-backend-shared:exception-handling:${sharedProjectVersion}"
     implementation "com.github.explorviz.explorviz-backend-shared:common-concerns:${sharedProjectVersion}"
+	implementation "com.github.explorviz.explorviz-backend-shared:query:${sharedProjectVersion}"
   }
   else {
     implementation project(':landscape-model')
@@ -28,6 +34,7 @@ dependencies {
     implementation project(':security')
     implementation project(':exception-handling')
     implementation project(':common-concerns')
+	implementation project(':query')
   } 
   
   implementation group: 'org.apache.kafka', name: 'kafka_2.12', version: '2.2.0'

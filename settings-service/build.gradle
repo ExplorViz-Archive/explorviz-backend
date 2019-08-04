@@ -13,6 +13,11 @@ dependencies {
 		
 	// MongoDB ORM
 	implementation 'xyz.morphia.morphia:core:1.4.0'
+	
+	// Swagger
+  	compile group: 'io.swagger.core.v3', name: 'swagger-core', version: '2.0.8'
+  	compile group: 'io.swagger.core.v3', name: 'swagger-jaxrs2', version: '2.0.8' 
+	
 	implementation project(':settings-service:settings-service-model')
 	
 	// ExplorViz Shared Dependencies
@@ -22,6 +27,7 @@ dependencies {
 		implementation "com.github.explorviz.explorviz-backend-shared:security:${sharedProjectVersion}"
 		implementation "com.github.explorviz.explorviz-backend-shared:exception-handling:${sharedProjectVersion}"
 		implementation "com.github.explorviz.explorviz-backend-shared:common-concerns:${sharedProjectVersion}" 
+		implementation "com.github.explorviz.explorviz-backend-shared:query:${sharedProjectVersion}"
   	}
   	else {
 	    implementation project(':user')
@@ -29,7 +35,10 @@ dependencies {
     	implementation project(':security')
     	implementation project(':exception-handling')
     	implementation project(':common-concerns')
+    	implementation project(':query')
   }
+  
+  
 }
 
 assemble.dependsOn shadowJar

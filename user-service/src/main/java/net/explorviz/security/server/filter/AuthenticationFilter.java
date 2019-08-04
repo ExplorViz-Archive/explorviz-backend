@@ -47,7 +47,10 @@ public class AuthenticationFilter implements ContainerRequestFilter {
 
     final Method method = this.resourceInfo.getResourceMethod();
 
-
+    // Only apply authentication to explorviz resources
+    if (!this.resourceInfo.getResourceClass().getCanonicalName().startsWith("net.explorviz")) {
+      return;
+    }
 
     if (method.getName().equals("apply")) {
       // TODO where does the apply message come from?

@@ -8,12 +8,15 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.ws.rs.BadRequestException;
+import javax.ws.rs.core.MultivaluedHashMap;
+import javax.ws.rs.core.UriInfo;
 import net.explorviz.security.server.resources.endpoints.UserResourceEndpointTest;
 import net.explorviz.security.services.RoleService;
 import net.explorviz.security.services.UserService;
@@ -21,6 +24,8 @@ import net.explorviz.security.services.exceptions.UserCrudException;
 import net.explorviz.security.util.PasswordStorage;
 import net.explorviz.security.util.PasswordStorage.CannotPerformOperationException;
 import net.explorviz.security.util.PasswordStorage.InvalidHashException;
+import net.explorviz.shared.querying.Query;
+import net.explorviz.shared.querying.QueryResult;
 import net.explorviz.shared.security.model.User;
 import net.explorviz.shared.security.model.roles.Role;
 import org.junit.jupiter.api.AfterEach;
@@ -85,12 +90,17 @@ public class UserResourceTest {
       return null;
     }).when(this.userCrudService).deleteEntityById(any());
 
-    Mockito.lenient().when(this.userCrudService.getUsersByRole(any())).thenAnswer(inv -> {
-      final String role = inv.getArgument(0);
-      return this.users.values()
-          .stream()
-          .filter(u -> u.getRoles().stream().anyMatch(r -> r.getDescriptor().equals(role)))
-          .collect(Collectors.toList());
+    Mockito.lenient().when(this.userCrudService.query(any())).thenAnswer(inv -> {
+      final Query<User> query = (Query<User>) inv.getArgument(0);
+      Collection<User> data = this.users.values();
+      if (query.doFilter()) {
+        final String role = query.getFilters().get("role").get(0);
+        data = this.users.values()
+            .stream()
+            .filter(u -> u.getRoles().stream().anyMatch(r -> r.getDescriptor().equals(role)))
+            .collect(Collectors.toList());
+      }
+      return new QueryResult<>(inv.getArgument(0), data, data.size());
 
     });
 
@@ -118,9 +128,15 @@ public class UserResourceTest {
     u2.setPassword("testPassword");
     this.userResource.newUser(u2);
 
-    final List<User> usersFound = this.userResource.allUsers(null, null);
-    assertEquals(2, usersFound.size());
 
+
+    final MultivaluedHashMap<String, String> params = new MultivaluedHashMap<>();
+    final UriInfo uri = Mockito.mock(UriInfo.class);
+    Mockito.when(uri.getQueryParameters(true)).thenReturn(params);
+
+    final Collection<User> data = this.userResource.find(uri).getData();
+
+    assertEquals(2, data.size());
   }
 
   @Test
@@ -182,15 +198,18 @@ public class UserResourceTest {
     this.userResource.newUser(u1);
     this.userResource.newUser(u2);
 
-    final List<User> role1Users = this.userResource.allUsers("role1", "");
-    assertEquals(2, role1Users.size());
+    final MultivaluedHashMap<String, String> roleparams = new MultivaluedHashMap<>();
+    roleparams.add("filter[role]", "role1");
+    final UriInfo uri = Mockito.mock(UriInfo.class);
+    Mockito.when(uri.getQueryParameters(true)).thenReturn(roleparams);
 
-    final List<User> role2Users = this.userResource.allUsers("role2", "");
-    assertEquals(1, role2Users.size());
+    assertEquals(2, this.userResource.find(uri).getData().size());
 
-    final List<User> role3Users = this.userResource.allUsers("role3", "");
-    assertEquals(0, role3Users.size());
+    roleparams.putSingle("filter[role]", "role2");
+    assertEquals(1, this.userResource.find(uri).getData().size());
 
+    roleparams.putSingle("filter[role]", "role3");
+    assertEquals(0, this.userResource.find(uri).getData().size());
   }
 
   @Test

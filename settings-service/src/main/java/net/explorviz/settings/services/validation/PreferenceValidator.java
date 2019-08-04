@@ -17,7 +17,7 @@ public class PreferenceValidator {
 
   private final UserPreference up;
 
-  private final List<Class> settingTypes = new ArrayList<>();
+  private final List<Class<?>> settingTypes = new ArrayList<>();
 
 
 

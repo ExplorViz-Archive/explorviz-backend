@@ -15,7 +15,6 @@ import javax.xml.bind.DatatypeConverter;
  *      "https://github.com/defuse/password-hashing">https://github.com/defuse/password-hashing</a>
  *
  */
-@SuppressWarnings({"PMD"})
 public class PasswordStorage {
 
   // CHECKSTYLE.OFF: javadoc

@@ -25,6 +25,8 @@ import net.explorviz.shared.landscape.model.landscape.Node;
 import net.explorviz.shared.landscape.model.landscape.NodeGroup;
 import net.explorviz.shared.landscape.model.landscape.System;
 import net.explorviz.shared.landscape.model.store.Timestamp;
+import net.explorviz.shared.querying.PaginationJsonApiWriter;
+import net.explorviz.shared.querying.PaginationParameterFilter;
 import net.explorviz.shared.security.filters.AuthenticationFilter;
 import net.explorviz.shared.security.filters.AuthorizationFilter;
 import net.explorviz.shared.security.filters.CorsResponseFilter;
@@ -52,6 +54,7 @@ public class HistoryApplication extends ResourceConfig {
     this.register(AuthenticationFilter.class);
     this.register(AuthorizationFilter.class);
     this.register(CorsResponseFilter.class);
+    this.register(PaginationParameterFilter.class);
 
     // exception handling (mind the order !)
     this.register(WebApplicationExceptionMapper.class);
@@ -64,9 +67,13 @@ public class HistoryApplication extends ResourceConfig {
     // easy (de-)serializing models for HTTP Requests
     this.register(JsonApiProvider.class);
     this.register(JsonApiListProvider.class);
+    this.register(PaginationJsonApiWriter.class);
 
     this.register(LandscapeResource.class);
     this.register(TimestampResource.class);
+
+    // swagger
+    this.packages("io.swagger.v3.jaxrs2.integration.resources");
   }
 
   /**
@@ -82,15 +89,15 @@ public class HistoryApplication extends ResourceConfig {
     GenericTypeFinder.getTypeMap().putIfAbsent("NodeGroup", NodeGroup.class);
     GenericTypeFinder.getTypeMap().putIfAbsent("Node", Node.class);
     GenericTypeFinder.getTypeMap().putIfAbsent("Application", Application.class);
-    GenericTypeFinder.getTypeMap().putIfAbsent("ApplicationCommunication",
-        ApplicationCommunication.class);
+    GenericTypeFinder.getTypeMap()
+        .putIfAbsent("ApplicationCommunication", ApplicationCommunication.class);
     GenericTypeFinder.getTypeMap().putIfAbsent("Component", Component.class);
     GenericTypeFinder.getTypeMap().putIfAbsent("Clazz", Clazz.class);
     GenericTypeFinder.getTypeMap().putIfAbsent("ClazzCommunication", ClazzCommunication.class);
     GenericTypeFinder.getTypeMap().putIfAbsent("Trace", Trace.class);
     GenericTypeFinder.getTypeMap().putIfAbsent("TraceStep", TraceStep.class);
-    GenericTypeFinder.getTypeMap().putIfAbsent("AggregatedClazzCommunication",
-        AggregatedClazzCommunication.class);
+    GenericTypeFinder.getTypeMap()
+        .putIfAbsent("AggregatedClazzCommunication", AggregatedClazzCommunication.class);
     GenericTypeFinder.getTypeMap().putIfAbsent("DatabaseQuery", DatabaseQuery.class);
   }
 }
