@@ -3,13 +3,13 @@ package net.explorviz.settings.services;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.inject.Inject;
+import org.jvnet.hk2.annotations.Service;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import net.explorviz.settings.model.Setting;
 import net.explorviz.settings.model.UserPreference;
 import net.explorviz.settings.services.validation.PreferenceValidationException;
 import net.explorviz.settings.services.validation.PreferenceValidator;
-import org.jvnet.hk2.annotations.Service;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * This is a helper service for accessing preferences of specific users.
@@ -45,7 +45,9 @@ public class UserPreferenceService {
    * @param userId Id of the user
    */
   public List<UserPreference> getPreferencesForUser(final String userId) {
-    return this.prefRepo.findAll().stream().filter(c -> c.getUserId().equals(userId))
+    return this.prefRepo.findAll()
+        .stream()
+        .filter(c -> c.getUserId().equals(userId))
         .collect(Collectors.toList());
   }
 
@@ -66,9 +68,9 @@ public class UserPreferenceService {
     // Validate preference against the settings
     final PreferenceValidator validator = new PreferenceValidator(customSetting);
     validator.validate(s);
+    final String id = customSetting.getId() != null ? customSetting.getId().toString() : "-";
     if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug(String.format("Validation successful for preference with id %s",
-          customSetting.getId().toString()));
+      LOGGER.debug(String.format("Validation successful for preference with id %s", id));
     }
   }
 

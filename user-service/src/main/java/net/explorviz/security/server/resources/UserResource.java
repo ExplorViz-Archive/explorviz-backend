@@ -67,7 +67,6 @@ public class UserResource {
   private static final String MSG_UNKOWN_ROLE = "Unknown role";
   private static final String ADMIN_ROLE = "admin";
 
-  @Inject
   private final UserService userService;
 
   private final RoleService roleService;
