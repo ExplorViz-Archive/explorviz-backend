@@ -30,20 +30,10 @@ dependencies {
   else {    
     implementation project(':landscape-model')
     implementation project(':config-injection')
-   	implementation project(':security')
-   	implementation project(':exception-handling')
-   	implementation project(':common-concerns')
+    implementation project(':common-concerns')
+    implementation group: 'org.glassfish.hk2', name: 'hk2', version: '2.6.0'
+    implementation group: 'com.github.jasminb', name: 'jsonapi-converter', version:'0.8'
   }
-  
-  // SSE context for injection
-  implementation group: 'org.glassfish.jersey.media', name: 'jersey-media-sse', version: '2.27'
-  
-   
-  // multipart/form-data type
-  implementation group: 'org.glassfish.jersey.media', name:'jersey-media-multipart', version:'2.26'
-  
-  
-  
 }
 
 assemble.dependsOn shadowJar
