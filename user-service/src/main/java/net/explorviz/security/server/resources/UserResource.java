@@ -67,7 +67,7 @@ public class UserResource {
   private static final String MSG_UNKOWN_ROLE = "Unknown role";
   private static final String ADMIN_ROLE = "admin";
 
-  private UserService userService;
+  private final UserService userCrudService;
 
   private final RoleService roleService;
 
@@ -143,7 +143,7 @@ public class UserResource {
 
 
     try {
-      return this.userService.saveNewEntity(user);
+      return this.userCrudService.saveNewEntity(user);
     } catch (final DuplicateUserException ex) {
       throw new BadRequestException("User already exists", ex);
     } catch (final UserCrudException ex) {
@@ -183,7 +183,8 @@ public class UserResource {
 
     User targetUser = null;
     try {
-      targetUser = this.userService.getEntityById(id).orElseThrow(() -> new NotFoundException());
+      targetUser =
+          this.userCrudService.getEntityById(id).orElseThrow(() -> new NotFoundException());
     } catch (final MongoException ex) {
       if (LOGGER.isErrorEnabled()) {
         LOGGER.error(MSG_USER_NOT_RETRIEVED + ex.getMessage() + " (" + ex.getCode() + ")");
@@ -229,7 +230,7 @@ public class UserResource {
 
 
     try {
-      this.userService.updateEntity(targetUser);
+      this.userCrudService.updateEntity(targetUser);
     } catch (final DuplicateKeyException ex) {
       throw new BadRequestException("Username already exists", ex);
 
@@ -247,24 +248,22 @@ public class UserResource {
   @GET
   @RolesAllowed({ADMIN_ROLE})
   @Produces(MEDIA_TYPE)
-  public List<User> allUsers(@QueryParam("role") final String role,
-      @QueryParam("batchid") final String batchId) {
-
-    List<User> users;
-    // Return all users if role parameter is omitted
-    if (role == null) {
-      users = this.userCrudService.getAll();
-    } else {
-      users = this.userCrudService.getUsersByRole(role);
-    }
-
-    if (batchId != null && !batchId.isEmpty()) {
-      users = users.stream()
-          .filter(u -> u.getBatchId() != null)
-          .filter(u -> u.getBatchId().contentEquals(batchId))
-          .collect(Collectors.toList());
-    }
-    return users;
+  @Operation(description = "List all users")
+  @Parameters({
+      @Parameter(in = ParameterIn.QUERY, name = "page[size]",
+          description = "Controls the size, i.e., amount of entities, of each page."),
+      @Parameter(in = ParameterIn.QUERY, name = "page[number]",
+          description = "Index of the page to return."),
+      @Parameter(in = ParameterIn.QUERY, name = "filter[roles]",
+          description = "Restricts the result to the given role(s)."),
+      @Parameter(in = ParameterIn.QUERY, name = "filter[batchid]",
+          description = "Only return users that were created by the batch request "
+              + "with the specified id.")})
+  @ApiResponse(responseCode = "200", description = "List of users matching the request",
+      content = @Content(array = @ArraySchema(schema = @Schema(implementation = User.class))))
+  public QueryResult<User> find(@Context final UriInfo uri) {
+    final Query<User> query = Query.fromParameterMap(uri.getQueryParameters(true));
+    return this.userCrudService.query(query);
   }
 
   /**
@@ -290,9 +289,9 @@ public class UserResource {
     User foundUser = null;
 
 
-    foundUser = this.userService.getEntityById(id).orElseThrow(() -> new NotFoundException());
+    foundUser = this.userCrudService.getEntityById(id).orElseThrow(() -> new NotFoundException());
 
-    this.userService.updateEntity(foundUser);
+    this.userCrudService.updateEntity(foundUser);
 
 
     return foundUser;
@@ -316,13 +315,16 @@ public class UserResource {
   public Response removeUser(@Parameter(
       description = "Unique id of the user to delete") @PathParam("id") final String id) {
     try {
-      this.userService.deleteEntityById(id);
+      this.userCrudService.deleteEntityById(id);
+
     } catch (final UserCrudException ex) {
-      if (LOGGER.isWarnEnabled()) {
-        LOGGER.warn("Tried to delete last admin");
+      if (LOGGER.isInfoEnabled()) {
+        LOGGER.info("Tried to delete last admin");
       }
       throw new BadRequestException(ex);
     }
+
+
     return Response.status(HttpStatus.NO_CONTENT_204).build();
   }
 

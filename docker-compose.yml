@@ -52,8 +52,6 @@ services:
     container_name: explorviz-backend-broadcast-service
     depends_on:
       - kafka
-    ports:
-      - 9092:9092
     environment:
       - EXCHANGE_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
       - EXCHANGE_KAFKA_TOPIC_NAME=landscape-update
