@@ -153,7 +153,7 @@ services:
 
   mongo-history:
     image: mongo
-    container_name: explorviz-landscape-mongo
+    container_name: explorviz-backend-landscape-mongo
     command: mongod --port 27018
     volumes:
        - explorviz-history-mongo-data:/data/db
@@ -165,7 +165,7 @@ services:
 
   mongo-settings:
     image: mongo
-    container_name: explorviz-settings-mongo
+    container_name: explorviz-backend-settings-mongo
     command: mongod --port 27019
     volumes:
       - explorviz-settings-mongo-data:/data/db
