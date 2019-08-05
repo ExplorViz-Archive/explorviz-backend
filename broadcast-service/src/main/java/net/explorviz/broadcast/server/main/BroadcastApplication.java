@@ -54,5 +54,7 @@ public class BroadcastApplication extends ResourceConfig {
     this.register(GeneralExceptionMapper.class);
 
     this.register(SetupApplicationListener.class);
+    // swagger
+    this.packages("io.swagger.v3.jaxrs2.integration.resources");
   }
 }

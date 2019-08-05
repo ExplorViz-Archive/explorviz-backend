@@ -5,6 +5,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.github.jasminb.jsonapi.annotations.Id;
 import com.github.jasminb.jsonapi.annotations.Relationship;
 import com.github.jasminb.jsonapi.annotations.Type;
+import io.swagger.v3.oas.annotations.Hidden;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.media.Schema.AccessMode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -70,8 +74,15 @@ public class UserBatchRequest {
     return this.passwords;
   }
 
+  @Hidden
   public void setUsers(final List<User> users) {
     this.users = users;
+  }
+
+  // Why is this not in the API definition?
+  @ArraySchema(arraySchema = @Schema(accessMode = AccessMode.READ_ONLY))
+  public List<User> getUsers() {
+    return this.users;
   }
 
   @Override

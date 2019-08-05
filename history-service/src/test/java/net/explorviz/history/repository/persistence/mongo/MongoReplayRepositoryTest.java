@@ -94,17 +94,5 @@ public class MongoReplayRepositoryTest {
     assertEquals("Requests not matching", requests, retrievedRequests);
   }
 
-  @Test
-  public void testAllTimestamps() {
-    final Landscape landscape = LandscapeDummyCreator.createDummyLandscape(this.idGenerator);
-    final long ts = System.currentTimeMillis();
-    final Landscape landscape2 = LandscapeDummyCreator.createDummyLandscape(this.idGenerator);
-    final long ts2 = ts + 1;
-    this.repo.save(ts, landscape, 0);
-    this.repo.save(ts2, landscape2, 0);
-
-    final int timestamps = this.repo.getAllTimestamps().size();
-    assertEquals("Amount of objects don't match", 2, timestamps);
-  }
 
 }

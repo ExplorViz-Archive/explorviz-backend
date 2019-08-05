@@ -26,7 +26,6 @@ public class KafkaUserService {
 
   @Inject
   public KafkaUserService(final KafkaProducer<String, String> producer) {
-    super();
     this.producer = producer;
   }
 

@@ -1,5 +1,11 @@
 package net.explorviz.security.server.resources;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import javax.annotation.security.PermitAll;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
@@ -22,6 +28,7 @@ import net.explorviz.shared.security.model.User;
  * The token resource class provides endpoints for token obtainment and refreshment.
  */
 @Path("v1/tokens")
+@Tag(name = "Token")
 public class TokenResource {
 
 
@@ -48,6 +55,16 @@ public class TokenResource {
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MEDIA_TYPE)
   @PermitAll
+  @Operation(description = "Request an API token")
+  @ApiResponse(responseCode = "200",
+      description = "If the credentials are valid, the associated user is returned. "
+          + "The object includes a fresh bearer token to be used for authentication"
+          + "and authorization at all services."
+          + "The token expires after 1 hour and can be refreshed once ",
+      content = @Content(schema = @Schema(implementation = User.class)))
+  @ApiResponse(responseCode = "403", description = "Invalid credentials.")
+  @RequestBody(description = "The credentials",
+      content = @Content(schema = @Schema(implementation = UserCredentials.class)))
   public User issueToken(final UserCredentials credentials) {
 
     // curl -X POST
@@ -72,6 +89,14 @@ public class TokenResource {
   @Path("refresh")
   @Produces(MediaType.APPLICATION_JSON)
   @Secured
+  @Operation(description = "This method refreshes a Json Web Token (JWT). "
+      + "The HTTP POST body must not contain data and the "
+      + "to-be refreshed token inside of the ' Authorization: Bearer' header.")
+  @ApiResponse(responseCode = "200",
+      description = "New token, which again is valid for 1 hour. "
+          + "A refreshed token can't be refreshed further.",
+      content = @Content(schema = @Schema(implementation = User.class)))
+  @ApiResponse(responseCode = "403", description = "Token can't be refreshed.")
   public Token refresh(@Context final ContainerRequestContext context) {
 
     // curl -X POST

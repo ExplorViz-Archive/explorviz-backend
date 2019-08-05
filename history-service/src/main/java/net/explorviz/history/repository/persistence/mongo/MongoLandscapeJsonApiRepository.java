@@ -6,8 +6,6 @@ import com.mongodb.MongoException;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.result.DeleteResult;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
@@ -167,25 +165,6 @@ public class MongoLandscapeJsonApiRepository implements LandscapeRepository<Stri
     } else {
       return (int) result.first().get(MongoHelper.FIELD_REQUESTS);
     }
-  }
-
-  @Override
-  public List<Timestamp> getAllTimestamps() {
-    final MongoCollection<Document> landscapeCollection = this.mongoHelper.getLandscapeCollection();
-
-    final FindIterable<Document> documents = landscapeCollection.find();
-
-    final List<Timestamp> resultList = new ArrayList<>();
-
-    for (final Document doc : documents) {
-      final String id = String.valueOf(doc.get(MongoHelper.FIELD_ID));
-      final long timestamp = (long) doc.get(MongoHelper.FIELD_TIMESTAMP);
-      final int totalRequests = (int) doc.get(MongoHelper.FIELD_REQUESTS);
-
-      resultList.add(new Timestamp(id, timestamp, totalRequests)); // NOPMD
-    }
-
-    return resultList;
   }
 
 

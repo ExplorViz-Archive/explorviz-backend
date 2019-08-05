@@ -2,8 +2,20 @@ package net.explorviz.security.server.resources;
 
 import com.mongodb.DuplicateKeyException;
 import com.mongodb.MongoException;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.security.SecurityScheme;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
-import java.util.stream.Collectors;
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.ws.rs.BadRequestException;
@@ -17,14 +29,17 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
 import net.explorviz.security.services.RoleService;
 import net.explorviz.security.services.UserService;
 import net.explorviz.security.services.exceptions.DuplicateUserException;
 import net.explorviz.security.services.exceptions.UserCrudException;
 import net.explorviz.security.util.PasswordStorage;
 import net.explorviz.security.util.PasswordStorage.CannotPerformOperationException;
+import net.explorviz.shared.querying.Query;
+import net.explorviz.shared.querying.QueryResult;
 import net.explorviz.shared.security.model.User;
 import net.explorviz.shared.security.model.roles.Role;
 import org.eclipse.jetty.http.HttpStatus;
@@ -32,10 +47,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Provides several endpoints for user management.
+ * Provides several Endpoints for user management.
  *
  */
 @Path("v1/users")
+@Tag(name = "User")
+@SecurityScheme(type = SecuritySchemeType.HTTP, name = "token", scheme = "bearer",
+    bearerFormat = "JWT")
+@SecurityRequirement(name = "token")
 public class UserResource {
 
   private static final String MEDIA_TYPE = "application/vnd.api+json";
@@ -48,15 +67,26 @@ public class UserResource {
   private static final String MSG_UNKOWN_ROLE = "Unknown role";
   private static final String ADMIN_ROLE = "admin";
 
-  @Inject
   private UserService userService;
 
-  @Inject
-  private RoleService roleService;
+  private final RoleService roleService;
 
+  private final BatchRequestSubResource batchSubResource;
 
+  /**
+   * Constructor for this class.
+   *
+   * @param userCrudService - Service to obtain actual users.
+   * @param roleService - Service to obtain all Roles.
+   * @param batchSubResource - Sub Resource Class.
+   */
   @Inject
-  private BatchRequestSubResource batchSubResource;
+  public UserResource(final UserService userCrudService, final RoleService roleService,
+      final BatchRequestSubResource batchSubResource) {
+    this.userCrudService = userCrudService;
+    this.roleService = roleService;
+    this.batchSubResource = batchSubResource;
+  }
 
   // CHECKSTYLE.OFF: Cyclomatic
 
@@ -70,6 +100,17 @@ public class UserResource {
   @Consumes(MEDIA_TYPE)
   @Produces(MEDIA_TYPE)
   @RolesAllowed({ADMIN_ROLE})
+  @Operation(summary = "Create a new user")
+  @ApiResponse(responseCode = "200", description = "User created",
+      content = @Content(mediaType = MEDIA_TYPE, schema = @Schema(implementation = User.class)))
+  @ApiResponse(responseCode = "400",
+      description = "Invalid properties for the user or user with the given name already exists.")
+  @RequestBody(
+      description = "The user to be created. "
+          + "Both the password and the name must not be empty. "
+          + "No user must exist with the given name. "
+          + "The id must not be set, i.e., must be null." + " The specified roles must exist.",
+      content = @Content(schema = @Schema(implementation = User.class)))
   public User newUser(final User user) { // NOPMD
 
     if (user.getUsername() == null || user.getUsername().equals("")) {
@@ -132,7 +173,13 @@ public class UserResource {
   @RolesAllowed({ADMIN_ROLE})
   @Produces(MEDIA_TYPE)
   @Consumes(MEDIA_TYPE)
-  public User updateUser(@PathParam("id") final String id, final User updatedUser) { // NOPMD
+  @Operation(summary = "Update an existing User")
+  @ApiResponse(responseCode = "200", description = "Updated user",
+      content = @Content(mediaType = MEDIA_TYPE, schema = @Schema(implementation = User.class)))
+  @ApiResponse(responseCode = "400", description = "Properties to update are invalid")
+  public User updateUser(
+      @Parameter(description = "Id of the user to update") @PathParam("id") final String id,
+      @Parameter(description = "Updated values") final User updatedUser) { // NOPMD
 
     User targetUser = null;
     try {
@@ -195,8 +242,6 @@ public class UserResource {
   /**
    * Retrieves all users that have a specific role.
    *
-   * @param role - the role to be searched for
-   * @param batchId - the batchId to search for
    * @return a list of all users with the given role
    */
   @GET
@@ -208,9 +253,9 @@ public class UserResource {
     List<User> users;
     // Return all users if role parameter is omitted
     if (role == null) {
-      users = this.userService.getAll();
+      users = this.userCrudService.getAll();
     } else {
-      users = this.userService.getUsersByRole(role);
+      users = this.userCrudService.getUsersByRole(role);
     }
 
     if (batchId != null && !batchId.isEmpty()) {
@@ -232,7 +277,12 @@ public class UserResource {
   @Path("{id}")
   @RolesAllowed({ADMIN_ROLE})
   @Produces(MEDIA_TYPE)
-  public User userById(@PathParam("id") final String id) {
+  @Operation(summary = "Find a user by its id")
+  @ApiResponse(responseCode = "200", description = "The requested user",
+      content = @Content(mediaType = MEDIA_TYPE, schema = @Schema(implementation = User.class)))
+  @ApiResponse(responseCode = "404", description = "No such user")
+  public User userById(
+      @Parameter(description = "Unique id of the user to find") @PathParam("id") final String id) {
     if (id == null || "".equals(id)) {
       throw new BadRequestException("Invalid id");
     }
@@ -258,7 +308,13 @@ public class UserResource {
   @DELETE
   @Path("{id}")
   @RolesAllowed({ADMIN_ROLE})
-  public Response removeUser(@PathParam("id") final String id) {
+  @Operation(summary = "Remove a user identified by its Id")
+  @ApiResponse(responseCode = "400",
+      description = "Attempt to delete the last existing use with the admin role, "
+          + "which is not possible")
+  @ApiResponse(responseCode = "204", description = "User deleted")
+  public Response removeUser(@Parameter(
+      description = "Unique id of the user to delete") @PathParam("id") final String id) {
     try {
       this.userService.deleteEntityById(id);
     } catch (final UserCrudException ex) {
@@ -278,6 +334,11 @@ public class UserResource {
    */
   @DELETE
   @RolesAllowed({ADMIN_ROLE})
+  @Operation(summary = "Delete a list of users")
+  @ApiResponse(responseCode = "204", description = "All user deleted")
+  @ApiResponse(responseCode = "400",
+      description = "Attempt to delete the last existing use with the admin role, "
+          + "which is not possible")
   public Response removeAll(final List<User> users) {
 
     users.forEach(u -> this.removeUser(u.getId()));

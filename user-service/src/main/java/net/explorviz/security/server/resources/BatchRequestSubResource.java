@@ -1,5 +1,13 @@
 package net.explorviz.security.server.resources;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.tags.Tags;
 import java.util.List;
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
@@ -23,6 +31,8 @@ import org.slf4j.LoggerFactory;
  * Resource that handle batch creation requests.
  *
  */
+@Tags(value = {@Tag(name = "Batch"), @Tag(name = "User")})
+@SecurityRequirement(name = "token")
 public class BatchRequestSubResource {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(BatchRequestSubResource.class);
@@ -49,6 +59,24 @@ public class BatchRequestSubResource {
   @Consumes(MEDIA_TYPE)
   @Produces(MEDIA_TYPE)
   @RolesAllowed({ADMIN_ROLE})
+  @Operation(summary = "Create a batch of users with a single request")
+  @ApiResponse(responseCode = "200",
+      description = "Contains all users created through this batch request. "
+          + "All users created by the same batch request have the same value"
+          + " for the attribute 'batchId'.",
+      content = @Content(mediaType = MEDIA_TYPE,
+          schema = @Schema(implementation = UserBatchRequest.class)))
+  @ApiResponse(responseCode = "400", description = "Invalid request body or a user already exists. "
+      + "In this case, the whole request is rolled back.")
+  @RequestBody(
+      description = "An object specifying the batch request. "
+          + "The 'count' attribute denotes how many users to create."
+          + "It must be greater than 0 but smaller than " + MAX_COUNT + ". "
+          + "The name of alle users start with the 'prefix' and end with an index "
+          + "The prefix thus must not be empty."
+          + "The size of the password list must match the amount of users to create. "
+          + "The given preferences are valid for all users.",
+      content = @Content(schema = @Schema(implementation = UserBatchRequest.class)))
   public UserBatchRequest batchCreate(@Context final HttpHeaders headers,
       final UserBatchRequest batch) {
     try {

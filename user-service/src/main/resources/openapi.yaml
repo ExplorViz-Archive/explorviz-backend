@@ -1,0 +1,9 @@
+resourcePackages: # packages to consider
+   - net.explorviz.security.server.resources
+prettyPrint: true
+cacheTTL: 0
+openAPI:
+   info:
+      version: '1.4'
+      title: ExplorViz User Service
+      description: This service handles then token-based authentication and authorization as well as the user management.

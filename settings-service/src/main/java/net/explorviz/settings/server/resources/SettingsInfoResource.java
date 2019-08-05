@@ -1,6 +1,18 @@
 package net.explorviz.settings.server.resources;
 
-import java.util.List;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.security.SecurityScheme;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.ws.rs.BadRequestException;
@@ -12,15 +24,23 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
 import net.explorviz.settings.model.Setting;
 import net.explorviz.settings.services.SettingsRepository;
+import net.explorviz.shared.querying.Query;
+import net.explorviz.shared.querying.QueryResult;
 
 /**
  * API for handling {@link Setting}s and their associated information.
  *
  */
 @Path("v1/settings/info")
+@Tag(name = "Settings")
+@SecurityScheme(type = SecuritySchemeType.HTTP, name = "token", scheme = "bearer",
+    bearerFormat = "JWT")
+@SecurityRequirement(name = "token")
 public class SettingsInfoResource {
 
   private static final String MEDIA_TYPE = "application/vnd.api+json";
@@ -41,8 +61,24 @@ public class SettingsInfoResource {
    */
   @GET
   @Produces(MEDIA_TYPE)
-  public List<Setting> getAll() {
-    return this.repo.findAll();
+  @Operation(summary = "Find all settings")
+  @ApiResponse(description = "Responds with an array of all available settings.",
+      responseCode = "200",
+      content = @Content(array = @ArraySchema(schema = @Schema(implementation = Setting.class))))
+  @Parameters({
+      @Parameter(in = ParameterIn.QUERY, name = "page[size]",
+          description = "Controls the size, i.e., amount of entities, of each page."),
+      @Parameter(in = ParameterIn.QUERY, name = "page[number]",
+          description = "Index of the page to return."),
+      @Parameter(in = ParameterIn.QUERY, name = "filter[origin]",
+          description = "Only return settings that were created by the specified origin."),
+      @Parameter(in = ParameterIn.QUERY, name = "filter[type]",
+          description = "The response only contains settings of the specified type, "
+              + "matching the JSON:API type")})
+  public QueryResult<Setting> getAll(@Context final UriInfo uriInfo) {
+    final Query<Setting> query = Query.fromParameterMap(uriInfo.getQueryParameters(true));
+
+    return this.repo.query(query);
   }
 
   /**
@@ -55,7 +91,12 @@ public class SettingsInfoResource {
   @GET
   @Produces(MEDIA_TYPE)
   @Path("/{id}")
-  public Setting getById(@PathParam("id") final String id) {
+  @Operation(summary = "Find a single setting")
+  @ApiResponse(description = "Responds with the requestes settings.", responseCode = "200",
+      content = @Content(schema = @Schema(implementation = Setting.class)))
+  @ApiResponse(description = "No setting with such id.", responseCode = "404")
+  public Setting getById(@Parameter(description = "Id of the setting",
+      required = true) @PathParam("id") final String id) {
     return this.repo.find(id).orElseThrow(NotFoundException::new);
   }
 
@@ -69,8 +110,12 @@ public class SettingsInfoResource {
   @Produces(MEDIA_TYPE)
   @Path("/{id}")
   @RolesAllowed({ADMIN})
-  public Response deleteById(@PathParam("id") final String id) {
+  @Operation(summary = "Delete a setting")
+  @ApiResponse(description = "Setting with given id does not exist (anymore)", responseCode = "204")
+  public Response deleteById(
+      @Parameter(description = "Id of the setting to delete") @PathParam("id") final String id) {
     this.repo.delete(id);
+    // 204
     return Response.noContent().build();
   }
 
@@ -84,6 +129,12 @@ public class SettingsInfoResource {
   @POST
   @Consumes(MEDIA_TYPE)
   @RolesAllowed({ADMIN})
+  @Operation(summary = "Creat a new setting")
+  @ApiResponse(description = "Setting created, response contains the created setting.",
+      responseCode = "200", content = @Content(schema = @Schema(implementation = Setting.class)))
+  @ApiResponse(responseCode = "400", description = "Setting to create contains invalid values.")
+  @RequestBody(content = @Content(schema = @Schema(implementation = Setting.class)),
+      description = "Setting to create. The id must not be set.")
   public Setting createSetting(final Setting s) {
     try {
       final Setting updated = this.repo.createOrUpdate(s);
