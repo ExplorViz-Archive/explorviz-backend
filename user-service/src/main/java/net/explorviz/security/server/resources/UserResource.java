@@ -67,7 +67,7 @@ public class UserResource {
   private static final String MSG_UNKOWN_ROLE = "Unknown role";
   private static final String ADMIN_ROLE = "admin";
 
-  private final UserService userService;
+  private final UserService userCrudService;
 
   private final RoleService roleService;
 
@@ -83,7 +83,7 @@ public class UserResource {
   @Inject
   public UserResource(final UserService userCrudService, final RoleService roleService,
       final BatchRequestSubResource batchSubResource) {
-    this.userService = userCrudService;
+    this.userCrudService = userCrudService;
     this.roleService = roleService;
     this.batchSubResource = batchSubResource;
   }
@@ -143,7 +143,7 @@ public class UserResource {
 
 
     try {
-      return this.userService.saveNewEntity(user);
+      return this.userCrudService.saveNewEntity(user);
     } catch (final DuplicateUserException ex) {
       throw new BadRequestException("User already exists", ex);
     } catch (final UserCrudException ex) {
@@ -183,7 +183,8 @@ public class UserResource {
 
     User targetUser = null;
     try {
-      targetUser = this.userService.getEntityById(id).orElseThrow(() -> new NotFoundException());
+      targetUser =
+          this.userCrudService.getEntityById(id).orElseThrow(() -> new NotFoundException());
     } catch (final MongoException ex) {
       if (LOGGER.isErrorEnabled()) {
         LOGGER.error(MSG_USER_NOT_RETRIEVED + ex.getMessage() + " (" + ex.getCode() + ")");
@@ -229,7 +230,7 @@ public class UserResource {
 
 
     try {
-      this.userService.updateEntity(targetUser);
+      this.userCrudService.updateEntity(targetUser);
     } catch (final DuplicateKeyException ex) {
       throw new BadRequestException("Username already exists", ex);
 
@@ -262,7 +263,7 @@ public class UserResource {
       content = @Content(array = @ArraySchema(schema = @Schema(implementation = User.class))))
   public QueryResult<User> find(@Context final UriInfo uri) {
     final Query<User> query = Query.fromParameterMap(uri.getQueryParameters(true));
-    return this.userService.query(query);
+    return this.userCrudService.query(query);
   }
 
   /**
@@ -288,9 +289,9 @@ public class UserResource {
     User foundUser = null;
 
 
-    foundUser = this.userService.getEntityById(id).orElseThrow(() -> new NotFoundException());
+    foundUser = this.userCrudService.getEntityById(id).orElseThrow(() -> new NotFoundException());
 
-    this.userService.updateEntity(foundUser);
+    this.userCrudService.updateEntity(foundUser);
 
 
     return foundUser;
@@ -314,13 +315,16 @@ public class UserResource {
   public Response removeUser(@Parameter(
       description = "Unique id of the user to delete") @PathParam("id") final String id) {
     try {
-      this.userService.deleteEntityById(id);
+      this.userCrudService.deleteEntityById(id);
+
     } catch (final UserCrudException ex) {
-      if (LOGGER.isWarnEnabled()) {
-        LOGGER.warn("Tried to delete last admin");
+      if (LOGGER.isInfoEnabled()) {
+        LOGGER.info("Tried to delete last admin");
       }
       throw new BadRequestException(ex);
     }
+
+
     return Response.status(HttpStatus.NO_CONTENT_204).build();
   }
 
