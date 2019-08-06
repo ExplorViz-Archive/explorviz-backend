@@ -28,7 +28,8 @@ Florian Fittkau, Alexander Krause, Wilhelm Hasselbring (2017): Software landscap
 [[BibTex]](http://eprints.uni-kiel.de/cgi/export/eprint/33464/BibTeX/cau-eprint-33464.bib) | [[Endnote]](http://eprints.uni-kiel.de/cgi/export/eprint/33464/EndNote/cau-eprint-33464.enw)
 
 ## Documentation
-The API documentation is available [here](https://explorviz.github.io/explorviz-backend/).
+- The API documentation is available [here](https://explorviz.github.io/explorviz-backend/)
+* The documentation for endpoints of services (SwaggerUI) is available [here](http://localhost:8001), once all services are started
 
 ## Eclipse Setup
 1. Download the latest [Eclipse IDE for Java Developers](http://www.eclipse.org/downloads/eclipse-packages/) (ExplorViz requires JDK 8 compliance)
@@ -47,7 +48,6 @@ The API documentation is available [here](https://explorviz.github.io/explorviz-
 * Generating API Documentation: Travis CI automatically builds all Javadoc on successful master-branch builds
 
 ## Quick start with sample (dummy) monitoring
-
 1. Follow the above [Setup Development](#setup-development) procedure
 2. Clone [TestApplication](https://github.com/czirkelbach/kiekerSampleApplication)
 3. Start the [TestApplication](https://github.com/czirkelbach/kiekerSampleApplication) as described [here](https://github.com/czirkelbach/kiekerSampleApplication/blob/master/README.md).
