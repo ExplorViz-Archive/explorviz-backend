@@ -3,15 +3,15 @@ package net.explorviz.landscape.repository;
 import java.util.LinkedList;
 import net.explorviz.landscape.repository.helper.DummyLandscapeHelper;
 import net.explorviz.shared.common.idgen.IdGenerator;
-import net.explorviz.shared.landscape.model.application.Application;
-import net.explorviz.shared.landscape.model.application.Clazz;
-import net.explorviz.shared.landscape.model.application.Component;
-import net.explorviz.shared.landscape.model.application.DatabaseQuery;
-import net.explorviz.shared.landscape.model.landscape.Landscape;
-import net.explorviz.shared.landscape.model.landscape.Node;
-import net.explorviz.shared.landscape.model.landscape.NodeGroup;
-import net.explorviz.shared.landscape.model.landscape.System;
-import net.explorviz.shared.landscape.model.store.Timestamp;
+import net.explorviz.landscape.model.application.Application;
+import net.explorviz.landscape.model.application.Clazz;
+import net.explorviz.landscape.model.application.Component;
+import net.explorviz.landscape.model.application.DatabaseQuery;
+import net.explorviz.landscape.model.landscape.Landscape;
+import net.explorviz.landscape.model.landscape.Node;
+import net.explorviz.landscape.model.landscape.NodeGroup;
+import net.explorviz.landscape.model.landscape.System;
+import net.explorviz.landscape.model.store.Timestamp;
 
 /**
  * Creates a dummy landscape for developing or demo purposes.

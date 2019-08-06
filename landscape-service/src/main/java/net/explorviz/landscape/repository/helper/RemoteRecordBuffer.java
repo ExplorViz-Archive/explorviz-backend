@@ -1,6 +1,6 @@
 package net.explorviz.landscape.repository.helper;
 
-import net.explorviz.shared.landscape.model.application.Clazz;
+import net.explorviz.landscape.model.application.Clazz;
 
 /**
  * Buffer for importing records from analysis.

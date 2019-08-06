@@ -9,12 +9,15 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.TimeUnit;
+
+import net.explorviz.landscape.model.application.Application;
+import net.explorviz.landscape.model.application.ApplicationCommunication;
+import net.explorviz.landscape.model.application.Clazz;
+import net.explorviz.landscape.model.landscape.Landscape;
+import net.explorviz.landscape.model.landscape.Node;
 import net.explorviz.landscape.repository.helper.RemoteRecordBuffer;
-import net.explorviz.shared.landscape.model.application.Application;
-import net.explorviz.shared.landscape.model.application.ApplicationCommunication;
-import net.explorviz.shared.landscape.model.application.Clazz;
-import net.explorviz.shared.landscape.model.landscape.Landscape;
-import net.explorviz.shared.landscape.model.landscape.Node;
+
+
 
 
 public class RemoteCallRepositoryPart {

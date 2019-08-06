@@ -28,7 +28,7 @@ dependencies {
     implementation "com.github.explorviz.explorviz-backend-shared:common-concerns:${sharedProjectVersion}" 
   }
   else {    
-    implementation project(':landscape-model')
+    implementation project(':landscape-service:landscape-model')
     implementation project(':config-injection')
     implementation project(':common-concerns')
     implementation group: 'org.glassfish.hk2', name: 'hk2', version: '2.6.0'

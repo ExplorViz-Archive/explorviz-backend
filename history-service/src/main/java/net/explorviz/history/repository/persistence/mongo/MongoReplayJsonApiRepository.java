@@ -13,9 +13,10 @@ import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.InternalServerErrorException;
 import javax.ws.rs.core.Response;
 import net.explorviz.history.repository.persistence.ReplayRepository;
+import net.explorviz.landscape.model.landscape.Landscape;
+import net.explorviz.landscape.model.store.Timestamp;
 import net.explorviz.shared.config.annotations.Config;
-import net.explorviz.shared.landscape.model.landscape.Landscape;
-import net.explorviz.shared.landscape.model.store.Timestamp;
+
 import org.bson.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

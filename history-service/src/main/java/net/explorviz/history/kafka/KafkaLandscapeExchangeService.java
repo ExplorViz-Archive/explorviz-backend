@@ -8,7 +8,7 @@ import javax.inject.Inject;
 import net.explorviz.history.repository.persistence.mongo.LandscapeSerializationHelper;
 import net.explorviz.history.repository.persistence.mongo.MongoLandscapeJsonApiRepository;
 import net.explorviz.shared.config.annotations.Config;
-import net.explorviz.shared.landscape.model.landscape.Landscape;
+import net.explorviz.landscape.model.landscape.Landscape;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;

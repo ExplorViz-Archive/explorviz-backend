@@ -22,7 +22,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import net.explorviz.history.repository.persistence.LandscapeRepository;
 import net.explorviz.history.repository.persistence.ReplayRepository;
-import net.explorviz.shared.landscape.model.landscape.Landscape;
+import net.explorviz.landscape.model.landscape.Landscape;
 
 
 /**
@@ -77,7 +77,7 @@ public class LandscapeResource {
   }
 
   /**
-   * Returns {@link net.explorviz.shared.landscape.model.landscape.Landscape} with the passed query
+   * Returns {@link Landscape} with the passed query
    * parameter.
    *
    * @param timestamp - query parameter

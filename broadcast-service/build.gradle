@@ -29,7 +29,7 @@ dependencies {
     implementation project(':security')
     implementation project(':exception-handling')
     implementation project(':common-concerns')
-    implementation project(':landscape-model')    
+    implementation project(':landscape-service:landscape-model')
   } 
   
   // SSE context for injection

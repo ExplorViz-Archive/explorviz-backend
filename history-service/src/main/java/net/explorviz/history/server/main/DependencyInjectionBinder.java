@@ -12,7 +12,7 @@ import net.explorviz.history.repository.persistence.mongo.MongoReplayJsonApiRepo
 import net.explorviz.history.repository.persistence.mongo.MongoReplayRepository;
 import net.explorviz.history.repository.persistence.mongo.TimestampRepository;
 import net.explorviz.shared.common.injection.CommonDependencyInjectionBinder;
-import net.explorviz.shared.landscape.model.landscape.Landscape;
+import net.explorviz.landscape.model.landscape.Landscape;
 import org.glassfish.hk2.api.TypeLiteral;
 
 /**

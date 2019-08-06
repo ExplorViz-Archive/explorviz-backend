@@ -9,7 +9,7 @@ import javax.inject.Inject;
 import net.explorviz.history.server.main.DependencyInjectionBinder;
 import net.explorviz.history.server.main.HistoryApplication;
 import net.explorviz.shared.common.idgen.IdGenerator;
-import net.explorviz.shared.landscape.model.landscape.Landscape;
+import net.explorviz.landscape.model.landscape.Landscape;
 import org.glassfish.hk2.api.ServiceLocator;
 import org.glassfish.hk2.utilities.ServiceLocatorUtilities;
 import org.junit.After;

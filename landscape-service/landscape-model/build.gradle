@@ -1,0 +1,13 @@
+// Force new Dependencies 
+configurations.all {
+    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+}
+
+dependencies {	
+	
+	implementation project(':common-concerns')
+	
+	// JSON-API parsing
+  	implementation group: 'com.github.jasminb', name: 'jsonapi-converter', version:'0.8' 	
+	implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.9'
+}

@@ -2,9 +2,7 @@ package net.explorviz.landscape.server.main;
 
 import net.explorviz.landscape.repository.LandscapeRepositoryModel;
 import net.explorviz.landscape.repository.RepositoryStarter;
-import net.explorviz.shared.common.provider.GenericTypeFinder;
 import net.explorviz.shared.config.annotations.Config;
-import net.explorviz.shared.landscape.model.helper.TypeProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
