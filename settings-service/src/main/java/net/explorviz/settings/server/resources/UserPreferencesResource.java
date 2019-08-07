@@ -108,8 +108,6 @@ public class UserPreferencesResource {
     // Technically the path parameter 'uid' is handled as a query parameter
     query.getFilters().put("userId", Arrays.asList(uid));
 
-    LOGGER.info("UID: ", uid);
-
     final String authHeader = headers.getHeaderString(HttpHeaders.AUTHORIZATION);
 
     if (!this.canAccess(authHeader, uid)) {
