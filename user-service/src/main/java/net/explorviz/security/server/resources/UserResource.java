@@ -66,6 +66,7 @@ public class UserResource {
   private static final String MSG_USER_NOT_RETRIEVED = "Could not retrieve user ";
   private static final String MSG_UNKOWN_ROLE = "Unknown role";
   private static final String ADMIN_ROLE = "admin";
+  private static final String USER_ROLE = "user";
 
   private final UserService userCrudService;
 
@@ -274,7 +275,7 @@ public class UserResource {
    */
   @GET
   @Path("{id}")
-  @RolesAllowed({ADMIN_ROLE})
+  @RolesAllowed({ADMIN_ROLE, USER_ROLE})
   @Produces(MEDIA_TYPE)
   @Operation(summary = "Find a user by its id")
   @ApiResponse(responseCode = "200", description = "The requested user",
@@ -286,16 +287,13 @@ public class UserResource {
       throw new BadRequestException("Invalid id");
     }
 
+    // TODO if a user is a normal user check if he tries to get just his own data?
     User foundUser = null;
-
-
     foundUser = this.userCrudService.getEntityById(id).orElseThrow(() -> new NotFoundException());
 
     this.userCrudService.updateEntity(foundUser);
 
-
     return foundUser;
-
   }
 
   /**

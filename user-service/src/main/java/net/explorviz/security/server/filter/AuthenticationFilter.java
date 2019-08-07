@@ -81,6 +81,7 @@ public class AuthenticationFilter implements ContainerRequestFilter {
 
   }
 
+  // TODO real authentication with DB requests
   private void handleTokenBasedAuthentication(final String authenticationToken,
       final ContainerRequestContext requestContext) {
 
@@ -88,23 +89,23 @@ public class AuthenticationFilter implements ContainerRequestFilter {
 
     final TokenDetails tokenDetails = this.tokenService.parseToken(authenticationToken);
 
-    // TODO real authentication with DB requests
-    if (tokenDetails.getUsername().equals("admin")) {
+    // TODO Why check for username "admin"?
+    // if (tokenDetails.getUsername().equals("admin")) {
+    final User user = new User(tokenDetails.getUsername());
 
-      final User user = new User(tokenDetails.getUsername());
+    final AuthenticatedUserDetails authenticatedUserDetails =
+        new AuthenticatedUserDetails(user.getUsername(), user.getRoles());
 
-      final AuthenticatedUserDetails authenticatedUserDetails =
-          new AuthenticatedUserDetails(user.getUsername(), user.getRoles());
+    final boolean isSecure = requestContext.getSecurityContext().isSecure();
+    final SecurityContext securityContext =
+        new TokenBasedSecurityContext(authenticatedUserDetails, tokenDetails, isSecure);
 
-      final boolean isSecure = requestContext.getSecurityContext().isSecure();
-      final SecurityContext securityContext =
-          new TokenBasedSecurityContext(authenticatedUserDetails, tokenDetails, isSecure);
+    requestContext.setSecurityContext(securityContext);
 
-      requestContext.setSecurityContext(securityContext);
+    return;
+    // }
 
-      return;
-    }
-
-    throw new ForbiddenException(FAILED_AUTH_MESSAGE);
+    // throw new ForbiddenException(FAILED_AUTH_MESSAGE);
   }
+
 }
