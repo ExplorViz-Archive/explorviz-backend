@@ -29,7 +29,7 @@ import net.explorviz.shared.landscape.model.landscape.Landscape;
  * Resource providing persisted {@link Landscape} data for the frontend.
  */
 @Path("v1/landscapes")
-@RolesAllowed({"admin"})
+@RolesAllowed({"admin", "user"})
 @Tag(name = "Landscapes")
 @SecurityScheme(type = SecuritySchemeType.HTTP, name = "token", scheme = "bearer",
     bearerFormat = "JWT")
@@ -72,7 +72,9 @@ public class LandscapeResource {
     // Check existence in landscapeRepo and replayRepo or throw Exception
     // this can be done better since Java 9
     return Stream.of(this.landscapeStringRepo.getById(id), this.replayStringRepo.getById(id))
-        .filter(Optional::isPresent).map(Optional::get).findFirst()
+        .filter(Optional::isPresent)
+        .map(Optional::get)
+        .findFirst()
         .orElseThrow(() -> new NotFoundException("Landscape with id " + id + " not found.")); // NOCS
   }
 
@@ -102,7 +104,10 @@ public class LandscapeResource {
     return Stream
         .of(this.landscapeStringRepo.getByTimestamp(timestamp),
             this.replayStringRepo.getByTimestamp(timestamp))
-        .filter(Optional::isPresent).map(Optional::get).findFirst().orElseThrow(
+        .filter(Optional::isPresent)
+        .map(Optional::get)
+        .findFirst()
+        .orElseThrow(
             () -> new NotFoundException("Landscape with timestamp " + timestamp + " not found."));
   }
 
