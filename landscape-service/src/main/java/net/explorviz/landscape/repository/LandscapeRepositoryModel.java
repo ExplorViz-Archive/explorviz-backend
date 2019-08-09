@@ -89,8 +89,12 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
   }
 
   /**
-   * Key function for the backend. Handles the persistence of a landscape every 10 seconds passed
-   * timestamp format is 'milliseconds' since 1970, as defined in Kieker.
+   * Key functionality in the backend. Handles the persistence of a landscape every 10 seconds
+   * passed. The employed time unit is defined as following in the Kieker configuration file
+   * (monitoring.properties):
+   *
+   * TimeSource: 'kieker.monitoring.timer.SystemNanoTimer' Time in nanoseconds (with nanoseconds
+   * precision) since Thu Jan 01 01:00:00 CET 1970'
    */
   @Override
   public void periodicTimeSignal(final long timestamp) {
@@ -151,7 +155,9 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
       if (LOGGER.isDebugEnabled()) {
         LOGGER.debug(
             "Sending Kafka record with landscape id {}, timestamp {}, and payload to topic {}",
-            l.getId(), l.getTimestamp().getTimestamp(), kafkaTopicName);
+            l.getId(),
+            l.getTimestamp().getTimestamp(),
+            kafkaTopicName);
       }
     } catch (final DocumentSerializationException e) {
       LOGGER.error("Could not serialize landscape to string for Kafka Production.", e);
@@ -195,7 +201,7 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
 
   public void insertIntoModel(final IRecord inputIRecord) {
     // called every second
-    this.insertionRepositoryPart.insertIntoModel(inputIRecord, this.internalLandscape,
-        this.remoteCallRepositoryPart);
+    this.insertionRepositoryPart
+        .insertIntoModel(inputIRecord, this.internalLandscape, this.remoteCallRepositoryPart);
   }
 }
