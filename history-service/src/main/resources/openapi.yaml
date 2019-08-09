@@ -6,4 +6,4 @@ openAPI:
    info:
       version: '1.4'
       title: ExplorViz History Service
-      description: This service makes priviously processed landscapes and replays accessible.
+      description: This service makes previously processed landscapes and replays accessible.

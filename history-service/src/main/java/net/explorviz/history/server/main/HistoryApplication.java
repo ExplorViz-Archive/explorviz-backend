@@ -30,6 +30,7 @@ import net.explorviz.shared.querying.PaginationParameterFilter;
 import net.explorviz.shared.security.filters.AuthenticationFilter;
 import net.explorviz.shared.security.filters.AuthorizationFilter;
 import net.explorviz.shared.security.filters.CorsResponseFilter;
+import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.glassfish.jersey.server.ResourceConfig;
 
 /**
@@ -49,6 +50,14 @@ public class HistoryApplication extends ResourceConfig {
     HistoryApplication.registerLandscapeModels();
 
     this.register(new DependencyInjectionBinder());
+
+    // https://stackoverflow.com/questions/30653012/
+    // multipart-form-data-no-injection-source-found-for-a-parameter-of-type-public-ja/30656345
+    // register for uploading landscapes
+    this.register(MultiPartFeature.class);
+
+    // this.register(AuthenticationFilter.class);
+    this.register(CorsResponseFilter.class);
 
     // register filters, e.g., authentication
     this.register(AuthenticationFilter.class);
