@@ -144,6 +144,8 @@ public class LandscapeResource {
       throw new BadRequestException("Query parameter 'timestamp' is mandatory");
     }
 
+    System.out.println("passed timestamp: " + timestamp);
+
     // Check existence in landscapeRepo and replayRepo or throw Exception
     // this can be done better since Java 9
     return Stream
@@ -164,14 +166,14 @@ public class LandscapeResource {
    * @param fileInfo information of the file, e.g., the filename
    */
   @POST
-  @Path("/upload")
+  @Path("/replay/upload")
   @Consumes("multipart/form-data")
   @Produces(MEDIA_TYPE)
   @Operation(summary = "Upload a landscape file from the frontend")
   @ApiResponse(responseCode = "200", description = "Response contains the uploaded landscape file.",
       content = @Content(schema = @Schema(implementation = Landscape.class)))
   @ApiResponse(responseCode = "404", description = "Landscape file could not be uploaded.")
-  public String uploadTutorial(
+  public String uploadLandscape(
       @Parameter(description = "The name of the file.",
           required = true) @QueryParam("filename") final String fileName,
       @Parameter(description = "The uploaded landscape file.",
@@ -230,4 +232,5 @@ public class LandscapeResource {
     }
 
   }
+
 }
