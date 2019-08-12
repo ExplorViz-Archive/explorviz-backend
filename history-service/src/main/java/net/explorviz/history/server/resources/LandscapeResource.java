@@ -25,6 +25,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import net.explorviz.history.repository.persistence.LandscapeRepository;
 import net.explorviz.history.repository.persistence.ReplayRepository;
+import net.explorviz.history.util.ResourceHelper;
 import net.explorviz.shared.common.idgen.IdGenerator;
 import net.explorviz.shared.landscape.model.landscape.Landscape;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
@@ -44,6 +45,7 @@ public class LandscapeResource {
 
   private static final String MEDIA_TYPE = "application/vnd.api+json";
   private static final long QUERY_PARAM_DEFAULT_VALUE_LONG = 0L;
+  private static final String QUERY_PARAM_EMPTY_STRING = "";
 
   private final LandscapeRepository<String> landscapeStringRepo;
   private final ReplayRepository<String> replayStringRepo;
@@ -128,7 +130,7 @@ public class LandscapeResource {
    *
    */
   @GET
-  @Path("{id}/download")
+  @Path("/download")
   @Produces("application/json")
   @Operation(summary = "Download a landscape by its timestamp")
   @ApiResponse(responseCode = "200",
@@ -170,55 +172,62 @@ public class LandscapeResource {
       content = @Content(schema = @Schema(implementation = Landscape.class)))
   @ApiResponse(responseCode = "404", description = "Landscape file could not be uploaded.")
   public String uploadTutorial(
+      @Parameter(description = "The name of the file.",
+          required = true) @QueryParam("filename") final String fileName,
       @Parameter(description = "The uploaded landscape file.",
           required = true) @FormDataParam("file") final InputStream uploadedInputStream,
       @Parameter(description = "The file information of the uploaded landscape.",
           required = true) @FormDataParam("file") final FormDataContentDisposition fileInfo) {
 
     // TODO check for empty uploaded landscape file
+    if (fileName == QUERY_PARAM_EMPTY_STRING) {
+      throw new BadRequestException("Query parameter 'filename' is mandatory");
+    }
 
+    System.out.println("Passed Filename: " + fileName);
+    // split the passed filename
+    final String fileNameWithoutExtension = ResourceHelper.removeFileNameExtension(fileName);
+    String[] splittedFilename = fileNameWithoutExtension.split("-");
+    final long parsedTimestamp = Long.valueOf(splittedFilename[0]);
+    final int parsedTotalRequests = Integer.valueOf(splittedFilename[1]);
 
     // TODO check if landscape already exists in `replay` landscape repository
-    // return Stream
-    // .of(this.replayStringRepo.getByTimestamp(timestamp))
-    // .filter(Optional::isPresent)
-    // .map(Optional::get)
-    // .findFirst()
-    // .orElseThrow(
-    // () -> new NotFoundException("Landscape with timestamp " + timestamp + " not found."));
-
-
-    System.out.println("Filename: " + fileInfo.getFileName());
-
-    // TODO parse filename into timestamp and totalRequests, e.g 1564744681097-42.json
-
-    // TODO persist uploaded landscape
-
-    long parsedTimestamp = 1565348832597L;
-    int parsedTotalRequests = 42;
-
-    String newLandscapeId = this.idGenerator.generateId();
-    String newTimestampId = this.idGenerator.generateId();
-
-    net.explorviz.shared.landscape.model.store.Timestamp newTimestamp =
-        new net.explorviz.shared.landscape.model.store.Timestamp(newTimestampId, parsedTimestamp,
-            parsedTotalRequests);
-
-    Landscape newLandscape = new Landscape(newLandscapeId, newTimestamp);
-    newLandscape.getTimestamp().setTotalRequests(parsedTotalRequests);
-
-    // TODO need to parse Landscape
-    this.replayStringRepo
-        .save(parsedTimestamp, newLandscape, newLandscape.getTimestamp().getTotalRequests());
-
-    // if upload was successful, check for existence in replayRepo or throw Exception
-    // this can be done better since Java 9
-    return Stream.of(this.replayStringRepo.getByTimestamp(parsedTimestamp))
+    String found = Stream.of(this.replayStringRepo.getByTimestamp(parsedTimestamp))
         .filter(Optional::isPresent)
         .map(Optional::get)
         .findFirst()
-        .orElseThrow(() -> new NotFoundException(
-            "Uploaded landscape with timestamp " + parsedTimestamp + " not found."));
-  }
+        .orElse(null);
 
+    // landscape not persisted yet => persist and return it afterwards
+    if (found == null) {
+
+      // generate new ids
+      String newLandscapeId = this.idGenerator.generateId();
+      String newTimestampId = this.idGenerator.generateId();
+
+      net.explorviz.shared.landscape.model.store.Timestamp newTimestamp =
+          new net.explorviz.shared.landscape.model.store.Timestamp(newTimestampId, parsedTimestamp,
+              parsedTotalRequests);
+
+      Landscape newLandscape = new Landscape(newLandscapeId, newTimestamp);
+      newLandscape.getTimestamp().setTotalRequests(parsedTotalRequests);
+
+      // persist the landscape into mongo
+      this.replayStringRepo
+          .save(parsedTimestamp, newLandscape, newLandscape.getTimestamp().getTotalRequests());
+
+      // if upload was successful, check for existence in replayRepo or throw Exception
+      // this can be done better since Java 9
+      return Stream.of(this.replayStringRepo.getByTimestamp(parsedTimestamp))
+          .filter(Optional::isPresent)
+          .map(Optional::get)
+          .findFirst()
+          .orElseThrow(() -> new NotFoundException(
+              "Uploaded landscape with timestamp " + parsedTimestamp + " not found."));
+    } else {
+      throw new NotFoundException(
+          "Landscape with timestamp " + parsedTimestamp + " already exists.");
+    }
+
+  }
 }
