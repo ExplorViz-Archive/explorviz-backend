@@ -149,8 +149,6 @@ public class LandscapeResource {
       throw new BadRequestException("Query parameter 'timestamp' is mandatory");
     }
 
-    System.out.println("passed timestamp: " + timestamp);
-
     // Check existence in landscapeRepo and replayRepo or throw Exception
     // this can be done better since Java 9
     return Stream
@@ -229,8 +227,14 @@ public class LandscapeResource {
           .orElseThrow(() -> new NotFoundException(
               "Uploaded landscape with timestamp " + parsedTimestamp + " not found."));
     } else {
-      throw new NotFoundException(
-          "Landscape with timestamp " + parsedTimestamp + " already exists.");
+      // throw new NotFoundException("Landscape with timestamp " + parsedTimestamp + " already
+      // exists.");
+      return Stream.of(this.replayStringRepo.getByTimestamp(parsedTimestamp))
+          .filter(Optional::isPresent)
+          .map(Optional::get)
+          .findFirst()
+          .orElseThrow(() -> new NotFoundException(
+              "Uploaded landscape with timestamp " + parsedTimestamp + " not found."));
     }
 
   }
