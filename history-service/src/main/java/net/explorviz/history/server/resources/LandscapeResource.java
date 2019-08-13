@@ -1,5 +1,6 @@
 package net.explorviz.history.server.resources;
 
+import com.github.jasminb.jsonapi.exceptions.DocumentSerializationException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
@@ -25,11 +26,13 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import net.explorviz.history.repository.persistence.LandscapeRepository;
 import net.explorviz.history.repository.persistence.ReplayRepository;
+import net.explorviz.history.repository.persistence.mongo.LandscapeSerializationHelper;
 import net.explorviz.history.util.ResourceHelper;
-import net.explorviz.shared.common.idgen.IdGenerator;
 import net.explorviz.shared.landscape.model.landscape.Landscape;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -43,6 +46,8 @@ import org.glassfish.jersey.media.multipart.FormDataParam;
 @SecurityRequirement(name = "token")
 public class LandscapeResource {
 
+  private static final Logger LOGGER = LoggerFactory.getLogger(LandscapeResource.class);
+
   private static final String MEDIA_TYPE = "application/vnd.api+json";
   private static final long QUERY_PARAM_DEFAULT_VALUE_LONG = 0L;
   private static final String QUERY_PARAM_EMPTY_STRING = "";
@@ -50,15 +55,15 @@ public class LandscapeResource {
   private final LandscapeRepository<String> landscapeStringRepo;
   private final ReplayRepository<String> replayStringRepo;
 
-
-  @Inject
-  private IdGenerator idGenerator;
+  private final LandscapeSerializationHelper serializationHelper;
 
   @Inject
   public LandscapeResource(final LandscapeRepository<String> landscapeStringRepo,
-      final ReplayRepository<String> replayStringRepo) {
+      final ReplayRepository<String> replayStringRepo,
+      final LandscapeSerializationHelper serializationHelper) {
     this.landscapeStringRepo = landscapeStringRepo;
     this.replayStringRepo = replayStringRepo;
+    this.serializationHelper = serializationHelper;
   }
 
   // akr: IMHO best option for decision between 404 or 200 Empty
@@ -191,32 +196,29 @@ public class LandscapeResource {
     final String fileNameWithoutExtension = ResourceHelper.removeFileNameExtension(fileName);
     String[] splittedFilename = fileNameWithoutExtension.split("-");
     final long parsedTimestamp = Long.valueOf(splittedFilename[0]);
-    final int parsedTotalRequests = Integer.valueOf(splittedFilename[1]);
 
-    // TODO check if landscape already exists in `replay` landscape repository
+    // check if landscape already exists in `replay` landscape repository
     String found = Stream.of(this.replayStringRepo.getByTimestamp(parsedTimestamp))
         .filter(Optional::isPresent)
         .map(Optional::get)
         .findFirst()
         .orElse(null);
 
-    // landscape not persisted yet => persist and return it afterwards
+    // landscape not persisted yet => persist in mongoDB and return it afterwards
     if (found == null) {
+      Landscape parsedLandscape = null;
 
-      // generate new ids
-      String newLandscapeId = this.idGenerator.generateId();
-      String newTimestampId = this.idGenerator.generateId();
+      final String convertedInputStream =
+          ResourceHelper.convertInputstreamToString(uploadedInputStream);
 
-      net.explorviz.shared.landscape.model.store.Timestamp newTimestamp =
-          new net.explorviz.shared.landscape.model.store.Timestamp(newTimestampId, parsedTimestamp,
-              parsedTotalRequests);
-
-      Landscape newLandscape = new Landscape(newLandscapeId, newTimestamp);
-      newLandscape.getTimestamp().setTotalRequests(parsedTotalRequests);
-
-      // persist the landscape into mongo
-      this.replayStringRepo
-          .save(parsedTimestamp, newLandscape, newLandscape.getTimestamp().getTotalRequests());
+      try {
+        parsedLandscape = this.serializationHelper.deserialize(convertedInputStream);
+        this.replayStringRepo.save(parsedLandscape.getTimestamp().getTimestamp(),
+            parsedLandscape,
+            parsedLandscape.getTimestamp().getTotalRequests());
+      } catch (DocumentSerializationException e) {
+        LOGGER.error("Could not save landscape with value {}", parsedLandscape, e);
+      }
 
       // if upload was successful, check for existence in replayRepo or throw Exception
       // this can be done better since Java 9
