@@ -4,7 +4,6 @@ import javax.inject.Inject;
 import javax.servlet.annotation.WebListener;
 import net.explorviz.landscape.repository.LandscapeRepositoryModel;
 import net.explorviz.landscape.repository.RepositoryStarter;
-import net.explorviz.shared.config.annotations.Config;
 import org.glassfish.hk2.api.ServiceLocator;
 import org.glassfish.jersey.server.monitoring.ApplicationEvent;
 import org.glassfish.jersey.server.monitoring.ApplicationEvent.Type;
@@ -32,9 +31,6 @@ public class SetupApplicationListener implements ApplicationEventListener {
   private ServiceLocator serviceLocator;
 
   LandscapeRepositoryModel model;
-
-  @Config("repository.useDummyMode")
-  private boolean useDummyMode;
 
   @Override
   public void onEvent(final ApplicationEvent event) {
@@ -83,12 +79,7 @@ public class SetupApplicationListener implements ApplicationEventListener {
     LOGGER.info("\n");
     LOGGER.info("* * * * * * * * * * * * * * * * * * *\n"); // NOCS
     LOGGER.info("Server (ExplorViz Backend) sucessfully started.\n");
-
-    if (this.useDummyMode) {
-      LOGGER.info("Dummy monitoring data is generated now!\n");
-    } else {
-      LOGGER.info("Traces can now be processed.!\n");
-    }
+    LOGGER.info("Traces can now be processed.!\n");
     LOGGER.info("* * * * * * * * * * * * * * * * * * *\n");
   }
 
