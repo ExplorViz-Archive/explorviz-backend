@@ -189,7 +189,8 @@ public class LandscapeResource {
       throw new BadRequestException("Query parameter 'filename' is mandatory");
     }
 
-    System.out.println("Passed Filename: " + fileName);
+    LOGGER.info("Uploaded Filename: " + fileName);
+    
     // split the passed filename
     final String fileNameWithoutExtension = ResourceHelper.removeFileNameExtension(fileName);
     String[] splittedFilename = fileNameWithoutExtension.split("-");
