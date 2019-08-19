@@ -46,7 +46,7 @@ public class Application extends ResourceConfig {
     // register CDI
     this.register(new DependencyInjectionBinder());
 
-    this.register(AuthenticationFilter.class);
+    //this.register(AuthenticationFilter.class);
     this.register(CorsResponseFilter.class);
     this.register(PaginationParameterFilter.class);
 

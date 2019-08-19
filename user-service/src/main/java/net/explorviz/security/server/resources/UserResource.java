@@ -155,7 +155,7 @@ public class UserResource {
 
 
   @Path("batch")
-  public BatchRequestSubResource createAll() {
+  public BatchRequestSubResource batchRequest() {
     return this.batchSubResource;
   }
 
