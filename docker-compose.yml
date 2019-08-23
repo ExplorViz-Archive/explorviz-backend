@@ -19,9 +19,10 @@ services:
     environment:
       - MONGO_HOST=mongo-user
       - EXCHANGE_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
-      - LOGSTASH_ENABLED=true
     networks: 
       - explorviz
+    env_file: 
+      - logging.env
 
   settings-service:
     build: ./settings-service
@@ -34,6 +35,8 @@ services:
       - EXCHANGE_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
     networks: 
       - explorviz
+    env_file: 
+      - logging.env
 
   landscape-service:
     build: ./landscape-service
@@ -47,6 +50,8 @@ services:
       - "10135"
     networks: 
       - explorviz
+    env_file: 
+      - logging.env
 
   broadcast-service:
     build: ./broadcast-service
@@ -58,6 +63,8 @@ services:
       - EXCHANGE_KAFKA_TOPIC_NAME=landscape-update
     networks: 
       - explorviz
+    env_file: 
+      - logging.env
 
   history-service:
     build: ./history-service
@@ -71,6 +78,8 @@ services:
       - EXCHANGE_KAFKA_TOPIC_NAME=landscape-update
     networks: 
       - explorviz
+    env_file: 
+      - logging.env
 
   analysis-service:
     build: ./analysis-service
@@ -79,6 +88,8 @@ services:
       - "10133:10133"
     networks: 
       - explorviz
+    env_file: 
+      - logging.env
 
   discovery-service:
     build: ./discovery-service
@@ -89,15 +100,18 @@ services:
       - id-generator
     networks: 
       - explorviz
+    env_file: 
+      - logging.env
 
   frontend:
-    #build: ../explorviz-frontend
     image: explorviz-frontend:lotzk
     container_name: explorviz-frontend
     ports:
       - "8090:80"
     environment:
       - API_ROOT=http://localhost:8090
+      - LOGSTASH_ENABLED=true
+      - LOGSTASH_HOST=http://192.168.178.54
     depends_on:
       - discovery-service
       - landscape-service
@@ -106,6 +120,8 @@ services:
       - history-service
     networks: 
       - explorviz
+    env_file: 
+      - logging.env
 
   ### Software Stack ###
 
