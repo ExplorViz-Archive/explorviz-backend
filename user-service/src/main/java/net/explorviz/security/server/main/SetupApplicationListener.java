@@ -9,6 +9,7 @@ import net.explorviz.security.services.UserService;
 import net.explorviz.security.services.exceptions.UserCrudException;
 import net.explorviz.security.util.PasswordStorage;
 import net.explorviz.security.util.PasswordStorage.CannotPerformOperationException;
+import net.explorviz.shared.config.annotations.Config;
 import net.explorviz.shared.security.model.User;
 import net.explorviz.shared.security.model.roles.Role;
 import org.glassfish.jersey.server.monitoring.ApplicationEvent;
@@ -26,6 +27,9 @@ import xyz.morphia.Datastore;
 @WebListener
 public class SetupApplicationListener implements ApplicationEventListener {
 
+  private static final String LOGSTASH_EVENT_APPENDER = "LOGSTASH_EVENT";
+  private static final String LOGSTASH_REQUEST_APPENDER = "LOGSTASH_REQUEST";
+
   private static final Logger LOGGER = LoggerFactory.getLogger(SetupApplicationListener.class);
 
   private static final String ADMIN_NAME = "admin";
@@ -38,6 +42,16 @@ public class SetupApplicationListener implements ApplicationEventListener {
 
   @Inject
   private UserService userService;
+
+  public SetupApplicationListener(@Config("logstash.enabled") boolean logstashEnabled) {
+    System.out.println(": "+ logstashEnabled);
+    if (!logstashEnabled) {
+      ch.qos.logback.classic.Logger root = (ch.qos.logback.classic.Logger)LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
+      root.detachAppender(LOGSTASH_EVENT_APPENDER);
+      root.detachAppender(LOGSTASH_REQUEST_APPENDER);
+
+    }
+  }
 
   @Override
   public void onEvent(final ApplicationEvent event) {

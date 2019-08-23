@@ -19,6 +19,7 @@ services:
     environment:
       - MONGO_HOST=mongo-user
       - EXCHANGE_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+      - LOGSTASH_ENABLED=true
     networks: 
       - explorviz
 
@@ -90,7 +91,8 @@ services:
       - explorviz
 
   frontend:
-    image: explorviz/explorviz-frontend:dev
+    #build: ../explorviz-frontend
+    image: explorviz-frontend:lotzk
     container_name: explorviz-frontend
     ports:
       - "8090:80"
