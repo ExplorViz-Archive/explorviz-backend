@@ -103,14 +103,7 @@ subprojects {
     
   dependencies {
 
-	// Logback
-	implementation group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
-		
-	// Logstash Logback
-	implementation group: 'net.logstash.logback', name: 'logstash-logback-encoder', version: '6.0'
-
-    
-    // Apache Commons
+	    // Apache Commons
     implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.9'
     
     
@@ -145,8 +138,11 @@ subprojects {
 		// Database
 		compile group: 'org.mongodb', name: 'mongo-java-driver', version: '3.9.1'
 	}
-	
-	
+
+    // Logstash Logging
+    implementation group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
+    implementation group: 'net.logstash.logback', name: 'logstash-logback-encoder', version: '6.0'
+    implementation group: 'org.codehaus.janino', name: 'janino', version: '3.1.0'
 	
 	// Testing and Mocking
 	testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.4.0'

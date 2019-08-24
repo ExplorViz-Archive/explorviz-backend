@@ -43,16 +43,6 @@ public class SetupApplicationListener implements ApplicationEventListener {
   @Inject
   private UserService userService;
 
-  public SetupApplicationListener(@Config("logstash.enabled") boolean logstashEnabled) {
-    System.out.println(": "+ logstashEnabled);
-    if (!logstashEnabled) {
-      ch.qos.logback.classic.Logger root = (ch.qos.logback.classic.Logger)LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
-      root.detachAppender(LOGSTASH_EVENT_APPENDER);
-      root.detachAppender(LOGSTASH_REQUEST_APPENDER);
-
-    }
-  }
-
   @Override
   public void onEvent(final ApplicationEvent event) {
 

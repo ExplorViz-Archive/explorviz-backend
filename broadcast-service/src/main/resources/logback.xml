@@ -1,5 +1,5 @@
 <configuration>
-  <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender" >
+  <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
     <target>System.out</target>
     <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
       <level>INFO</level>
@@ -8,30 +8,44 @@
       <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
     </encoder>
   </appender>
-  
-  <appender name="LOGSTASH_EVENT" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
-      <destination>${LOGSTASH_HOST:-logstash}:4560</destination>
-      
-      <encoder class="net.logstash.logback.encoder.LogstashEncoder">
-      	<customFields>{"service": "broadcast-service"}</customFields>
-      </encoder>
-  </appender>
 
-  <appender name="LOGSTASH_REQUEST" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
-  	<destination>${LOGSTASH_HOST:-logstash}:4561</destination>
-  	
-  	<encoder class="net.logstash.logback.encoder.LogstashEncoder">
-      	<customFields>{"service": "broadcast-service"}</customFields>
-      </encoder>
-  </appender>
-  
-  <logger name="net.explorviz.requestlog" level = "INFO" additivity = "false">
-    <appender-ref ref="LOGSTASH_REQUEST" />
+  <if condition='p("LOGSTASH_ENABLED").equals("true")'>
+    <then>
+      <appender name="LOGSTASH_EVENT"
+                class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+        <destination>${LOGSTASH_HOST:-logstash}:4560</destination>
+
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+          <customFields>{"service": "broadcast-service"}</customFields>
+        </encoder>
+      </appender>
+
+      <appender name="LOGSTASH_REQUEST"
+                class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+        <destination>${LOGSTASH_HOST:-logstash}:4561</destination>
+
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+          <customFields>{"service": "broadcast-service"}</customFields>
+        </encoder>
+      </appender>
+    </then>
+  </if>
+
+  <logger name="net.explorviz.requestlog" level="INFO" additivity="false">
+    <if condition='p("LOGSTASH_ENABLED").equals("true")'>
+      <then>
+        <appender-ref ref="LOGSTASH_REQUEST"/>
+      </then>
+    </if>
   </logger>
 
 
   <root level="TRACE">
-      <appender-ref ref="CONSOLE" />
-      <appender-ref ref="LOGSTASH_EVENT" />
+    <appender-ref ref="CONSOLE"/>
+    <if condition='p("LOGSTASH_ENABLED").equals("true")'>
+      <then>
+        <appender-ref ref="LOGSTASH_EVENT"/>
+      </then>
+    </if>
   </root>
 </configuration>
