@@ -41,11 +41,6 @@ sourceSets {
     }
 }
 
-configurations {
-  intTestImplementation.extendsFrom implementation
-  intTestRuntimeOnly.extendsFrom runtimeOnly
-}
-
 
 
 
@@ -110,8 +105,14 @@ subprojects {
       runtimeClasspath += sourceSets.main.output
     }
   }
+  configurations {
+    intTestImplementation.extendsFrom implementation
+    intTestRuntimeOnly.extendsFrom runtimeOnly
+  }
 
-	
+
+
+
   // END QA Tooling for subprojects
 
   repositories {

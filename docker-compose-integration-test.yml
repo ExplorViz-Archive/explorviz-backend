@@ -1,4 +1,7 @@
-# Start ExplorViz based on the current working directory
+# Start ExplorViz based on the current working directory for integration testing purposes. This
+# means:
+#   - All ports of the microservices are forwarded
+#   - The services don't use persistent volumes, all data is lost after the tests finished
 # Start with
 #     ./gradlew clean shadowJar
 #     docker-compose build
@@ -25,6 +28,8 @@ services:
       - EXCHANGE_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
     networks:
       - explorviz
+    ports:
+      - 8082:8082
 
   settings-service:
     build: ./settings-service
@@ -37,6 +42,9 @@ services:
       - EXCHANGE_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
     networks:
       - explorviz
+    ports:
+      - 8084:8084
+
 
 
   landscape-service:
@@ -51,6 +59,9 @@ services:
       - "10135"
     networks:
       - explorviz
+    ports:
+      - 10135:10135
+
 
 
   broadcast-service:
@@ -63,6 +74,9 @@ services:
       - EXCHANGE_KAFKA_TOPIC_NAME=landscape-update
     networks:
       - explorviz
+    ports:
+      - 8081:8081
+
 
 
   history-service:
@@ -77,6 +91,9 @@ services:
       - EXCHANGE_KAFKA_TOPIC_NAME=landscape-update
     networks:
       - explorviz
+    ports:
+      - 8086:8086
+
 
 
   analysis-service:
@@ -145,8 +162,8 @@ services:
     command: ["redis-server", "--appendonly", "yes"]
     expose:
       - "6379"
-    volumes:
-      - explorviz-id-generator-data:/data
+    #volumes:
+    #  - explorviz-id-generator-test-data:/data
     networks:
       - explorviz
 
@@ -154,9 +171,9 @@ services:
     image: mongo
     container_name: explorviz-backend-user-mongo
     command: mongod --port 27017
-    volumes:
-      - explorviz-user-mongo-data:/data/db
-      - explorviz-user-mongo-configdb:/data/configdb
+    #volumes:
+    #  - explorviz-user-mongo-test-data:/data/db
+    #  - explorviz-user-mongo-test-configdb:/data/configdb
     expose:
       - "27017"
     networks:
@@ -166,9 +183,9 @@ services:
     image: mongo
     container_name: explorviz-backend-landscape-mongo
     command: mongod --port 27018
-    volumes:
-      - explorviz-history-mongo-data:/data/db
-      - explorviz-history-mongo-configdb:/data/configdb
+    #volumes:
+    #  - explorviz-history-mongo-test-data:/data/db
+    #  - explorviz-history-mongo-test-configdb:/data/configdb
     expose:
       - "27018"
     networks:
@@ -178,20 +195,20 @@ services:
     image: mongo
     container_name: explorviz-backend-settings-mongo
     command: mongod --port 27019
-    volumes:
-      - explorviz-settings-mongo-data:/data/db
-      - explorviz-settings-mongo-configdb:/data/configdb
+    #volumes:
+    #  - explorviz-settings-mongo-test-data:/data/db
+    #  - explorviz-settings-mongo-test-configdb:/data/configdb
     networks:
       - explorviz
 
-volumes:
-  explorviz-user-mongo-data:
-  explorviz-user-mongo-configdb:
-  explorviz-history-mongo-data:
-  explorviz-history-mongo-configdb:
-  explorviz-settings-mongo-data:
-  explorviz-settings-mongo-configdb:
-  explorviz-id-generator-data:
+#volumes:
+#  explorviz-user-mongo-test-data:
+#  explorviz-user-mongo-test-configdb:
+#  explorviz-history-mongo-test-data:
+#  explorviz-history-mongo-test-configdb:
+#  explorviz-settings-mongo-test-data:
+#  explorviz-settings-mongo-test-configdb:
+#  explorviz-id-generator-test-data:
 
 networks:
   explorviz:
