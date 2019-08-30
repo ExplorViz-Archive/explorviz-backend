@@ -4,7 +4,9 @@ services:
    reverse-proxy:
     image: explorviz/reverse-proxy:latest
     container_name: explorviz-reverse-proxy
-    network_mode: "host"
+    ports:
+      - 8080:8080
+    #network_mode: "host"
 
    mongo-auth:
     image: mongo
@@ -14,7 +16,9 @@ services:
     volumes:
        - explorviz-auth-mongo-data:/data/db
        - explorviz-auth-mongo-configdb:/data/configdb
-    network_mode: "host"
+    #network_mode: "host"
+    cap_add:
+       - NET_ADMIN 
 
    mongo-landscape:
     image: mongo
@@ -25,7 +29,7 @@ services:
     volumes:
        - explorviz-landscape-mongo-data:/data/db
        - explorviz-landscape-mongo-configdb:/data/configdb
-    network_mode: "host"
+    #network_mode: "host"
     
    mongo-settings:
      image: mongo

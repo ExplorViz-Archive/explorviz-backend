@@ -9,6 +9,30 @@ configurations.all {
   resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
 }
 
+
+task integrationTest(type: Test) {
+  useJUnitPlatform{
+    excludeTags 'slow'
+    includeEngines 'junit-jupiter', 'junit-vintage'
+  }
+  failFast = true
+  description = 'Runs integration tests.'
+  group = 'verification'
+
+  testClassesDirs = sourceSets.intTest.output.classesDirs
+  classpath = sourceSets.intTest.runtimeClasspath
+  shouldRunAfter test
+}
+check.dependsOn integrationTest
+dockerCompose {
+  runAll {
+    buildBeforeUp = true
+    useComposeFiles = ['docker-compose.yml']
+    isRequiredBy(this.tasks.getByName("integrationTest"))
+    removeContainers = true
+  }
+}
+
 dependencies {
 	
 	compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.9'

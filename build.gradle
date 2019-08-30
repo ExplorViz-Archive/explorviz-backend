@@ -1,5 +1,7 @@
+
 plugins {
     id 'com.adarshr.test-logger' version '1.6.0' apply false
+    id 'com.avast.gradle.docker-compose' version "0.9.4"
 }
 
 allprojects {
@@ -30,6 +32,21 @@ task alljavadoc(type: Javadoc) {
     title = 'explorviz-backend API ' + projectVersion
     options.setFooter(footerText)
 }
+
+sourceSets {
+    main {
+        resources {
+            srcDirs = ["src/main/resources"]
+        }
+    }
+}
+
+configurations {
+  intTestImplementation.extendsFrom implementation
+  intTestRuntimeOnly.extendsFrom runtimeOnly
+}
+
+
 
 
 // END aggregated Javadoc in multiproject Gradle build
@@ -84,6 +101,16 @@ subprojects {
     dependsOn 'pmdMain'
     dependsOn 'pmdTest'
   }
+
+
+  sourceSets {
+    intTest {
+      java.srcDir file('src/intTest/java')
+      compileClasspath += sourceSets.main.output
+      runtimeClasspath += sourceSets.main.output
+    }
+  }
+
 	
   // END QA Tooling for subprojects
 
@@ -105,6 +132,8 @@ subprojects {
     
     // Kafka
     implementation group: 'org.apache.kafka', name: 'kafka_2.12', version: '2.2.0'
+
+
     
     if (project.name == 'user-service' || project.name == 'landscape-service' || project.name == 'discovery-service' || project.name == 'settings-service' || project.name == 'history-service' || project.name == 'broadcast-service') {
     	// subprojects, which are supposed to be a JAX-RS-based microservice
@@ -142,6 +171,9 @@ subprojects {
 	testImplementation group: 'org.junit.vintage', name: 'junit-vintage-engine', version: '5.4.0'
 	testImplementation 'org.mockito:mockito-core:2.24.0'	
 	testImplementation group: 'org.mockito', name: 'mockito-junit-jupiter', version: '2.27.0'
+
+    intTestImplementation 'org.junit.jupiter:junit-jupiter-engine:5.4.0'
+    intTestImplementation 'org.junit.platform:junit-platform-runner:1.4.0'
   }
   
   test {
@@ -151,5 +183,5 @@ subprojects {
     }
     failFast = true
   }
-    
+
 }
