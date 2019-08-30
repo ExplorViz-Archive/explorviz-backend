@@ -13,7 +13,7 @@ configurations.all {
 task integrationTest(type: Test) {
   useJUnitPlatform{
     excludeTags 'slow'
-    includeEngines 'junit-jupyter'
+    includeEngines 'junit-jupiter'
   }
   failFast = true
   description = 'Runs integration tests.'

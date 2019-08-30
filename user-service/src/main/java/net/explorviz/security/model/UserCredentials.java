@@ -8,6 +8,13 @@ public class UserCredentials {
   private String username;
   private String password;
 
+  public UserCredentials(String username, String password) {
+    this.username = username;
+    this.password = password;
+  }
+
+  public UserCredentials() {  }
+
   public String getUsername() {
     return this.username;
   }
