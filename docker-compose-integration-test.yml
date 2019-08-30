@@ -43,7 +43,7 @@ services:
     networks:
       - explorviz
     ports:
-      - 8084:8084
+      - 8087:8087
 
 
 
