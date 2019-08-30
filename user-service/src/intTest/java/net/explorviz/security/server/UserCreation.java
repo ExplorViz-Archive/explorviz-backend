@@ -4,6 +4,7 @@ import io.restassured.http.ContentType;
 import io.restassured.http.Header;
 import net.explorviz.security.model.UserCredentials;
 import net.explorviz.security.server.helper.JsonAPIMapper;
+import net.explorviz.security.server.helper.MongoHelper;
 import net.explorviz.security.server.helper.UserSerializationHelper;
 import net.explorviz.shared.security.model.User;
 
@@ -11,10 +12,7 @@ import static io.restassured.RestAssured.*;
 import static org.hamcrest.Matchers.*;
 
 import net.explorviz.shared.security.model.roles.Role;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -35,6 +33,8 @@ class UserCreation {
 
   private Header authHeaderAdmin;
   private Header authHeaderNormie;
+
+  private MongoHelper mongoHelper;
 
 
   /**
@@ -75,11 +75,18 @@ class UserCreation {
   @BeforeEach void setUp() {
     this.authHeaderAdmin = new Header("authorization", "Bearer " + adminToken);
     this.authHeaderNormie = new Header("authorization", "Bearer " + normieToken);
+    this.mongoHelper = new MongoHelper(MongoHelper.USER_MONGO_HOST);
+  }
+
+  @AfterEach void tearDown() {
+    mongoHelper.emptyCollection(MongoHelper.UserCollections.USERS.name());
+    mongoHelper.dropDB();
+    mongoHelper.close();
   }
 
   @Test @DisplayName("Create a valid user without roles") public void createValidWithoutRoles()
       throws IOException {
-    final String name = "testuser1";
+    final String name = "testuser";
     final String password = "password";
     User u = new User(null, name, password, null);
 
@@ -120,7 +127,7 @@ class UserCreation {
   @Test @DisplayName("Login with created user") public void loginWithCreatedUser()
       throws IOException {
 
-    final String name = "testuser2";
+    final String name = "testuser";
     final String password = "password";
 
     User u = new User(null, name, password, null);

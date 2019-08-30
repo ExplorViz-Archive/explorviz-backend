@@ -176,6 +176,8 @@ services:
     #  - explorviz-user-mongo-test-configdb:/data/configdb
     expose:
       - "27017"
+    ports:
+      - 27017:27017
     networks:
       - explorviz
 
@@ -188,6 +190,8 @@ services:
     #  - explorviz-history-mongo-test-configdb:/data/configdb
     expose:
       - "27018"
+    ports:
+      - 27018:27018
     networks:
       - explorviz
 
@@ -200,6 +204,8 @@ services:
     #  - explorviz-settings-mongo-test-configdb:/data/configdb
     networks:
       - explorviz
+    ports:
+      - 27019:27019
 
 #volumes:
 #  explorviz-user-mongo-test-data:
