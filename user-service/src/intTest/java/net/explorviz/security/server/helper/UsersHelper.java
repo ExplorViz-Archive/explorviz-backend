@@ -16,13 +16,14 @@ import static io.restassured.RestAssured.given;
 /**
  * Helper class for manipulating users through HTTP.
  * Represents a minimal client to the user API.
+ * All requests are performed as the default admin.
  */
 public class UsersHelper {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(UsersHelper.class);
 
   private static final String MEDIA_TYPE = "application/vnd.api+json";
-  private final static String USERS_URI = "http://localhost:8082/v1/users";
+  private final static String USERS_URI = "http://localhost:8082/v1/users/";
 
   public static UsersHelper getInstance() {
     if (instance == null) {
@@ -68,6 +69,32 @@ public class UsersHelper {
       LOGGER.error("User not created", e);
       return Optional.empty();
     }
+  }
+
+  /**
+   * Delete a user by id
+   * @param id if of the user to delete
+   */
+  public void deleteUserById(String id) {
+    given()
+        .contentType(MEDIA_TYPE)
+        .header(auth)
+        .when()
+        .delete(USERS_URI+id);
+  }
+
+
+  public List<User> getAll() {
+    return given()
+        .contentType(MEDIA_TYPE)
+        .header(auth)
+        .when()
+        .get(USERS_URI)
+        .as(List.class, new JsonAPIListMapper<User>(User.class));
+  }
+
+  public int count() {
+    return getAll().size();
   }
 
 }

@@ -43,9 +43,8 @@ class UserCreation {
    * @throws IOException if serialization fails
    */
   @BeforeAll static void setUpAll() throws IOException {
-    // Use default admin
-    adminToken = AuthorizationHelper.getInstance().getAdminToken();
-    normieToken = AuthorizationHelper.getInstance().getNormieToken();
+    adminToken = AuthorizationHelper.getAdminToken();
+    normieToken = AuthorizationHelper.getNormieToken();
   }
 
   @BeforeEach void setUp() {
