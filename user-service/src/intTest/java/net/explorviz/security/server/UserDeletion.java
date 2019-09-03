@@ -8,9 +8,7 @@ import net.explorviz.shared.security.model.roles.Role;
 import org.junit.jupiter.api.*;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static io.restassured.RestAssured.given;
 
