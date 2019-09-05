@@ -6,6 +6,7 @@ import com.github.jasminb.jsonapi.exceptions.DocumentSerializationException;
 import io.restassured.mapper.ObjectMapper;
 import io.restassured.mapper.ObjectMapperDeserializationContext;
 import io.restassured.mapper.ObjectMapperSerializationContext;
+import net.explorviz.settings.model.UserPreference;
 import net.explorviz.shared.security.model.User;
 
 import java.util.List;
@@ -19,6 +20,7 @@ public class JsonAPIListMapper<T> implements ObjectMapper {
     this.cls = cls;
     converter = new ResourceConverter();
     converter.registerType(User.class);
+    converter.registerType(UserPreference.class);
   }
 
   @Override public List<T> deserialize(ObjectMapperDeserializationContext context) {

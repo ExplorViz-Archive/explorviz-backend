@@ -1,11 +1,13 @@
 package net.explorviz.security.server.helper;
 
+import com.github.jasminb.jsonapi.DeserializationFeature;
 import com.github.jasminb.jsonapi.JSONAPIDocument;
 import com.github.jasminb.jsonapi.ResourceConverter;
 import com.github.jasminb.jsonapi.exceptions.DocumentSerializationException;
 import io.restassured.mapper.ObjectMapper;
 import io.restassured.mapper.ObjectMapperDeserializationContext;
 import io.restassured.mapper.ObjectMapperSerializationContext;
+import net.explorviz.security.model.UserBatchRequest;
 import net.explorviz.shared.security.model.User;
 
 public class JsonAPIMapper<T> implements ObjectMapper {
@@ -17,6 +19,8 @@ public class JsonAPIMapper<T> implements ObjectMapper {
     this.cls = cls;
     converter = new ResourceConverter();
     converter.registerType(User.class);
+    converter.registerType(UserBatchRequest.class);
+    converter.disableDeserializationOption(DeserializationFeature.REQUIRE_RESOURCE_ID);
   }
 
   @Override public T deserialize(ObjectMapperDeserializationContext context) {

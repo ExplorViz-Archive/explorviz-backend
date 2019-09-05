@@ -39,7 +39,7 @@ public class BatchRequestSubResource {
 
   private static final String ADMIN_ROLE = "admin";
   private static final String MEDIA_TYPE = "application/vnd.api+json";
-  private static final int MAX_COUNT = 300;
+  public static final int MAX_COUNT = 300;
 
 
   private final BatchCreationService bcs;

@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class RoleTests {
+public class RoleRetrieval {
 
   private static final String ROLE_URL = "http://localhost:8082/v1/roles";
 

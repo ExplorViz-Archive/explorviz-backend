@@ -21,9 +21,15 @@ task integrationTest(type: Test) {
 
   testClassesDirs = sourceSets.intTest.output.classesDirs
   classpath = sourceSets.intTest.runtimeClasspath
-  shouldRunAfter test
+  mustRunAfter assemble
 }
-check.dependsOn integrationTest
+
+// integrationTest.dependsOn assemble
+//    this will only assemble the current service but if it depends on another service
+//    the build will fail as the integration test stage is executed before other modules are
+//    assembled.
+
+// check.dependsOn integrationTest
 
 dockerCompose {
   runAll {

@@ -223,8 +223,7 @@ public class UserRetrieval {
     String adminRole = "admin";
     List<Role> roles = new ArrayList<>(Arrays.asList(new Role(adminRole)));
     List<User> users = createUsers(5, "test", "pw", roles);
-    int size = 1;
-    int num = UsersHelper.getInstance().count()/2;
+
     List<User> returned = given()
         .contentType(MEDIA_TYPE)
         .header(authHeaderAdmin)
