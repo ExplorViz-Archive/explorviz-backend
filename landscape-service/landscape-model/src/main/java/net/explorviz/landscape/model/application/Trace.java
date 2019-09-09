@@ -8,12 +8,10 @@ import com.github.jasminb.jsonapi.annotations.Relationship;
 import com.github.jasminb.jsonapi.annotations.Type;
 import java.util.ArrayList;
 import java.util.List;
-
 import net.explorviz.landscape.model.helper.BaseEntity;
 
 /**
- * Model representing a trace containing severals {@link TraceStep} between two
- * {@link Clazz}.
+ * Model representing a trace containing severals {@link TraceStep} between two {@link Clazz}.
  */
 @SuppressWarnings("serial")
 @Type("trace")

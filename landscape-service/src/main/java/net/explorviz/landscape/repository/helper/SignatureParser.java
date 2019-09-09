@@ -32,8 +32,9 @@ public final class SignatureParser {
     if (openParenIdx == -1) {
       return operationSignatureStr;
     } else {
-      final String[] splitParams = operationSignatureStr
-          .substring(openParenIdx + 1, operationSignatureStr.length() - 1).split(",");
+      final String[] splitParams =
+          operationSignatureStr.substring(openParenIdx + 1, operationSignatureStr.length() - 1)
+              .split(",");
       for (final String splitParam : splitParams) {
         sig.getParamTypeList().add(splitParam.trim());
       }

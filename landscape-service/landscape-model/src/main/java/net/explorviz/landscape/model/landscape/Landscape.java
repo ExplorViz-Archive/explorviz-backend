@@ -9,7 +9,6 @@ import com.github.jasminb.jsonapi.annotations.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-
 import net.explorviz.landscape.model.application.Application;
 import net.explorviz.landscape.model.application.ApplicationCommunication;
 import net.explorviz.landscape.model.event.EEventType;
@@ -110,7 +109,7 @@ public class Landscape extends BaseEntity {
 
     final List<Long> timestampsOfExceptionEvents =
         this.getEvents().stream().filter(e -> e.getEventType().equals(EEventType.EXCEPTION))
-        .map(Event::getTimestamp).collect(Collectors.toList());
+            .map(Event::getTimestamp).collect(Collectors.toList());
 
     while (timestampsOfExceptionEvents.contains(currentMillis)) {
       currentMillis++;
@@ -133,7 +132,7 @@ public class Landscape extends BaseEntity {
 
     final List<Long> timestampsOfEvents =
         this.getEvents().stream().filter(e -> !e.getEventType().equals(EEventType.EXCEPTION))
-        .map(Event::getTimestamp).collect(Collectors.toList());
+            .map(Event::getTimestamp).collect(Collectors.toList());
 
     while (timestampsOfEvents.contains(currentMillis)) {
       currentMillis++;

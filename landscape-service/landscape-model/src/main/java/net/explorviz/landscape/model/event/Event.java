@@ -33,7 +33,7 @@ public class Event extends BaseEntity {
   }
 
   public long getTimestamp() {
-    return timestamp;
+    return this.timestamp;
   }
 
   public void setTimestamp(final long timestamp) {
@@ -41,7 +41,7 @@ public class Event extends BaseEntity {
   }
 
   public EEventType getEventType() {
-    return eventType;
+    return this.eventType;
   }
 
   public void setEventType(final EEventType eventType) {
@@ -49,7 +49,7 @@ public class Event extends BaseEntity {
   }
 
   public String getEventMessage() {
-    return eventMessage;
+    return this.eventMessage;
   }
 
   public void setEventMessage(final String eventMessage) {

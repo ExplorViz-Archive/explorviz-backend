@@ -8,10 +8,6 @@ import java.util.concurrent.TimeUnit;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import net.explorviz.landscape.repository.helper.DummyLandscapeHelper;
-import net.explorviz.landscape.repository.helper.LandscapeSerializationHelper;
-import net.explorviz.shared.common.idgen.IdGenerator;
-import net.explorviz.shared.config.annotations.Config;
 import net.explorviz.landscape.model.application.AggregatedClazzCommunication;
 import net.explorviz.landscape.model.application.Application;
 import net.explorviz.landscape.model.application.ApplicationCommunication;
@@ -20,6 +16,10 @@ import net.explorviz.landscape.model.landscape.Node;
 import net.explorviz.landscape.model.landscape.NodeGroup;
 import net.explorviz.landscape.model.landscape.System;
 import net.explorviz.landscape.model.store.Timestamp;
+import net.explorviz.landscape.repository.helper.DummyLandscapeHelper;
+import net.explorviz.landscape.repository.helper.LandscapeSerializationHelper;
+import net.explorviz.shared.common.idgen.IdGenerator;
+import net.explorviz.shared.config.annotations.Config;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.jvnet.hk2.annotations.Service;
@@ -151,7 +151,9 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
       if (LOGGER.isDebugEnabled()) {
         LOGGER.debug(
             "Sending Kafka record with landscape id {}, timestamp {}, and payload to topic {}",
-            l.getId(), l.getTimestamp().getTimestamp(), kafkaTopicName);
+            l.getId(),
+            l.getTimestamp().getTimestamp(),
+            kafkaTopicName);
       }
     } catch (final DocumentSerializationException e) {
       LOGGER.error("Could not serialize landscape to string for Kafka Production.", e);
@@ -195,7 +197,7 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
 
   public void insertIntoModel(final IRecord inputIRecord) {
     // called every second
-    this.insertionRepositoryPart.insertIntoModel(inputIRecord, this.internalLandscape,
-        this.remoteCallRepositoryPart);
+    this.insertionRepositoryPart
+        .insertIntoModel(inputIRecord, this.internalLandscape, this.remoteCallRepositoryPart);
   }
 }
