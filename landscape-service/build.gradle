@@ -20,6 +20,8 @@ dependencies {
   implementation fileTree(dir: 'libs', include: '*.jar')
   
   implementation project(':landscape-service:landscape-model')
+  implementation group: 'org.glassfish.hk2', name: 'hk2', version: '2.6.0'
+  implementation group: 'com.github.jasminb', name: 'jsonapi-converter', version:'0.8'
   
   // ExplorViz Shared Dependencies
   if(useRemoteSharedProject.toBoolean()) {
@@ -31,8 +33,6 @@ dependencies {
   else {        
     implementation project(':config-injection')
     implementation project(':common-concerns')
-    implementation group: 'org.glassfish.hk2', name: 'hk2', version: '2.6.0'
-    implementation group: 'com.github.jasminb', name: 'jsonapi-converter', version:'0.8'
   }
 }
 
