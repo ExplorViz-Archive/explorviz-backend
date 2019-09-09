@@ -5,7 +5,13 @@ configurations.all {
 
 dependencies {	
 	
-	implementation project(':common-concerns')
+	// ExplorViz Shared Dependencies
+  	if(useRemoteSharedProject.toBoolean()) {
+  		implementation "com.github.explorviz.explorviz-backend-shared:common-concerns:${sharedProjectVersion}"
+	}
+	else {
+		implementation project(':common-concerns')
+	}	
 	
 	// JSON-API parsing
   	implementation group: 'com.github.jasminb', name: 'jsonapi-converter', version:'0.8' 	

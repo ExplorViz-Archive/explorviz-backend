@@ -19,16 +19,16 @@ dependencies {
   // Any .jar in libs
   implementation fileTree(dir: 'libs', include: '*.jar')
   
+  implementation project(':landscape-service:landscape-model')
+  
   // ExplorViz Shared Dependencies
   if(useRemoteSharedProject.toBoolean()) {
-    implementation "com.github.explorviz.explorviz-backend-shared:landscape-model:${sharedProjectVersion}"
     implementation "com.github.explorviz.explorviz-backend-shared:config-injection:${sharedProjectVersion}"
     implementation "com.github.explorviz.explorviz-backend-shared:security:${sharedProjectVersion}"
     implementation "com.github.explorviz.explorviz-backend-shared:exception-handling:${sharedProjectVersion}"
     implementation "com.github.explorviz.explorviz-backend-shared:common-concerns:${sharedProjectVersion}" 
   }
-  else {    
-    implementation project(':landscape-service:landscape-model')
+  else {        
     implementation project(':config-injection')
     implementation project(':common-concerns')
     implementation group: 'org.glassfish.hk2', name: 'hk2', version: '2.6.0'
