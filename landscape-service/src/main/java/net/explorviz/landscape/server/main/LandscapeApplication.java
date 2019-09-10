@@ -1,33 +1,34 @@
 package net.explorviz.landscape.server.main;
 
+import javax.inject.Inject;
 import net.explorviz.landscape.repository.LandscapeRepositoryModel;
 import net.explorviz.landscape.repository.RepositoryStarter;
 import net.explorviz.shared.config.annotations.Config;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.inject.Inject;
-
+/**
+ * Entry point to the core logic of the ExplorViz landscape service with DI.
+ */
 public class LandscapeApplication {
-
-
 
   private static final Logger LOGGER = LoggerFactory.getLogger(LandscapeApplication.class);
 
-  private boolean useDummyMode;
+  private final boolean useDummyMode;
 
-  private LandscapeRepositoryModel model;
+  private final LandscapeRepositoryModel model;
 
   @Inject
-  public LandscapeApplication(LandscapeRepositoryModel model, @Config("repository.useDummyMode") boolean useDummyMode) {
+  public LandscapeApplication(final LandscapeRepositoryModel model,
+      @Config("repository.useDummyMode") final boolean useDummyMode) {
     this.useDummyMode = useDummyMode;
     this.model = model;
-
-
-
   }
 
-  public void startExplorVizBackend() {
+  /**
+   * Starts the core logic of this application.
+   */
+  public void startApplication() {
     // Start ExplorViz Listener
     new Thread(new Runnable() {
 

@@ -18,9 +18,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
-import net.explorviz.landscape.repository.helper.Signature;
-import net.explorviz.landscape.repository.helper.SignatureParser;
-import net.explorviz.shared.common.idgen.IdGenerator;
 import net.explorviz.landscape.model.application.Application;
 import net.explorviz.landscape.model.application.Clazz;
 import net.explorviz.landscape.model.application.Component;
@@ -32,6 +29,9 @@ import net.explorviz.landscape.model.landscape.Landscape;
 import net.explorviz.landscape.model.landscape.Node;
 import net.explorviz.landscape.model.landscape.NodeGroup;
 import net.explorviz.landscape.model.landscape.System;
+import net.explorviz.landscape.repository.helper.Signature;
+import net.explorviz.landscape.repository.helper.SignatureParser;
+import net.explorviz.shared.common.idgen.IdGenerator;
 
 /**
  * InsertionRepositoryPart TODODescr.
@@ -116,8 +116,12 @@ public class InsertionRepositoryPart {
             }
           }
 
-          this.createCommuInApp(trace, hostApplicationRecord.getHostname(), application, landscape,
-              remoteCallRepositoryPart, i);
+          this.createCommuInApp(trace,
+              hostApplicationRecord.getHostname(),
+              application,
+              landscape,
+              remoteCallRepositoryPart,
+              i);
 
           // landscape.updateLandscapeAccess(java.lang.System.currentTimeMillis());
         }
@@ -128,8 +132,9 @@ public class InsertionRepositoryPart {
       for (final Node node : this.nodeCache.values()) {
         if (node.getName()
             .equalsIgnoreCase(systemMonitoringRecord.getHostApplicationMetadata().getHostname())
-            && node.getIpAddress().equalsIgnoreCase(
-                systemMonitoringRecord.getHostApplicationMetadata().getIpaddress())) {
+            && node.getIpAddress()
+                .equalsIgnoreCase(
+                    systemMonitoringRecord.getHostApplicationMetadata().getIpaddress())) {
 
           node.setCpuUtilization(systemMonitoringRecord.getCpuUtilization());
           node.setFreeRAM(
@@ -164,7 +169,8 @@ public class InsertionRepositoryPart {
     landscape.getSystems().add(system);
 
     // create a new system event
-    landscape.createNewEvent(this.idGen.generateId(), EEventType.NEWSYSTEM,
+    landscape.createNewEvent(this.idGen.generateId(),
+        EEventType.NEWSYSTEM,
         "New system '" + systemname + "' detected");
 
     return system;
@@ -194,7 +200,8 @@ public class InsertionRepositoryPart {
       this.nodeCache.put(nodeName, node);
 
       // creates a new node event
-      landscape.createNewEvent(this.idGen.generateId(), EEventType.NEWNODE,
+      landscape.createNewEvent(this.idGen.generateId(),
+          EEventType.NEWNODE,
           "New node '" + hostApplicationRecord.getHostname() + "' in system '"
               + hostApplicationRecord.getSystemname() + "' detected");
     }
@@ -307,7 +314,8 @@ public class InsertionRepositoryPart {
       this.applicationCache.put(node.getName() + "_" + applicationName, application);
 
       // creates a new application event
-      landscape.createNewEvent(this.idGen.generateId(), EEventType.NEWAPPLICATION,
+      landscape.createNewEvent(this.idGen.generateId(),
+          EEventType.NEWAPPLICATION,
           "New application '" + applicationName + "' on node '" + node.getName() + "' detected");
     }
 
@@ -345,14 +353,17 @@ public class InsertionRepositoryPart {
 
         if (overallTraceDuration < 0d) { // NOPMD
           overallTraceDuration = abstractBeforeEventRecord.getRuntimeStatisticInformationList()
-              .get(runtimeIndex).getAverage();
+              .get(runtimeIndex)
+              .getAverage();
         }
 
         final String clazzName = getClazzName(abstractBeforeEventRecord);
 
-        final Clazz currentClazz =
-            this.seekOrCreateClazz(clazzName, currentApplication, abstractBeforeEventRecord
-                .getRuntimeStatisticInformationList().get(runtimeIndex).getObjectIds());
+        final Clazz currentClazz = this.seekOrCreateClazz(clazzName,
+            currentApplication,
+            abstractBeforeEventRecord.getRuntimeStatisticInformationList()
+                .get(runtimeIndex)
+                .getObjectIds());
 
         if (callerClazz != null) {
           final boolean isConstructor =
@@ -377,12 +388,20 @@ public class InsertionRepositoryPart {
 
             final String traceId = Long.toString(abstractBeforeEventRecord.getTraceId());
 
-            this.createOrUpdateCall(callerClazz, currentClazz, currentApplication,
-                abstractBeforeEventRecord.getRuntimeStatisticInformationList().get(runtimeIndex)
+            this.createOrUpdateCall(callerClazz,
+                currentClazz,
+                currentApplication,
+                abstractBeforeEventRecord.getRuntimeStatisticInformationList()
+                    .get(runtimeIndex)
                     .getCount(),
-                abstractBeforeEventRecord.getRuntimeStatisticInformationList().get(runtimeIndex)
+                abstractBeforeEventRecord.getRuntimeStatisticInformationList()
+                    .get(runtimeIndex)
                     .getAverage(),
-                overallTraceDuration, traceId, orderIndex, methodName, landscape);
+                overallTraceDuration,
+                traceId,
+                orderIndex,
+                methodName,
+                landscape);
             orderIndex++;
           }
 
@@ -444,8 +463,8 @@ public class InsertionRepositoryPart {
       } else if (event instanceof BeforeSentRemoteCallRecord) {
         final BeforeSentRemoteCallRecord sentRemoteCallRecord = (BeforeSentRemoteCallRecord) event;
 
-        remoteCallRepositoryPart.insertSentRecord(this.idGen.generateId(), callerClazz,
-            sentRemoteCallRecord, landscape, this, runtimeIndex);
+        remoteCallRepositoryPart.insertSentRecord(this.idGen
+            .generateId(), callerClazz, sentRemoteCallRecord, landscape, this, runtimeIndex);
       } else if (event instanceof BeforeReceivedRemoteCallRecord) {
         final BeforeReceivedRemoteCallRecord receivedRemoteCallRecord =
             (BeforeReceivedRemoteCallRecord) event;
@@ -459,13 +478,19 @@ public class InsertionRepositoryPart {
 
           final String clazzName = getClazzName(abstractBeforeEventRecord);
 
-          firstReceiverClazz =
-              this.seekOrCreateClazz(clazzName, currentApplication, abstractBeforeEventRecord
-                  .getRuntimeStatisticInformationList().get(runtimeIndex).getObjectIds());
+          firstReceiverClazz = this.seekOrCreateClazz(clazzName,
+              currentApplication,
+              abstractBeforeEventRecord.getRuntimeStatisticInformationList()
+                  .get(runtimeIndex)
+                  .getObjectIds());
         }
 
         remoteCallRepositoryPart.insertReceivedRecord(this.idGen.generateId(),
-            receivedRemoteCallRecord, firstReceiverClazz, landscape, this, runtimeIndex);
+            receivedRemoteCallRecord,
+            firstReceiverClazz,
+            landscape,
+            this,
+            runtimeIndex);
       }
       // else if (event instanceof BeforeUnknownReceivedRemoteCallRecord) {
       // }
@@ -517,9 +542,19 @@ public class InsertionRepositoryPart {
 
     // add clazzCommunication to clazz and aggregatedClazzCommunication to
     // application
-    ModelHelper.addClazzCommunication(this.idGen.generateId(), this.idGen.generateId(),
-        this.idGen.generateId(), this.idGen.generateId(), caller, callee, application, requests,
-        average, overallTraceDuration, traceId, orderIndex, operationName);
+    ModelHelper.addClazzCommunication(this.idGen.generateId(),
+        this.idGen.generateId(),
+        this.idGen.generateId(),
+        this.idGen.generateId(),
+        caller,
+        callee,
+        application,
+        requests,
+        average,
+        overallTraceDuration,
+        traceId,
+        orderIndex,
+        operationName);
   }
 
   private Clazz seekOrCreateClazz(final String fullQName, final Application application,
@@ -562,8 +597,8 @@ public class InsertionRepositoryPart {
 
       for (final Component component : list) {
         if (component.getName().equalsIgnoreCase(currentPart)) {
-          return this.seekrOrCreateClazzHelper(fullQName, splittedName, application, component,
-              index + 1);
+          return this
+              .seekrOrCreateClazzHelper(fullQName, splittedName, application, component, index + 1);
         }
       }
       final Component component = new Component(this.idGen.generateId());
@@ -578,8 +613,8 @@ public class InsertionRepositoryPart {
       component.setParentComponent(potentialParent);
       component.setBelongingApplication(application);
       list.add(component);
-      return this.seekrOrCreateClazzHelper(fullQName, splittedName, application, component,
-          index + 1);
+      return this
+          .seekrOrCreateClazzHelper(fullQName, splittedName, application, component, index + 1);
     } else {
       if (potentialParent == null) {
         for (final Component component : application.getComponents()) {

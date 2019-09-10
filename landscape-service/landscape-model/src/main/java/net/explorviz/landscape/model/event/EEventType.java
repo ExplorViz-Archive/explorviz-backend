@@ -5,5 +5,5 @@ package net.explorviz.landscape.model.event;
  *
  */
 public enum EEventType {
-	NEWSYSTEM, NEWNODE, NEWAPPLICATION, EXCEPTION, UNKNOWN
+  NEWSYSTEM, NEWNODE, NEWAPPLICATION, EXCEPTION, UNKNOWN
 }

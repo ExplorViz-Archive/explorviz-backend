@@ -9,7 +9,6 @@ import com.github.jasminb.jsonapi.annotations.Type;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
 import net.explorviz.landscape.model.helper.BaseEntity;
 import net.explorviz.landscape.model.helper.NameComperator;
 

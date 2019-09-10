@@ -4,11 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import net.explorviz.landscape.model.event.Event;
-import net.explorviz.landscape.model.landscape.Node;
-import net.explorviz.landscape.model.landscape.System;
-import net.explorviz.landscape.model.store.Timestamp;
 import net.explorviz.landscape.model.application.AggregatedClazzCommunication;
 import net.explorviz.landscape.model.application.Application;
 import net.explorviz.landscape.model.application.ApplicationCommunication;
@@ -18,8 +13,12 @@ import net.explorviz.landscape.model.application.Component;
 import net.explorviz.landscape.model.application.DatabaseQuery;
 import net.explorviz.landscape.model.application.Trace;
 import net.explorviz.landscape.model.application.TraceStep;
+import net.explorviz.landscape.model.event.Event;
 import net.explorviz.landscape.model.landscape.Landscape;
+import net.explorviz.landscape.model.landscape.Node;
 import net.explorviz.landscape.model.landscape.NodeGroup;
+import net.explorviz.landscape.model.landscape.System;
+import net.explorviz.landscape.model.store.Timestamp;
 
 public class TypeProvider {
 
@@ -29,7 +28,7 @@ public class TypeProvider {
 
     typeMap.putIfAbsent("Timestamp", Timestamp.class);
     typeMap.putIfAbsent("Event", Event.class);
-    //typeMap.putIfAbsent("EEventType", EEventType.class);
+    // typeMap.putIfAbsent("EEventType", EEventType.class);
     typeMap.putIfAbsent("Landscape", Landscape.class);
     typeMap.putIfAbsent("System", System.class);
     typeMap.putIfAbsent("NodeGroup", NodeGroup.class);

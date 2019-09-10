@@ -16,7 +16,7 @@ public class LandscapeTest {
 
   @BeforeEach
   public void setUp() {
-    l = new Landscape("1", new Timestamp("2", 1556558138878L, 300));
+    this.l = new Landscape("1", new Timestamp("2", 1556558138878L, 300));
   }
 
   /**
@@ -34,9 +34,9 @@ public class LandscapeTest {
         new Event("3", currentMillis, EEventType.NEWAPPLICATION, expectedEventMessage);
 
     // test the method and verify
-    l.createNewEvent("3", EEventType.NEWAPPLICATION, expectedEventMessage);
+    this.l.createNewEvent("3", EEventType.NEWAPPLICATION, expectedEventMessage);
 
-    final Event actualEvent = l.getEvents().get(0);
+    final Event actualEvent = this.l.getEvents().get(0);
 
     // the attributes must be equal
     assertEquals(expectedEvent.getEventType(), actualEvent.getEventType());
@@ -57,9 +57,9 @@ public class LandscapeTest {
     final Event expectedEvent = new Event("4", currentMillis, EEventType.EXCEPTION, expectedCause);
 
     // test the method and verify
-    l.createNewException("4", expectedCause);
+    this.l.createNewException("4", expectedCause);
 
-    final Event actualEvent = l.getEvents().get(0);
+    final Event actualEvent = this.l.getEvents().get(0);
 
     // the attributes must be equal
     assertEquals(expectedEvent.getEventType(), actualEvent.getEventType());

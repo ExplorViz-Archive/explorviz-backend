@@ -48,28 +48,34 @@ public class Timestamp extends BaseEntity {
 
   @Override
   public int hashCode() {
-    return new HashCodeBuilder().append(timestamp).append(totalRequests).append(id).build();
+    return new HashCodeBuilder().append(this.timestamp).append(this.totalRequests).append(this.id)
+        .build();
   }
 
   @Override
-  public boolean equals(Object obj) {
-    if (this == obj)
+  public boolean equals(final Object obj) {
+    if (this == obj) {
       return true;
-    if (obj == null)
+    }
+    if (obj == null) {
       return false;
-    if (getClass() != obj.getClass())
+    }
+    if (this.getClass() != obj.getClass()) {
       return false;
-    Timestamp other = (Timestamp) obj;
-    if (timestamp != other.timestamp)
+    }
+    final Timestamp other = (Timestamp) obj;
+    if (this.timestamp != other.timestamp) {
       return false;
-    if (totalRequests != other.totalRequests)
+    }
+    if (this.totalRequests != other.totalRequests) {
       return false;
+    }
     return true;
   }
-  
+
   @Override
   public String toString() {
-    return new ToStringBuilder(this).append(id).append(timestamp).toString();
+    return new ToStringBuilder(this).append(this.id).append(this.timestamp).toString();
   }
 
 

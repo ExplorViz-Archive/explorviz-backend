@@ -49,23 +49,28 @@ public class BaseEntity implements Serializable {
 
   @Override
   public int hashCode() {
-    return new HashCodeBuilder().append(id).build();
+    return new HashCodeBuilder().append(this.id).build();
   }
 
   @Override
-  public boolean equals(Object obj) {
-    if (this == obj)
+  public boolean equals(final Object obj) {
+    if (this == obj) {
       return true;
-    if (obj == null)
+    }
+    if (obj == null) {
       return false;
-    if (getClass() != obj.getClass())
+    }
+    if (this.getClass() != obj.getClass()) {
       return false;
-    BaseEntity other = (BaseEntity) obj;
-    if (id == null) {
-      if (other.id != null)
+    }
+    final BaseEntity other = (BaseEntity) obj;
+    if (this.id == null) {
+      if (other.id != null) {
         return false;
-    } else if (!id.equals(other.id))
+      }
+    } else if (!this.id.equals(other.id)) {
       return false;
+    }
     return true;
   }
 
