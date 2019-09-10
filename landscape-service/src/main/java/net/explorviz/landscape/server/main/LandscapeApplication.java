@@ -3,7 +3,6 @@ package net.explorviz.landscape.server.main;
 import javax.inject.Inject;
 import net.explorviz.landscape.repository.LandscapeRepositoryModel;
 import net.explorviz.landscape.repository.RepositoryStarter;
-import net.explorviz.shared.config.annotations.Config;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,14 +13,10 @@ public class LandscapeApplication {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(LandscapeApplication.class);
 
-  private final boolean useDummyMode;
-
   private final LandscapeRepositoryModel model;
 
   @Inject
-  public LandscapeApplication(final LandscapeRepositoryModel model,
-      @Config("repository.useDummyMode") final boolean useDummyMode) {
-    this.useDummyMode = useDummyMode;
+  public LandscapeApplication(final LandscapeRepositoryModel model) {
     this.model = model;
   }
 
@@ -41,12 +36,7 @@ public class LandscapeApplication {
     LOGGER.info("\n");
     LOGGER.info("* * * * * * * * * * * * * * * * * * *\n"); // NOCS
     LOGGER.info("Server (ExplorViz Backend) sucessfully started.\n");
-
-    if (this.useDummyMode) {
-      LOGGER.info("Dummy monitoring data is generated now!\n");
-    } else {
-      LOGGER.info("Traces can now be processed.!\n");
-    }
+    LOGGER.info("Traces can now be processed.!\n");
     LOGGER.info("* * * * * * * * * * * * * * * * * * *\n");
   }
 
