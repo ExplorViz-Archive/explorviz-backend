@@ -3,7 +3,6 @@ package net.explorviz.history.server.resources;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
-
 import com.github.jasminb.jsonapi.ResourceConverter;
 import com.github.jasminb.jsonapi.SerializationFeature;
 import com.github.jasminb.jsonapi.exceptions.DocumentSerializationException;
@@ -64,7 +63,8 @@ public class LandscapeResourceTest {
         .thenReturn(Optional.of(this.currentLandscape));
     // when(this.replayRepo.getAllTimestamps()).thenReturn(this.userUploadedTimestamps);
 
-    this.landscapeResouce = new LandscapeResource(this.landscapeStringRepo, this.replayStringRepo);
+    this.landscapeResouce =
+        new LandscapeResource(this.landscapeStringRepo, this.replayStringRepo, serializationHelper);
   }
 
   @Test

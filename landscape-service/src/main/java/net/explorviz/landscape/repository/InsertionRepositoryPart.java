@@ -388,15 +388,20 @@ public class InsertionRepositoryPart {
 
             final String traceId = Long.toString(abstractBeforeEventRecord.getTraceId());
 
+            final int numOfRequests = abstractBeforeEventRecord.getRuntimeStatisticInformationList()
+                .get(runtimeIndex)
+                .getCount();
+
+            final double avgResponseTime =
+                abstractBeforeEventRecord.getRuntimeStatisticInformationList()
+                    .get(runtimeIndex)
+                    .getAverage();
+
             this.createOrUpdateCall(callerClazz,
                 currentClazz,
                 currentApplication,
-                abstractBeforeEventRecord.getRuntimeStatisticInformationList()
-                    .get(runtimeIndex)
-                    .getCount(),
-                abstractBeforeEventRecord.getRuntimeStatisticInformationList()
-                    .get(runtimeIndex)
-                    .getAverage(),
+                numOfRequests,
+                avgResponseTime,
                 overallTraceDuration,
                 traceId,
                 orderIndex,

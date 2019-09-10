@@ -40,7 +40,6 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
 
   private final LandscapeSerializationHelper serializationHelper;
 
-  private final boolean useDummyMode;
 
   private final KafkaProducer<String, String> kafkaProducer;
 
@@ -52,14 +51,12 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
   public LandscapeRepositoryModel(final LandscapeSerializationHelper serializationHelper,
       final KafkaProducer<String, String> kafkaProducer, final IdGenerator idGen,
       @Config("repository.outputIntervalSeconds") final int outputIntervalSeconds,
-      @Config("repository.useDummyMode") final boolean useDummyMode,
       @Config("exchange.kafka.topic.name") final String kafkaTopicName) {
 
     this.serializationHelper = serializationHelper;
     this.kafkaProducer = kafkaProducer;
     this.idGen = idGen;
 
-    this.useDummyMode = useDummyMode;
     this.insertionRepositoryPart = new InsertionRepositoryPart(idGen);
     this.remoteCallRepositoryPart = new RemoteCallRepositoryPart();
     this.outputIntervalSeconds = outputIntervalSeconds;
@@ -89,8 +86,12 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
   }
 
   /**
-   * Key function for the backend. Handles the persistence of a landscape every 10 seconds passed
-   * timestamp format is 'milliseconds' since 1970, as defined in Kieker.
+   * Key functionality in the backend. Handles the persistence of a landscape every 10 seconds
+   * passed. The employed time unit is defined as following in the Kieker configuration file
+   * (monitoring.properties):
+   *
+   * TimeSource: 'kieker.monitoring.timer.SystemNanoTimer' Time in nanoseconds (with nanoseconds
+   * precision) since Thu Jan 01 01:00:00 CET 1970'
    */
   @Override
   public void periodicTimeSignal(final long timestamp) {
@@ -102,35 +103,21 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
         // calculates the total requests for the internal landscape and stores them in its timestamp
         int calculatedTotalRequests = 0;
 
-        if (this.useDummyMode) {
-          final Landscape dummyLandscape = LandscapeDummyCreator.createDummyLandscape(this.idGen);
-          dummyLandscape.getTimestamp().setTimestamp(milliseconds);
-          dummyLandscape.getTimestamp().setId(this.idGen.generateId());
+        calculatedTotalRequests = calculateTotalRequests(this.internalLandscape);
+        this.internalLandscape.getTimestamp().setTotalRequests(calculatedTotalRequests);
+        this.internalLandscape.setTimestamp(
+            new Timestamp(this.idGen.generateId(), milliseconds, calculatedTotalRequests));
 
-          calculatedTotalRequests = DummyLandscapeHelper.getRandomNum(500, 25000);
-          dummyLandscape.getTimestamp().setTotalRequests(calculatedTotalRequests);
+        this.internalLandscape.setId(this.idGen.generateId());
 
-          this.sendLandscapeToKafka(dummyLandscape, this.kafkaTopicName);
+        this.sendLandscapeToKafka(this.internalLandscape, this.kafkaTopicName);
 
-          this.lastPeriodLandscape = dummyLandscape;
-        } else {
-
-          calculatedTotalRequests = calculateTotalRequests(this.internalLandscape);
-          this.internalLandscape.getTimestamp().setTotalRequests(calculatedTotalRequests);
-          this.internalLandscape.setTimestamp(
-              new Timestamp(this.idGen.generateId(), milliseconds, calculatedTotalRequests));
-
-          this.internalLandscape.setId(this.idGen.generateId());
-
-          this.sendLandscapeToKafka(this.internalLandscape, this.kafkaTopicName);
-
-          try {
-            final Landscape l = this.deepCopy(this.internalLandscape);
-            l.createOutgoingApplicationCommunication();
-            this.lastPeriodLandscape = l;
-          } catch (final DocumentSerializationException e) {
-            LOGGER.error("Error while deep-copying landscape.", e);
-          }
+        try {
+          final Landscape l = this.deepCopy(this.internalLandscape);
+          l.createOutgoingApplicationCommunication();
+          this.lastPeriodLandscape = l;
+        } catch (final DocumentSerializationException e) {
+          LOGGER.error("Error while deep-copying landscape.", e);
         }
 
         this.remoteCallRepositoryPart.checkForTimedoutRemoteCalls();
