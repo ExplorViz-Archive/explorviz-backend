@@ -99,9 +99,9 @@ public class Landscape extends BaseEntity {
   }
 
   /**
-   * Creates a new exception event to the list of events in the landscape
+   * Creates a new exception event to the list of events in the landscape.
    *
-   * @param landscape - related landscape
+   * @param id - if of related landscape
    * @param cause - cause of the exception
    */
   public void createNewException(final String id, final String cause) {
@@ -120,9 +120,9 @@ public class Landscape extends BaseEntity {
 
 
   /**
-   * Creates a new event to the list of events in the landscape
+   * Creates a new event to the list of events in the landscape.
    *
-   * @param landscape - related landscape
+   * @param id - id of related landscape
    * @param eventType - type of event
    * @param eventMesssage - message of the event
    */
@@ -142,7 +142,7 @@ public class Landscape extends BaseEntity {
   }
 
   /**
-   * Creates outgoing communication between applications in this landscape
+   * Creates outgoing communication between applications in this landscape.
    */
   public void createOutgoingApplicationCommunication() {
     for (final ApplicationCommunication communication : this.getTotalApplicationCommunications()) {

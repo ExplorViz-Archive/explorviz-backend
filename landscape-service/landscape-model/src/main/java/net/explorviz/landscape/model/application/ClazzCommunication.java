@@ -74,7 +74,7 @@ public class ClazzCommunication extends BaseEntity {
   }
 
   public void setTraceSteps(final List<TraceStep> traceSteps) {
-    this.traceSteps = traceSteps;;
+    this.traceSteps = traceSteps;
   }
 
   // returns a trace for a given traceId or creates a new one

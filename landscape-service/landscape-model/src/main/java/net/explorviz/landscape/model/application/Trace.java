@@ -36,7 +36,7 @@ public class Trace extends BaseEntity {
   }
 
   /**
-   * Adds a new call within a trace as a {@link TraceStep}
+   * Adds a new call within a trace as a {@link TraceStep}.
    *
    * @param tracePosition - position within the trace
    * @param requests - total number of requests

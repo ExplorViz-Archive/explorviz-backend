@@ -126,13 +126,14 @@ public class UserPreferencesResource {
    * Deletes an UserPereference such that the default value applies again for the given user.
    *
    * @param prefId the id of the preference to delete
-   * @param 204 (not content) on success
+   * @return 204 (not content) on success
    */
   @DELETE
   @PermitAll
   @Path("settings/preferences/{id}")
   @Operation(summary = "Delete a preference",
-      description = "If a preference is delete, the default value of the corresponding setting applies again.")
+      description = "If a preference is delete, the default value of the corresponding "
+          + "setting applies again.")
   @ApiResponse(responseCode = "403", description = "A user can only access its own preferences. "
       + "Admins can access any users preferences.")
   @ApiResponse(responseCode = "204", description = "The preference was deleted")

@@ -1,5 +1,6 @@
 package net.explorviz.landscape.repository.helper;
 
+import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.atomic.AtomicInteger;
 import net.explorviz.landscape.model.application.Application;
@@ -27,6 +28,14 @@ public final class DummyLandscapeHelper {
     // Utility Class
   }
 
+  public static IdGenerator getIdGen() {
+    return idGen;
+  }
+
+  public static void setIdGen(IdGenerator idGen) {
+    DummyLandscapeHelper.idGen = idGen;
+  }
+
   /**
    * Returns a random number between minValue and maxValue.
    *
@@ -52,7 +61,7 @@ public final class DummyLandscapeHelper {
   }
 
   /**
-   * Creates a new system
+   * Creates a new system.
    *
    * @param name - name of the system
    * @param parentLandscape - parent landscape
@@ -72,7 +81,7 @@ public final class DummyLandscapeHelper {
   }
 
   /**
-   * Creates a new nodeGroup
+   * Creates a new nodeGroup.
    *
    * @param name - name of the nodeGroup
    * @param system - parent system
@@ -86,7 +95,7 @@ public final class DummyLandscapeHelper {
   }
 
   /**
-   * Creates a new node
+   * Creates a new node.
    *
    * @param ipAddress - ipAddress of the node
    * @param parentNodeGroup - parent nodeGroup
@@ -113,7 +122,7 @@ public final class DummyLandscapeHelper {
   }
 
   /**
-   * Creates a new application
+   * Creates a new application.
    *
    * @param name - name of the application
    * @param parentNode - name of the parent node
@@ -130,7 +139,7 @@ public final class DummyLandscapeHelper {
     application.setLastUsage(java.lang.System.currentTimeMillis());
     application.setProgrammingLanguage(EProgrammingLanguage.JAVA);
 
-    if (name == "Eprints") {
+    if (Objects.equals(name, "Eprints")) {
       application.setProgrammingLanguage(EProgrammingLanguage.PERL);
     }
 
@@ -147,7 +156,7 @@ public final class DummyLandscapeHelper {
   }
 
   /**
-   * Create communication between applications
+   * Create communication between applications.
    *
    * @param source - sourceApplication
    * @param target - targetApplication
@@ -172,7 +181,7 @@ public final class DummyLandscapeHelper {
   }
 
   /**
-   * Creates a component
+   * Creates a component.
    *
    * @param name - name of the component
    * @param parent - parent component
@@ -195,7 +204,7 @@ public final class DummyLandscapeHelper {
   }
 
   /**
-   * Creates a clazz
+   * Creates a clazz.
    *
    * @param name - name of the clazz
    * @param component - parent component
@@ -215,7 +224,7 @@ public final class DummyLandscapeHelper {
   }
 
   /**
-   * Creating a communication between two clazzes within the dummy landscape
+   * Creating a communication between two clazzes within the dummy landscape.
    *
    * @param traceId - id of the trace
    * @param requests - number of requests

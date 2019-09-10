@@ -24,7 +24,7 @@ public final class LandscapeDummyCreator {
   public static int applicationId = 0;
   public static int formatFactor = 1024 * 1024 * 1024;
 
-  private static IdGenerator idGen;
+  public static IdGenerator idGen;
 
 
   private LandscapeDummyCreator() {

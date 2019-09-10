@@ -2,13 +2,6 @@ package net.explorviz.history.server.main; // NOPMD
 
 import net.explorviz.history.server.resources.LandscapeResource;
 import net.explorviz.history.server.resources.TimestampResource;
-import net.explorviz.shared.common.provider.GenericTypeFinder;
-import net.explorviz.shared.common.provider.JsonApiListProvider;
-import net.explorviz.shared.common.provider.JsonApiProvider;
-import net.explorviz.shared.exceptions.mapper.GeneralExceptionMapper;
-import net.explorviz.shared.exceptions.mapper.InvalidJsonApiResourceExceptionMapper;
-import net.explorviz.shared.exceptions.mapper.UnregisteredTypeExceptionMapper;
-import net.explorviz.shared.exceptions.mapper.WebApplicationExceptionMapper;
 import net.explorviz.landscape.model.application.AggregatedClazzCommunication;
 import net.explorviz.landscape.model.application.Application;
 import net.explorviz.landscape.model.application.ApplicationCommunication;
@@ -25,6 +18,13 @@ import net.explorviz.landscape.model.landscape.Node;
 import net.explorviz.landscape.model.landscape.NodeGroup;
 import net.explorviz.landscape.model.landscape.System;
 import net.explorviz.landscape.model.store.Timestamp;
+import net.explorviz.shared.common.provider.GenericTypeFinder;
+import net.explorviz.shared.common.provider.JsonApiListProvider;
+import net.explorviz.shared.common.provider.JsonApiProvider;
+import net.explorviz.shared.exceptions.mapper.GeneralExceptionMapper;
+import net.explorviz.shared.exceptions.mapper.InvalidJsonApiResourceExceptionMapper;
+import net.explorviz.shared.exceptions.mapper.UnregisteredTypeExceptionMapper;
+import net.explorviz.shared.exceptions.mapper.WebApplicationExceptionMapper;
 import net.explorviz.shared.querying.PaginationJsonApiWriter;
 import net.explorviz.shared.querying.PaginationParameterFilter;
 import net.explorviz.shared.security.filters.AuthenticationFilter;

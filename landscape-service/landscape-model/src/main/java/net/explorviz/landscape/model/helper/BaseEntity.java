@@ -19,16 +19,16 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY, property = "@class")
 public class BaseEntity implements Serializable {
 
+  @Id
+  @JsonProperty("id")
+  protected String id;
+
   /*
    * This attribute can be used by extensions to insert custom properties to any meta-model object.
    * Non primitive types (your custom model class) must be annotated with type annotations, e.g., as
    * shown in any model entity
    */
   private final Map<String, Object> extensionAttributes = new HashMap<>();
-
-  @Id
-  @JsonProperty("id")
-  protected String id;
 
   public BaseEntity(final String id) {
     this.id = id;
@@ -42,6 +42,7 @@ public class BaseEntity implements Serializable {
   public void setId(final String id) {
     this.id = id;
   }
+
 
   public Map<String, Object> getExtensionAttributes() {
     return this.extensionAttributes;

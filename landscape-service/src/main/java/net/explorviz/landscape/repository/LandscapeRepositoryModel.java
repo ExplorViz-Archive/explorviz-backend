@@ -142,7 +142,7 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
   /**
    * Sends a landscape object with all its relationships to a Kafka topic.
    *
-   * @param Landscape that should be send to the Kafka topic
+   * @param l that should be send to the Kafka topic
    */
   private void sendLandscapeToKafka(final Landscape l, final String kafkaTopicName) {
     try {

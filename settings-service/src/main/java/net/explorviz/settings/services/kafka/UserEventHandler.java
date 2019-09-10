@@ -7,14 +7,14 @@ package net.explorviz.settings.services.kafka;
 public interface UserEventHandler {
 
   /**
-   * Called each time a user has been deleted
+   * Called each time a user has been deleted.
    * 
    * @param userId the id of the deleted user
    */
   void onDelete(String userId);
 
   /**
-   * Called each time a new user was created
+   * Called each time a new user was created.
    * 
    * @param userId id of the deleted user
    */

@@ -1,5 +1,6 @@
 package net.explorviz.history.repository.persistence.mongo;
 
+import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.atomic.AtomicInteger;
 import net.explorviz.shared.common.idgen.IdGenerator;
@@ -127,7 +128,7 @@ public final class DummyLandscapeHelper {
     application.setLastUsage(java.lang.System.currentTimeMillis());
     application.setProgrammingLanguage(EProgrammingLanguage.JAVA);
 
-    if (name == "Eprints") {
+    if (Objects.equals(name, "Eprints")) {
       application.setProgrammingLanguage(EProgrammingLanguage.PERL);
     }
 

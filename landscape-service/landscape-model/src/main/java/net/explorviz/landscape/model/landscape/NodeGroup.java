@@ -72,7 +72,8 @@ public class NodeGroup extends BaseEntity {
   private List<String> getNodeNames() {
     final List<String> allNames = new ArrayList<>();
     for (final Node node : this.nodes) {
-      if (node.getName() != null && !node.getName().isEmpty() && !node.getName().startsWith("<")) { // NOPMD
+      if (node.getName() != null && !node.getName().isEmpty()
+          && !node.getName().startsWith("<")) { // NOPMD
         allNames.add(node.getName());
       } else {
         allNames.add(node.getIpAddress());

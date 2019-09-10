@@ -14,16 +14,16 @@ public class UserPreferenceConverter extends TypeConverter implements SimpleValu
   }
 
   @Override
-  public Object decode(final Class<?> targetClass, final Object fromDBObject,
+  public Object decode(final Class<?> targetClass, final Object fromDbObject,
       final MappedField optionalExtraInfo) {
 
-    final BasicDBObject basicDBO = (BasicDBObject) fromDBObject;
-    final String id = basicDBO.getString("_id");
+    final BasicDBObject basicDbO = (BasicDBObject) fromDbObject;
+    final String id = basicDbO.getString("_id");
 
-    final String uId = basicDBO.getString("userId");
-    final String sId = basicDBO.getString("settingId");
+    final String uId = basicDbO.getString("userId");
+    final String sId = basicDbO.getString("settingId");
 
-    final Object value = basicDBO.get("value");
+    final Object value = basicDbO.get("value");
 
     return new UserPreference(id, uId, sId, value);
   }
