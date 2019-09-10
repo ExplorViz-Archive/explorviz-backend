@@ -22,16 +22,16 @@ dependencies {
     implementation "com.github.explorviz.explorviz-backend-shared:security:${sharedProjectVersion}"
     implementation "com.github.explorviz.explorviz-backend-shared:exception-handling:${sharedProjectVersion}"
     implementation "com.github.explorviz.explorviz-backend-shared:common-concerns:${sharedProjectVersion}"
-    implementation "com.github.explorviz.explorviz-backend-shared:landscape-model:${sharedProjectVersion}"
   }
   else { 
     implementation project(':config-injection')    
     implementation project(':security')
     implementation project(':exception-handling')
     implementation project(':common-concerns')
-    implementation project(':landscape-service:landscape-model')
-  } 
-  
+  }
+
+  implementation project(':landscape-service:landscape-model')
+
   // SSE context for injection
   implementation group: 'org.glassfish.jersey.media', name: 'jersey-media-sse', version: '2.27'
   

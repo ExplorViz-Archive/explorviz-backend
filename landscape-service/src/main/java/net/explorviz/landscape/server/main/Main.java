@@ -1,7 +1,7 @@
 package net.explorviz.landscape.server.main;
 
-import net.explorviz.shared.common.provider.GenericTypeFinder;
 import net.explorviz.landscape.model.helper.TypeProvider;
+import net.explorviz.shared.common.provider.GenericTypeFinder;
 import org.glassfish.hk2.api.ServiceLocator;
 import org.glassfish.hk2.utilities.ServiceLocatorUtilities;
 import org.slf4j.Logger;
