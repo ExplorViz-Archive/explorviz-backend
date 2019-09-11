@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -17,7 +18,6 @@ import java.util.stream.Collectors;
 import javax.ws.rs.BadRequestException;
 import javax.ws.rs.core.MultivaluedHashMap;
 import javax.ws.rs.core.UriInfo;
-import net.explorviz.security.server.resources.endpoints.UserResourceEndpointTest;
 import net.explorviz.security.services.RoleService;
 import net.explorviz.security.services.UserService;
 import net.explorviz.security.services.exceptions.UserCrudException;
@@ -41,22 +41,16 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 /**
  * Unit tests for {@link UserResource}. All tests are performed by just calling the methods of
- * {@link UserResource}. See {@link UserResourceEndpointTest} for tests that use web requests.
- *
+ * {@link UserResource}.
  */
-@ExtendWith(MockitoExtension.class)
-@RunWith(JUnitPlatform.class)
-@SuppressWarnings("PMD")
-public class UserResourceTest {
+@ExtendWith(MockitoExtension.class) @SuppressWarnings("PMD")
+class UserResourceTest {
 
-  @InjectMocks
-  private UserResource userResource;
+  @InjectMocks private UserResource userResource;
 
-  @Mock
-  private UserService userCrudService;
+  @Mock private UserService userCrudService;
 
-  @Mock
-  private RoleService roleService;
+  @Mock private RoleService roleService;
 
 
   private final Map<String, User> users = new HashMap<>();
@@ -65,8 +59,7 @@ public class UserResourceTest {
 
   private Long lastId = 0L;
 
-  @BeforeEach
-  public void setUp() throws UserCrudException {
+  @BeforeEach public void setUp() throws UserCrudException {
 
 
 
@@ -95,8 +88,7 @@ public class UserResourceTest {
       Collection<User> data = this.users.values();
       if (query.doFilter()) {
         final String role = query.getFilters().get("role").get(0);
-        data = this.users.values()
-            .stream()
+        data = this.users.values().stream()
             .filter(u -> u.getRoles().stream().anyMatch(r -> r.getDescriptor().equals(role)))
             .collect(Collectors.toList());
       }
@@ -110,15 +102,13 @@ public class UserResourceTest {
 
   }
 
-  @AfterEach
-  public void tearDown() {
+  @AfterEach public void tearDown() {
     this.users.clear();
     this.roles.clear();
   }
 
 
-  @Test
-  public void testGetAll() {
+  @Test public void testGetAll() {
     final User u = new User("testuser");
     u.setPassword("testPassword");
 
@@ -139,8 +129,7 @@ public class UserResourceTest {
     assertEquals(2, data.size());
   }
 
-  @Test
-  public void testNewUser() {
+  @Test public void testNewUser() {
     final User u = new User("testuser");
     u.setPassword("testPassword");
 
@@ -151,37 +140,32 @@ public class UserResourceTest {
   }
 
 
-  @Test
-  public void testInvalidUsername() {
+  @Test public void testInvalidUsername() {
     final User u = new User("");
 
     assertThrows(BadRequestException.class, () -> this.userResource.newUser(u));
 
   }
 
-  @Test
-  public void testInvalidPassword() {
+  @Test public void testInvalidPassword() {
     final User u = new User("");
     u.setPassword("");
     assertThrows(BadRequestException.class, () -> this.userResource.newUser(u));
   }
 
-  @Test
-  public void testInvalidId() {
+  @Test public void testInvalidId() {
     final User u = new User("12", "name", "pw", new ArrayList<>());
     assertThrows(BadRequestException.class, () -> this.userResource.newUser(u));
   }
 
-  @Test
-  public void testInvalidRoles() {
+  @Test public void testInvalidRoles() {
     final User u = new User(null, "name", "pw", Arrays.asList(new Role("Unknown")));
     assertThrows(BadRequestException.class, () -> this.userResource.newUser(u));
   }
 
 
 
-  @Test
-  public void testUserByRole() {
+  @Test public void testUserByRole() {
 
     this.roles.add(new Role("role1"));
     this.roles.add(new Role("role2"));
@@ -212,8 +196,7 @@ public class UserResourceTest {
     assertEquals(0, this.userResource.find(uri).getData().size());
   }
 
-  @Test
-  public void testRemoveUser() {
+  @Test public void testRemoveUser() {
     final User u1 = new User("testuser");
     u1.setPassword("password");
     final User newUser = this.userResource.newUser(u1);
@@ -221,8 +204,8 @@ public class UserResourceTest {
     this.userResource.removeUser(newUser.getId());
   }
 
-  @Test
-  public void testChangePassword() throws CannotPerformOperationException, InvalidHashException {
+  @Test public void testChangePassword()
+      throws CannotPerformOperationException, InvalidHashException {
 
     // Will always fail if passwords are hashed
 
@@ -242,8 +225,7 @@ public class UserResourceTest {
   }
 
 
-  @Test
-  public void testChangeUsername() {
+  @Test public void testChangeUsername() {
     final User u1 = new User("testuser");
     u1.setPassword("password");
     final User newUser = this.userResource.newUser(u1);
@@ -259,8 +241,7 @@ public class UserResourceTest {
   }
 
 
-  @Test
-  public void testChangeRoles() {
+  @Test public void testChangeRoles() {
     final User u1 = new User("testuser");
     u1.setPassword("password");
     final User newUser = this.userResource.newUser(u1);
