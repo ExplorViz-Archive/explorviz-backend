@@ -9,10 +9,12 @@ import javax.inject.Inject;
 import net.explorviz.discovery.server.services.BroadcastService;
 import net.explorviz.shared.discovery.model.Agent;
 import net.explorviz.shared.discovery.model.Procezz;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class AgentRepository {
 
-  // private static final Logger LOGGER = LoggerFactory.getLogger(AgentRepository.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(AgentRepository.class);
 
   private final AtomicLong idGenerator = new AtomicLong(0);
 
@@ -94,13 +96,47 @@ public class AgentRepository {
       final Agent potentialAgent = this.lookupAgent(a);
 
       if (potentialAgent != null) {
+        LOGGER.info("updating internal agent with name: {}", potentialAgent.getIPPortOrName());
+
         this.agents.remove(potentialAgent);
         this.agents.add(a);
+
         this.broadcastService.broadcastMessage(this.agents);
       }
     }
+  }
 
+  public void exchangeProcezzInAgent(final Procezz proc, final Agent a) {
 
+    synchronized (this.agents) {
+
+      final Agent potentialAgent = this.lookupAgent(a);
+
+      Optional<Integer> potentialProcezzIndex = Optional.empty();
+
+      for (int i = 0; i < potentialAgent.getProcezzes().size(); i++) {
+        final Procezz p = potentialAgent.getProcezzes().get(i);
+
+        if (p.getId().equals(proc.getId())) {
+          potentialProcezzIndex = Optional.of(i);
+        }
+      }
+
+      if (potentialProcezzIndex.isPresent()) {
+
+        final String nameOrPid =
+            proc.getName() == null ? proc.getName() : String.valueOf(proc.getPid());
+
+        LOGGER.info("Updating internal procezz with id {} of agent with pid/name {}",
+            nameOrPid,
+            potentialAgent.getIPPortOrName());
+
+        potentialAgent.getProcezzes().remove(potentialProcezzIndex.get().intValue());
+        potentialAgent.getProcezzes().add(proc);
+        proc.setAgent(potentialAgent);
+      }
+
+    }
   }
 
 }
