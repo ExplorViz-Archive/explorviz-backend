@@ -139,7 +139,7 @@ public class BatchCreationService {
       } catch (final UserCrudException e) {
         // This should never happen
         if (LOGGER.isErrorEnabled()) {
-          LOGGER.error(String.format("Rollback failed for user with id", user.getId()), e);
+          LOGGER.error(String.format("Rollback failed for user with id %s", user.getId()), e);
         }
       }
     }

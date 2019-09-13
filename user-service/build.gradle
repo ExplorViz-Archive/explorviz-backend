@@ -11,7 +11,7 @@ configurations.all {
 
 dependencies {
 	
-	compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.9'
+	implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.9'
 	
 	implementation project(':settings-service:settings-service-model')
 	
@@ -34,8 +34,8 @@ dependencies {
     	implementation project(':query')
   }
   
-  compile group: 'io.swagger.core.v3', name: 'swagger-core', version: '2.0.8'
-  compile group: 'io.swagger.core.v3', name: 'swagger-jaxrs2', version: '2.0.8' 
+  implementation group: 'io.swagger.core.v3', name: 'swagger-core', version: '2.0.8'
+  implementation group: 'io.swagger.core.v3', name: 'swagger-jaxrs2', version: '2.0.8' 
   
 }
 

@@ -16,8 +16,8 @@ import net.explorviz.history.server.resources.endpoints.LandscapeResourceEndpoin
 import net.explorviz.shared.common.idgen.AtomicEntityIdGenerator;
 import net.explorviz.shared.common.idgen.IdGenerator;
 import net.explorviz.shared.common.idgen.UuidServiceIdGenerator;
-import net.explorviz.shared.landscape.model.helper.TypeProvider;
-import net.explorviz.shared.landscape.model.landscape.Landscape;
+import net.explorviz.landscape.model.helper.TypeProvider;
+import net.explorviz.landscape.model.landscape.Landscape;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

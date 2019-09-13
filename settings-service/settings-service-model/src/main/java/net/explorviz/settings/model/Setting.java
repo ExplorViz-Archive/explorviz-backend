@@ -26,7 +26,7 @@ public abstract class Setting {
    * Contains all Subclasses of Setting, i.e., all concrete implementations of a Setting.
    */
   @SuppressWarnings("serial")
-  public final static List<Class<? extends Setting>> TYPES =
+  public static final List<Class<? extends Setting>> TYPES =
       new ArrayList<Class<? extends Setting>>() {
         {
           add(RangeSetting.class);

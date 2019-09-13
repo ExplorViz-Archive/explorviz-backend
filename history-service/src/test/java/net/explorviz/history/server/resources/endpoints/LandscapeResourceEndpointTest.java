@@ -18,12 +18,13 @@ import net.explorviz.history.repository.persistence.mongo.LandscapeDummyCreator;
 import net.explorviz.history.repository.persistence.mongo.LandscapeSerializationHelper;
 import net.explorviz.history.server.resources.LandscapeResource;
 import net.explorviz.history.server.resources.LandscapeResourceTest;
+import net.explorviz.landscape.model.helper.TypeProvider;
+import net.explorviz.landscape.model.landscape.Landscape;
+import net.explorviz.landscape.model.store.Timestamp;
 import net.explorviz.shared.common.idgen.AtomicEntityIdGenerator;
 import net.explorviz.shared.common.idgen.IdGenerator;
 import net.explorviz.shared.common.idgen.UuidServiceIdGenerator;
-import net.explorviz.shared.landscape.model.helper.TypeProvider;
-import net.explorviz.shared.landscape.model.landscape.Landscape;
-import net.explorviz.shared.landscape.model.store.Timestamp;
+import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
 import org.junit.Test;
@@ -83,8 +84,12 @@ public class LandscapeResourceEndpointTest extends JerseyTest {
     when(this.landscapeStringRepo.getById("2L"))
         .thenThrow(new NotFoundException("Landscape not found for provided 2L."));
 
-    return new ResourceConfig().register(new LandscapeResource(this.landscapeStringRepo,
-        this.replayStringRepo, serializationHelper));
+    ResourceConfig rc = new ResourceConfig();
+    rc.register(MultiPartFeature.class);
+    rc.register(new LandscapeResource(this.landscapeStringRepo, this.replayStringRepo,
+        serializationHelper));
+
+    return rc;
   }
 
   @Test

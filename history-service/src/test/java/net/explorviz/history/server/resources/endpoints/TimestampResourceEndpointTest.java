@@ -11,7 +11,7 @@ import javax.ws.rs.core.Response.Status;
 import net.explorviz.history.repository.persistence.mongo.TimestampRepository;
 import net.explorviz.history.server.resources.TimestampResource;
 import net.explorviz.history.server.resources.TimestampResourceTest;
-import net.explorviz.shared.landscape.model.store.Timestamp;
+import net.explorviz.landscape.model.store.Timestamp;
 import net.explorviz.shared.querying.QueryException;
 import net.explorviz.shared.querying.QueryResult;
 import org.glassfish.jersey.server.ResourceConfig;

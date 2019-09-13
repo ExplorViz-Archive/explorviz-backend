@@ -18,20 +18,20 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
+import net.explorviz.landscape.model.application.Application;
+import net.explorviz.landscape.model.application.Clazz;
+import net.explorviz.landscape.model.application.Component;
+import net.explorviz.landscape.model.application.DatabaseQuery;
+import net.explorviz.landscape.model.event.EEventType;
+import net.explorviz.landscape.model.helper.EProgrammingLanguage;
+import net.explorviz.landscape.model.helper.ModelHelper;
+import net.explorviz.landscape.model.landscape.Landscape;
+import net.explorviz.landscape.model.landscape.Node;
+import net.explorviz.landscape.model.landscape.NodeGroup;
+import net.explorviz.landscape.model.landscape.System;
 import net.explorviz.landscape.repository.helper.Signature;
 import net.explorviz.landscape.repository.helper.SignatureParser;
 import net.explorviz.shared.common.idgen.IdGenerator;
-import net.explorviz.shared.landscape.model.application.Application;
-import net.explorviz.shared.landscape.model.application.Clazz;
-import net.explorviz.shared.landscape.model.application.Component;
-import net.explorviz.shared.landscape.model.application.DatabaseQuery;
-import net.explorviz.shared.landscape.model.event.EEventType;
-import net.explorviz.shared.landscape.model.helper.EProgrammingLanguage;
-import net.explorviz.shared.landscape.model.helper.ModelHelper;
-import net.explorviz.shared.landscape.model.landscape.Landscape;
-import net.explorviz.shared.landscape.model.landscape.Node;
-import net.explorviz.shared.landscape.model.landscape.NodeGroup;
-import net.explorviz.shared.landscape.model.landscape.System;
 
 /**
  * InsertionRepositoryPart TODODescr.
@@ -52,7 +52,7 @@ public class InsertionRepositoryPart {
   }
 
   /**
-   * Inserts a record into the data model (landscape)
+   * Inserts a record into the data model (landscape).
    *
    * @param inputIRecord - Record that will be inserted into the passed landscape
    * @param landscape - Target for the insertion of records
@@ -147,7 +147,7 @@ public class InsertionRepositoryPart {
   }
 
   /**
-   * Seeks or creates a new system
+   * Seeks or creates a new system.
    *
    * @param landscape - passed landscape
    * @param systemname - name of the system
@@ -177,7 +177,7 @@ public class InsertionRepositoryPart {
   }
 
   /**
-   * Seeks or creates a new node
+   * Seeks or creates a new node.
    *
    * @param hostApplicationRecord - monitoring information about the host
    * @param landscape - the passed landscape
@@ -210,7 +210,7 @@ public class InsertionRepositoryPart {
   }
 
   /**
-   * Seeks or creates a new nodeGroup
+   * Seeks or creates a new nodeGroup.
    *
    * @param system - the related system
    * @param node - the related node
@@ -264,7 +264,7 @@ public class InsertionRepositoryPart {
   }
 
   /**
-   * Seeks or creates an application
+   * Seeks or creates an application.
    *
    * @param node - the related node
    * @param hostMetaDataRecord - monitoring information about the host

@@ -2,7 +2,6 @@ package net.explorviz.landscape.injection;
 
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import java.util.Properties;
 import javax.inject.Inject;
 import net.explorviz.landscape.server.main.DependencyInjectionBinder;
@@ -67,8 +66,10 @@ public class DefaultGeneratorInjectionTest {
     final String failMessage = "Default service generator injection failed. "
         + "Injected wrong type, expected: '%s', but was '%s'";
 
-    assertTrue(this.serviceIdGen instanceof UuidServiceIdGenerator, String.format(failMessage,
-        UuidServiceIdGenerator.class.getName(), this.serviceIdGen.getClass().getName()));
+    assertTrue(this.serviceIdGen instanceof UuidServiceIdGenerator,
+        String.format(failMessage,
+            UuidServiceIdGenerator.class.getName(),
+            this.serviceIdGen.getClass().getName()));
   }
 
   /**

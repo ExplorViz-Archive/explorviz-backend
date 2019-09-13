@@ -1,55 +1,44 @@
 package net.explorviz.landscape.server.main;
 
-import net.explorviz.shared.common.provider.GenericTypeFinder;
-import net.explorviz.shared.common.provider.JsonApiListProvider;
-import net.explorviz.shared.common.provider.JsonApiProvider;
-import net.explorviz.shared.exceptions.mapper.GeneralExceptionMapper;
-import net.explorviz.shared.exceptions.mapper.InvalidJsonApiResourceExceptionMapper;
-import net.explorviz.shared.exceptions.mapper.UnregisteredTypeExceptionMapper;
-import net.explorviz.shared.exceptions.mapper.WebApplicationExceptionMapper;
-import net.explorviz.shared.landscape.model.helper.TypeProvider;
-import net.explorviz.shared.security.filters.AuthenticationFilter;
-import net.explorviz.shared.security.filters.AuthorizationFilter;
-import net.explorviz.shared.security.filters.CorsResponseFilter;
-import org.glassfish.jersey.media.multipart.MultiPartFeature;
-import org.glassfish.jersey.server.ResourceConfig;
+import javax.inject.Inject;
+import net.explorviz.landscape.repository.LandscapeRepositoryModel;
+import net.explorviz.landscape.repository.RepositoryStarter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * Starting configuration for the backend - includes registring models, resources, exception
- * handers, providers, and embedds extensions.
+ * Entry point to the core logic of the ExplorViz landscape service with DI.
  */
-public class LandscapeApplication extends ResourceConfig {
-  public LandscapeApplication() {
+public class LandscapeApplication {
 
-    // register Landscape Model classes, since we want to use them
-    TypeProvider.getExplorVizCoreTypesAsMap().forEach((classname, classRef) -> {
-      GenericTypeFinder.getTypeMap().put(classname, classRef);
-    });
+  private static final Logger LOGGER = LoggerFactory.getLogger(LandscapeApplication.class);
 
-    this.register(new DependencyInjectionBinder());
+  private final LandscapeRepositoryModel model;
 
-    // easy (de-)serializing models for HTTP Requests
-    this.register(JsonApiProvider.class);
-    this.register(JsonApiListProvider.class);
-
-    // https://stackoverflow.com/questions/30653012/
-    // multipart-form-data-no-injection-source-found-for-a-parameter-of-type-public-ja/30656345
-    // register for uploading landscapes
-    this.register(MultiPartFeature.class);
-
-    // register(JacksonFeature)
-
-    // register filters, e.g., authentication
-    this.register(AuthenticationFilter.class);
-    this.register(AuthorizationFilter.class);
-    this.register(CorsResponseFilter.class);
-
-    // exception handling (mind the order !)
-    this.register(WebApplicationExceptionMapper.class);
-    this.register(InvalidJsonApiResourceExceptionMapper.class);
-    this.register(UnregisteredTypeExceptionMapper.class);
-    this.register(GeneralExceptionMapper.class);
-
-    this.register(SetupApplicationListener.class);
+  @Inject
+  public LandscapeApplication(final LandscapeRepositoryModel model) {
+    this.model = model;
   }
+
+  /**
+   * Starts the core logic of this application.
+   */
+  public void startApplication() {
+    // Start ExplorViz Listener
+    new Thread(new Runnable() {
+
+      @Override
+      public void run() {
+        new RepositoryStarter().start(LandscapeApplication.this.model);
+      }
+    }).start();
+
+    LOGGER.info("\n");
+    LOGGER.info("* * * * * * * * * * * * * * * * * * *\n"); // NOCS
+    LOGGER.info("Server (ExplorViz Backend) sucessfully started.\n");
+    LOGGER.info("Traces can now be processed.!\n");
+    LOGGER.info("* * * * * * * * * * * * * * * * * * *\n");
+  }
+
+
 }

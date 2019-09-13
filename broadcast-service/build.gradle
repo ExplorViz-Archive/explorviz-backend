@@ -13,8 +13,11 @@ configurations.all {
 dependencies {
 
 	// Swagger
-  	compile group: 'io.swagger.core.v3', name: 'swagger-core', version: '2.0.8'
-  	compile group: 'io.swagger.core.v3', name: 'swagger-jaxrs2', version: '2.0.8' 
+  	implementation group: 'io.swagger.core.v3', name: 'swagger-core', version: '2.0.8'
+  	implementation group: 'io.swagger.core.v3', name: 'swagger-jaxrs2', version: '2.0.8'
+  	
+  	implementation project(':landscape-service:landscape-model')
+  	
 
   // ExplorViz Shared Dependencies
   if(useRemoteSharedProject.toBoolean()) {
@@ -22,16 +25,16 @@ dependencies {
     implementation "com.github.explorviz.explorviz-backend-shared:security:${sharedProjectVersion}"
     implementation "com.github.explorviz.explorviz-backend-shared:exception-handling:${sharedProjectVersion}"
     implementation "com.github.explorviz.explorviz-backend-shared:common-concerns:${sharedProjectVersion}"
-    implementation "com.github.explorviz.explorviz-backend-shared:landscape-model:${sharedProjectVersion}"
   }
   else { 
     implementation project(':config-injection')    
     implementation project(':security')
     implementation project(':exception-handling')
     implementation project(':common-concerns')
-    implementation project(':landscape-model')    
-  } 
-  
+  }
+
+  implementation project(':landscape-service:landscape-model')
+
   // SSE context for injection
   implementation group: 'org.glassfish.jersey.media', name: 'jersey-media-sse', version: '2.27'
   

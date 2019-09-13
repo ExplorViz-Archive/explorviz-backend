@@ -8,17 +8,17 @@ import java.util.concurrent.TimeUnit;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import net.explorviz.landscape.model.application.AggregatedClazzCommunication;
+import net.explorviz.landscape.model.application.Application;
+import net.explorviz.landscape.model.application.ApplicationCommunication;
+import net.explorviz.landscape.model.landscape.Landscape;
+import net.explorviz.landscape.model.landscape.Node;
+import net.explorviz.landscape.model.landscape.NodeGroup;
+import net.explorviz.landscape.model.landscape.System;
+import net.explorviz.landscape.model.store.Timestamp;
 import net.explorviz.landscape.repository.helper.LandscapeSerializationHelper;
 import net.explorviz.shared.common.idgen.IdGenerator;
 import net.explorviz.shared.config.annotations.Config;
-import net.explorviz.shared.landscape.model.application.AggregatedClazzCommunication;
-import net.explorviz.shared.landscape.model.application.Application;
-import net.explorviz.shared.landscape.model.application.ApplicationCommunication;
-import net.explorviz.shared.landscape.model.landscape.Landscape;
-import net.explorviz.shared.landscape.model.landscape.Node;
-import net.explorviz.shared.landscape.model.landscape.NodeGroup;
-import net.explorviz.shared.landscape.model.landscape.System;
-import net.explorviz.shared.landscape.model.store.Timestamp;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.jvnet.hk2.annotations.Service;
@@ -128,7 +128,7 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
   /**
    * Sends a landscape object with all its relationships to a Kafka topic.
    *
-   * @param Landscape that should be send to the Kafka topic
+   * @param l that should be send to the Kafka topic
    */
   private void sendLandscapeToKafka(final Landscape l, final String kafkaTopicName) {
     try {

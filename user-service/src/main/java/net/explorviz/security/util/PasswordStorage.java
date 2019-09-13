@@ -62,7 +62,9 @@ public class PasswordStorage {
     }
   }
 
-  private PasswordStorage() {}
+  private PasswordStorage() {
+
+  }
 
 
 

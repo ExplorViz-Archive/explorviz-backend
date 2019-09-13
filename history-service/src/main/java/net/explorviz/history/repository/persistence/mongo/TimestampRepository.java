@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.inject.Inject;
-import net.explorviz.shared.landscape.model.store.Timestamp;
+import net.explorviz.landscape.model.store.Timestamp;
 import net.explorviz.shared.querying.Query;
 import net.explorviz.shared.querying.QueryException;
 import net.explorviz.shared.querying.QueryResult;
