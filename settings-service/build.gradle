@@ -9,6 +9,37 @@ configurations.all {
   resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
 }
 
+task integrationTest(type: Test) {
+  useJUnitPlatform{
+    excludeTags 'slow'
+    includeEngines 'junit-jupiter'
+  }
+  failFast = true
+  description = 'Runs integration tests.'
+  group = 'verification'
+
+  testClassesDirs = sourceSets.intTest.output.classesDirs
+  classpath = sourceSets.intTest.runtimeClasspath
+  mustRunAfter assemble
+}
+
+// integrationTest.dependsOn assemble
+//    this will only assemble the current service but if it depends on another service
+//    the build will fail as the integration test stage is executed before other modules are
+//    assembled.
+
+// check.dependsOn integrationTest
+
+dockerCompose {
+  runAll {
+    buildBeforeUp = true
+    useComposeFiles = ['docker-compose-integration-test.yml']
+    startedServices = ['user-service', 'mongo-user', 'zookeeper', 'kafka', 'settings-service', 'mongo-user', 'mongo-settings']
+    isRequiredBy(this.tasks.getByName("integrationTest"))
+    removeContainers = true
+  }
+}
+
 dependencies {
 		
 	// MongoDB ORM
@@ -37,8 +68,11 @@ dependencies {
     	implementation project(':common-concerns')
     	implementation project(':query')
   }
-  
-  
+
+
+  intTestImplementation project(':user-service')    // For login
+  intTestImplementation 'io.rest-assured:rest-assured:4.0.0'
+
 }
 
 assemble.dependsOn shadowJar

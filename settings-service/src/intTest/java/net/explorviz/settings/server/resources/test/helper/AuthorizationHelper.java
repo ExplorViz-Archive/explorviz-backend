@@ -1,25 +1,11 @@
-package net.explorviz.security.server.helper;
+package net.explorviz.settings.server.resources.test.helper;
 
 import com.github.jasminb.jsonapi.exceptions.ResourceParseException;
 import io.restassured.mapper.ObjectMapperType;
-import net.explorviz.security.model.UserCredentials;
-import net.explorviz.security.server.main.DependencyInjectionBinder;
-import net.explorviz.security.services.TokenService;
-import net.explorviz.security.services.UserService;
-import net.explorviz.security.services.exceptions.UserCrudException;
-import net.explorviz.security.util.PasswordStorage;
-import net.explorviz.shared.security.model.User;
-import net.explorviz.shared.security.model.roles.Role;
-import org.glassfish.hk2.api.ServiceLocator;
-import org.glassfish.hk2.utilities.ServiceLocatorUtilities;
-
-import javax.inject.Inject;
-import javax.swing.text.html.Option;
-import java.util.List;
 import java.util.Optional;
+import net.explorviz.shared.security.model.User;
 
 import static io.restassured.RestAssured.given;
-import static io.restassured.RestAssured.options;
 
 public class AuthorizationHelper {
 
@@ -89,6 +75,17 @@ public class AuthorizationHelper {
       }
     }
     return AuthorizationHelper.admin;
+  }
+
+
+  static class UserCredentials {
+    public String username;
+    public String password;
+
+    public UserCredentials(String username, String password) {
+      this.username = username;
+      this.password = password;
+    }
   }
 
 

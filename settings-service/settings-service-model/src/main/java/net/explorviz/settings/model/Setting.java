@@ -7,6 +7,8 @@ import com.github.jasminb.jsonapi.annotations.Id;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 /**
@@ -111,6 +113,22 @@ public abstract class Setting {
     return this.origin;
   }
 
+  @Override public boolean equals(Object o) {
+    if (this == o)
+      return true;
 
+    if (o == null || getClass() != o.getClass())
+      return false;
 
+    Setting setting = (Setting) o;
+
+    return new EqualsBuilder().append(id, setting.id)
+        .append(displayName, setting.displayName).append(description, setting.description)
+        .append(origin, setting.origin).isEquals();
+  }
+
+  @Override public int hashCode() {
+    return new HashCodeBuilder(17, 37).append(id)
+        .append(displayName).append(description).append(origin).toHashCode();
+  }
 }

@@ -1,12 +1,12 @@
-package net.explorviz.security.server;
+package net.explorviz.security.server.resources.test;
 
 import io.restassured.http.Header;
 import io.restassured.mapper.ObjectMapperType;
 import net.explorviz.security.model.UserCredentials;
-import net.explorviz.security.server.helper.AuthorizationHelper;
-import net.explorviz.security.server.helper.JsonAPIMapper;
-import net.explorviz.security.server.helper.UserSerializationHelper;
-import net.explorviz.security.server.helper.UsersHelper;
+import net.explorviz.security.server.resources.test.helper.AuthorizationHelper;
+import net.explorviz.security.server.resources.test.helper.JsonAPIMapper;
+import net.explorviz.security.server.resources.test.helper.UserSerializationHelper;
+import net.explorviz.security.server.resources.test.helper.UsersHelper;
 import net.explorviz.shared.security.model.User;
 import net.explorviz.shared.security.model.roles.Role;
 import org.junit.jupiter.api.*;

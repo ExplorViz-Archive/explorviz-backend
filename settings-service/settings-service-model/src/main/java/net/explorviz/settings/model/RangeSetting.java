@@ -3,6 +3,8 @@ package net.explorviz.settings.model;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.github.jasminb.jsonapi.annotations.Type;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 
@@ -99,4 +101,21 @@ public class RangeSetting extends Setting {
         .append("max", this.max).appendSuper(super.toString()).build();
   }
 
+  @Override public boolean equals(Object o) {
+    if (this == o)
+      return true;
+
+    if (o == null || getClass() != o.getClass())
+      return false;
+
+    RangeSetting that = (RangeSetting) o;
+
+    return new EqualsBuilder().appendSuper(super.equals(o)).append(defaultValue, that.defaultValue)
+        .append(min, that.min).append(max, that.max).isEquals();
+  }
+
+  @Override public int hashCode() {
+    return new HashCodeBuilder(17, 37).appendSuper(super.hashCode()).append(defaultValue)
+        .append(min).append(max).toHashCode();
+  }
 }

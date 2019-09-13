@@ -1,11 +1,11 @@
-package net.explorviz.security.server;
+package net.explorviz.security.server.resources.test;
 
 import static io.restassured.RestAssured.*;
 import static org.hamcrest.CoreMatchers.is;
 
 import io.restassured.http.Header;
-import net.explorviz.security.server.helper.AuthorizationHelper;
-import net.explorviz.security.server.helper.JsonAPIListMapper;
+import net.explorviz.security.server.resources.test.helper.AuthorizationHelper;
+import net.explorviz.security.server.resources.test.helper.JsonAPIListMapper;
 import net.explorviz.shared.security.model.roles.Role;
 import org.junit.Assert;
 import org.junit.jupiter.api.BeforeAll;
@@ -30,6 +30,7 @@ public class RoleRetrieval {
 
   private Header authHeaderAdmin;
   private Header authHeaderNormie;
+
 
 
 

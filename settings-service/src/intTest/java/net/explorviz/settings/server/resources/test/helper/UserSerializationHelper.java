@@ -1,11 +1,10 @@
-package net.explorviz.security.server.helper;
+package net.explorviz.settings.server.resources.test.helper;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import net.explorviz.shared.security.model.User;
-
 import java.io.IOException;
+import net.explorviz.shared.security.model.User;
 
 public class UserSerializationHelper {
 

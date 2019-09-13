@@ -1,13 +1,9 @@
-package net.explorviz.security.server;
+package net.explorviz.security.server.resources.test;
 
 import io.restassured.mapper.ObjectMapperType;
 import net.explorviz.security.model.UserCredentials;
-import net.explorviz.security.server.helper.JsonAPIMapper;
-import net.explorviz.shared.security.model.User;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
-
-import java.util.Optional;
 
 import static io.restassured.RestAssured.given;
 

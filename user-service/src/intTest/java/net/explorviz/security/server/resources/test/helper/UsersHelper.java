@@ -1,4 +1,4 @@
-package net.explorviz.security.server.helper;
+package net.explorviz.security.server.resources.test.helper;
 
 import com.github.jasminb.jsonapi.exceptions.ResourceParseException;
 import io.restassured.http.Header;

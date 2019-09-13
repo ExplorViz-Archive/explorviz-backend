@@ -1,4 +1,4 @@
-package net.explorviz.security.server.helper;
+package net.explorviz.settings.server.resources.test.helper;
 
 import com.github.jasminb.jsonapi.JSONAPIDocument;
 import com.github.jasminb.jsonapi.ResourceConverter;
@@ -6,10 +6,12 @@ import com.github.jasminb.jsonapi.exceptions.DocumentSerializationException;
 import io.restassured.mapper.ObjectMapper;
 import io.restassured.mapper.ObjectMapperDeserializationContext;
 import io.restassured.mapper.ObjectMapperSerializationContext;
+import java.util.List;
+import net.explorviz.settings.model.FlagSetting;
+import net.explorviz.settings.model.RangeSetting;
+import net.explorviz.settings.model.Setting;
 import net.explorviz.settings.model.UserPreference;
 import net.explorviz.shared.security.model.User;
-
-import java.util.List;
 
 public class JsonAPIListMapper<T> implements ObjectMapper {
   private ResourceConverter converter;
@@ -19,8 +21,10 @@ public class JsonAPIListMapper<T> implements ObjectMapper {
   public JsonAPIListMapper(Class<T> cls) {
     this.cls = cls;
     converter = new ResourceConverter();
-    converter.registerType(User.class);
+    converter.registerType(Setting.class);
     converter.registerType(UserPreference.class);
+    converter.registerType(RangeSetting.class);
+    converter.registerType(FlagSetting.class);
   }
 
   @Override public List<T> deserialize(ObjectMapperDeserializationContext context) {
