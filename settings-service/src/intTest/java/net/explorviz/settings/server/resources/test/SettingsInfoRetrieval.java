@@ -4,25 +4,24 @@ import io.restassured.http.Header;
 import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
+import net.explorviz.settings.model.RangeSetting;
 import net.explorviz.settings.model.Setting;
 import net.explorviz.settings.server.resources.test.helper.AuthorizationHelper;
 import net.explorviz.settings.server.resources.test.helper.DefaultSettings;
 import net.explorviz.settings.server.resources.test.helper.JsonAPIListMapper;
+import org.hamcrest.Matchers;
+import org.junit.Assert;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.hasItems;
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.containsInAnyOrder;
-import static org.hamcrest.Matchers.greaterThan;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasKey;
+import static org.hamcrest.Matchers.not;
 
-public class SettingsInfo {
+public class SettingsInfoRetrieval {
 
   private static final String SETTINGS_URL = "http://localhost:8087/v1/settings/info";
 
@@ -83,6 +82,84 @@ public class SettingsInfo {
         .statusCode(200)
         .body("$", hasKey("data"))
         .body("data.size()", is(DefaultSettings.all.size()));
+  }
+
+  @Test
+  void pagniationFirstPage() {
+    int size = 2;
+    int num = 0;
+    given()
+        .contentType(MEDIA_TYPE)
+        .header(authHeaderAdmin)
+        .params("page[size]", size,
+            "page[number]", num)
+        .when()
+        .get(SETTINGS_URL)
+        .then()
+        .statusCode(200)
+        .body("data.size()", Matchers.is(size))
+        .body("links", hasKey("first"))
+        .body("links", hasKey("next"))
+        .body("links", hasKey("last"))
+        .body("links", not(hasKey("prev")));
+  }
+
+  @Test
+  void paginationMiddlePage() {
+    int size = 1;
+    int num = DefaultSettings.all.size()/2;
+    given()
+        .contentType(MEDIA_TYPE)
+        .header(authHeaderAdmin)
+        .params("page[size]", size,
+            "page[number]", num)
+        .when()
+        .get(SETTINGS_URL)
+        .then()
+        .statusCode(200)
+        .body("data.size()", Matchers.is(size))
+        .body("links", hasKey("first"))
+        .body("links", hasKey("prev"))
+        .body("links", hasKey("last"))
+        .body("links", hasKey("next"));
+  }
+
+
+  @Test
+  void filterByOrigin() {
+    final String origin = DefaultSettings.origin;
+    given()
+        .contentType(MEDIA_TYPE)
+        .header(authHeaderAdmin)
+        .params("filter[origin]", origin)
+        .when()
+        .get(SETTINGS_URL)
+        .then()
+        .statusCode(200)
+        .body("data.size()", is(DefaultSettings.all.size()));
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  void filterByType(){
+    final int rangeSettings =
+        (int) DefaultSettings.all.stream().filter(s -> s.getClass().equals(RangeSetting.class)).count();
+    List<Setting> retrieved = given()
+        .contentType(MEDIA_TYPE)
+        .header(authHeaderAdmin)
+        .params("filter[type]", "rangesetting")
+        .when()
+        .get(SETTINGS_URL)
+        .then()
+        .statusCode(200)
+        .body("data.size()", is(rangeSettings))
+        .extract().body().as(List.class, new JsonAPIListMapper<Setting>(Setting.class));
+
+    int retrievedRangeSettings =
+        (int) retrieved.stream().filter(s -> s.getClass().equals(RangeSetting.class)).count();
+    Assert.assertEquals(retrieved.size(), retrievedRangeSettings);
+
+
   }
 
 }
