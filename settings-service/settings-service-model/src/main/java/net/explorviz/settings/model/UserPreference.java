@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.github.jasminb.jsonapi.annotations.Id;
 import com.github.jasminb.jsonapi.annotations.Type;
 import com.mongodb.DBObject;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import xyz.morphia.annotations.Converters;
 import xyz.morphia.annotations.Entity;
@@ -76,7 +78,31 @@ public class UserPreference {
     obj.removeField(VALUE);
   }
 
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
 
+    if (o == null || getClass() != o.getClass()) return false;
+
+    UserPreference that = (UserPreference) o;
+
+    return new EqualsBuilder()
+      .append(id, that.id)
+      .append(userId, that.userId)
+      .append(settingId, that.settingId)
+      .append(value, that.value)
+      .isEquals();
+  }
+
+  @Override
+  public int hashCode() {
+    return new HashCodeBuilder(17, 37)
+      .append(id)
+      .append(userId)
+      .append(settingId)
+      .append(value)
+      .toHashCode();
+  }
 
   public String getUserId() {
     return this.userId;

@@ -1,21 +1,20 @@
 package net.explorviz.settings.server.resources.test;
 
 import io.restassured.http.Header;
-import java.io.IOException;
 import net.explorviz.settings.model.FlagSetting;
-import net.explorviz.settings.model.RangeSetting;
 import net.explorviz.settings.model.Setting;
 import net.explorviz.settings.server.resources.test.helper.AuthorizationHelper;
 import net.explorviz.settings.server.resources.test.helper.DefaultSettings;
 import net.explorviz.settings.server.resources.test.helper.JsonAPIMapper;
-import org.junit.Assert;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
+
 import static io.restassured.RestAssured.given;
 
-class SettingsInfoCreation {
+class SettingsInfoDeletion {
 
   private static final String SETTINGS_URL = "http://localhost:8087/v1/settings/info";
 
@@ -34,22 +33,22 @@ class SettingsInfoCreation {
    *
    * @throws IOException if serialization fails
    */
-  @BeforeAll static void setUpAll() throws IOException {
+  @BeforeAll
+  static void setUpAll() throws IOException {
     adminToken = AuthorizationHelper.getAdminToken();
     normieToken = AuthorizationHelper.getNormieToken();
   }
 
-  @BeforeEach void setUp() {
+  @BeforeEach
+  void setUp() {
     this.authHeaderAdmin = new Header("authorization", "Bearer " + adminToken);
     this.authHeaderNormie = new Header("authorization", "Bearer " + normieToken);
   }
 
-
-  @Test
-  void createAsAdmin(){
+  private Setting create() {
     Setting toCreate
-        = new FlagSetting("testname", "a test setting",
-          DefaultSettings.origin, false);
+            = new FlagSetting("testname", "a test setting",
+            DefaultSettings.origin, false);
 
     Setting created = given()
       .header(authHeaderAdmin)
@@ -57,39 +56,32 @@ class SettingsInfoCreation {
       .body(toCreate, new JsonAPIMapper<Setting>(Setting.class))
       .when()
       .post(SETTINGS_URL)
-      .then()
-      .statusCode(200)
-      .extract().body().as(Setting.class, new JsonAPIMapper<Setting>(Setting.class));
-
-    // Delete to not affect other tests
-    deleteSetting(created.getId());
-    // Workaround to check equality,otherwise 'created' has no id
-    toCreate.setId(created.getId());
-    Assert.assertEquals(toCreate, created);
-
+      .as(Setting.class, new JsonAPIMapper<Setting>(Setting.class));
+    return created;
   }
 
   @Test
-  void createAsANormie(){
-    Setting toCreate
-            = new FlagSetting("testname", "a test setting",
-            DefaultSettings.origin, false);
-    given()
-      .header(authHeaderNormie)
-      .contentType(MEDIA_TYPE)
-      .body(toCreate, new JsonAPIMapper<Setting>(Setting.class))
-      .when()
-      .post(SETTINGS_URL)
-      .then()
-      .statusCode(403);
-  }
+  void deleteAsAdmin() {
+    Setting toDelete = create();
 
-  private void deleteSetting(String id) {
     given()
       .header(authHeaderAdmin)
       .contentType(MEDIA_TYPE)
       .when()
-      .delete(SETTINGS_URL+"/"+id);
+      .delete(SETTINGS_URL+"/"+toDelete.getId())
+      .then()
+      .statusCode(204);
+  }
+
+  @Test
+  void deleteAsNormie() {
+     given()
+      .header(authHeaderNormie)
+      .contentType(MEDIA_TYPE)
+      .when()
+      .delete(SETTINGS_URL+"/sampleid")
+      .then()
+      .statusCode(403);
   }
 
 

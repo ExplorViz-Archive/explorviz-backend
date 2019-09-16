@@ -126,7 +126,7 @@ public class UserPreferencesResource {
    * Deletes an UserPereference such that the default value applies again for the given user.
    *
    * @param prefId the id of the preference to delete
-   * @param 204 (not content) on success
+   * @return 204 (not content) on success
    */
   @DELETE
   @PermitAll

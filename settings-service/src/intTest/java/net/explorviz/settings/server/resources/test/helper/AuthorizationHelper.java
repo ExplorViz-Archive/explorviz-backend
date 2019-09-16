@@ -22,7 +22,7 @@ public class AuthorizationHelper {
   private static User admin = null;
   private static User normie = null;
 
-  private static Optional<User> login(String name, String password) {
+  public static Optional<User> login(String name, String password) {
 
     try {
       User u = given().contentType("application/json")

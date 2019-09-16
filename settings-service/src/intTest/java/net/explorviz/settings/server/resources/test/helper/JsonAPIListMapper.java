@@ -25,6 +25,7 @@ public class JsonAPIListMapper<T> implements ObjectMapper {
     converter.registerType(UserPreference.class);
     converter.registerType(RangeSetting.class);
     converter.registerType(FlagSetting.class);
+    converter.registerType(UserPreference.class);
   }
 
   @Override public List<T> deserialize(ObjectMapperDeserializationContext context) {

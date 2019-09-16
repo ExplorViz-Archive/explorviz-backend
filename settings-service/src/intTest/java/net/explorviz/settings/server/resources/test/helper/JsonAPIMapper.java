@@ -8,7 +8,10 @@ import io.restassured.mapper.ObjectMapper;
 import io.restassured.mapper.ObjectMapperDeserializationContext;
 import io.restassured.mapper.ObjectMapperSerializationContext;
 import net.explorviz.security.model.UserBatchRequest;
+import net.explorviz.settings.model.FlagSetting;
+import net.explorviz.settings.model.RangeSetting;
 import net.explorviz.settings.model.Setting;
+import net.explorviz.settings.model.UserPreference;
 import net.explorviz.shared.security.model.User;
 
 public class JsonAPIMapper<T> implements ObjectMapper {
@@ -20,7 +23,10 @@ public class JsonAPIMapper<T> implements ObjectMapper {
     this.cls = cls;
     converter = new ResourceConverter();
     converter.registerType(Setting.class);
+    converter.registerType(RangeSetting.class);
+    converter.registerType(FlagSetting.class);
     converter.registerType(User.class);
+    converter.registerType(UserPreference.class);
     converter.disableDeserializationOption(DeserializationFeature.REQUIRE_RESOURCE_ID);
   }
 
