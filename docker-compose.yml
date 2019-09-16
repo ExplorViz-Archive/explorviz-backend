@@ -104,7 +104,7 @@ services:
       - logging.env
 
   frontend:
-    image: explorviz-frontend:lotzk
+    image: explorviz-frontend:lotzk-thesis
     container_name: explorviz-frontend
     ports:
       - "8090:80"
