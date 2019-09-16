@@ -12,8 +12,7 @@
   <if condition='p("LOGSTASH_ENABLED").equals("true")'>
     <then>
       <appender name="LOGSTASH_EVENT" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
-        <destination>${LOGSTASH_HOST:-logstash}:4560</destination>
-
+        <destination>${LOGSTASH_HOST}:4560</destination>
         <encoder class="net.logstash.logback.encoder.LogstashEncoder">
           <customFields>{"service": "landscape-service"}</customFields>
         </encoder>
@@ -21,12 +20,11 @@
     </then>
   </if>
 
-
   <root level="TRACE">
-    <appender-ref ref="CONSOLE" />
+    <appender-ref ref="CONSOLE"/>
     <if condition='p("LOGSTASH_ENABLED").equals("true")'>
       <then>
-        <appender-ref ref="LOGSTASH_EVENT" />
+        <appender-ref ref="LOGSTASH_EVENT"/>
       </then>
     </if>
   </root>

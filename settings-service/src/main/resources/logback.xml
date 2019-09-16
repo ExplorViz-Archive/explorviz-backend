@@ -11,19 +11,15 @@
 
   <if condition='p("LOGSTASH_ENABLED").equals("true")'>
     <then>
-      <appender name="LOGSTASH_EVENT"
-                class="net.logstash.logback.appender.LogstashTcpSocketAppender">
-        <destination>${LOGSTASH_HOST:-logstash}:4560</destination>
-
+      <appender name="LOGSTASH_EVENT" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+        <destination>${LOGSTASH_HOST}:4560</destination>
         <encoder class="net.logstash.logback.encoder.LogstashEncoder">
           <customFields>{"service": "settings-service"}</customFields>
         </encoder>
       </appender>
 
-      <appender name="LOGSTASH_REQUEST"
-                class="net.logstash.logback.appender.LogstashTcpSocketAppender">
-        <destination>${LOGSTASH_HOST:-logstash}:4561</destination>
-
+      <appender name="LOGSTASH_REQUEST" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+        <destination>${LOGSTASH_HOST}:4561</destination>
         <encoder class="net.logstash.logback.encoder.LogstashEncoder">
           <customFields>{"service": "settings-service"}</customFields>
         </encoder>
@@ -38,7 +34,6 @@
       </then>
     </if>
   </logger>
-
 
   <root level="TRACE">
     <appender-ref ref="CONSOLE"/>
