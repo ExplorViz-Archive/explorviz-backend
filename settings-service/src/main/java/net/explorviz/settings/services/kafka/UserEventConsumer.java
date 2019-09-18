@@ -16,7 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Consumes user events published on Kafka
+ * Consumes user events published on Kafka.
  *
  */
 @Service
@@ -109,7 +109,9 @@ public class UserEventConsumer implements Runnable {
       this.id = id;
     }
 
-    public UserEvent() {}
+    public UserEvent() {
+
+    }
 
     public EventType getEvent() {
       return this.event;

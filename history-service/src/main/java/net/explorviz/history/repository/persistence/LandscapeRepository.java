@@ -2,8 +2,8 @@ package net.explorviz.history.repository.persistence;
 
 import java.util.Optional;
 import javax.ws.rs.ClientErrorException;
-import net.explorviz.shared.landscape.model.landscape.Landscape;
-import net.explorviz.shared.landscape.model.store.Timestamp;
+import net.explorviz.landscape.model.landscape.Landscape;
+import net.explorviz.landscape.model.store.Timestamp;
 
 /**
  * Represents a repository to store {@link Landscape} objects persistently.

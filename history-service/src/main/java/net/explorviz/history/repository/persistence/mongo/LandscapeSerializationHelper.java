@@ -5,7 +5,7 @@ import com.github.jasminb.jsonapi.ResourceConverter;
 import com.github.jasminb.jsonapi.exceptions.DocumentSerializationException;
 import java.util.List;
 import javax.inject.Inject;
-import net.explorviz.shared.landscape.model.landscape.Landscape;
+import net.explorviz.landscape.model.landscape.Landscape;
 
 /**
  * Helper class for de-/serializing landscapes from/to json api.

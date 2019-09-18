@@ -1,6 +1,7 @@
 package net.explorviz.history.server.main;
 
 import javax.inject.Singleton;
+
 import net.explorviz.history.kafka.KafkaLandscapeExchangeService;
 import net.explorviz.history.repository.persistence.LandscapeRepository;
 import net.explorviz.history.repository.persistence.ReplayRepository;
@@ -11,8 +12,8 @@ import net.explorviz.history.repository.persistence.mongo.MongoLandscapeReposito
 import net.explorviz.history.repository.persistence.mongo.MongoReplayJsonApiRepository;
 import net.explorviz.history.repository.persistence.mongo.MongoReplayRepository;
 import net.explorviz.history.repository.persistence.mongo.TimestampRepository;
+import net.explorviz.landscape.model.landscape.Landscape;
 import net.explorviz.shared.common.injection.CommonDependencyInjectionBinder;
-import net.explorviz.shared.landscape.model.landscape.Landscape;
 import org.glassfish.hk2.api.TypeLiteral;
 
 /**
@@ -20,8 +21,7 @@ import org.glassfish.hk2.api.TypeLiteral;
  */
 public class DependencyInjectionBinder extends CommonDependencyInjectionBinder {
 
-  @Override
-  public void configure() {
+  @Override public void configure() {
 
     super.configure();
 
@@ -39,18 +39,19 @@ public class DependencyInjectionBinder extends CommonDependencyInjectionBinder {
         .in(Singleton.class);
     this.bind(MongoLandscapeJsonApiRepository.class).to(MongoLandscapeJsonApiRepository.class)
         .in(Singleton.class);
-    this.bind(MongoLandscapeRepository.class)
-        .to(new TypeLiteral<LandscapeRepository<Landscape>>() {}).in(Singleton.class);
+    this.bind(MongoLandscapeRepository.class).to(new TypeLiteral<LandscapeRepository<Landscape>>() {
+    }).in(Singleton.class);
     this.bind(MongoLandscapeJsonApiRepository.class)
-        .to(new TypeLiteral<LandscapeRepository<String>>() {}).in(Singleton.class);
+        .to(new TypeLiteral<LandscapeRepository<String>>() {
+        }).in(Singleton.class);
     // Replay
     this.bind(MongoReplayRepository.class).to(MongoReplayRepository.class).in(Singleton.class);
     this.bind(MongoReplayJsonApiRepository.class).to(MongoReplayJsonApiRepository.class)
         .in(Singleton.class);
-    this.bind(MongoReplayRepository.class).to(new TypeLiteral<ReplayRepository<Landscape>>() {})
-        .in(Singleton.class);
-    this.bind(MongoReplayJsonApiRepository.class).to(new TypeLiteral<ReplayRepository<String>>() {})
-        .in(Singleton.class);
+    this.bind(MongoReplayRepository.class).to(new TypeLiteral<ReplayRepository<Landscape>>() {
+    }).in(Singleton.class);
+    this.bind(MongoReplayJsonApiRepository.class).to(new TypeLiteral<ReplayRepository<String>>() {
+    }).in(Singleton.class);
     this.bind(TimestampRepository.class).to(TimestampRepository.class).in(Singleton.class);
 
   }

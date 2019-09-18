@@ -5,8 +5,8 @@ import java.util.Optional;
 import javax.inject.Inject;
 import javax.ws.rs.InternalServerErrorException;
 import net.explorviz.history.repository.persistence.LandscapeRepository;
-import net.explorviz.shared.landscape.model.landscape.Landscape;
-import net.explorviz.shared.landscape.model.store.Timestamp;
+import net.explorviz.landscape.model.landscape.Landscape;
+import net.explorviz.landscape.model.store.Timestamp;
 
 /**
  * Stores and retrieves landscapes from a mongodb, which is given in the

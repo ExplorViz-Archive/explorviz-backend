@@ -16,26 +16,26 @@ repositories {
 dependencies {
 
 	// Swagger
-	compile group: 'io.swagger.core.v3', name: 'swagger-core', version: '2.0.8'
-	compile group: 'io.swagger.core.v3', name: 'swagger-jaxrs2', version: '2.0.8' 
+  	implementation group: 'io.swagger.core.v3', name: 'swagger-core', version: '2.0.8'
+  	implementation group: 'io.swagger.core.v3', name: 'swagger-jaxrs2', version: '2.0.8'
+    implementation project(':landscape-service:landscape-model')
 
-	// ExplorViz Shared Dependencies
-	if (useRemoteSharedProject.toBoolean()) {
-		implementation "com.github.explorviz.explorviz-backend-shared:landscape-model:${sharedProjectVersion}"
-	    implementation "com.github.explorviz.explorviz-backend-shared:config-injection:${sharedProjectVersion}"
-	    implementation "com.github.explorviz.explorviz-backend-shared:security:${sharedProjectVersion}"
-	    implementation "com.github.explorviz.explorviz-backend-shared:exception-handling:${sharedProjectVersion}"
-	    implementation "com.github.explorviz.explorviz-backend-shared:common-concerns:${sharedProjectVersion}"
-		implementation "com.github.explorviz.explorviz-backend-shared:query:${sharedProjectVersion}"
-	}
-	else {
-	    implementation project(':landscape-model')
-	    implementation project(':config-injection')
-	    implementation project(':security')
-	    implementation project(':exception-handling')
-	    implementation project(':common-concerns')
-		implementation project(':query')
-	} 
+  // ExplorViz Shared Dependencies
+  if(useRemoteSharedProject.toBoolean()) {
+    implementation "com.github.explorviz.explorviz-backend-shared:landscape-model:${sharedProjectVersion}"
+    implementation "com.github.explorviz.explorviz-backend-shared:config-injection:${sharedProjectVersion}"
+    implementation "com.github.explorviz.explorviz-backend-shared:security:${sharedProjectVersion}"
+    implementation "com.github.explorviz.explorviz-backend-shared:exception-handling:${sharedProjectVersion}"
+    implementation "com.github.explorviz.explorviz-backend-shared:common-concerns:${sharedProjectVersion}"
+	implementation "com.github.explorviz.explorviz-backend-shared:query:${sharedProjectVersion}"
+  }
+  else {
+    implementation project(':config-injection')
+    implementation project(':security')
+    implementation project(':exception-handling')
+    implementation project(':common-concerns')
+	implementation project(':query')
+  } 
   
   	// multipart/form-data type
   	implementation group: 'org.glassfish.jersey.media', name:'jersey-media-multipart', version:'2.26'
@@ -62,11 +62,6 @@ application {
 
 shadowJar {
   archiveName = "explorviz-${project.name}.${extension}"
-}
-
-// ignore the tests until it the endpoint test is fixed
-test {
-	ignoreFailures = true
 }
 
 spotbugs {

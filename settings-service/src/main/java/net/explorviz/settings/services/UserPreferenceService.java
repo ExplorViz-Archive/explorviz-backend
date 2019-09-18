@@ -18,7 +18,7 @@ import org.slf4j.LoggerFactory;
 @Service
 public class UserPreferenceService {
 
-  private final static Logger LOGGER = LoggerFactory.getLogger(UserPreferenceService.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(UserPreferenceService.class);
 
   private final UserPreferenceRepository prefRepo;
   private final SettingsRepository settingRepo;

@@ -19,31 +19,24 @@ dependencies {
   // Any .jar in libs
   implementation fileTree(dir: 'libs', include: '*.jar')
   
+  implementation project(':landscape-service:landscape-model')
+  implementation group: 'org.glassfish.hk2', name: 'hk2', version: '2.6.0'
+  implementation group: 'com.github.jasminb', name: 'jsonapi-converter', version:'0.8'
+  
   // ExplorViz Shared Dependencies
   if(useRemoteSharedProject.toBoolean()) {
-    implementation "com.github.explorviz.explorviz-backend-shared:landscape-model:${sharedProjectVersion}"
     implementation "com.github.explorviz.explorviz-backend-shared:config-injection:${sharedProjectVersion}"
     implementation "com.github.explorviz.explorviz-backend-shared:security:${sharedProjectVersion}"
     implementation "com.github.explorviz.explorviz-backend-shared:exception-handling:${sharedProjectVersion}"
     implementation "com.github.explorviz.explorviz-backend-shared:common-concerns:${sharedProjectVersion}" 
   }
-  else {    
-    implementation project(':landscape-model')
+  else {        
     implementation project(':config-injection')
-   	implementation project(':security')
-   	implementation project(':exception-handling')
-   	implementation project(':common-concerns')
+    implementation project(':common-concerns')
   }
-  
-  // SSE context for injection
-  implementation group: 'org.glassfish.jersey.media', name: 'jersey-media-sse', version: '2.27'
-  
-   
-  // multipart/form-data type
-  implementation group: 'org.glassfish.jersey.media', name:'jersey-media-multipart', version:'2.26'
-  
-  
-  
+
+  implementation project(':landscape-service:landscape-model')
+  implementation group: 'com.github.jasminb', name: 'jsonapi-converter', version:'0.8'
 }
 
 assemble.dependsOn shadowJar

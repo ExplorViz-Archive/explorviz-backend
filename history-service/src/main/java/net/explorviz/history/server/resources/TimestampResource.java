@@ -19,7 +19,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
 import net.explorviz.history.repository.persistence.mongo.TimestampRepository;
-import net.explorviz.shared.landscape.model.store.Timestamp;
+import net.explorviz.landscape.model.store.Timestamp;
 import net.explorviz.shared.querying.Query;
 import net.explorviz.shared.querying.QueryException;
 import net.explorviz.shared.querying.QueryResult;

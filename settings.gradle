@@ -2,7 +2,8 @@
 rootProject.name = 'explorviz-backend'
 
 if(useRemoteSharedProject.toBoolean()) {
-	include ':landscape-service', 
+	include ':landscape-service',
+    'landscape-service:landscape-model',
 	':kiekeradapter', 
 	':user-service', 
 	':analysis-service', 
@@ -12,7 +13,8 @@ if(useRemoteSharedProject.toBoolean()) {
 	'settings-service:settings-service-model',
 	':broadcast-service'
 } else {
-	include ':landscape-service', 
+	include ':landscape-service',
+    'landscape-service:landscape-model',
 	':kiekeradapter', 
 	':user-service', 
 	':settings-service',

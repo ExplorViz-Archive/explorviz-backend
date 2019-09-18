@@ -132,7 +132,8 @@ public class UserPreferencesResource {
   @PermitAll
   @Path("settings/preferences/{id}")
   @Operation(summary = "Delete a preference",
-      description = "If a preference is delete, the default value of the corresponding setting applies again.")
+      description = "If a preference is delete, the default value of the corresponding "
+          + "setting applies again.")
   @ApiResponse(responseCode = "403", description = "A user can only access its own preferences. "
       + "Admins can access any users preferences.")
   @ApiResponse(responseCode = "204", description = "The preference was deleted")

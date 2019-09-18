@@ -28,7 +28,7 @@ import net.explorviz.history.repository.persistence.LandscapeRepository;
 import net.explorviz.history.repository.persistence.ReplayRepository;
 import net.explorviz.history.repository.persistence.mongo.LandscapeSerializationHelper;
 import net.explorviz.history.util.ResourceHelper;
-import net.explorviz.shared.landscape.model.landscape.Landscape;
+import net.explorviz.landscape.model.landscape.Landscape;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.slf4j.Logger;
@@ -95,7 +95,7 @@ public class LandscapeResource {
   }
 
   /**
-   * Returns {@link net.explorviz.shared.landscape.model.landscape.Landscape} with the passed query
+   * Returns {@link Landscape} with the passed query
    * parameter.
    *
    * @param timestamp - query parameter
