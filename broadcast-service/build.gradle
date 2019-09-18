@@ -25,10 +25,12 @@ dependencies {
     implementation "com.github.explorviz.explorviz-backend-shared:security:${sharedProjectVersion}"
     implementation "com.github.explorviz.explorviz-backend-shared:exception-handling:${sharedProjectVersion}"
     implementation "com.github.explorviz.explorviz-backend-shared:common-concerns:${sharedProjectVersion}"
+    implementation "com.github.explorviz.explorviz-backend-shared:user:${sharedProjectVersion}"
   }
   else { 
     implementation project(':config-injection')    
     implementation project(':security')
+    implementation project(':user')
     implementation project(':exception-handling')
     implementation project(':common-concerns')
   }

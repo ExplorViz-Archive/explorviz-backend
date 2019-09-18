@@ -42,6 +42,7 @@ import net.explorviz.shared.querying.Query;
 import net.explorviz.shared.querying.QueryResult;
 import net.explorviz.shared.security.model.User;
 import net.explorviz.shared.security.model.roles.Role;
+import net.explorviz.shared.security.model.roles.RoleNames;
 import org.eclipse.jetty.http.HttpStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -65,8 +66,7 @@ public class UserResource {
   private static final String MSG_INVALID_USERNAME = "Invalid username";
   private static final String MSG_USER_NOT_RETRIEVED = "Could not retrieve user ";
   private static final String MSG_UNKOWN_ROLE = "Unknown role";
-  private static final String ADMIN_ROLE = "admin";
-  private static final String USER_ROLE = "user";
+
 
   private final UserService userCrudService;
 
@@ -100,7 +100,7 @@ public class UserResource {
   @POST
   @Consumes(MEDIA_TYPE)
   @Produces(MEDIA_TYPE)
-  @RolesAllowed({ADMIN_ROLE})
+  @RolesAllowed({RoleNames.ADMIN})
   @Operation(summary = "Create a new user")
   @ApiResponse(responseCode = "200", description = "User created",
       content = @Content(mediaType = MEDIA_TYPE, schema = @Schema(implementation = User.class)))
@@ -171,7 +171,7 @@ public class UserResource {
    */
   @PATCH
   @Path("{id}")
-  @RolesAllowed({ADMIN_ROLE})
+  @RolesAllowed({RoleNames.ADMIN})
   @Produces(MEDIA_TYPE)
   @Consumes(MEDIA_TYPE)
   @Operation(summary = "Update an existing User")
@@ -247,7 +247,7 @@ public class UserResource {
    * @return a list of all users with the given role
    */
   @GET
-  @RolesAllowed({ADMIN_ROLE})
+  @RolesAllowed({RoleNames.ADMIN})
   @Produces(MEDIA_TYPE)
   @Operation(description = "List all users")
   @Parameters({
@@ -275,7 +275,7 @@ public class UserResource {
    */
   @GET
   @Path("{id}")
-  @RolesAllowed({ADMIN_ROLE, USER_ROLE})
+  @RolesAllowed({RoleNames.ADMIN, RoleNames.USER})
   @Produces(MEDIA_TYPE)
   @Operation(summary = "Find a user by its id")
   @ApiResponse(responseCode = "200", description = "The requested user",
@@ -304,7 +304,7 @@ public class UserResource {
    */
   @DELETE
   @Path("{id}")
-  @RolesAllowed({ADMIN_ROLE})
+  @RolesAllowed({RoleNames.ADMIN})
   @Operation(summary = "Remove a user identified by its Id")
   @ApiResponse(responseCode = "400",
       description = "Attempt to delete the last existing use with the admin role, "
@@ -333,7 +333,7 @@ public class UserResource {
    * @return 204 if no error occured
    */
   @DELETE
-  @RolesAllowed({ADMIN_ROLE})
+  @RolesAllowed({RoleNames.ADMIN})
   @Operation(summary = "Delete a list of users")
   @ApiResponse(responseCode = "204", description = "All user deleted")
   @ApiResponse(responseCode = "400",

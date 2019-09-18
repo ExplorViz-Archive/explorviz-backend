@@ -23,13 +23,14 @@ import net.explorviz.landscape.model.store.Timestamp;
 import net.explorviz.shared.querying.Query;
 import net.explorviz.shared.querying.QueryException;
 import net.explorviz.shared.querying.QueryResult;
+import net.explorviz.shared.security.model.roles.RoleNames;
 
 /**
  * REST resource providing {@link net.explorviz.landscape.model.store.Timestamp} data for the
  * frontend.
  */
 @Path("v1/timestamps")
-@RolesAllowed({"admin"})
+@RolesAllowed({RoleNames.ADMIN})
 @SecurityRequirement(name = "token")
 @Tag(name = "Timestamps")
 public class TimestampResource {

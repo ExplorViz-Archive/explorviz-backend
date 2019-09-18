@@ -14,6 +14,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import net.explorviz.security.services.RoleService;
 import net.explorviz.shared.security.model.roles.Role;
+import net.explorviz.shared.security.model.roles.RoleNames;
 
 /**
  * Provides endpoints for user roles.
@@ -26,13 +27,12 @@ public class RoleResource {
   // private static final Logger LOGGER = LoggerFactory.getLogger(RoleResource.class); // NOPMD
 
   private static final String MEDIA_TYPE = "application/vnd.api+json";
-  private static final String ADMIN_ROLE = "admin";
 
   @Inject
   private RoleService roleService;
 
   @GET
-  @RolesAllowed({ADMIN_ROLE})
+  @RolesAllowed({RoleNames.ADMIN})
   @Produces(MEDIA_TYPE)
   @Operation(description = "Returns a list of all available roles")
   @ApiResponse(responseCode = "200", description = "List of all roles currently available.",
