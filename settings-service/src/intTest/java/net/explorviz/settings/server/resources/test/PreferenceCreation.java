@@ -67,7 +67,10 @@ public class PreferenceCreation {
         .post(PREF_URL)
         .then()
         .statusCode(200)
-        .extract().body().as(UserPreference.class, new JsonAPIMapper<UserPreference>(UserPreference.class));
+        .extract().body().as(UserPreference.class,
+            new JsonAPIMapper<UserPreference>(UserPreference.class));
+
+    UsersHelper.getInstance().deleteUserById(testUser.getId());
   }
 
   @Test
@@ -87,6 +90,7 @@ public class PreferenceCreation {
         .post(PREF_URL)
         .then()
         .statusCode(403);
+    UsersHelper.getInstance().deleteUserById(testUser.getId());
   }
 
   @Test
@@ -110,6 +114,7 @@ public class PreferenceCreation {
         .post(PREF_URL)
         .then()
         .statusCode(400);
+    UsersHelper.getInstance().deleteUserById(testUser.getId());
   }
 
 

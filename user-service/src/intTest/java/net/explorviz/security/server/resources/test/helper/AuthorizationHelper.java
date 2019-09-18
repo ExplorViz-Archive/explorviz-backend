@@ -2,15 +2,11 @@ package net.explorviz.security.server.resources.test.helper;
 
 import com.github.jasminb.jsonapi.exceptions.ResourceParseException;
 import io.restassured.mapper.ObjectMapperType;
+import java.util.Optional;
 import net.explorviz.security.model.UserCredentials;
-import net.explorviz.security.server.resources.JsonAPIMapper;
-import net.explorviz.security.server.resources.UsersHelper;
 import net.explorviz.shared.security.model.User;
 
-import java.util.Optional;
-
 import static io.restassured.RestAssured.given;
-import static io.restassured.RestAssured.options;
 
 public class AuthorizationHelper {
 
