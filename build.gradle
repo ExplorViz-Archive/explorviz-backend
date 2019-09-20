@@ -101,7 +101,6 @@ subprojects {
     dependsOn 'pmdTest'
   }
 
-
   sourceSets {
     integrationTest {
       java.srcDir file('src/integrationTest/java')
@@ -109,6 +108,21 @@ subprojects {
       runtimeClasspath += sourceSets.main.output
     }
   }
+  
+  task integrationTest(type: Test) {
+    useJUnitPlatform{
+      excludeTags 'slow'
+      includeEngines 'junit-jupiter'
+    }
+    failFast = true
+    description = 'Runs integration tests.'
+    group = 'verification'
+
+    testClassesDirs = sourceSets.integrationTest.output.classesDirs
+    classpath = sourceSets.integrationTest.runtimeClasspath
+    mustRunAfter assemble
+  }  
+  
   configurations {
     integrationTestImplementation.extendsFrom implementation
     integrationTestRuntimeOnly.extendsFrom runtimeOnly

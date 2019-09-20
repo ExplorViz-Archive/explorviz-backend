@@ -41,6 +41,9 @@ dependencies {
   implementation group: 'org.apache.kafka', name: 'kafka_2.12', version: '2.2.0'
 }
 
+// disable integration tests, since there are none
+integrationTest.enabled = false
+
 assemble.dependsOn shadowJar
 jar.enabled = false
 

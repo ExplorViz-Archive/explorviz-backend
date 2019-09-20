@@ -25,6 +25,9 @@ dependencies {
   implementation group: 'net.kieker-monitoring', name: 'kieker', version: '1.14-SNAPSHOT'
 }
 
+// disable integration tests, since there are none
+integrationTest.enabled = false
+
 assemble.dependsOn shadowJar
 jar.enabled = false
 

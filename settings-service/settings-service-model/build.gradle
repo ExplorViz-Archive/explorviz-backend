@@ -22,6 +22,9 @@ dependencies {
 	
 }
 
+// disable integration tests, since there are none
+integrationTest.enabled = false
+
 pmd {
     ruleSets = []
     ruleSetFiles = files("../../conf/pmd.xml")

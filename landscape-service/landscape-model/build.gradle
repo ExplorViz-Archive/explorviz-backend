@@ -21,6 +21,9 @@ dependencies {
 	implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.9'
 }
 
+// disable integration tests, since there are none
+integrationTest.enabled = false
+
 pmd {
     ruleSets = []
     ruleSetFiles = files("../../conf/pmd.xml")
