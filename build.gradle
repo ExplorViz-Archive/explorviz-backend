@@ -14,6 +14,8 @@ def	projectVersion = 'v1.3.0'
 def projectURL= 'https://www.explorviz.net'
 def footerText = '<span>Copyright 2013 - 2019</span> by the <a href="https://www.explorviz.net" target="_blank">ExplorViz project</a>'
 
+
+
 // BEGIN aggregated Javadoc in multiproject Gradle build
 def exportedProjects= [
 		':landscape-service',
@@ -66,6 +68,7 @@ subprojects {
   apply plugin: 'pmd'
   apply plugin: 'checkstyle'
   apply plugin: 'com.adarshr.test-logger'
+  apply plugin: 'eclipse'
 	
   pmd {
     ruleSets = []
@@ -109,9 +112,19 @@ subprojects {
   configurations {
     intTestImplementation.extendsFrom implementation
     intTestRuntimeOnly.extendsFrom runtimeOnly
+    
+    intTestRuntimeOnly.setCanBeResolved(true)
+    intTestImplementation.setCanBeResolved(true)
   }
 
-
+  eclipse {
+    classpath {
+        plusConfigurations.add configurations.intTestRuntimeOnly
+        plusConfigurations.add configurations.intTestImplementation
+    }
+  }
+  
+  
 
 
   // END QA Tooling for subprojects
