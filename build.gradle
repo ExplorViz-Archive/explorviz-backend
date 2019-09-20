@@ -114,14 +114,12 @@ subprojects {
       excludeTags 'slow'
       includeEngines 'junit-jupiter'
     }
-    failFast = true
     description = 'Runs integration tests.'
     group = 'verification'
 
     testClassesDirs = sourceSets.integrationTest.output.classesDirs
     classpath = sourceSets.integrationTest.runtimeClasspath
-    mustRunAfter assemble
-  }  
+  }
   
   configurations {
     integrationTestImplementation.extendsFrom implementation
@@ -213,3 +211,6 @@ subprojects {
   }
 
 }
+
+task integrationTest
+integrationTest.dependsOn subprojects*.assemble
