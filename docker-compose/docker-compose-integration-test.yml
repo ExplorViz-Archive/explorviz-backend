@@ -12,7 +12,7 @@
 # properties file of each service, e.g,
 # https://github.com/ExplorViz/explorviz-backend/blob/dev-1/user-service/src/main/resources/explorviz.properties
 
-version: "3.5"
+version: "3.3"
 services:
 
   ### ExplorViz Services ###
@@ -219,4 +219,3 @@ services:
 networks:
   explorviz:
     driver: bridge
-    name: explorviz
