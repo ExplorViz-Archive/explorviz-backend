@@ -18,8 +18,8 @@ task integrationTest(type: Test) {
   description = 'Runs integration tests.'
   group = 'verification'
 
-  testClassesDirs = sourceSets.intTest.output.classesDirs
-  classpath = sourceSets.intTest.runtimeClasspath
+  testClassesDirs = sourceSets.integrationTest.output.classesDirs
+  classpath = sourceSets.integrationTest.runtimeClasspath
   mustRunAfter assemble
 }
 
@@ -33,9 +33,9 @@ task integrationTest(type: Test) {
 dockerCompose {
   runAll {
     buildBeforeUp = true
-    useComposeFiles = ['docker-compose-integration-test.yml']
+    useComposeFiles = ['docker-compose/docker-compose-integration-test.yml']
     startedServices = ['user-service', 'mongo-user', 'zookeeper', 'kafka', 'settings-service', 'mongo-user', 'mongo-settings']
-    isRequiredBy(this.tasks.getByName("integrationTest"))
+    isRequiredBy(this.tasks.getByName('integrationTest'))
     removeContainers = true
   }
 }
@@ -70,8 +70,8 @@ dependencies {
   }
 
 
-  intTestImplementation project(':user-service')    // For login
-  intTestImplementation 'io.rest-assured:rest-assured:4.0.0'
+  integrationTestImplementation project(':user-service')    // For login
+  integrationTestImplementation 'io.rest-assured:rest-assured:4.0.0'
 
 }
 

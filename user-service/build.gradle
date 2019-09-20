@@ -19,8 +19,8 @@ task integrationTest(type: Test) {
   description = 'Runs integration tests.'
   group = 'verification'
 
-  testClassesDirs = sourceSets.intTest.output.classesDirs
-  classpath = sourceSets.intTest.runtimeClasspath
+  testClassesDirs = sourceSets.integrationTest.output.classesDirs
+  classpath = sourceSets.integrationTest.runtimeClasspath
   mustRunAfter assemble
 }
 
@@ -34,9 +34,9 @@ task integrationTest(type: Test) {
 dockerCompose {
   runAll {
     buildBeforeUp = true
-    useComposeFiles = ['docker-compose-integration-test.yml']
+    useComposeFiles = ['docker-compose/docker-compose-integration-test.yml']
     startedServices = ['user-service', 'settings-service', 'zookeeper', 'kafka', 'mongo-user', 'mongo-settings']
-    isRequiredBy(this.tasks.getByName("integrationTest"))
+    isRequiredBy(this.tasks.getByName('integrationTest'))
     removeContainers = true
   }
 }
@@ -69,7 +69,7 @@ dependencies {
   compile group: 'io.swagger.core.v3', name: 'swagger-core', version: '2.0.8'
   compile group: 'io.swagger.core.v3', name: 'swagger-jaxrs2', version: '2.0.8'
 
-  intTestImplementation 'io.rest-assured:rest-assured:4.0.0'
+  integrationTestImplementation 'io.rest-assured:rest-assured:4.0.0'
   
 }
 

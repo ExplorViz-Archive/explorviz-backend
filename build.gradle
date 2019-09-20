@@ -103,24 +103,24 @@ subprojects {
 
 
   sourceSets {
-    intTest {
-      java.srcDir file('src/intTest/java')
+    integrationTest {
+      java.srcDir file('src/integrationTest/java')
       compileClasspath += sourceSets.main.output
       runtimeClasspath += sourceSets.main.output
     }
   }
   configurations {
-    intTestImplementation.extendsFrom implementation
-    intTestRuntimeOnly.extendsFrom runtimeOnly
+    integrationTestImplementation.extendsFrom implementation
+    integrationTestRuntimeOnly.extendsFrom runtimeOnly
     
-    intTestRuntimeOnly.setCanBeResolved(true)
-    intTestImplementation.setCanBeResolved(true)
+    integrationTestRuntimeOnly.setCanBeResolved(true)
+    integrationTestImplementation.setCanBeResolved(true)
   }
 
   eclipse {
     classpath {
-        plusConfigurations.add configurations.intTestRuntimeOnly
-        plusConfigurations.add configurations.intTestImplementation
+        plusConfigurations.add configurations.integrationTestRuntimeOnly
+        plusConfigurations.add configurations.integrationTestImplementation
     }
   }
   
@@ -186,8 +186,8 @@ subprojects {
 	testImplementation 'org.mockito:mockito-core:2.24.0'	
 	testImplementation group: 'org.mockito', name: 'mockito-junit-jupiter', version: '2.27.0'
 
-    intTestImplementation 'org.junit.jupiter:junit-jupiter-engine:5.4.0'
-    intTestImplementation 'org.junit.platform:junit-platform-runner:1.4.0'
+    integrationTestImplementation 'org.junit.jupiter:junit-jupiter-engine:5.4.0'
+    integrationTestImplementation 'org.junit.platform:junit-platform-runner:1.4.0'
   }
   
   test {
