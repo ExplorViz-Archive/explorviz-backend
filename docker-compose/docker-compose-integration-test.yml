@@ -18,7 +18,7 @@ services:
   ### ExplorViz Services ###
 
   user-service:
-    build: ./user-service
+    build: ../user-service
     container_name: explorviz-backend-user-service
     depends_on:
       - mongo-user
@@ -32,7 +32,7 @@ services:
       - 8082:8082
 
   settings-service:
-    build: ./settings-service
+    build: ../settings-service
     container_name: explorviz-backend-settings-service
     depends_on:
       - mongo-settings
@@ -48,7 +48,7 @@ services:
 
 
   landscape-service:
-    build: ./landscape-service
+    build: ../landscape-service
     container_name: explorviz-backend-landscape-service
     depends_on:
       - kafka
@@ -65,7 +65,7 @@ services:
 
 
   broadcast-service:
-    build: ./broadcast-service
+    build: ../broadcast-service
     container_name: explorviz-backend-broadcast-service
     depends_on:
       - kafka
@@ -80,7 +80,7 @@ services:
 
 
   history-service:
-    build: ./history-service
+    build: ../history-service
     container_name: explorviz-backend-history-service
     depends_on:
       - mongo-history
@@ -97,7 +97,7 @@ services:
 
 
   analysis-service:
-    build: ./analysis-service
+    build: ../analysis-service
     container_name: explorviz-backend-analysis-service
     ports:
       - "10133:10133"
@@ -106,7 +106,7 @@ services:
 
 
   discovery-service:
-    build: ./discovery-service
+    build: ../discovery-service
     container_name: explorviz-backend-discovery-service
     ports:
       - "8083:8083"
@@ -117,7 +117,7 @@ services:
 
 
   frontend:
-    image: explorviz-frontend:lotzk
+    image: explorviz/explorviz-frontend:dev
     container_name: explorviz-frontend
     ports:
       - "8090:80"
