@@ -31,7 +31,7 @@ import net.explorviz.settings.model.Setting;
 import net.explorviz.settings.services.SettingsRepository;
 import net.explorviz.shared.querying.Query;
 import net.explorviz.shared.querying.QueryResult;
-import net.explorviz.shared.security.model.roles.RoleNames;
+import net.explorviz.shared.security.model.roles.Role;
 
 /**
  * API for handling {@link Setting}s and their associated information.
@@ -109,7 +109,7 @@ public class SettingsInfoResource {
   @DELETE
   @Produces(MEDIA_TYPE)
   @Path("/{id}")
-  @RolesAllowed({RoleNames.ADMIN})
+  @RolesAllowed({Role.ADMIN})
   @Operation(summary = "Delete a setting")
   @ApiResponse(description = "Setting with given id does not exist (anymore)", responseCode = "204")
   public Response deleteById(
@@ -128,7 +128,7 @@ public class SettingsInfoResource {
    */
   @POST
   @Consumes(MEDIA_TYPE)
-  @RolesAllowed({RoleNames.ADMIN})
+  @RolesAllowed({Role.ADMIN})
   @Operation(summary = "Creat a new setting")
   @ApiResponse(description = "Setting created, response contains the created setting.",
       responseCode = "200", content = @Content(schema = @Schema(implementation = Setting.class)))

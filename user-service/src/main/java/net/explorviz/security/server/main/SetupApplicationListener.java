@@ -1,10 +1,8 @@
 package net.explorviz.security.server.main;
 
 import java.util.Arrays;
-import java.util.List;
 import javax.inject.Inject;
 import javax.servlet.annotation.WebListener;
-import net.explorviz.security.services.RoleService;
 import net.explorviz.security.services.UserService;
 import net.explorviz.security.services.exceptions.UserCrudException;
 import net.explorviz.security.util.PasswordStorage;
@@ -33,8 +31,6 @@ public class SetupApplicationListener implements ApplicationEventListener {
   @Inject
   private Datastore datastore;
 
-  @Inject
-  private RoleService roleService;
 
   @Inject
   private UserService userService;
@@ -67,19 +63,12 @@ public class SetupApplicationListener implements ApplicationEventListener {
 
   private void createDefaultData() throws CannotPerformOperationException {
 
-    final List<Role> roleList = this.roleService.getAllRoles();
-
-    for (final Role r : roleList) {
-      this.datastore.save(r);
-    }
-
-
     final String pw = PasswordStorage.createHash("password");
 
     if (this.datastore.getCount(User.class) == 0) {
       try {
         this.userService
-            .saveNewEntity(new User(null, ADMIN_NAME, pw, Arrays.asList(roleList.get(0))));
+            .saveNewEntity(new User(null, ADMIN_NAME, pw, Arrays.asList(Role.ADMIN)));
       } catch (final UserCrudException e) {
         if (LOGGER.isErrorEnabled()) {
           LOGGER.error("Default admin not created");

@@ -58,7 +58,7 @@ public abstract class EndpointTest extends JerseyTest {
 
   private void createDefaultData() {
     final User admin = new User("Admin");
-    admin.setRoles(Arrays.asList(new Role("admin")));
+    admin.setRoles(Arrays.asList(Role.ADMIN));
     final User normie = new User("Normie");
 
     this.adminToken = "Bearer " + this.tokenService.issueNewToken(admin);

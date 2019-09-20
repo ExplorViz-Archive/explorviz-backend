@@ -29,7 +29,7 @@ import net.explorviz.history.repository.persistence.ReplayRepository;
 import net.explorviz.history.repository.persistence.mongo.LandscapeSerializationHelper;
 import net.explorviz.history.util.ResourceHelper;
 import net.explorviz.landscape.model.landscape.Landscape;
-import net.explorviz.shared.security.model.roles.RoleNames;
+import net.explorviz.shared.security.model.roles.Role;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.slf4j.Logger;
@@ -40,7 +40,7 @@ import org.slf4j.LoggerFactory;
  * Resource providing persisted {@link Landscape} data for the frontend.
  */
 @Path("v1/landscapes")
-@RolesAllowed({RoleNames.ADMIN, RoleNames.USER})
+@RolesAllowed({Role.ADMIN, Role.USER})
 @Tag(name = "Landscapes")
 @SecurityScheme(type = SecuritySchemeType.HTTP, name = "token", scheme = "bearer",
     bearerFormat = "JWT")

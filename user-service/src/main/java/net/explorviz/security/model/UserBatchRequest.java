@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import net.explorviz.shared.security.model.User;
-import net.explorviz.shared.security.model.roles.Role;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 /**
@@ -28,7 +27,7 @@ public class UserBatchRequest {
 
   private final String prefix;
   private final int count;
-  private final List<Role> roles;
+  private final List<String> roles;
   private final List<String> passwords;
 
   private final Map<String, Object> preferences;
@@ -49,7 +48,7 @@ public class UserBatchRequest {
   public UserBatchRequest(@JsonProperty("prefix") final String prefix,
       @JsonProperty("count") final int count,
       @JsonProperty("password") final List<String> passwords,
-      @JsonProperty("roles") final List<Role> roles,
+      @JsonProperty("roles") final List<String> roles,
       @JsonProperty("preferences") final Map<String, Object> preferences) {
     this.prefix = prefix;
     this.count = count;
@@ -66,7 +65,7 @@ public class UserBatchRequest {
     return this.count;
   }
 
-  public List<Role> getRoles() {
+  public List<String> getRoles() {
     return this.roles;
   }
 

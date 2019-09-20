@@ -13,7 +13,6 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Response;
 import net.explorviz.security.server.main.DependencyInjectionBinder;
 import net.explorviz.security.server.resources.UserResource;
-import net.explorviz.security.services.RoleService;
 import net.explorviz.security.services.UserService;
 import net.explorviz.security.services.exceptions.UserCrudException;
 import net.explorviz.security.testutils.TestDatasourceFactory;
@@ -43,9 +42,6 @@ public class UserResourceEndpointTest extends EndpointTest {
   private UserService userCrudService;
 
   @Inject
-  private RoleService roleService;
-
-  @Inject
   private Datastore datastore;
 
 
@@ -54,11 +50,6 @@ public class UserResourceEndpointTest extends EndpointTest {
   public void setUp() throws Exception {
     super.setUp();
     this.datastore.getCollection(User.class).drop();
-    this.datastore.getCollection(Role.class).drop();
-
-    for (final Role r : this.roleService.getAllRoles()) {
-      this.datastore.save(r);
-    }
   }
 
 
@@ -95,7 +86,6 @@ public class UserResourceEndpointTest extends EndpointTest {
   @Override
   public void tearDown() throws Exception {
     this.datastore.getCollection(User.class).drop();
-    this.datastore.getCollection(Role.class).drop();
     super.tearDown();
   }
 
@@ -208,7 +198,7 @@ public class UserResourceEndpointTest extends EndpointTest {
     // Update the users properties
     createdUser.setPassword("newpw");
     createdUser.setUsername("newname");
-    createdUser.setRoles(Arrays.asList(this.roleService.getAllRoles().get(0)));
+    createdUser.setRoles(Role.ROLES);
 
     final byte[] body =
         this.getJsonApiConverter().writeDocument(new JSONAPIDocument<>(createdUser));
@@ -230,7 +220,7 @@ public class UserResourceEndpointTest extends EndpointTest {
     assertTrue(createdUser.getRoles()
         .stream()
         .anyMatch(
-            r -> r.getDescriptor().equals(this.roleService.getAllRoles().get(0).getDescriptor())));
+            r -> r.equals(Role.ROLES.get(0))));
   }
 
 
@@ -239,7 +229,7 @@ public class UserResourceEndpointTest extends EndpointTest {
   public void findById() throws DocumentSerializationException, UserCrudException {
 
     final User u =
-        new User(null, "name", "pw", Arrays.asList(this.roleService.getAllRoles().get(0)));
+        new User(null, "name", "pw", Arrays.asList(Role.ROLES.get(0)));
 
     this.userCrudService.saveNewEntity(u);
 
@@ -258,7 +248,7 @@ public class UserResourceEndpointTest extends EndpointTest {
     assertTrue(foundUser.getRoles()
         .stream()
         .anyMatch(
-            r -> r.getDescriptor().equals(this.roleService.getAllRoles().get(0).getDescriptor())));
+            r -> r.equals(Role.ROLES.get(0))));
 
   }
 
@@ -270,9 +260,9 @@ public class UserResourceEndpointTest extends EndpointTest {
     this.datastore.getCollection(User.class).drop();
 
     final User u1 =
-        new User("1", "user1", "pw", Arrays.asList(this.roleService.getAllRoles().get(0)));
+        new User("1", "user1", "pw", Arrays.asList(Role.ROLES.get(0)));
     final User u2 =
-        new User("2", "user2", "pw", Arrays.asList(this.roleService.getAllRoles().get(0)));
+        new User("2", "user2", "pw", Arrays.asList(Role.ROLES.get(0)));
     final User u3 = new User("3", "user3", "pw", null);
 
     this.userCrudService.saveNewEntity(u1);
@@ -297,8 +287,8 @@ public class UserResourceEndpointTest extends EndpointTest {
     // Somehow the admin user is created after the setup method dropped the table
     this.datastore.getCollection(User.class).drop();
 
-    final User u1 = new User("1", "user1", "pw", this.roleService.getAllRoles());
-    final User u2 = new User("2", "user2", "pw", Arrays.asList(new Role(ADMIN)));
+    final User u1 = new User("1", "user1", "pw", Role.ROLES);
+    final User u2 = new User("2", "user2", "pw", Arrays.asList(Role.ADMIN));
     final User u3 = new User("3", "user3", "pw", null);
 
     this.userCrudService.saveNewEntity(u1);
@@ -328,9 +318,9 @@ public class UserResourceEndpointTest extends EndpointTest {
     final String batchId = "1";
 
     final User u1 =
-        new User("1", "user1", "pw", Arrays.asList(this.roleService.getAllRoles().get(0)), batchId);
+        new User("1", "user1", "pw", Arrays.asList(Role.ROLES.get(0)), batchId);
     final User u2 =
-        new User("2", "user2", "pw", Arrays.asList(this.roleService.getAllRoles().get(0)), batchId);
+        new User("2", "user2", "pw", Arrays.asList(Role.ROLES.get(0)), batchId);
     final User u3 = new User("3", "user3", "pw", null);
 
     this.userCrudService.saveNewEntity(u1);
@@ -372,7 +362,7 @@ public class UserResourceEndpointTest extends EndpointTest {
 
   @Test
   public void removeLastAdmin() throws UserCrudException {
-    final User u = new User(null, ADMIN, "pw", Arrays.asList(new Role(ADMIN)));
+    final User u = new User(null, ADMIN, "pw", Arrays.asList(Role.ADMIN));
     this.userCrudService.saveNewEntity(u);
     final Response deleteResponse = this.target("v1/users/" + u.getId())
         .request()

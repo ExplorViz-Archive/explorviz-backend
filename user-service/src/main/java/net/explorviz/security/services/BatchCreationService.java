@@ -29,7 +29,6 @@ import net.explorviz.shared.common.jsonapi.ResourceConverterFactory;
 import net.explorviz.shared.common.provider.JsonApiProvider;
 import net.explorviz.shared.config.annotations.Config;
 import net.explorviz.shared.security.model.User;
-import net.explorviz.shared.security.model.roles.Role;
 import org.eclipse.jetty.http.HttpStatus;
 import org.jvnet.hk2.annotations.Service;
 import org.slf4j.Logger;
@@ -258,7 +257,7 @@ public class BatchCreationService {
   }
 
   private User newUser(final String pref, final int num, final String password,
-      final List<Role> roles, final String batchId) throws CannotPerformOperationException {
+      final List<String> roles, final String batchId) throws CannotPerformOperationException {
     final StringBuilder sb = new StringBuilder();
     final String name = sb.append(pref).append('-').append(num).toString();
 
