@@ -20,7 +20,7 @@ jobs:
       script: ./gradlew clean test
 
     - stage: test
-      name: "Unit Testing"
+      name: "Unit Testing: oraclejdk8"
       jdk: oraclejdk8
       script: ./gradlew clean test
 
