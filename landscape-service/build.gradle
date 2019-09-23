@@ -49,8 +49,6 @@ dependencies {
 
   implementation project(':landscape-service:landscape-model')
   implementation group: 'com.github.jasminb', name: 'jsonapi-converter', version:'0.8'
-
-  integrationTestImplementation 'io.rest-assured:rest-assured:4.0.0'
 }
 
 assemble.dependsOn shadowJar

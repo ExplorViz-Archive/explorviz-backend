@@ -13,6 +13,17 @@ repositories {
   maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
 }
 
+dockerCompose {
+  historyIntegrationTests {
+    buildBeforeUp = true
+    useComposeFiles = ['docker-compose/docker-compose-integration-test.yml']
+    startedServices = ['mongo-history']
+    isRequiredBy(this.tasks.getByName('integrationTest'))
+    removeContainers = true
+  }
+}
+
+
 dependencies {
 
 	// Swagger
@@ -22,7 +33,6 @@ dependencies {
 
   // ExplorViz Shared Dependencies
   if(useRemoteSharedProject.toBoolean()) {
-    implementation "com.github.explorviz.explorviz-backend-shared:landscape-model:${sharedProjectVersion}"
     implementation "com.github.explorviz.explorviz-backend-shared:config-injection:${sharedProjectVersion}"
     implementation "com.github.explorviz.explorviz-backend-shared:security:${sharedProjectVersion}"
     implementation "com.github.explorviz.explorviz-backend-shared:exception-handling:${sharedProjectVersion}"
@@ -44,9 +54,6 @@ dependencies {
   	 
   	implementation group: 'org.apache.kafka', name: 'kafka_2.12', version: '2.2.0'
 }
-
-// disable integration tests, since there are none
-integrationTest.enabled = false
 
 assemble.dependsOn shadowJar
 jar.enabled = false
