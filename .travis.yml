@@ -2,7 +2,6 @@ language: java
 
 services:
   - docker
-  - redis-server
 
 jobs:
   fast_finish: true
