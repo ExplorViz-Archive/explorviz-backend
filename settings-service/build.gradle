@@ -10,10 +10,10 @@ configurations.all {
 }
 
 dockerCompose {
-  runAll {
+  settingsIntegrationTests {
     buildBeforeUp = true
     useComposeFiles = ['docker-compose/docker-compose-integration-test.yml']
-    startedServices = ['user-service', 'mongo-user', 'zookeeper', 'kafka', 'settings-service', 'mongo-user', 'mongo-settings']
+    startedServices = ['settings-service', 'user-service', 'mongo-settings', 'mongo-user', 'zookeeper', 'kafka']
     isRequiredBy(this.tasks.getByName('integrationTest'))
     removeContainers = true
   }

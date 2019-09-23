@@ -10,10 +10,10 @@ configurations.all {
 }
 
 dockerCompose {
-  runAll {
+  userIntegrationTests {
     buildBeforeUp = true
     useComposeFiles = ['docker-compose/docker-compose-integration-test.yml']
-    startedServices = ['user-service', 'settings-service', 'zookeeper', 'kafka', 'mongo-user', 'mongo-settings']
+    startedServices = ['user-service', 'settings-service', 'mongo-user', 'mongo-settings', 'zookeeper', 'kafka']
     isRequiredBy(this.tasks.getByName('integrationTest'))
     removeContainers = true
   }
@@ -44,8 +44,8 @@ dependencies {
     	implementation project(':query')
   }
   
-  compile group: 'io.swagger.core.v3', name: 'swagger-core', version: '2.0.8'
-  compile group: 'io.swagger.core.v3', name: 'swagger-jaxrs2', version: '2.0.8'
+  implementation group: 'io.swagger.core.v3', name: 'swagger-core', version: '2.0.8'
+  implementation group: 'io.swagger.core.v3', name: 'swagger-jaxrs2', version: '2.0.8'
 
   integrationTestImplementation 'io.rest-assured:rest-assured:4.0.0'
   

@@ -12,6 +12,9 @@
 # properties file of each service, e.g,
 # https://github.com/ExplorViz/explorviz-backend/blob/dev-1/user-service/src/main/resources/explorviz.properties
 
+# ATTENTION: DO NOT USE depends_on, since the Gradle Docker Plugin will not 
+# remove these containers.
+
 version: "3.3"
 services:
 
@@ -20,9 +23,6 @@ services:
   user-service:
     build: ../user-service
     container_name: explorviz-backend-user-service
-    depends_on:
-      - mongo-user
-      - kafka
     environment:
       - MONGO_HOST=mongo-user
       - EXCHANGE_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
@@ -34,9 +34,6 @@ services:
   settings-service:
     build: ../settings-service
     container_name: explorviz-backend-settings-service
-    depends_on:
-      - mongo-settings
-      - kafka
     environment:
       - MONGO_HOST=mongo-settings
       - EXCHANGE_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
@@ -50,8 +47,6 @@ services:
   landscape-service:
     build: ../landscape-service
     container_name: explorviz-backend-landscape-service
-    depends_on:
-      - kafka
     environment:
       - EXCHANGE_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
       - EXCHANGE_KAFKA_TOPIC_NAME=landscape-update
@@ -67,8 +62,6 @@ services:
   broadcast-service:
     build: ../broadcast-service
     container_name: explorviz-backend-broadcast-service
-    depends_on:
-      - kafka
     environment:
       - EXCHANGE_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
       - EXCHANGE_KAFKA_TOPIC_NAME=landscape-update
@@ -82,9 +75,6 @@ services:
   history-service:
     build: ../history-service
     container_name: explorviz-backend-history-service
-    depends_on:
-      - mongo-history
-      - kafka
     environment:
       - MONGO_HOST=mongo-history
       - EXCHANGE_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
@@ -110,8 +100,6 @@ services:
     container_name: explorviz-backend-discovery-service
     ports:
       - "8083:8083"
-    depends_on:
-      - id-generator
     networks:
       - explorviz
 
@@ -123,12 +111,6 @@ services:
       - "8090:80"
     environment:
       - API_ROOT=http://localhost:8090
-    depends_on:
-      - discovery-service
-      - landscape-service
-      - analysis-service
-      - user-service
-      - history-service
     networks:
       - explorviz
 
@@ -146,8 +128,6 @@ services:
   kafka:
     container_name: explorviz-kafka
     image: wurstmeister/kafka
-    depends_on:
-      - zookeeper
     expose:
       - "9092"
     environment:
@@ -160,8 +140,8 @@ services:
     image: redis
     container_name: explorviz-id-generator
     command: ["redis-server", "--appendonly", "yes"]
-    expose:
-      - "6379"
+    ports:
+      - "6379:6379"
     #volumes:
     #  - explorviz-id-generator-test-data:/data
     networks:
