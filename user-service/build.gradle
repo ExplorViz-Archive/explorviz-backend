@@ -2,6 +2,7 @@ plugins {
 	id "application"
 	id "com.github.johnrengelman.shadow" version "5.1.0"
 	id "com.github.spotbugs" version "1.6.10"
+	id "maven"
 }
 
 // Force new Dependencies 
@@ -56,8 +57,18 @@ application {
 }
 
 shadowJar {
-  archiveName = "explorviz-${project.name}.${extension}"
+  baseName = "explorviz-${project.name}"
+  classifier = null
+  version = null
 }
+
+// BEGIN Jitpack publishing
+artifacts {
+  archives shadowJar
+}
+
+archivesBaseName = shadowJar.baseName
+// END Jitpack publishing
 
 spotbugs {
   excludeFilter = file("../conf/spotbugs-exclude-filter.xml")
@@ -83,10 +94,6 @@ task spotbugs {
   
   dependsOn 'spotbugsMain'
   dependsOn 'spotbugsTest'
-}
-
-artifacts {
-  archives shadowJar
 }
 
 // START environment task

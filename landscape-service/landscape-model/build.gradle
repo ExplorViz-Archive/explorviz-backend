@@ -21,6 +21,10 @@ dependencies {
 	implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.9'
 }
 
+jar {
+	baseName = "explorviz-${project.name}"
+}
+
 pmd {
     ruleSets = []
     ruleSetFiles = files("../../conf/pmd.xml")

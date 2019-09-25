@@ -1,6 +1,6 @@
 plugins {
-	id 'eclipse'
-	id 'maven'
+	id "eclipse"
+	id "maven"
 	id "com.github.spotbugs" version "1.6.10"
 }
 
@@ -32,7 +32,7 @@ artifacts {
 }
 
 jar {
-	baseName = project.name
+	baseName = "explorviz-${project.name}"
 }
 
 install {
