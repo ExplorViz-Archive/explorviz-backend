@@ -59,7 +59,6 @@ application {
 shadowJar {
   baseName = "explorviz-${project.name}"
   classifier = null
-  version = null
 }
 
 // BEGIN Jitpack publishing
