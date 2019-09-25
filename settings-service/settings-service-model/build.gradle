@@ -1,6 +1,7 @@
 plugins {
 	id "java-library"
 	id "com.github.spotbugs"
+	id "maven"
 }
 
 // Force new Dependencies 
@@ -24,6 +25,14 @@ dependencies {
 jar {
 	baseName = "explorviz-${project.name}"
 }
+
+// BEGIN Jitpack publishing
+artifacts {
+  archives jar
+}
+
+archivesBaseName = jar.baseName
+// END Jitpack publishing
 
 pmd {
     ruleSets = []
