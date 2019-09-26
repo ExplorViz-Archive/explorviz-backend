@@ -19,7 +19,7 @@ dependencies {
   	implementation group: 'io.swagger.core.v3', name: 'swagger-core', version: '2.0.8'
   	implementation group: 'io.swagger.core.v3', name: 'swagger-jaxrs2', version: '2.0.8' 
 	
-	implementation project(':settings-service:settings-service-model')
+	implementation project(':settings-service:settings-model')
 	
 	// ExplorViz Shared Dependencies
 	if(useRemoteSharedProject.toBoolean()) {

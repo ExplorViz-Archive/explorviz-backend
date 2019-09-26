@@ -14,7 +14,7 @@ dependencies {
 	
 	implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.9'
 	
-	implementation project(':settings-service:settings-service-model')
+	implementation project(':settings-service:settings-model')
 	
 	// ExplorViz Shared Dependencies
 	if(useRemoteSharedProject.toBoolean()) {
