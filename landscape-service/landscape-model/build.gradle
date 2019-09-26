@@ -45,7 +45,7 @@ uploadArchives {
 				authentication(userName: user, password: pw)
 			}
 			pom.version = "dev-1-SNAPSHOT"
-			pom.artifactId = "settings-model"
+			pom.artifactId = project.name
 			pom.groupId = "net.explorviz"
 		}
     }
