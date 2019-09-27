@@ -27,7 +27,6 @@ import net.explorviz.security.util.PasswordStorage.InvalidHashException;
 import net.explorviz.shared.querying.Query;
 import net.explorviz.shared.querying.QueryResult;
 import net.explorviz.shared.security.model.User;
-import net.explorviz.shared.security.model.roles.Role;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -61,7 +60,7 @@ public class UserResourceTest {
 
   private final Map<String, User> users = new HashMap<>();
 
-  private final List<Role> roles = new ArrayList<>();
+  private final List<String> roles = new ArrayList<>();
 
   private Long lastId = 0L;
 
@@ -97,7 +96,7 @@ public class UserResourceTest {
         final String role = query.getFilters().get("role").get(0);
         data = this.users.values()
             .stream()
-            .filter(u -> u.getRoles().stream().anyMatch(r -> r.getDescriptor().equals(role)))
+            .filter(u -> u.getRoles().stream().anyMatch(r -> r.equals(role)))
             .collect(Collectors.toList());
       }
       return new QueryResult<>(inv.getArgument(0), data, data.size());
@@ -174,7 +173,7 @@ public class UserResourceTest {
 
   @Test
   public void testInvalidRoles() {
-    final User u = new User(null, "name", "pw", Arrays.asList(new Role("Unknown")));
+    final User u = new User(null, "name", "pw", Arrays.asList("Unknown"));
     assertThrows(BadRequestException.class, () -> this.userResource.newUser(u));
   }
 
@@ -183,17 +182,17 @@ public class UserResourceTest {
   @Test
   public void testUserByRole() {
 
-    this.roles.add(new Role("role1"));
-    this.roles.add(new Role("role2"));
-    this.roles.add(new Role("role3"));
+    this.roles.add("role1");
+    this.roles.add("role2");
+    this.roles.add("role3");
 
     final User u1 = new User("testuser");
     u1.setPassword("password");
-    u1.setRoles(Arrays.asList(new Role("role1"), new Role("role2")));
+    u1.setRoles(Arrays.asList("role1", "role2"));
 
     final User u2 = new User("testuser2");
     u2.setPassword("password");
-    u2.setRoles(Arrays.asList(new Role("role1")));
+    u2.setRoles(Arrays.asList("role1"));
 
     this.userResource.newUser(u1);
     this.userResource.newUser(u2);
@@ -267,11 +266,11 @@ public class UserResourceTest {
 
     final String uid = newUser.getId();
 
-    final User update = new User(null, null, null, Arrays.asList(new Role("newrole")));
-    this.roles.add(new Role("newrole"));
+    final User update = new User(null, null, null, Arrays.asList("newrole"));
+    this.roles.add("newrole");
     final User updatedUser = this.userResource.updateUser(uid, update);
 
-    assertTrue(updatedUser.getRoles().stream().anyMatch(r -> r.getDescriptor().equals("newrole")));
+    assertTrue(updatedUser.getRoles().stream().anyMatch(r -> r.equals("newrole")));
     assertEquals(newUser.getId(), updatedUser.getId());
     assertEquals(u1.getUsername(), updatedUser.getUsername());
     assertEquals(u1.getPassword(), updatedUser.getPassword());
