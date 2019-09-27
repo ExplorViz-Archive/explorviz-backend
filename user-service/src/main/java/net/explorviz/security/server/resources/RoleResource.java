@@ -37,7 +37,7 @@ public class RoleResource {
   @Operation(description = "Returns a list of all available roles")
   @ApiResponse(responseCode = "200", description = "List of all roles currently available.",
       content = @Content(array = @ArraySchema(schema = @Schema(implementation = Role.class))))
-  public List<Role> getAllRoles() {
+  public List<String> getAllRoles() {
     return this.roleService.getAllRoles();
   }
 

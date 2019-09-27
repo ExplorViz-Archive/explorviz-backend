@@ -1,16 +1,17 @@
 package net.explorviz.security.server.resources.test;
 
+import static io.restassured.RestAssured.given;
 import io.restassured.http.Header;
+import java.io.IOException;
+import java.util.Optional;
 import net.explorviz.security.server.resources.test.helper.AuthorizationHelper;
 import net.explorviz.security.server.resources.test.helper.UsersHelper;
 import net.explorviz.shared.security.model.User;
-import net.explorviz.shared.security.model.roles.Role;
-import org.junit.jupiter.api.*;
-
-import java.io.IOException;
-import java.util.Optional;
-
-import static io.restassured.RestAssured.given;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 public class UserDeletion {
 
@@ -23,54 +24,53 @@ public class UserDeletion {
   private Header authHeaderAdmin;
   private Header authHeaderNormie;
 
-  @BeforeAll static void setUpAll() throws IOException {
+  @BeforeAll
+  static void setUpAll() throws IOException {
     adminToken = AuthorizationHelper.getAdminToken();
     normieToken = AuthorizationHelper.getNormieToken();
   }
 
-  @BeforeEach void setUp() {
+  @BeforeEach
+  void setUp() {
     this.authHeaderAdmin = new Header("authorization", "Bearer " + adminToken);
     this.authHeaderNormie = new Header("authorization", "Bearer " + normieToken);
   }
 
 
   @Test
-  @DisplayName("Delete a User") void deleteUser() {
-    Optional<User> deleteMe
-        = UsersHelper.getInstance().createUser("deleteme", "pw", null);
+  @DisplayName("Delete a User")
+  void deleteUser() {
+    final Optional<User> deleteMe = UsersHelper.getInstance().createUser("deleteme", "pw", null);
 
     if (!deleteMe.isPresent()) {
       Assertions.fail();
     }
 
-    given()
-        .header(authHeaderAdmin)
+    given().header(this.authHeaderAdmin)
         .when()
-        .delete(BASE_URI+"users/"+deleteMe.get().getId())
+        .delete(BASE_URI + "users/" + deleteMe.get().getId())
         .then()
         .statusCode(204);
 
-    given()
-        .header(authHeaderAdmin)
+    given().header(this.authHeaderAdmin)
         .when()
-        .get(BASE_URI+deleteMe.get().getId())
+        .get(BASE_URI + deleteMe.get().getId())
         .then()
         .statusCode(404);
   }
 
   @Test
-  @DisplayName("Delete a User without privileges") void deleteUserAsNormie() {
-    Optional<User> deleteMe
-        = UsersHelper.getInstance().createUser("deleteme", "pw", null);
+  @DisplayName("Delete a User without privileges")
+  void deleteUserAsNormie() {
+    final Optional<User> deleteMe = UsersHelper.getInstance().createUser("deleteme", "pw", null);
 
     if (!deleteMe.isPresent()) {
       Assertions.fail();
     }
 
-    given()
-        .header(authHeaderNormie)
+    given().header(this.authHeaderNormie)
         .when()
-        .delete(BASE_URI+"users/"+deleteMe.get().getId())
+        .delete(BASE_URI + "users/" + deleteMe.get().getId())
         .then()
         .statusCode(403);
 
@@ -78,21 +78,23 @@ public class UserDeletion {
   }
 
   @Test
-  @DisplayName("Delete last admin") void deleteLastAdmin() {
+  @DisplayName("Delete last admin")
+  void deleteLastAdmin() {
 
     // Check if there are other admins next to the default admin, and delete them
-    UsersHelper.getInstance().getAll().stream()
-        .filter(u -> u.getRoles().equals(new Role("admin")))
+    UsersHelper.getInstance()
+        .getAll()
+        .stream()
+        .filter(u -> u.getRoles().equals("admin"))
         .filter(u -> !u.getUsername().contentEquals("admin"))
         .map(User::getId)
         .forEach(i -> UsersHelper.getInstance().deleteUserById(i));
 
-    String id = AuthorizationHelper.getAdmin().getId();
+    final String id = AuthorizationHelper.getAdmin().getId();
 
-    given()
-        .header(authHeaderAdmin)
+    given().header(this.authHeaderAdmin)
         .when()
-        .delete(BASE_URI+"users/"+id)
+        .delete(BASE_URI + "users/" + id)
         .then()
         .statusCode(400);
 

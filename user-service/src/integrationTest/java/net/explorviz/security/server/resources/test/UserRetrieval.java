@@ -1,23 +1,27 @@
 package net.explorviz.security.server.resources.test;
 
+import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.hasKey;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import io.restassured.http.Header;
-import net.explorviz.security.server.resources.test.helper.AuthorizationHelper;
-import net.explorviz.security.server.resources.test.helper.JsonAPIListMapper;
-import net.explorviz.security.server.resources.test.helper.UsersHelper;
-import net.explorviz.security.services.exceptions.UserCrudException;
-import net.explorviz.shared.security.model.User;
-import net.explorviz.shared.security.model.roles.Role;
-import org.junit.jupiter.api.*;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static io.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.*;
+import net.explorviz.security.server.resources.test.helper.AuthorizationHelper;
+import net.explorviz.security.server.resources.test.helper.JsonAPIListMapper;
+import net.explorviz.security.server.resources.test.helper.UsersHelper;
+import net.explorviz.security.services.exceptions.UserCrudException;
+import net.explorviz.shared.security.model.User;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 public class UserRetrieval {
 
@@ -32,28 +36,31 @@ public class UserRetrieval {
   private Header authHeaderNormie;
 
 
-  @BeforeAll static void setUpAll() throws IOException {
+  @BeforeAll
+  static void setUpAll() throws IOException {
     adminToken = AuthorizationHelper.getAdminToken();
     normieToken = AuthorizationHelper.getNormieToken();
   }
 
 
-  @BeforeEach void setUp() {
+  @BeforeEach
+  void setUp() {
     this.authHeaderAdmin = new Header("authorization", "Bearer " + adminToken);
     this.authHeaderNormie = new Header("authorization", "Bearer " + normieToken);
   }
 
-  private List<User> createUsers(int count, String prefix, String password, List<Role> roles) {
-    List<User> users = new ArrayList<>();
-    for (int i=0; i<count; i++) {
-      Optional<User> created = UsersHelper.getInstance()
-          .createUser(prefix+i, password, roles);
+  private List<User> createUsers(final int count, final String prefix, final String password,
+      final List<String> roles) {
+    final List<User> users = new ArrayList<>();
+    for (int i = 0; i < count; i++) {
+      final Optional<User> created =
+          UsersHelper.getInstance().createUser(prefix + i, password, roles);
       created.ifPresent(users::add);
     }
     return users;
   }
 
-  private void deleteUsers(List<User> users) {
+  private void deleteUsers(final List<User> users) {
     users.forEach(u -> UsersHelper.getInstance().deleteUserById(u.getId()));
   }
 
@@ -66,29 +73,27 @@ public class UserRetrieval {
   @Test
   @DisplayName("Get all users in the database")
   public void getAllAsAdmin() throws UserCrudException {
-    List<User> created = createUsers(5, "test", "pw", null);
+    final List<User> created = this.createUsers(5, "test", "pw", null);
     // All users must be >= 1
-    given()
-        .contentType(MEDIA_TYPE)
-        .header(authHeaderAdmin)
+    given().contentType(MEDIA_TYPE)
+        .header(this.authHeaderAdmin)
         .when()
-        .get(BASE_URI+"users")
+        .get(BASE_URI + "users")
         .then()
         .statusCode(200)
         .body("$", hasKey("data"))
         .body("data.size()", greaterThan(5));
-    deleteUsers(created);
+    this.deleteUsers(created);
   }
 
   @Test
   @DisplayName("Get all users in the database as normie")
-  public void getAllAsNormie()  {
+  public void getAllAsNormie() {
     // Should return 403 status code
-    given()
-        .contentType(MEDIA_TYPE)
-        .header(authHeaderNormie)
+    given().contentType(MEDIA_TYPE)
+        .header(this.authHeaderNormie)
         .when()
-        .get(BASE_URI+"users")
+        .get(BASE_URI + "users")
         .then()
         .statusCode(403);
   }
@@ -97,12 +102,11 @@ public class UserRetrieval {
   @Test
   @DisplayName("Get user by id as admin")
   public void getSelfAsAdmin() {
-    String id = AuthorizationHelper.getAdmin().getId();
-    given()
-        .contentType(MEDIA_TYPE)
-        .header(authHeaderAdmin)
+    final String id = AuthorizationHelper.getAdmin().getId();
+    given().contentType(MEDIA_TYPE)
+        .header(this.authHeaderAdmin)
         .when()
-        .get(BASE_URI+"users/"+id)
+        .get(BASE_URI + "users/" + id)
         .then()
         .statusCode(200)
         .body("$", hasKey("data"))
@@ -112,12 +116,11 @@ public class UserRetrieval {
   @Test
   @DisplayName("Get user by id as normie")
   public void getUserAsNormie() {
-    String id = AuthorizationHelper.getNormie().getId();
-    given()
-        .contentType(MEDIA_TYPE)
-        .header(authHeaderNormie)
+    final String id = AuthorizationHelper.getNormie().getId();
+    given().contentType(MEDIA_TYPE)
+        .header(this.authHeaderNormie)
         .when()
-        .get(BASE_URI+"users/"+id)
+        .get(BASE_URI + "users/" + id)
         .then()
         .statusCode(403);
   }
@@ -125,16 +128,14 @@ public class UserRetrieval {
   @Test
   @DisplayName("Pagination: First Page")
   public void paginationFirstPage() {
-    List<User> users = createUsers(5, "test", "pw", null);
-    int size = 2;
-    int num = 0;
-    given()
-        .contentType(MEDIA_TYPE)
-        .header(authHeaderAdmin)
-        .params("page[size]", size,
-            "page[number]", num)
+    final List<User> users = this.createUsers(5, "test", "pw", null);
+    final int size = 2;
+    final int num = 0;
+    given().contentType(MEDIA_TYPE)
+        .header(this.authHeaderAdmin)
+        .params("page[size]", size, "page[number]", num)
         .when()
-        .get(BASE_URI+"users/")
+        .get(BASE_URI + "users/")
         .then()
         .statusCode(200)
         .body("data.size()", is(size))
@@ -142,22 +143,20 @@ public class UserRetrieval {
         .body("links", hasKey("next"))
         .body("links", hasKey("last"))
         .body("links", not(hasKey("prev")));
-    deleteUsers(users);
+    this.deleteUsers(users);
   }
 
   @Test
   @DisplayName("Pagination: Last Page")
   public void paginationLastPage() {
-    List<User> users = createUsers(5, "test", "pw", null);
-    int size = 1;
-    int num = UsersHelper.getInstance().count()-1;
-    given()
-        .contentType(MEDIA_TYPE)
-        .header(authHeaderAdmin)
-        .params("page[size]", size,
-            "page[number]", num)
+    final List<User> users = this.createUsers(5, "test", "pw", null);
+    final int size = 1;
+    final int num = UsersHelper.getInstance().count() - 1;
+    given().contentType(MEDIA_TYPE)
+        .header(this.authHeaderAdmin)
+        .params("page[size]", size, "page[number]", num)
         .when()
-        .get(BASE_URI+"users/")
+        .get(BASE_URI + "users/")
         .then()
         .statusCode(200)
         .body("data.size()", is(size))
@@ -165,22 +164,20 @@ public class UserRetrieval {
         .body("links", hasKey("prev"))
         .body("links", hasKey("last"))
         .body("links", not(hasKey("next")));
-    deleteUsers(users);
+    this.deleteUsers(users);
   }
 
   @Test
   @DisplayName("Pagination: Empty Page")
   public void paginationEmptyPage() {
-    List<User> users = createUsers(5, "test", "pw", null);
-    int size = 1;
-    int num = UsersHelper.getInstance().count();
-    given()
-        .contentType(MEDIA_TYPE)
-        .header(authHeaderAdmin)
-        .params("page[size]", size,
-            "page[number]", num)
+    final List<User> users = this.createUsers(5, "test", "pw", null);
+    final int size = 1;
+    final int num = UsersHelper.getInstance().count();
+    given().contentType(MEDIA_TYPE)
+        .header(this.authHeaderAdmin)
+        .params("page[size]", size, "page[number]", num)
         .when()
-        .get(BASE_URI+"users/")
+        .get(BASE_URI + "users/")
         .then()
         .statusCode(200)
         .body("data.size()", is(0))
@@ -188,22 +185,20 @@ public class UserRetrieval {
         .body("links", hasKey("prev"))
         .body("links", hasKey("last"))
         .body("links", not(hasKey("next")));
-    deleteUsers(users);
+    this.deleteUsers(users);
   }
 
   @Test
   @DisplayName("Pagination: Middle Page")
   public void paginationMiddlePage() {
-    List<User> users = createUsers(5, "test", "pw", null);
-    int size = 1;
-    int num = UsersHelper.getInstance().count()/2;
-    given()
-        .contentType(MEDIA_TYPE)
-        .header(authHeaderAdmin)
-        .params("page[size]", size,
-            "page[number]", num)
+    final List<User> users = this.createUsers(5, "test", "pw", null);
+    final int size = 1;
+    final int num = UsersHelper.getInstance().count() / 2;
+    given().contentType(MEDIA_TYPE)
+        .header(this.authHeaderAdmin)
+        .params("page[size]", size, "page[number]", num)
         .when()
-        .get(BASE_URI+"users/")
+        .get(BASE_URI + "users/")
         .then()
         .statusCode(200)
         .body("data.size()", is(size))
@@ -211,7 +206,7 @@ public class UserRetrieval {
         .body("links", hasKey("prev"))
         .body("links", hasKey("last"))
         .body("links", hasKey("next"));
-    deleteUsers(users);
+    this.deleteUsers(users);
   }
 
 
@@ -219,26 +214,27 @@ public class UserRetrieval {
   @DisplayName("Filter by Role")
   @SuppressWarnings("unchecked")
   public void FilterByRole() {
-    String adminRole = "admin";
-    List<Role> roles = new ArrayList<>(Arrays.asList(new Role(adminRole)));
-    List<User> users = createUsers(5, "test", "pw", roles);
+    final String adminRole = "admin";
+    final List<String> roles = new ArrayList<>(Arrays.asList(adminRole));
+    final List<User> users = this.createUsers(5, "test", "pw", roles);
 
-    List<User> returned = given()
-        .contentType(MEDIA_TYPE)
-        .header(authHeaderAdmin)
+    final List<User> returned = given().contentType(MEDIA_TYPE)
+        .header(this.authHeaderAdmin)
         .params("filter[roles]", adminRole)
         .when()
-        .get(BASE_URI+"users/")
+        .get(BASE_URI + "users/")
         .then()
         .statusCode(200)
         .body("data.size()", greaterThan(5))
-        .extract().body().as(List.class, new JsonAPIListMapper<User>(User.class));
+        .extract()
+        .body()
+        .as(List.class, new JsonAPIListMapper<>(User.class));
 
 
-    returned.forEach(u -> assertTrue(
-        u.getRoles().stream().anyMatch(r -> r.getDescriptor().contentEquals(adminRole))));
+    returned
+        .forEach(u -> assertTrue(u.getRoles().stream().anyMatch(r -> r.contentEquals(adminRole))));
 
-    deleteUsers(users);
+    this.deleteUsers(users);
   }
 
 
@@ -246,27 +242,26 @@ public class UserRetrieval {
   @DisplayName("Filter by Role and Paginate")
   @SuppressWarnings("unchecked")
   public void FilterByRoleAndPaginate() {
-    String adminRole = "admin";
-    List<Role> roles = new ArrayList<>(Arrays.asList(new Role(adminRole)));
-    List<User> users = createUsers(5, "test", "pw", roles);
-    int size = 1;
-    int num = UsersHelper.getInstance().count()/2;
-    List<User> returned = given()
-        .contentType(MEDIA_TYPE)
-        .header(authHeaderAdmin)
-        .params("filter[roles]", adminRole,
-            "page[size]", size,
-            "page[number]", num)
+    final String adminRole = "admin";
+    final List<String> roles = new ArrayList<>(Arrays.asList(adminRole));
+    final List<User> users = this.createUsers(5, "test", "pw", roles);
+    final int size = 1;
+    final int num = UsersHelper.getInstance().count() / 2;
+    final List<User> returned = given().contentType(MEDIA_TYPE)
+        .header(this.authHeaderAdmin)
+        .params("filter[roles]", adminRole, "page[size]", size, "page[number]", num)
         .when()
-        .get(BASE_URI+"users/")
+        .get(BASE_URI + "users/")
         .then()
         .statusCode(200)
         .body("data.size()", is(size))
-        .extract().body().as(List.class, new JsonAPIListMapper<User>(User.class));
+        .extract()
+        .body()
+        .as(List.class, new JsonAPIListMapper<>(User.class));
 
-    returned.forEach(u -> assertTrue(
-        u.getRoles().stream().anyMatch(r -> r.getDescriptor().contentEquals(adminRole))));
+    returned
+        .forEach(u -> assertTrue(u.getRoles().stream().anyMatch(r -> r.contentEquals(adminRole))));
 
-    deleteUsers(users);
+    this.deleteUsers(users);
   }
 }

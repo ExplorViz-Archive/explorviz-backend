@@ -1,9 +1,12 @@
 package net.explorviz.security.server.resources.test;
 
-import static io.restassured.RestAssured.*;
+import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.is;
-
 import io.restassured.http.Header;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import net.explorviz.security.server.resources.test.helper.AuthorizationHelper;
 import net.explorviz.security.server.resources.test.helper.JsonAPIListMapper;
 import net.explorviz.shared.security.model.roles.Role;
@@ -12,11 +15,6 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 public class RoleRetrieval {
 
@@ -33,19 +31,20 @@ public class RoleRetrieval {
 
 
 
-
   /**
-   * Retrieves token for both an admin and an unprivileged user ("normie").
-   * The default admin is used for the former, a normie is created.
+   * Retrieves token for both an admin and an unprivileged user ("normie"). The default admin is
+   * used for the former, a normie is created.
    *
    * @throws IOException if serialization fails
    */
-  @BeforeAll static void setUpAll() throws IOException {
+  @BeforeAll
+  static void setUpAll() throws IOException {
     adminToken = AuthorizationHelper.getAdminToken();
     normieToken = AuthorizationHelper.getNormieToken();
   }
 
-  @BeforeEach void setUp() {
+  @BeforeEach
+  void setUp() {
     this.authHeaderAdmin = new Header("authorization", "Bearer " + adminToken);
     this.authHeaderNormie = new Header("authorization", "Bearer " + normieToken);
   }
@@ -55,11 +54,9 @@ public class RoleRetrieval {
   @DisplayName("Get all roles")
   @SuppressWarnings("unchecked")
   public void getAll() {
-    List<Role> actualRoles = new ArrayList<>(Arrays.asList(new Role("admin"),
-        new Role("user")));
+    final List<String> actualRoles = new ArrayList<>(Arrays.asList("admin", "user"));
 
-    List<Role> retrieved = given()
-        .header(authHeaderAdmin)
+    final List<Role> retrieved = given().header(this.authHeaderAdmin)
         .when()
         .get(ROLE_URL)
         .then()
@@ -67,7 +64,7 @@ public class RoleRetrieval {
         .body("data.size()", is(2))
         .extract()
         .body()
-        .as(List.class, new JsonAPIListMapper<Role>(Role.class));
+        .as(List.class, new JsonAPIListMapper<>(Role.class));
 
     Assert.assertEquals(actualRoles, retrieved);
   }
@@ -75,12 +72,7 @@ public class RoleRetrieval {
   @Test
   @DisplayName("Get all roles without privileges")
   public void getAllAsNormie() {
-    given()
-        .header(authHeaderNormie)
-        .when()
-        .get(ROLE_URL)
-        .then()
-        .statusCode(403);
+    given().header(this.authHeaderNormie).when().get(ROLE_URL).then().statusCode(403);
   }
 
 }

@@ -1,27 +1,26 @@
 package net.explorviz.security.server.resources.test;
 
+import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.hasKey;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import io.restassured.http.Header;
 import io.restassured.mapper.ObjectMapperType;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 import net.explorviz.security.model.UserCredentials;
 import net.explorviz.security.server.resources.test.helper.AuthorizationHelper;
 import net.explorviz.security.server.resources.test.helper.JsonAPIMapper;
 import net.explorviz.security.server.resources.test.helper.UserSerializationHelper;
 import net.explorviz.security.server.resources.test.helper.UsersHelper;
 import net.explorviz.shared.security.model.User;
-import net.explorviz.shared.security.model.roles.Role;
-import org.junit.jupiter.api.*;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static io.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.*;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-
-import static io.restassured.RestAssured.given;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class UserUpdate {
 
@@ -43,54 +42,55 @@ public class UserUpdate {
   private User theUser;
   private String userUri;
 
-  @BeforeAll static void setUpAll() throws IOException {
+  @BeforeAll
+  static void setUpAll() throws IOException {
     adminToken = AuthorizationHelper.getAdminToken();
     normieToken = AuthorizationHelper.getNormieToken();
   }
 
-  @BeforeEach void setUp() {
+  @BeforeEach
+  void setUp() {
     this.authHeaderAdmin = new Header("authorization", "Bearer " + adminToken);
     this.authHeaderNormie = new Header("authorization", "Bearer " + normieToken);
 
-    Optional<User> opt = UsersHelper.getInstance()
-        .createUser(USER_NAME, USER_PW, null);
+    final Optional<User> opt =
+        UsersHelper.getInstance().createUser(this.USER_NAME, this.USER_PW, null);
 
     if (opt.isPresent()) {
-      theUser = opt.get();
-      userUri = BASE_URI+"users/" + theUser.getId();
+      this.theUser = opt.get();
+      this.userUri = BASE_URI + "users/" + this.theUser.getId();
     } else {
       Assertions.fail();
     }
 
   }
 
-  @AfterEach void tearDown() {
-    UsersHelper.getInstance().deleteUserById(theUser.getId());
+  @AfterEach
+  void tearDown() {
+    UsersHelper.getInstance().deleteUserById(this.theUser.getId());
   }
 
   @Test
   void changePassword() throws IOException {
 
     final String newpw = "newpw";
-    User changeTo = new User(null, USER_NAME, newpw, null);
+    final User changeTo = new User(null, this.USER_NAME, newpw, null);
 
     // Perform patch
-    given()
-        .header(authHeaderAdmin)
+    given().header(this.authHeaderAdmin)
         .contentType(MEDIA_TYPE)
         .body(UserSerializationHelper.serialize(changeTo))
         .when()
-        .patch(userUri)
+        .patch(this.userUri)
         .then()
         .statusCode(200);
 
     // Try to login with new pw
 
-    given()
-        .body(new UserCredentials(USER_NAME, newpw), ObjectMapperType.JACKSON_2)
+    given().body(new UserCredentials(this.USER_NAME, newpw), ObjectMapperType.JACKSON_2)
         .contentType("application/json")
         .when()
-        .post(BASE_URI+"tokens")
+        .post(BASE_URI + "tokens")
         .then()
         .statusCode(200)
         .body("data.attributes", hasKey("token"));
@@ -102,24 +102,22 @@ public class UserUpdate {
   void changeName() throws IOException {
 
     final String newname = "newname";
-    User changeTo = new User(null, newname, USER_PW, null);
+    final User changeTo = new User(null, newname, this.USER_PW, null);
 
     // Perform patch
-    given()
-        .header(authHeaderAdmin)
+    given().header(this.authHeaderAdmin)
         .contentType(MEDIA_TYPE)
         .body(UserSerializationHelper.serialize(changeTo))
         .when()
-        .patch(userUri)
+        .patch(this.userUri)
         .then()
         .statusCode(200);
 
     // Try to login with new name
-    given()
-        .body(new UserCredentials(newname, USER_PW), ObjectMapperType.JACKSON_2)
+    given().body(new UserCredentials(newname, this.USER_PW), ObjectMapperType.JACKSON_2)
         .contentType("application/json")
         .when()
-        .post(BASE_URI+"tokens")
+        .post(BASE_URI + "tokens")
         .then()
         .statusCode(200)
         .body("data.attributes", hasKey("token"));
@@ -129,15 +127,14 @@ public class UserUpdate {
   @Test
   void updateAsNormie() throws IOException {
     final String newname = "newname";
-    User changeTo = new User(null, newname, USER_PW, null);
+    final User changeTo = new User(null, newname, this.USER_PW, null);
 
     // Perform patch
-    given()
-        .header(authHeaderNormie)
+    given().header(this.authHeaderNormie)
         .contentType(MEDIA_TYPE)
         .body(UserSerializationHelper.serialize(changeTo))
         .when()
-        .patch(userUri)
+        .patch(this.userUri)
         .then()
         .statusCode(403);
 
@@ -145,37 +142,36 @@ public class UserUpdate {
 
   @Test
   void addRole() throws IOException {
-    final List<Role> adminRole = new ArrayList<Role>(Arrays.asList(new Role("admin")));
-    User changeTo = new User(null, USER_NAME, USER_PW, adminRole);
+    final List<String> adminRole = new ArrayList<>(Arrays.asList("admin"));
+    final User changeTo = new User(null, this.USER_NAME, this.USER_PW, adminRole);
 
     // Perform patch
-    User updated = given()
-        .header(authHeaderAdmin)
+    final User updated = given().header(this.authHeaderAdmin)
         .contentType(MEDIA_TYPE)
         .body(UserSerializationHelper.serialize(changeTo))
         .when()
-        .patch(userUri)
+        .patch(this.userUri)
         .then()
         .statusCode(200)
-        .extract().body().as(User.class, new JsonAPIMapper<User>(User.class));
+        .extract()
+        .body()
+        .as(User.class, new JsonAPIMapper<>(User.class));
 
-    assertTrue(updated.getRoles().stream()
-        .map(r -> r.getDescriptor()).anyMatch(d -> d.contentEquals("admin")));
+    assertTrue(updated.getRoles().stream().map(r -> r).anyMatch(d -> d.contentEquals("admin")));
   }
 
 
 
   @Test
   void updateId() throws IOException {
-    User changeTo = new User("someid", USER_NAME, USER_PW, null);
+    final User changeTo = new User("someid", this.USER_NAME, this.USER_PW, null);
 
     // Perform patch
-    given()
-        .header(authHeaderAdmin)
+    given().header(this.authHeaderAdmin)
         .contentType(MEDIA_TYPE)
         .body(UserSerializationHelper.serialize(changeTo))
         .when()
-        .patch(userUri)
+        .patch(this.userUri)
         .then()
         .statusCode(400);
   }
