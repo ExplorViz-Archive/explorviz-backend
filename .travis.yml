@@ -28,6 +28,12 @@ jobs:
       jdk: oraclejdk8
       script: ./gradlew checkstyle pmd spotbugs
 
+    - stage: snapshot
+      name: "Snapshot Publishing"
+      if: (type = push) AND ((branch = dev-1) OR (branch = master))
+      jdk: openjdk8
+      script: ./gradlew clean landscape-service:landscape-model:uploadArchives settings-service:settings-model:uploadArchives
+
     - stage: deploy
       name: "Docker Image: Analysis Service"
       if: (type = push) AND ((branch = dev-1) OR (branch = master))

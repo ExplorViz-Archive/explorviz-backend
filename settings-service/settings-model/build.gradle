@@ -1,6 +1,7 @@
 plugins {
 	id "java-library"
 	id "com.github.spotbugs"
+	id "maven"
 }
 
 // Force new Dependencies 
@@ -19,11 +20,31 @@ dependencies {
 	implementation group: 'com.github.jasminb', name: 'jsonapi-converter', version:'0.9'
 	
 	implementation group: 'io.swagger.core.v3', name: 'swagger-annotations', version: '2.0.8'
-	
 }
 
 // disable integration tests, since there are none
 integrationTest.enabled = false
+jar {
+	baseName = "explorviz-${project.name}"
+}
+
+// BEGIN Sonatype Snapshot publishing
+uploadArchives {
+	repositories {
+		mavenDeployer {
+			def user = String.valueOf(System.getenv('SONATYPE_LOGIN'))
+			def pw = String.valueOf(System.getenv('SONATYPE_PW'))
+			
+			repository(url: "https://oss.sonatype.org/content/repositories/snapshots") {
+				authentication(userName: user, password: pw)
+			}
+			pom.version = "dev-1-SNAPSHOT"
+			pom.artifactId = project.name
+			pom.groupId = "net.explorviz"
+		}
+    }
+}
+// END Sonatype Snapshot publishing
 
 pmd {
     ruleSets = []
