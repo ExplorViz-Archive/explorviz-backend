@@ -12,7 +12,7 @@ configurations.all {
 dependencies {
 
   if(useRemoteSharedProject.toBoolean()) {
-    implementation "com.github.explorviz.explorviz-backend-shared:common-concerns:${sharedProjectVersion}"
+  	implementation group: 'net.explorviz', name: 'common-concerns', version: "${sharedProjectVersion}"
   } else {
     implementation project(':common-concerns')
   }
@@ -25,14 +25,6 @@ dependencies {
 jar {
 	baseName = "explorviz-${project.name}"
 }
-
-// BEGIN Jitpack publishing
-artifacts {
-  archives jar
-}
-
-archivesBaseName = jar.baseName
-// END Jitpack publishing
 
 // BEGIN Sonatype Snapshot publishing
 uploadArchives {

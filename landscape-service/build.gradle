@@ -28,10 +28,10 @@ dependencies {
   
   // ExplorViz Shared Dependencies
   if(useRemoteSharedProject.toBoolean()) {
-    implementation "com.github.explorviz.explorviz-backend-shared:config-injection:${sharedProjectVersion}"
-    implementation "com.github.explorviz.explorviz-backend-shared:security:${sharedProjectVersion}"
-    implementation "com.github.explorviz.explorviz-backend-shared:exception-handling:${sharedProjectVersion}"
-    implementation "com.github.explorviz.explorviz-backend-shared:common-concerns:${sharedProjectVersion}" 
+  	implementation group: 'net.explorviz', name: 'config-injection', version: "${sharedProjectVersion}"
+  	implementation group: 'net.explorviz', name: 'security', version: "${sharedProjectVersion}"
+  	implementation group: 'net.explorviz', name: 'exception-handling', version: "${sharedProjectVersion}"
+  	implementation group: 'net.explorviz', name: 'common-concerns', version: "${sharedProjectVersion}"
   }
   else {        
     implementation project(':config-injection')

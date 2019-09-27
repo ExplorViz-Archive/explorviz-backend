@@ -14,14 +14,16 @@ def footerText = '<span>Copyright 2013 - 2019</span> by the <a href="https://www
 
 // BEGIN aggregated Javadoc in multiproject Gradle build
 def exportedProjects= [
-		':landscape-service',
-		':kiekeradapter',
-		':user-service',
 		':analysis-service',
+		':broadcast-service',
 		':discovery-service',
 		':history-service',
+		':kiekeradapter',
+		':landscape-service:landscape-model',
+		':landscape-service',
+		':settings-service:settings-model',
 		':settings-service',
-		':broadcast-service'
+		':user-service'
 ]
 
 task alljavadoc(type: Javadoc) {
@@ -90,9 +92,9 @@ subprojects {
 
   repositories {
     // Order of declaration determines how Gradle will check for dependencies at runtime. 
-    jcenter()
+    jcenter()    
     mavenCentral()
-    maven { url 'https://jitpack.io' }
+    maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }    
   }
     
   dependencies {

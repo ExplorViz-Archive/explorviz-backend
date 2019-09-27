@@ -24,8 +24,6 @@ configurations.all {
     resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
 }
 
-// ##### BEGIN Jitpack section #####
-
 artifacts {
 	archives file: file('libs/explorviz-monitoring.jar'), name: 'explorviz-monitoring', type: 'jar'
   	archives jar
@@ -47,8 +45,6 @@ install {
     }
   }
 }
-
-// ##### END Jitpack section #####
 
 spotbugs {
   excludeFilter = file("../conf/spotbugs-exclude-filter.xml")

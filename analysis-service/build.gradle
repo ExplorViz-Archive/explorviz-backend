@@ -46,14 +46,6 @@ shadowJar {
   classifier = null
 }
 
-// BEGIN Jitpack publishing
-artifacts {
-  archives shadowJar
-}
-
-archivesBaseName = shadowJar.baseName
-// END Jitpack publishing
-
 spotbugs {
   excludeFilter = file("../conf/spotbugs-exclude-filter.xml")
   reportLevel = "low"
