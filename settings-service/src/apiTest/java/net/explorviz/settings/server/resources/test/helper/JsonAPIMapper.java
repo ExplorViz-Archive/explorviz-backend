@@ -7,7 +7,6 @@ import com.github.jasminb.jsonapi.exceptions.DocumentSerializationException;
 import io.restassured.mapper.ObjectMapper;
 import io.restassured.mapper.ObjectMapperDeserializationContext;
 import io.restassured.mapper.ObjectMapperSerializationContext;
-import net.explorviz.security.model.UserBatchRequest;
 import net.explorviz.settings.model.FlagSetting;
 import net.explorviz.settings.model.RangeSetting;
 import net.explorviz.settings.model.Setting;
@@ -15,43 +14,46 @@ import net.explorviz.settings.model.UserPreference;
 import net.explorviz.shared.security.model.User;
 
 public class JsonAPIMapper<T> implements ObjectMapper {
-  private ResourceConverter converter;
+  private final ResourceConverter converter;
 
-  private Class<T> cls;
+  private final Class<T> cls;
 
-  public JsonAPIMapper(Class<T> cls) {
+  public JsonAPIMapper(final Class<T> cls) {
     this.cls = cls;
-    converter = new ResourceConverter();
-    converter.registerType(Setting.class);
-    converter.registerType(RangeSetting.class);
-    converter.registerType(FlagSetting.class);
-    converter.registerType(User.class);
-    converter.registerType(UserPreference.class);
-    converter.disableDeserializationOption(DeserializationFeature.REQUIRE_RESOURCE_ID);
+    this.converter = new ResourceConverter();
+    this.converter.registerType(Setting.class);
+    this.converter.registerType(RangeSetting.class);
+    this.converter.registerType(FlagSetting.class);
+    this.converter.registerType(User.class);
+    this.converter.registerType(UserPreference.class);
+    this.converter.disableDeserializationOption(DeserializationFeature.REQUIRE_RESOURCE_ID);
   }
 
-  @Override public T deserialize(ObjectMapperDeserializationContext context) {
-    T deserialized = converter.readDocument(context.getDataToDeserialize().asByteArray(), cls).get();
+  @Override
+  public T deserialize(final ObjectMapperDeserializationContext context) {
+    final T deserialized =
+        this.converter.readDocument(context.getDataToDeserialize().asByteArray(), this.cls).get();
     return deserialized;
   }
 
-  @Override public String serialize(ObjectMapperSerializationContext context) {
-    JSONAPIDocument<T> doc = new JSONAPIDocument<>(context.getObjectToSerializeAs(cls));
+  @Override
+  public String serialize(final ObjectMapperSerializationContext context) {
+    final JSONAPIDocument<T> doc = new JSONAPIDocument<>(context.getObjectToSerializeAs(this.cls));
     try {
-      byte[] serialized = converter.writeDocument(doc);
+      final byte[] serialized = this.converter.writeDocument(doc);
       return new String(serialized);
-    } catch (DocumentSerializationException e) {
+    } catch (final DocumentSerializationException e) {
       e.printStackTrace();
     }
     return null;
   }
 
-  public String serializeRaw(T object) {
-    JSONAPIDocument<T> doc = new JSONAPIDocument<>(object);
+  public String serializeRaw(final T object) {
+    final JSONAPIDocument<T> doc = new JSONAPIDocument<>(object);
     try {
-      byte[] serialized = converter.writeDocument(doc);
+      final byte[] serialized = this.converter.writeDocument(doc);
       return new String(serialized);
-    } catch (DocumentSerializationException e) {
+    } catch (final DocumentSerializationException e) {
       e.printStackTrace();
     }
     return null;

@@ -3,7 +3,6 @@ package net.explorviz.history.repository.persistence.mongo;
 import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.atomic.AtomicInteger;
-import net.explorviz.shared.common.idgen.IdGenerator;
 import net.explorviz.landscape.model.application.Application;
 import net.explorviz.landscape.model.application.ApplicationCommunication;
 import net.explorviz.landscape.model.application.Clazz;
@@ -15,6 +14,7 @@ import net.explorviz.landscape.model.landscape.Landscape;
 import net.explorviz.landscape.model.landscape.Node;
 import net.explorviz.landscape.model.landscape.NodeGroup;
 import net.explorviz.landscape.model.landscape.System;
+import net.explorviz.shared.common.idgen.IdGenerator;
 
 /**
  * Helper class providing methods for creating a dummy landscape.
@@ -64,7 +64,8 @@ public final class DummyLandscapeHelper {
     system.setParent(parentLandscape);
 
     // create new system event
-    parentLandscape.createNewEvent(idGen.generateId(), EEventType.NEWSYSTEM,
+    parentLandscape.createNewEvent(idGen.generateId(),
+        EEventType.NEWSYSTEM,
         "New system '" + system.getName() + "' detected");
 
     return system;
@@ -103,7 +104,8 @@ public final class DummyLandscapeHelper {
     node.setUsedRAM((long) getRandomNum(1, 4) * LandscapeDummyCreator.formatFactor);
 
     // create a new node event
-    landscape.createNewEvent(idGen.generateId(), EEventType.NEWNODE,
+    landscape.createNewEvent(idGen.generateId(),
+        EEventType.NEWNODE,
         "New node '" + node.getIpAddress() + "' in system '" + parentNodeGroup.getParent().getName()
             + "' detected");
 
@@ -136,8 +138,10 @@ public final class DummyLandscapeHelper {
     parentNode.getApplications().add(application);
 
     // create a new application event
-    landscape.createNewEvent(idGen.generateId(), EEventType.NEWNODE, "New node '"
-        + application.getName() + "' in system '" + parentNode.getName() + "' detected");
+    landscape.createNewEvent(idGen.generateId(),
+        EEventType.NEWNODE,
+        "New node '" + application.getName() + "' in system '" + parentNode.getName()
+            + "' detected");
 
     return application;
   }
@@ -227,9 +231,19 @@ public final class DummyLandscapeHelper {
     final float overallTraceDuration = 0L + getRandomNum(1000, 10000);
     final String operationName = "getMethod" + getRandomNum(1, 50) + "()";
 
-    ModelHelper.addClazzCommunication(idGen.generateId(), idGen.generateId(), idGen.generateId(),
-        idGen.generateId(), sourceClazz, targetClazz, application, requests, averageResponseTime,
-        overallTraceDuration, traceId, tracePosition, operationName);
+    ModelHelper.addClazzCommunication(idGen.generateId(),
+        idGen.generateId(),
+        idGen.generateId(),
+        idGen.generateId(),
+        sourceClazz,
+        targetClazz,
+        application,
+        requests,
+        averageResponseTime,
+        overallTraceDuration,
+        traceId,
+        tracePosition,
+        operationName);
   }
 
 }

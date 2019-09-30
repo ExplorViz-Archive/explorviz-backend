@@ -45,7 +45,9 @@ public class UserPreferenceService {
    * @param userId Id of the user
    */
   public List<UserPreference> getPreferencesForUser(final String userId) {
-    return this.prefRepo.findAll().stream().filter(c -> c.getUserId().equals(userId))
+    return this.prefRepo.findAll()
+        .stream()
+        .filter(c -> c.getUserId().equals(userId))
         .collect(Collectors.toList());
   }
 

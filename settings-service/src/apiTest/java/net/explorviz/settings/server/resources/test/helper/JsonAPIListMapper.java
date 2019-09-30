@@ -11,34 +11,37 @@ import net.explorviz.settings.model.FlagSetting;
 import net.explorviz.settings.model.RangeSetting;
 import net.explorviz.settings.model.Setting;
 import net.explorviz.settings.model.UserPreference;
-import net.explorviz.shared.security.model.User;
 
 public class JsonAPIListMapper<T> implements ObjectMapper {
-  private ResourceConverter converter;
+  private final ResourceConverter converter;
 
-  private Class<T> cls;
+  private final Class<T> cls;
 
-  public JsonAPIListMapper(Class<T> cls) {
+  public JsonAPIListMapper(final Class<T> cls) {
     this.cls = cls;
-    converter = new ResourceConverter();
-    converter.registerType(Setting.class);
-    converter.registerType(UserPreference.class);
-    converter.registerType(RangeSetting.class);
-    converter.registerType(FlagSetting.class);
-    converter.registerType(UserPreference.class);
+    this.converter = new ResourceConverter();
+    this.converter.registerType(Setting.class);
+    this.converter.registerType(UserPreference.class);
+    this.converter.registerType(RangeSetting.class);
+    this.converter.registerType(FlagSetting.class);
+    this.converter.registerType(UserPreference.class);
   }
 
-  @Override public List<T> deserialize(ObjectMapperDeserializationContext context) {
-    return converter.readDocumentCollection(context.getDataToDeserialize().asByteArray(), cls).get();
+  @Override
+  public List<T> deserialize(final ObjectMapperDeserializationContext context) {
+    return this.converter
+        .readDocumentCollection(context.getDataToDeserialize().asByteArray(), this.cls)
+        .get();
   }
 
-  @Override public String serialize(ObjectMapperSerializationContext context) {
-    List<T> l = (List<T>) context.getObjectToSerialize();
-    JSONAPIDocument<List<T>> doc = new JSONAPIDocument<List<T>>(l);
+  @Override
+  public String serialize(final ObjectMapperSerializationContext context) {
+    final List<T> l = (List<T>) context.getObjectToSerialize();
+    final JSONAPIDocument<List<T>> doc = new JSONAPIDocument<>(l);
     try {
-      byte[] serialized = converter.writeDocumentCollection(doc);
+      final byte[] serialized = this.converter.writeDocumentCollection(doc);
       return new String(serialized);
-    } catch (DocumentSerializationException e) {
+    } catch (final DocumentSerializationException e) {
       e.printStackTrace();
     }
     return null;

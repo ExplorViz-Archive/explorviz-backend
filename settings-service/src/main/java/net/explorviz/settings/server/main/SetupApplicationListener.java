@@ -63,7 +63,7 @@ public class SetupApplicationListener implements ApplicationEventListener {
     final String origin = "backend";
 
     // Workaround: Assign hardcoded ids
-    final List<Setting> defaults = new ArrayList<Setting>(Arrays.asList(
+    final List<Setting> defaults = new ArrayList<>(Arrays.asList(
         new FlagSetting("showFpsCounter", "Show FPS Counter",
             "\'Frames Per Second\' metrics in visualizations", origin, false),
         new FlagSetting("appVizTransparency", "Enable Transparent Components",

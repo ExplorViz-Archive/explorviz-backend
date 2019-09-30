@@ -1,12 +1,11 @@
 package net.explorviz.security.server.resources.test.helper;
 
+import static io.restassured.RestAssured.given;
 import com.github.jasminb.jsonapi.exceptions.ResourceParseException;
 import io.restassured.mapper.ObjectMapperType;
 import java.util.Optional;
 import net.explorviz.security.model.UserCredentials;
 import net.explorviz.shared.security.model.User;
-
-import static io.restassured.RestAssured.given;
 
 public class AuthorizationHelper {
 
@@ -23,15 +22,16 @@ public class AuthorizationHelper {
   private static User admin = null;
   private static User normie = null;
 
-  private static Optional<User> login(String name, String password) {
+  private static Optional<User> login(final String name, final String password) {
 
     try {
-      User u = given().contentType("application/json")
+      final User u = given().contentType("application/json")
           .body(new UserCredentials(name, password), ObjectMapperType.JACKSON_2)
           .when()
-          .post(AUTH_URL).as(User.class, new JsonAPIMapper<User>(User.class));
+          .post(AUTH_URL)
+          .as(User.class, new JsonAPIMapper<>(User.class));
       return Optional.of(u);
-    } catch(ResourceParseException ex) {
+    } catch (final ResourceParseException ex) {
       return Optional.empty();
     }
   }
@@ -46,14 +46,14 @@ public class AuthorizationHelper {
   }
 
   public static User getNormie() {
-    Optional<User> normie = login(NORMIE_NAME, NORMIE_PW);
-    if(AuthorizationHelper.normie == null) {
+    final Optional<User> normie = login(NORMIE_NAME, NORMIE_PW);
+    if (AuthorizationHelper.normie == null) {
       if (normie.isPresent()) {
         AuthorizationHelper.normie = normie.get();
       } else {
         // Not existent, create and try again
         // Will fail if normie user exists with another password
-        Optional<User> created_normie =
+        final Optional<User> created_normie =
             UsersHelper.getInstance().createUser(NORMIE_NAME, NORMIE_PW, null);
         if (created_normie.isPresent()) {
           return getNormie();
@@ -68,7 +68,7 @@ public class AuthorizationHelper {
 
   public static User getAdmin() {
     if (AuthorizationHelper.admin == null) {
-      Optional<User> admin = login(ADMIN_NAME, ADMIN_PW);
+      final Optional<User> admin = login(ADMIN_NAME, ADMIN_PW);
       if (admin.isPresent()) {
         AuthorizationHelper.admin = admin.get();
       } else {

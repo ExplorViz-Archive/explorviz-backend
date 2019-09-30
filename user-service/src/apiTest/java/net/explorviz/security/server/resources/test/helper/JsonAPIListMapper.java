@@ -6,34 +6,37 @@ import com.github.jasminb.jsonapi.exceptions.DocumentSerializationException;
 import io.restassured.mapper.ObjectMapper;
 import io.restassured.mapper.ObjectMapperDeserializationContext;
 import io.restassured.mapper.ObjectMapperSerializationContext;
+import java.util.List;
 import net.explorviz.settings.model.UserPreference;
 import net.explorviz.shared.security.model.User;
 
-import java.util.List;
-
 public class JsonAPIListMapper<T> implements ObjectMapper {
-  private ResourceConverter converter;
+  private final ResourceConverter converter;
 
-  private Class<T> cls;
+  private final Class<T> cls;
 
-  public JsonAPIListMapper(Class<T> cls) {
+  public JsonAPIListMapper(final Class<T> cls) {
     this.cls = cls;
-    converter = new ResourceConverter();
-    converter.registerType(User.class);
-    converter.registerType(UserPreference.class);
+    this.converter = new ResourceConverter();
+    this.converter.registerType(User.class);
+    this.converter.registerType(UserPreference.class);
   }
 
-  @Override public List<T> deserialize(ObjectMapperDeserializationContext context) {
-    return converter.readDocumentCollection(context.getDataToDeserialize().asByteArray(), cls).get();
+  @Override
+  public List<T> deserialize(final ObjectMapperDeserializationContext context) {
+    return this.converter
+        .readDocumentCollection(context.getDataToDeserialize().asByteArray(), this.cls)
+        .get();
   }
 
-  @Override public String serialize(ObjectMapperSerializationContext context) {
-    List<T> l = (List<T>) context.getObjectToSerialize();
-    JSONAPIDocument<List<T>> doc = new JSONAPIDocument<List<T>>(l);
+  @Override
+  public String serialize(final ObjectMapperSerializationContext context) {
+    final List<T> l = (List<T>) context.getObjectToSerialize();
+    final JSONAPIDocument<List<T>> doc = new JSONAPIDocument<>(l);
     try {
-      byte[] serialized = converter.writeDocumentCollection(doc);
+      final byte[] serialized = this.converter.writeDocumentCollection(doc);
       return new String(serialized);
-    } catch (DocumentSerializationException e) {
+    } catch (final DocumentSerializationException e) {
       e.printStackTrace();
     }
     return null;

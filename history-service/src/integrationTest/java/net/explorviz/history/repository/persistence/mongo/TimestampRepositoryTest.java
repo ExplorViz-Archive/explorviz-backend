@@ -7,9 +7,9 @@ import javax.inject.Inject;
 import javax.ws.rs.core.MultivaluedHashMap;
 import net.explorviz.history.server.main.DependencyInjectionBinder;
 import net.explorviz.history.server.main.HistoryApplication;
-import net.explorviz.shared.common.idgen.IdGenerator;
 import net.explorviz.landscape.model.landscape.Landscape;
 import net.explorviz.landscape.model.store.Timestamp;
+import net.explorviz.shared.common.idgen.IdGenerator;
 import net.explorviz.shared.querying.Query;
 import net.explorviz.shared.querying.QueryException;
 import org.glassfish.hk2.api.ServiceLocator;
@@ -42,13 +42,13 @@ public class TimestampRepositoryTest {
       final ServiceLocator locator = ServiceLocatorUtilities.bind(binder);
       locator.inject(this);
     }
-    landscapeRepo.clear();
-    replayRepository.clear();
+    this.landscapeRepo.clear();
+    this.replayRepository.clear();
   }
 
   @Test
   public void testLandscapeTimestamps() {
-    addLandscapes();
+    this.addLandscapes();
 
     final int timestamps = this.timestampRepo.getLandscapeTimestamps().size();
     assertEquals(2, timestamps); // NOCS
@@ -56,7 +56,7 @@ public class TimestampRepositoryTest {
 
   @Test
   public void testReplayTimestamps() {
-    addReplays();
+    this.addReplays();
 
     final int timestamps = this.timestampRepo.getReplayTimestamps().size();
     assertEquals(2, timestamps); // NOCS
@@ -83,36 +83,36 @@ public class TimestampRepositoryTest {
 
   @Test
   public void testQueryForLandscapes() throws QueryException {
-    addLandscapes();
-    addReplays();
+    this.addLandscapes();
+    this.addReplays();
 
-    final MultivaluedHashMap<String, String> paramters = new MultivaluedHashMap<String, String>();
+    final MultivaluedHashMap<String, String> paramters = new MultivaluedHashMap<>();
     paramters.add("filter[type]", "landscape");
     final Query<Timestamp> q = Query.fromParameterMap(paramters);
-    final Collection<Timestamp> result = timestampRepo.query(q).getData();
+    final Collection<Timestamp> result = this.timestampRepo.query(q).getData();
     assertEquals(2, result.size());
   }
 
   @Test
   public void testQueryForReplays() throws QueryException {
-    addLandscapes();
-    addReplays();
+    this.addLandscapes();
+    this.addReplays();
 
-    final MultivaluedHashMap<String, String> paramters = new MultivaluedHashMap<String, String>();
+    final MultivaluedHashMap<String, String> paramters = new MultivaluedHashMap<>();
     paramters.add("filter[type]", "replay");
     final Query<Timestamp> q = Query.fromParameterMap(paramters);
-    final Collection<Timestamp> result = timestampRepo.query(q).getData();
+    final Collection<Timestamp> result = this.timestampRepo.query(q).getData();
     assertEquals(2, result.size());
   }
 
   @Test
   public void testQueryForAll() throws QueryException {
-    addLandscapes();
-    addReplays();
+    this.addLandscapes();
+    this.addReplays();
 
-    final MultivaluedHashMap<String, String> paramters = new MultivaluedHashMap<String, String>();
+    final MultivaluedHashMap<String, String> paramters = new MultivaluedHashMap<>();
     final Query<Timestamp> q = Query.fromParameterMap(paramters);
-    final Collection<Timestamp> result = timestampRepo.query(q).getData();
+    final Collection<Timestamp> result = this.timestampRepo.query(q).getData();
     assertEquals(4, result.size());
   }
 
@@ -125,28 +125,28 @@ public class TimestampRepositoryTest {
     final Landscape landscape3 = LandscapeDummyCreator.createDummyLandscape(this.idGenerator);
     final long ts3 = 3l;
 
-    landscapeRepo.save(ts, landscape, 0);
-    landscapeRepo.save(ts2, landscape2, 0);
-    landscapeRepo.save(ts3, landscape3, 0);
+    this.landscapeRepo.save(ts, landscape, 0);
+    this.landscapeRepo.save(ts2, landscape2, 0);
+    this.landscapeRepo.save(ts3, landscape3, 0);
 
-    final MultivaluedHashMap<String, String> paramters = new MultivaluedHashMap<String, String>();
+    final MultivaluedHashMap<String, String> paramters = new MultivaluedHashMap<>();
     paramters.add("filter[from]", "2");
     final Query<Timestamp> q = Query.fromParameterMap(paramters);
-    final Collection<Timestamp> result = timestampRepo.query(q).getData();
+    final Collection<Timestamp> result = this.timestampRepo.query(q).getData();
     assertEquals(2l, result.size());
 
   }
 
   @Test
   public void testPagination() throws QueryException {
-    addLandscapes();
-    addReplays();
+    this.addLandscapes();
+    this.addReplays();
 
-    final MultivaluedHashMap<String, String> paramters = new MultivaluedHashMap<String, String>();
+    final MultivaluedHashMap<String, String> paramters = new MultivaluedHashMap<>();
     paramters.add("page[number]", "1");
     paramters.add("page[size]", "2");
     final Query<Timestamp> q = Query.fromParameterMap(paramters);
-    final Collection<Timestamp> result = timestampRepo.query(q).getData();
+    final Collection<Timestamp> result = this.timestampRepo.query(q).getData();
 
     assertEquals(2, result.size());
   }
@@ -154,14 +154,14 @@ public class TimestampRepositoryTest {
 
   @Test
   public void testInvalidFromFilterValue() {
-    addLandscapes();
-    addReplays();
+    this.addLandscapes();
+    this.addReplays();
 
-    final MultivaluedHashMap<String, String> paramters = new MultivaluedHashMap<String, String>();
+    final MultivaluedHashMap<String, String> paramters = new MultivaluedHashMap<>();
     paramters.add("filter[from]", "notanint");
     final Query<Timestamp> q = Query.fromParameterMap(paramters);
 
-    assertThrows(QueryException.class, () -> timestampRepo.query(q));
+    assertThrows(QueryException.class, () -> this.timestampRepo.query(q));
   }
 
 

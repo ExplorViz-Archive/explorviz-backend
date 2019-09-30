@@ -1,11 +1,10 @@
 package net.explorviz.security.server.resources.test;
 
+import static io.restassured.RestAssured.given;
 import io.restassured.mapper.ObjectMapperType;
 import net.explorviz.security.model.UserCredentials;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
-
-import static io.restassured.RestAssured.given;
 
 public class Login {
 
@@ -17,7 +16,7 @@ public class Login {
 
 
   @Test
-  void testValidLogin(){
+  void testValidLogin() {
     given().contentType("application/json")
         .body(new UserCredentials(ADMIN_NAME, ADMIN_PW), ObjectMapperType.JACKSON_2)
         .when()
@@ -29,7 +28,7 @@ public class Login {
 
 
   @Test
-  void testInvalidLogin(){
+  void testInvalidLogin() {
     given().contentType("application/json")
         .body(new UserCredentials(ADMIN_NAME, "invalidpw"), ObjectMapperType.JACKSON_2)
         .when()

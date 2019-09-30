@@ -31,8 +31,8 @@ public abstract class Setting {
   public static final List<Class<? extends Setting>> TYPES =
       new ArrayList<Class<? extends Setting>>() {
         {
-          add(RangeSetting.class);
-          add(FlagSetting.class);
+          this.add(RangeSetting.class);
+          this.add(FlagSetting.class);
         }
       };
 
@@ -97,7 +97,7 @@ public abstract class Setting {
     return this.id;
   }
 
-  public void setId(String id) {
+  public void setId(final String id) {
     this.id = id;
   }
 
@@ -113,22 +113,31 @@ public abstract class Setting {
     return this.origin;
   }
 
-  @Override public boolean equals(Object o) {
-    if (this == o)
+  @Override
+  public boolean equals(final Object o) {
+    if (this == o) {
       return true;
+    }
 
-    if (o == null || getClass() != o.getClass())
+    if (o == null || this.getClass() != o.getClass()) {
       return false;
+    }
 
-    Setting setting = (Setting) o;
+    final Setting setting = (Setting) o;
 
-    return new EqualsBuilder().append(id, setting.id)
-        .append(displayName, setting.displayName).append(description, setting.description)
-        .append(origin, setting.origin).isEquals();
+    return new EqualsBuilder().append(this.id, setting.id)
+        .append(this.displayName, setting.displayName)
+        .append(this.description, setting.description)
+        .append(this.origin, setting.origin)
+        .isEquals();
   }
 
-  @Override public int hashCode() {
-    return new HashCodeBuilder(17, 37).append(id)
-        .append(displayName).append(description).append(origin).toHashCode();
+  @Override
+  public int hashCode() {
+    return new HashCodeBuilder(17, 37).append(this.id)
+        .append(this.displayName)
+        .append(this.description)
+        .append(this.origin)
+        .toHashCode();
   }
 }

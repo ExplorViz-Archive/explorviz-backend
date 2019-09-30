@@ -28,12 +28,14 @@ public class DependencyInjectionBinder extends CommonDependencyInjectionBinder {
     this.bindFactory(DatastoreFactory.class).to(Datastore.class).in(Singleton.class);
 
     // Service
-    this.bind(SettingsRepository.class).to(new TypeLiteral<MongoRepository<Setting, String>>() {})
+    this.bind(SettingsRepository.class)
+        .to(new TypeLiteral<MongoRepository<Setting, String>>() {})
         .in(Singleton.class);
 
     this.bind(SettingsRepository.class).to(SettingsRepository.class).in(Singleton.class);
     this.bind(UserEventConsumer.class).to(UserEventConsumer.class).in(Singleton.class);
-    this.bind(UserPreferenceRepository.class).to(UserPreferenceRepository.class)
+    this.bind(UserPreferenceRepository.class)
+        .to(UserPreferenceRepository.class)
         .in(Singleton.class);
     this.bind(AuthorizationService.class).to(AuthorizationService.class).in(Singleton.class);
     this.bind(UserPreferenceService.class).to(UserPreferenceService.class).in(Singleton.class);

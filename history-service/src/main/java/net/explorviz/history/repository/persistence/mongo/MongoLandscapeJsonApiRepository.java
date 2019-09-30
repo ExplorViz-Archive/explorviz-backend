@@ -81,7 +81,9 @@ public class MongoLandscapeJsonApiRepository implements LandscapeRepository<Stri
     }
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug(String.format("Saved landscape {timestamp: %d, id: %s, totalRequests: %d}",
-          timestamp, landscape.getId(), totalRequests));
+          timestamp,
+          landscape.getId(),
+          totalRequests));
     }
   }
 
@@ -138,7 +140,8 @@ public class MongoLandscapeJsonApiRepository implements LandscapeRepository<Stri
     // TODO: Replays
     if (LOGGER.isInfoEnabled()) {
       LOGGER.info(String.format("Cleaned %d landscape and %d replay objects",
-          landsapeResult.getDeletedCount(), replayResult.getDeletedCount()));
+          landsapeResult.getDeletedCount(),
+          replayResult.getDeletedCount()));
     }
   }
 

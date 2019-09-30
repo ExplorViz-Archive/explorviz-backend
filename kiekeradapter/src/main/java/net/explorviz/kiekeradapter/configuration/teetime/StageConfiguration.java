@@ -25,7 +25,6 @@ public class StageConfiguration extends Configuration {
     final KiekerToExplorVizTransformStage kiekerToExplTransformStage =
         new KiekerToExplorVizTransformStage();
 
-    this.connectPorts(tcpReaderStage.getOutputPort(),
-        kiekerToExplTransformStage.getInputPort());
+    this.connectPorts(tcpReaderStage.getOutputPort(), kiekerToExplTransformStage.getInputPort());
   }
 }

@@ -34,7 +34,7 @@ public class FlagSetting extends Setting {
     super(id, displayName, description, origin);
     this.defaultValue = defaultValue;
   }
-  
+
   /**
    * Creates a new flag.
    * 
@@ -43,9 +43,7 @@ public class FlagSetting extends Setting {
    * @param origin the origin
    * @param defaultValue the default value
    */
-  public FlagSetting(final String displayName,
-      final String description,
-      final String origin,
+  public FlagSetting(final String displayName, final String description, final String origin,
       final boolean defaultValue) {
     super(displayName, description, origin);
     this.defaultValue = defaultValue;
@@ -60,7 +58,7 @@ public class FlagSetting extends Setting {
     return this.defaultValue;
   }
 
-  
+
 
   public void setDefaultValue(final boolean defaultValue) {
     this.defaultValue = defaultValue;
@@ -70,24 +68,31 @@ public class FlagSetting extends Setting {
   @Override
   public String toString() {
     return new ToStringBuilder(this).append("default", this.defaultValue)
-        .appendSuper(super.toString()).build();
+        .appendSuper(super.toString())
+        .build();
   }
 
-  @Override public boolean equals(Object o) {
-    if (this == o)
+  @Override
+  public boolean equals(final Object o) {
+    if (this == o) {
       return true;
+    }
 
-    if (o == null || getClass() != o.getClass())
+    if (o == null || this.getClass() != o.getClass()) {
       return false;
+    }
 
-    FlagSetting that = (FlagSetting) o;
+    final FlagSetting that = (FlagSetting) o;
 
-    return new EqualsBuilder().appendSuper(super.equals(o)).append(defaultValue, that.defaultValue)
+    return new EqualsBuilder().appendSuper(super.equals(o))
+        .append(this.defaultValue, that.defaultValue)
         .isEquals();
   }
 
-  @Override public int hashCode() {
-    return new HashCodeBuilder(17, 37).appendSuper(super.hashCode()).append(defaultValue)
+  @Override
+  public int hashCode() {
+    return new HashCodeBuilder(17, 37).appendSuper(super.hashCode())
+        .append(this.defaultValue)
         .toHashCode();
   }
 }

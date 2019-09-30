@@ -57,7 +57,7 @@ public class UsersHelper {
           .header(this.auth)
           .when()
           .post(USERS_URI)
-          .as(User.class, new JsonAPIMapper<User>(User.class));
+          .as(User.class, new JsonAPIMapper<>(User.class));
       return Optional.of(u);
     } catch (final IOException e) {
       return Optional.empty();
@@ -69,7 +69,7 @@ public class UsersHelper {
 
   /**
    * Delete a user by id
-   * 
+   *
    * @param id if of the user to delete
    */
   public void deleteUserById(final String id) {
@@ -82,7 +82,7 @@ public class UsersHelper {
         .header(this.auth)
         .when()
         .get(USERS_URI)
-        .as(List.class, new JsonAPIListMapper<User>(User.class));
+        .as(List.class, new JsonAPIListMapper<>(User.class));
   }
 
   public int count() {

@@ -49,8 +49,11 @@ public class LandscapeBroadcastService {
    * @param landscape - The to-be broadcasted landscape
    */
   public void broadcastMessage(final Landscape landscape) {
-    final OutboundSseEvent event = this.sse.newEventBuilder().name(SSE_EVENT_NAME)
-        .mediaType(APPLICATION_JSON_API_TYPE).data(landscape).build();
+    final OutboundSseEvent event = this.sse.newEventBuilder()
+        .name(SSE_EVENT_NAME)
+        .mediaType(APPLICATION_JSON_API_TYPE)
+        .data(landscape)
+        .build();
 
     this.broadcaster.broadcast(event);
     if (LOGGER.isDebugEnabled()) {
@@ -64,8 +67,11 @@ public class LandscapeBroadcastService {
    * @param jsonApiLandscape - The to-be broadcasted landscape
    */
   public void broadcastMessage(final String jsonApiLandscape) {
-    final OutboundSseEvent event = this.sse.newEventBuilder().name(SSE_EVENT_NAME)
-        .mediaType(APPLICATION_JSON_API_TYPE).data(jsonApiLandscape).build();
+    final OutboundSseEvent event = this.sse.newEventBuilder()
+        .name(SSE_EVENT_NAME)
+        .mediaType(APPLICATION_JSON_API_TYPE)
+        .data(jsonApiLandscape)
+        .build();
 
     this.broadcaster.broadcast(event);
     if (LOGGER.isDebugEnabled()) {

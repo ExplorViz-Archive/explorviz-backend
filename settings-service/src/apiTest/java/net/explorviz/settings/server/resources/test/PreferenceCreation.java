@@ -1,5 +1,6 @@
 package net.explorviz.settings.server.resources.test;
 
+import static io.restassured.RestAssured.given;
 import io.restassured.http.Header;
 import java.io.IOException;
 import net.explorviz.settings.model.UserPreference;
@@ -12,11 +13,10 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static io.restassured.RestAssured.given;
-
 public class PreferenceCreation {
 
-  private static final String USER_PREF_URL = "http://localhost:8087/v1/users/{uid}/settings/preferences";
+  private static final String USER_PREF_URL =
+      "http://localhost:8087/v1/users/{uid}/settings/preferences";
   private static final String PREF_URL = "http://localhost:8087/v1/users/settings/preferences";
 
   private static String adminToken;
@@ -29,8 +29,8 @@ public class PreferenceCreation {
 
 
   /**
-   * Retrieves token for both an admin and an unprivileged user ("normie").
-   * The default admin is used for the former, a normie is created.
+   * Retrieves token for both an admin and an unprivileged user ("normie"). The default admin is
+   * used for the former, a normie is created.
    *
    * @throws IOException if serialization fails
    */
@@ -48,44 +48,46 @@ public class PreferenceCreation {
 
   @Test
   void createForSelf() {
-    User testUser = UsersHelper.getInstance()
-        .createUser("tester", "test", null).orElseThrow(IllegalStateException::new);
+    final User testUser = UsersHelper.getInstance()
+        .createUser("tester", "test", null)
+        .orElseThrow(IllegalStateException::new);
 
-    String settingId = DefaultSettings.appVizCommArrowSize.getId();
-    double val = 2.0; // Default = 1.0, (0, 5)
-    UserPreference toCreate = new UserPreference(null, testUser.getId(), settingId, val);
+    final String settingId = DefaultSettings.appVizCommArrowSize.getId();
+    final double val = 2.0; // Default = 1.0, (0, 5)
+    final UserPreference toCreate = new UserPreference(null, testUser.getId(), settingId, val);
 
-    String myToken = AuthorizationHelper.login("tester", "test")
-        .orElseThrow(IllegalStateException::new).getToken();
-    Header auth = new Header("authorization", "Bearer " + myToken);
+    final String myToken = AuthorizationHelper.login("tester", "test")
+        .orElseThrow(IllegalStateException::new)
+        .getToken();
+    final Header auth = new Header("authorization", "Bearer " + myToken);
 
-    UserPreference created = given()
-        .header(auth)
+    final UserPreference created = given().header(auth)
         .contentType(MEDIA_TYPE)
-        .body(toCreate, new JsonAPIMapper<UserPreference>(UserPreference.class))
+        .body(toCreate, new JsonAPIMapper<>(UserPreference.class))
         .when()
         .post(PREF_URL)
         .then()
         .statusCode(200)
-        .extract().body().as(UserPreference.class,
-            new JsonAPIMapper<UserPreference>(UserPreference.class));
+        .extract()
+        .body()
+        .as(UserPreference.class, new JsonAPIMapper<>(UserPreference.class));
 
     UsersHelper.getInstance().deleteUserById(testUser.getId());
   }
 
   @Test
   void createForOther() {
-    User testUser = UsersHelper.getInstance()
-        .createUser("tester", "test", null).orElseThrow(IllegalStateException::new);
+    final User testUser = UsersHelper.getInstance()
+        .createUser("tester", "test", null)
+        .orElseThrow(IllegalStateException::new);
 
-    String settingId = DefaultSettings.appVizCommArrowSize.getId();
-    double val = 2.0; // Default = 1.0, (0, 5)
-    UserPreference toCreate = new UserPreference(null, testUser.getId(), settingId, val);
+    final String settingId = DefaultSettings.appVizCommArrowSize.getId();
+    final double val = 2.0; // Default = 1.0, (0, 5)
+    final UserPreference toCreate = new UserPreference(null, testUser.getId(), settingId, val);
 
-    given()
-        .header(authHeaderNormie)
+    given().header(this.authHeaderNormie)
         .contentType(MEDIA_TYPE)
-        .body(toCreate, new JsonAPIMapper<UserPreference>(UserPreference.class))
+        .body(toCreate, new JsonAPIMapper<>(UserPreference.class))
         .when()
         .post(PREF_URL)
         .then()
@@ -95,21 +97,22 @@ public class PreferenceCreation {
 
   @Test
   void createWithInvalidValue() {
-    User testUser = UsersHelper.getInstance()
-        .createUser("tester", "test", null).orElseThrow(IllegalStateException::new);
+    final User testUser = UsersHelper.getInstance()
+        .createUser("tester", "test", null)
+        .orElseThrow(IllegalStateException::new);
 
-    String settingId = DefaultSettings.appVizCommArrowSize.getId();
-    double val = DefaultSettings.appVizCommArrowSize.getMax()+1;
-    UserPreference toCreate = new UserPreference(null, testUser.getId(), settingId, val);
+    final String settingId = DefaultSettings.appVizCommArrowSize.getId();
+    final double val = DefaultSettings.appVizCommArrowSize.getMax() + 1;
+    final UserPreference toCreate = new UserPreference(null, testUser.getId(), settingId, val);
 
-    String myToken = AuthorizationHelper.login("tester", "test")
-        .orElseThrow(IllegalStateException::new).getToken();
-    Header auth = new Header("authorization", "Bearer " + myToken);
+    final String myToken = AuthorizationHelper.login("tester", "test")
+        .orElseThrow(IllegalStateException::new)
+        .getToken();
+    final Header auth = new Header("authorization", "Bearer " + myToken);
 
-    given()
-        .header(auth)
+    given().header(auth)
         .contentType(MEDIA_TYPE)
-        .body(toCreate, new JsonAPIMapper<UserPreference>(UserPreference.class))
+        .body(toCreate, new JsonAPIMapper<>(UserPreference.class))
         .when()
         .post(PREF_URL)
         .then()

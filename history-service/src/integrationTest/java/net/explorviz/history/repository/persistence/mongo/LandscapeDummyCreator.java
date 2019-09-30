@@ -1,7 +1,6 @@
 package net.explorviz.history.repository.persistence.mongo;
 
 import java.util.LinkedList;
-import net.explorviz.shared.common.idgen.IdGenerator;
 import net.explorviz.landscape.model.application.Application;
 import net.explorviz.landscape.model.application.Clazz;
 import net.explorviz.landscape.model.application.Component;
@@ -11,6 +10,7 @@ import net.explorviz.landscape.model.landscape.Node;
 import net.explorviz.landscape.model.landscape.NodeGroup;
 import net.explorviz.landscape.model.landscape.System;
 import net.explorviz.landscape.model.store.Timestamp;
+import net.explorviz.shared.common.idgen.IdGenerator;
 
 /**
  * Creates a dummy landscape for developing or demo purposes.
@@ -263,20 +263,20 @@ public final class LandscapeDummyCreator {
 
     DummyLandscapeHelper.createApplicationCommunication(pangeaApp, pangeaApp2, landscape, 100);
     DummyLandscapeHelper.createApplicationCommunication(pangeaApp2, pangeaApp3, landscape, 100);
-    DummyLandscapeHelper.createApplicationCommunication(ocnEditorApp, ocnDatabaseApp, landscape,
-        100);
-    DummyLandscapeHelper.createApplicationCommunication(ocnDatabaseApp, ocnDatabaseApp2, landscape,
-        100);
-    DummyLandscapeHelper.createApplicationCommunication(ocnEditorApp, ocnEditorApp2, landscape,
-        100);
+    DummyLandscapeHelper
+        .createApplicationCommunication(ocnEditorApp, ocnDatabaseApp, landscape, 100);
+    DummyLandscapeHelper
+        .createApplicationCommunication(ocnDatabaseApp, ocnDatabaseApp2, landscape, 100);
+    DummyLandscapeHelper
+        .createApplicationCommunication(ocnEditorApp, ocnEditorApp2, landscape, 100);
     DummyLandscapeHelper.createApplicationCommunication(ocnDatabaseApp, workflow1, landscape, 100);
     DummyLandscapeHelper.createApplicationCommunication(workflow1, pangeaApp, landscape, 100);
 
     DummyLandscapeHelper.createApplicationCommunication(workflow1, kielprintsApp, landscape, 100);
-    DummyLandscapeHelper.createApplicationCommunication(kielprintsApp, kielprintsApp2, landscape,
-        100);
-    DummyLandscapeHelper.createApplicationCommunication(kielprintsApp2, kielprintsApp3, landscape,
-        100);
+    DummyLandscapeHelper
+        .createApplicationCommunication(kielprintsApp, kielprintsApp2, landscape, 100);
+    DummyLandscapeHelper
+        .createApplicationCommunication(kielprintsApp2, kielprintsApp3, landscape, 100);
 
     DummyLandscapeHelper.createApplicationCommunication(workflow1, portalApp, landscape, 100);
     DummyLandscapeHelper.createApplicationCommunication(portalApp, portalApp2, landscape, 100);
@@ -300,8 +300,8 @@ public final class LandscapeDummyCreator {
     DummyLandscapeHelper.createApplicationCommunication(workflow3, cache, landscape, 300);
     DummyLandscapeHelper.createApplicationCommunication(workflow4, cache, landscape, 100);
 
-    DummyLandscapeHelper.createApplicationCommunication(cache, databaseConnector, landscape,
-        300 * 2);
+    DummyLandscapeHelper
+        .createApplicationCommunication(cache, databaseConnector, landscape, 300 * 2);
 
     DummyLandscapeHelper.createApplicationCommunication(provenance1, webshop, landscape, 100);
     DummyLandscapeHelper.createApplicationCommunication(provenance2, webshop, landscape, 200);
@@ -405,52 +405,52 @@ public final class LandscapeDummyCreator {
     // specify a first trace for the dummy landscape
     final String firstTraceId = "1";
 
-    DummyLandscapeHelper.createClazzCommunication(firstTraceId, 1, 40, graphDbClazz, helpersClazz,
-        application);
-    DummyLandscapeHelper.createClazzCommunication(firstTraceId, 2, 800, toolingClazz, implClazz,
-        application);
-    DummyLandscapeHelper.createClazzCommunication(firstTraceId, 3, 60, implClazz, helpersClazz,
-        application);
-    DummyLandscapeHelper.createClazzCommunication(firstTraceId, 4, 600, implClazz, apiImplClazz,
-        application);
-    DummyLandscapeHelper.createClazzCommunication(firstTraceId, 5, 1000, implClazz, loggingClazz,
-        application);
-    DummyLandscapeHelper.createClazzCommunication(firstTraceId, 6, 100, guardClazz, unsafeClazz,
-        application);
-    DummyLandscapeHelper.createClazzCommunication(firstTraceId, 7, 1000, apiClazz,
-        configurationClazz, application);
-    DummyLandscapeHelper.createClazzCommunication(firstTraceId, 8, 150, lifecycleClazz,
-        loggingClazz, application);
-    DummyLandscapeHelper.createClazzCommunication(firstTraceId, 9, 12000, guardClazz, implClazz,
-        application);
-    DummyLandscapeHelper.createClazzCommunication(firstTraceId, 10, 3500, implClazz, loggingClazz,
-        application);
-    DummyLandscapeHelper.createClazzCommunication(firstTraceId, 11, 500, loggingClazz, implClazz,
-        application);
-    DummyLandscapeHelper.createClazzCommunication(firstTraceId, 12, 4200, implClazz, helpersClazz,
-        application);
-    DummyLandscapeHelper.createClazzCommunication(firstTraceId, 13, 4200, helpersClazz, implClazz,
-        application);
-    DummyLandscapeHelper.createClazzCommunication(firstTraceId, 14, 2100, implClazz, helpersClazz,
-        application);
-    DummyLandscapeHelper.createClazzCommunication(firstTraceId, 15, 2100, helpersClazz, implClazz,
-        application);
+    DummyLandscapeHelper
+        .createClazzCommunication(firstTraceId, 1, 40, graphDbClazz, helpersClazz, application);
+    DummyLandscapeHelper
+        .createClazzCommunication(firstTraceId, 2, 800, toolingClazz, implClazz, application);
+    DummyLandscapeHelper
+        .createClazzCommunication(firstTraceId, 3, 60, implClazz, helpersClazz, application);
+    DummyLandscapeHelper
+        .createClazzCommunication(firstTraceId, 4, 600, implClazz, apiImplClazz, application);
+    DummyLandscapeHelper
+        .createClazzCommunication(firstTraceId, 5, 1000, implClazz, loggingClazz, application);
+    DummyLandscapeHelper
+        .createClazzCommunication(firstTraceId, 6, 100, guardClazz, unsafeClazz, application);
+    DummyLandscapeHelper
+        .createClazzCommunication(firstTraceId, 7, 1000, apiClazz, configurationClazz, application);
+    DummyLandscapeHelper
+        .createClazzCommunication(firstTraceId, 8, 150, lifecycleClazz, loggingClazz, application);
+    DummyLandscapeHelper
+        .createClazzCommunication(firstTraceId, 9, 12000, guardClazz, implClazz, application);
+    DummyLandscapeHelper
+        .createClazzCommunication(firstTraceId, 10, 3500, implClazz, loggingClazz, application);
+    DummyLandscapeHelper
+        .createClazzCommunication(firstTraceId, 11, 500, loggingClazz, implClazz, application);
+    DummyLandscapeHelper
+        .createClazzCommunication(firstTraceId, 12, 4200, implClazz, helpersClazz, application);
+    DummyLandscapeHelper
+        .createClazzCommunication(firstTraceId, 13, 4200, helpersClazz, implClazz, application);
+    DummyLandscapeHelper
+        .createClazzCommunication(firstTraceId, 14, 2100, implClazz, helpersClazz, application);
+    DummyLandscapeHelper
+        .createClazzCommunication(firstTraceId, 15, 2100, helpersClazz, implClazz, application);
 
     // specify a second trace for the dummy landscape
     final String secondTraceId = "2";
 
-    DummyLandscapeHelper.createClazzCommunication(secondTraceId, 1, 2500, implClazz, loggingClazz,
-        application);
-    DummyLandscapeHelper.createClazzCommunication(secondTraceId, 2, 900, loggingClazz, implClazz,
-        application);
-    DummyLandscapeHelper.createClazzCommunication(secondTraceId, 3, 8200, implClazz, helpersClazz,
-        application);
-    DummyLandscapeHelper.createClazzCommunication(secondTraceId, 4, 11200, helpersClazz, implClazz,
-        application);
-    DummyLandscapeHelper.createClazzCommunication(secondTraceId, 5, 1200, implClazz, helpersClazz,
-        application);
-    DummyLandscapeHelper.createClazzCommunication(secondTraceId, 6, 390, helpersClazz, implClazz,
-        application);
+    DummyLandscapeHelper
+        .createClazzCommunication(secondTraceId, 1, 2500, implClazz, loggingClazz, application);
+    DummyLandscapeHelper
+        .createClazzCommunication(secondTraceId, 2, 900, loggingClazz, implClazz, application);
+    DummyLandscapeHelper
+        .createClazzCommunication(secondTraceId, 3, 8200, implClazz, helpersClazz, application);
+    DummyLandscapeHelper
+        .createClazzCommunication(secondTraceId, 4, 11200, helpersClazz, implClazz, application);
+    DummyLandscapeHelper
+        .createClazzCommunication(secondTraceId, 5, 1200, implClazz, helpersClazz, application);
+    DummyLandscapeHelper
+        .createClazzCommunication(secondTraceId, 6, 390, helpersClazz, implClazz, application);
 
     return application;
   }

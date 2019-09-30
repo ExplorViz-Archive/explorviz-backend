@@ -90,8 +90,9 @@ public class PreferenceValidator {
       num = (Number) this.up.getValue();
       val = num.doubleValue();
     } catch (final ClassCastException e) {
-      throw new PreferenceValidationException(String.format(
-          "Given value is not of type double but %s", this.up.getValue().getClass().toString()));
+      throw new PreferenceValidationException(
+          String.format("Given value is not of type double but %s",
+              this.up.getValue().getClass().toString()));
     }
 
     // Types match, check if value lies within min an max

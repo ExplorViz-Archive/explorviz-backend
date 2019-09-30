@@ -10,17 +10,18 @@ public class UserSerializationHelper {
 
   /**
    * Serializes a user WITH the password attribute, which otherwise is ignored by Jackson
+   * 
    * @param u the user
    * @return a JSON:API string representing the user
    * @throws IOException if the json is invalid
    */
-  public static String serialize(User u) throws IOException {
-    String serialized = new JsonAPIMapper<>(User.class).serializeRaw(u);
+  public static String serialize(final User u) throws IOException {
+    final String serialized = new JsonAPIMapper<>(User.class).serializeRaw(u);
 
     // Password is ignored we need to add it manually into the JSON tree
-    ObjectMapper mapper = new ObjectMapper();
-    JsonNode n = mapper.readTree(serialized);
-    ((ObjectNode)n.at("/data/attributes")).put("password", u.getPassword());
+    final ObjectMapper mapper = new ObjectMapper();
+    final JsonNode n = mapper.readTree(serialized);
+    ((ObjectNode) n.at("/data/attributes")).put("password", u.getPassword());
     return n.toString();
   }
 

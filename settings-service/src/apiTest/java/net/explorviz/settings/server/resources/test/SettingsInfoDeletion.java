@@ -1,6 +1,8 @@
 package net.explorviz.settings.server.resources.test;
 
+import static io.restassured.RestAssured.given;
 import io.restassured.http.Header;
+import java.io.IOException;
 import net.explorviz.settings.model.FlagSetting;
 import net.explorviz.settings.model.Setting;
 import net.explorviz.settings.server.resources.test.helper.AuthorizationHelper;
@@ -9,10 +11,6 @@ import net.explorviz.settings.server.resources.test.helper.JsonAPIMapper;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import java.io.IOException;
-
-import static io.restassured.RestAssured.given;
 
 class SettingsInfoDeletion {
 
@@ -28,8 +26,8 @@ class SettingsInfoDeletion {
 
 
   /**
-   * Retrieves token for both an admin and an unprivileged user ("normie").
-   * The default admin is used for the former, a normie is created.
+   * Retrieves token for both an admin and an unprivileged user ("normie"). The default admin is
+   * used for the former, a normie is created.
    *
    * @throws IOException if serialization fails
    */
@@ -46,42 +44,38 @@ class SettingsInfoDeletion {
   }
 
   private Setting create() {
-    Setting toCreate
-            = new FlagSetting("testname", "a test setting",
-            DefaultSettings.origin, false);
+    final Setting toCreate =
+        new FlagSetting("testname", "a test setting", DefaultSettings.origin, false);
 
-    Setting created = given()
-      .header(authHeaderAdmin)
-      .contentType(MEDIA_TYPE)
-      .body(toCreate, new JsonAPIMapper<Setting>(Setting.class))
-      .when()
-      .post(SETTINGS_URL)
-      .as(Setting.class, new JsonAPIMapper<Setting>(Setting.class));
+    final Setting created = given().header(this.authHeaderAdmin)
+        .contentType(MEDIA_TYPE)
+        .body(toCreate, new JsonAPIMapper<>(Setting.class))
+        .when()
+        .post(SETTINGS_URL)
+        .as(Setting.class, new JsonAPIMapper<>(Setting.class));
     return created;
   }
 
   @Test
   void deleteAsAdmin() {
-    Setting toDelete = create();
+    final Setting toDelete = this.create();
 
-    given()
-      .header(authHeaderAdmin)
-      .contentType(MEDIA_TYPE)
-      .when()
-      .delete(SETTINGS_URL+"/"+toDelete.getId())
-      .then()
-      .statusCode(204);
+    given().header(this.authHeaderAdmin)
+        .contentType(MEDIA_TYPE)
+        .when()
+        .delete(SETTINGS_URL + "/" + toDelete.getId())
+        .then()
+        .statusCode(204);
   }
 
   @Test
   void deleteAsNormie() {
-     given()
-      .header(authHeaderNormie)
-      .contentType(MEDIA_TYPE)
-      .when()
-      .delete(SETTINGS_URL+"/sampleid")
-      .then()
-      .statusCode(403);
+    given().header(this.authHeaderNormie)
+        .contentType(MEDIA_TYPE)
+        .when()
+        .delete(SETTINGS_URL + "/sampleid")
+        .then()
+        .statusCode(403);
   }
 
 

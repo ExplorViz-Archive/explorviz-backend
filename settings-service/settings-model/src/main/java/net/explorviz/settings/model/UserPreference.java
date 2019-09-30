@@ -79,29 +79,31 @@ public class UserPreference {
   }
 
   @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
+  public boolean equals(final Object o) {
+    if (this == o) {
+      return true;
+    }
 
-    if (o == null || getClass() != o.getClass()) return false;
+    if (o == null || this.getClass() != o.getClass()) {
+      return false;
+    }
 
-    UserPreference that = (UserPreference) o;
+    final UserPreference that = (UserPreference) o;
 
-    return new EqualsBuilder()
-      .append(id, that.id)
-      .append(userId, that.userId)
-      .append(settingId, that.settingId)
-      .append(value, that.value)
-      .isEquals();
+    return new EqualsBuilder().append(this.id, that.id)
+        .append(this.userId, that.userId)
+        .append(this.settingId, that.settingId)
+        .append(this.value, that.value)
+        .isEquals();
   }
 
   @Override
   public int hashCode() {
-    return new HashCodeBuilder(17, 37)
-      .append(id)
-      .append(userId)
-      .append(settingId)
-      .append(value)
-      .toHashCode();
+    return new HashCodeBuilder(17, 37).append(this.id)
+        .append(this.userId)
+        .append(this.settingId)
+        .append(this.value)
+        .toHashCode();
   }
 
   public String getUserId() {
@@ -116,7 +118,7 @@ public class UserPreference {
     return this.settingId;
   }
 
-  public void setId(String id) {
+  public void setId(final String id) {
     this.id = id;
   }
 
@@ -124,7 +126,7 @@ public class UserPreference {
     return this.value;
   }
 
-  public void setValue(Object value) {
+  public void setValue(final Object value) {
     this.value = value;
   }
 

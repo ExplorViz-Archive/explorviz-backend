@@ -23,18 +23,23 @@ public class DependencyInjectionBinder extends CommonDependencyInjectionBinder {
         PropertyHelper.getBooleanProperty("service.generator.id.redis");
 
     if (useRedisForIdGeneration) {
-      this.bind(RedisServiceIdGenerator.class).to(ServiceIdGenerator.class).in(Singleton.class)
+      this.bind(RedisServiceIdGenerator.class)
+          .to(ServiceIdGenerator.class)
+          .in(Singleton.class)
           .ranked(1000); // NOCS
     }
 
-    this.bind(LandscapeSerializationHelper.class).to(LandscapeSerializationHelper.class)
+    this.bind(LandscapeSerializationHelper.class)
+        .to(LandscapeSerializationHelper.class)
         .in(Singleton.class);
 
     // Broadcast Mechanism
-    this.bind(LandscapeBroadcastService.class).to(LandscapeBroadcastService.class)
+    this.bind(LandscapeBroadcastService.class)
+        .to(LandscapeBroadcastService.class)
         .in(Singleton.class);
 
-    this.bind(KafkaLandscapeExchangeService.class).to(KafkaLandscapeExchangeService.class)
+    this.bind(KafkaLandscapeExchangeService.class)
+        .to(KafkaLandscapeExchangeService.class)
         .in(Singleton.class);
   }
 }

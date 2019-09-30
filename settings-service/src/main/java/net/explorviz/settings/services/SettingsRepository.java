@@ -154,7 +154,7 @@ public class SettingsRepository implements MongoRepository<Setting, String>, Que
     String originFilter = null;
 
 
-    List<Class<? extends Setting>> classes = new ArrayList<Class<? extends Setting>>(Setting.TYPES);
+    List<Class<? extends Setting>> classes = new ArrayList<>(Setting.TYPES);
 
     if (query.getFilters().get(typeField) != null) {
       if (query.getFilters().get(typeField).size() == 1) {
@@ -166,7 +166,7 @@ public class SettingsRepository implements MongoRepository<Setting, String>, Que
       } else {
         // Filters work conjunctive and settings can only be of a single type
         // thus the query result is empty
-        return new QueryResult<Setting>(query, new ArrayList<Setting>(), 0);
+        return new QueryResult<>(query, new ArrayList<Setting>(), 0);
       }
     }
 
@@ -176,12 +176,12 @@ public class SettingsRepository implements MongoRepository<Setting, String>, Que
       } else {
         // Filters work conjunctive and settings can only be of a origin type
         // thus the query result is empty
-        return new QueryResult<Setting>(query, new ArrayList<Setting>(), 0);
+        return new QueryResult<>(query, new ArrayList<Setting>(), 0);
       }
     }
 
 
-    List<Setting> data = new ArrayList<Setting>();
+    List<Setting> data = new ArrayList<>();
 
 
     for (final Class<?> cls : classes) {
@@ -201,7 +201,7 @@ public class SettingsRepository implements MongoRepository<Setting, String>, Que
       data = data.subList(from, to);
     }
 
-    return new QueryResult<Setting>(query, data, total);
+    return new QueryResult<>(query, data, total);
   }
 
 
