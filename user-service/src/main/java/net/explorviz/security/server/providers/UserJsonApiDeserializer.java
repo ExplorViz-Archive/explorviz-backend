@@ -40,20 +40,6 @@ public class UserJsonApiDeserializer implements MessageBodyReader<User> {
       throws IOException, WebApplicationException {
 
     final User user = this.converter.readDocument(entityStream, type).get();
-
-    // enrich user with role based on the passed ID
-    // See https://github.com/ExplorViz/explorviz-frontend/issues/37
-    final List<String> obtainedRolelist = new ArrayList<>();
-
-    for (final String roleWithoutContent : user.getRoles()) {
-      final String dbRole = this.datastore.get(String.class, roleWithoutContent);
-
-      if (dbRole != null) {
-        obtainedRolelist.add(dbRole);
-      }
-    }
-    user.setRoles(obtainedRolelist);
-
     return user;
   }
 

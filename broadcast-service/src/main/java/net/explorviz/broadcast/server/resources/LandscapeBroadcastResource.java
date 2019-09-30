@@ -15,6 +15,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.sse.SseEventSink;
 import net.explorviz.broadcast.server.helper.LandscapeBroadcastService;
+import net.explorviz.shared.security.model.roles.Role;
 
 /**
  * Resource class that contains an endpoint which clients, e.g., the ExplorViz Frontend, can use to
@@ -22,7 +23,7 @@ import net.explorviz.broadcast.server.helper.LandscapeBroadcastService;
  *
  */
 @Path("v1/landscapes/broadcast")
-@RolesAllowed({"admin", "user"})
+@RolesAllowed({Role.ADMIN})
 @Tag(name = "Broadcasts")
 @SecurityScheme(type = SecuritySchemeType.HTTP, name = "token", scheme = "bearer",
     bearerFormat = "JWT")
