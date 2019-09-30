@@ -47,7 +47,7 @@ public class AuthorizationService {
       final TokenDetails details = this.tps.parseToken(authHeader.substring(7));
       return details.getRoles()
           .stream()
-          .map(r -> r.getDescriptor().toLowerCase())
+          .map(r -> r.toLowerCase())
           .anyMatch(r -> r.equals("admin"));
     } catch (final NullPointerException e) {
       // No token

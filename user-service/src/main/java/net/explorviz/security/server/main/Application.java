@@ -38,7 +38,6 @@ public class Application extends ResourceConfig {
   public Application() { // NOPMD
 
     GenericTypeFinder.getTypeMap().put("User", User.class);
-    GenericTypeFinder.getTypeMap().put("Role", String.class);
     GenericTypeFinder.getTypeMap().put("UserBatchRequest", UserBatchRequest.class);
     GenericTypeFinder.getTypeMap().put("UserPreference", UserPreference.class);
 

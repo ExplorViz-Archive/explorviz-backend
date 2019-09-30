@@ -31,7 +31,7 @@ public class DatastoreFactory implements Factory<Datastore> {
     final Morphia morphia = new Morphia();
 
     // Map the model classes
-    morphia.map(User.class, String.class);
+    morphia.map(User.class);
 
     this.datastore = morphia.createDatastore(new MongoClient(host + ":" + port), "explorviz");
     this.datastore.ensureIndexes();
