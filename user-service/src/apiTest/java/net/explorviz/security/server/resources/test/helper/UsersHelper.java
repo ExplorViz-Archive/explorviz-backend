@@ -19,7 +19,7 @@ public class UsersHelper {
   private static final Logger LOGGER = LoggerFactory.getLogger(UsersHelper.class);
 
   private static final String MEDIA_TYPE = "application/vnd.api+json";
-  private final static String USERS_URI = "http://localhost:8082/v1/users/";
+  private final static String USERS_URI = "http://localhost:8090/v1/users/";
 
   public static UsersHelper getInstance() {
     if (instance == null) {
@@ -69,7 +69,7 @@ public class UsersHelper {
 
   /**
    * Delete a user by id
-   * 
+   *
    * @param id if of the user to delete
    */
   public void deleteUserById(final String id) {

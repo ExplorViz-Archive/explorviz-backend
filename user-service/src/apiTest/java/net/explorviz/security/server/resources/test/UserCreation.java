@@ -22,8 +22,8 @@ import org.junit.jupiter.api.Test;
 
 class UserCreation {
 
-  private final static String AUTH_ROUTE = "http://localhost:8082/v1/tokens";
-  private final static String BASE_URI = "http://localhost:8082/v1/";
+  private final static String AUTH_ROUTE = "http://localhost:8090/v1/tokens";
+  private final static String BASE_URI = "http://localhost:8090/v1/";
 
   private static final String MEDIA_TYPE = "application/vnd.api+json";
 

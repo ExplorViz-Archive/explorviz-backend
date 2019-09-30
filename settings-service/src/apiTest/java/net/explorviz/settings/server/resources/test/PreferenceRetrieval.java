@@ -20,8 +20,8 @@ import org.junit.jupiter.api.Test;
 public class PreferenceRetrieval {
 
   private static final String USER_PREF_URL =
-      "http://localhost:8087/v1/users/{uid}/settings/preferences";
-  private static final String PREF_URL = "http://localhost:8087/v1/users/settings/preferences";
+      "http://localhost:8090/v1/users/{uid}/settings/preferences";
+  private static final String PREF_URL = "http://localhost:8090/v1/users/settings/preferences";
 
   private static String adminToken;
   private static String normieToken;

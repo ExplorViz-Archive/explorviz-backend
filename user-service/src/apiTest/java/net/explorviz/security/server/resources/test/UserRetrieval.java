@@ -25,7 +25,7 @@ import org.junit.jupiter.api.Test;
 
 public class UserRetrieval {
 
-  private final static String BASE_URI = "http://localhost:8082/v1/";
+  private final static String BASE_URI = "http://localhost:8090/v1/";
 
   private static final String MEDIA_TYPE = "application/vnd.api+json";
 

@@ -18,7 +18,7 @@ import org.junit.jupiter.api.Test;
 
 public class RoleRetrieval {
 
-  private static final String ROLE_URL = "http://localhost:8082/v1/roles";
+  private static final String ROLE_URL = "http://localhost:8090/v1/roles";
 
   // Currently only two roles exist, nameley 'user' and 'admin'
   // It's not possible to add more roles
