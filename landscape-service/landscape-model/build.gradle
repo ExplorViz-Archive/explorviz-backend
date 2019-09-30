@@ -1,6 +1,7 @@
 plugins {
 	id "java-library"
 	id "com.github.spotbugs"
+	id "maven"
 }
 
 // Force new Dependencies 
@@ -11,7 +12,7 @@ configurations.all {
 dependencies {
 
   if(useRemoteSharedProject.toBoolean()) {
-    implementation "com.github.explorviz.explorviz-backend-shared:common-concerns:${sharedProjectVersion}"
+  	implementation group: 'net.explorviz', name: 'common-concerns', version: "${sharedProjectVersion}"
   } else {
     implementation project(':common-concerns')
   }
@@ -20,6 +21,28 @@ dependencies {
   	implementation group: 'com.github.jasminb', name: 'jsonapi-converter', version:'0.8' 	
 	implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.9'
 }
+
+jar {
+	baseName = "explorviz-${project.name}"
+}
+
+// BEGIN Sonatype Snapshot publishing
+uploadArchives {
+	repositories {
+		mavenDeployer {
+			def user = String.valueOf(System.getenv('SONATYPE_LOGIN'))
+			def pw = String.valueOf(System.getenv('SONATYPE_PW'))
+			
+			repository(url: "https://oss.sonatype.org/content/repositories/snapshots") {
+				authentication(userName: user, password: pw)
+			}
+			pom.version = "dev-1-SNAPSHOT"
+			pom.artifactId = project.name
+			pom.groupId = "net.explorviz"
+		}
+    }
+}
+// END Sonatype Snapshot publishing
 
 pmd {
     ruleSets = []

@@ -7,7 +7,6 @@ import javax.ws.rs.core.Application;
 import net.explorviz.security.server.main.DependencyInjectionBinder;
 import net.explorviz.security.services.TokenService;
 import net.explorviz.shared.security.model.User;
-import net.explorviz.shared.security.model.roles.Role;
 import org.glassfish.hk2.api.ServiceLocator;
 import org.glassfish.hk2.utilities.ServiceLocatorUtilities;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
