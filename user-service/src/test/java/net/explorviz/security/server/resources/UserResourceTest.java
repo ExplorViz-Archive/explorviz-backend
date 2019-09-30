@@ -27,6 +27,7 @@ import net.explorviz.security.util.PasswordStorage.InvalidHashException;
 import net.explorviz.shared.querying.Query;
 import net.explorviz.shared.querying.QueryResult;
 import net.explorviz.shared.security.model.User;
+import net.explorviz.shared.security.model.roles.Role;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -177,33 +178,24 @@ public class UserResourceTest {
   @Test
   public void testUserByRole() {
 
-    this.roles.add("role1");
-    this.roles.add("role2");
-    this.roles.add("role3");
 
     final User u1 = new User("testuser");
     u1.setPassword("password");
-    u1.setRoles(Arrays.asList("role1", "role2"));
+    u1.setRoles(Arrays.asList(Role.USER));
 
     final User u2 = new User("testuser2");
     u2.setPassword("password");
-    u2.setRoles(Arrays.asList("role1"));
+    u2.setRoles(Arrays.asList(Role.USER));
 
     this.userResource.newUser(u1);
     this.userResource.newUser(u2);
 
     final MultivaluedHashMap<String, String> roleparams = new MultivaluedHashMap<>();
-    roleparams.add("filter[role]", "role1");
+    roleparams.add("filter[role]", "user");
     final UriInfo uri = Mockito.mock(UriInfo.class);
     Mockito.when(uri.getQueryParameters(true)).thenReturn(roleparams);
 
     assertEquals(2, this.userResource.find(uri).getData().size());
-
-    roleparams.putSingle("filter[role]", "role2");
-    assertEquals(1, this.userResource.find(uri).getData().size());
-
-    roleparams.putSingle("filter[role]", "role3");
-    assertEquals(0, this.userResource.find(uri).getData().size());
   }
 
   @Test
@@ -261,11 +253,10 @@ public class UserResourceTest {
 
     final String uid = newUser.getId();
 
-    final User update = new User(null, null, null, Arrays.asList("newrole"));
-    this.roles.add("newrole");
+    final User update = new User(null, null, null, Arrays.asList(Role.USER));
     final User updatedUser = this.userResource.updateUser(uid, update);
 
-    assertTrue(updatedUser.getRoles().stream().anyMatch(r -> r.equals("newrole")));
+    assertTrue(updatedUser.getRoles().stream().anyMatch(r -> r.equals(Role.USER)));
     assertEquals(newUser.getId(), updatedUser.getId());
     assertEquals(u1.getUsername(), updatedUser.getUsername());
     assertEquals(u1.getPassword(), updatedUser.getPassword());
