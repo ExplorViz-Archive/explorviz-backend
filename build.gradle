@@ -108,6 +108,12 @@ subprojects {
       compileClasspath += sourceSets.main.output
       runtimeClasspath += sourceSets.main.output
     }
+    
+    apiTest {
+      java.srcDir file('src/apiTest/java')
+      compileClasspath += sourceSets.main.output
+      runtimeClasspath += sourceSets.main.output
+    }
   }
   
   task integrationTest(type: Test) {
@@ -122,18 +128,39 @@ subprojects {
     classpath = sourceSets.integrationTest.runtimeClasspath
   }
   
+  task apiTest(type: Test) {
+    useJUnitPlatform{
+      excludeTags 'slow'
+      includeEngines 'junit-jupiter'
+    }
+    description = 'Runs api tests.'
+    group = 'verification'
+
+    testClassesDirs = sourceSets.apiTest.output.classesDirs
+    classpath = sourceSets.apiTest.runtimeClasspath
+  }
+  
   configurations {
     integrationTestImplementation.extendsFrom implementation
     integrationTestRuntimeOnly.extendsFrom runtimeOnly
     
-    integrationTestRuntimeOnly.setCanBeResolved(true)
     integrationTestImplementation.setCanBeResolved(true)
+    integrationTestRuntimeOnly.setCanBeResolved(true)
+    
+    apiTestImplementation.extendsFrom implementation
+    apiTestRuntimeOnly.extendsFrom runtimeOnly
+    
+    apiTestImplementation.setCanBeResolved(true)
+    apiTestRuntimeOnly.setCanBeResolved(true)
   }
 
   eclipse {
     classpath {
         plusConfigurations.add configurations.integrationTestRuntimeOnly
         plusConfigurations.add configurations.integrationTestImplementation
+        
+        plusConfigurations.add configurations.apiTestRuntimeOnly
+        plusConfigurations.add configurations.apiTestImplementation
     }
   }
   
@@ -201,6 +228,9 @@ subprojects {
 
     integrationTestImplementation 'org.junit.jupiter:junit-jupiter-engine:5.4.0'
     integrationTestImplementation 'org.junit.platform:junit-platform-runner:1.4.0'
+    
+    apiTestImplementation 'org.junit.jupiter:junit-jupiter-engine:5.4.0'
+    apiTestImplementation 'org.junit.platform:junit-platform-runner:1.4.0'
   }
   
   test {
@@ -213,5 +243,5 @@ subprojects {
 
 }
 
-task integrationTest
-integrationTest.dependsOn subprojects*.assemble
+task apiTest
+apiTest.dependsOn subprojects*.assemble

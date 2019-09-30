@@ -54,6 +54,9 @@ dependencies {
   implementation group: 'com.github.jasminb', name: 'jsonapi-converter', version:'0.8'
 }
 
+// disable api tests, since there are none
+apiTest.enabled = false
+
 assemble.dependsOn shadowJar
 jar.enabled = false
 

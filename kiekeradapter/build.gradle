@@ -23,6 +23,9 @@ dependencies {
 // disable integration tests, since there are none
 integrationTest.enabled = false
 
+// disable api tests, since there are none
+apiTest.enabled = false
+
 configurations.all {
     resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
 }

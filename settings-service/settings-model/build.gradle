@@ -24,6 +24,10 @@ dependencies {
 
 // disable integration tests, since there are none
 integrationTest.enabled = false
+
+// disable api tests, since there are none
+apiTest.enabled = false
+
 jar {
 	baseName = "explorviz-${project.name}"
 }
