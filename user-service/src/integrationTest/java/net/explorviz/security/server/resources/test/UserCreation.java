@@ -1,7 +1,6 @@
 package net.explorviz.security.server.resources.test;
 
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.hasEntry;
 import static org.hamcrest.Matchers.hasKey;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
@@ -10,6 +9,7 @@ import io.restassured.http.Header;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import net.explorviz.security.model.UserCredentials;
 import net.explorviz.security.server.resources.test.helper.AuthorizationHelper;
 import net.explorviz.security.server.resources.test.helper.JsonAPIMapper;
@@ -78,7 +78,10 @@ class UserCreation {
   public void createValidAdmin() throws IOException {
     final String name = "testadmin";
     final String password = "password";
-    final User u = new User(null, name, password, new ArrayList<>(Arrays.asList("admin")));
+    final String role = "admin";
+    final List<String> roles = new ArrayList<>(Arrays.asList(role));
+
+    final User u = new User(null, name, password, roles);
 
     given().body(UserSerializationHelper.serialize(u))
         .contentType(MEDIA_TYPE)
@@ -89,10 +92,7 @@ class UserCreation {
         .statusCode(200)
         .body("$", hasKey("data"))
         .body("data.attributes.username", is(name))
-        .body("data", hasKey("relationships"))
-        .body("data.relationships", hasKey("roles"))
-        .body("data.relationships.roles.data.size()", is(1))
-        .body("data.relationships.roles.data[0]", hasEntry("id", "admin"));
+        .body("data.attributes.roles", is(roles));
   }
 
   @Test
