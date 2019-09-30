@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.mongodb.DuplicateKeyException;
 import com.mongodb.MongoException;
 import com.mongodb.WriteResult;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -165,13 +166,12 @@ public class UserService implements Queryable<User> {
       return false;
     }
 
-    final boolean isadmin = user.getRoles().stream().filter(r -> r.equals(ADMIN)).count() == 1;
+    final boolean isadmin =
+        user.getRoles().stream().filter(r -> r.equals(ADMIN)).count() == 1;
 
-    final boolean otheradmin = this.getAll()
-        .stream()
-        .filter(u -> u.getRoles().stream().collect(Collectors.toList()).contains(ADMIN))
-        .filter(u -> !u.getId().equals(id))
-        .count() > 0;
+    final boolean otheradmin =
+        this.getAll().stream().filter(u -> new ArrayList<>(u.getRoles()).contains(ADMIN))
+            .anyMatch(u -> !u.getId().equals(id));
 
 
     return isadmin && !otheradmin;
@@ -210,7 +210,8 @@ public class UserService implements Queryable<User> {
 
       // Filter by roles
       if (roles != null) {
-        q.field(roleField).hasAllOf(roles.stream().collect(Collectors.toList()));
+        q.field(roleField)
+            .hasAllOf(new ArrayList<>(roles));
       }
 
       // Filter by batch id, if more than one is give, ignore all but the first

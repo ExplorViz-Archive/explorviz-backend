@@ -1,15 +1,14 @@
 package net.explorviz.security.server.main;
 
 import java.util.Arrays;
-import java.util.List;
 import javax.inject.Inject;
 import javax.servlet.annotation.WebListener;
-import net.explorviz.security.services.RoleService;
 import net.explorviz.security.services.UserService;
 import net.explorviz.security.services.exceptions.UserCrudException;
 import net.explorviz.security.util.PasswordStorage;
 import net.explorviz.security.util.PasswordStorage.CannotPerformOperationException;
 import net.explorviz.shared.security.model.User;
+import net.explorviz.shared.security.model.roles.Role;
 import org.glassfish.jersey.server.monitoring.ApplicationEvent;
 import org.glassfish.jersey.server.monitoring.ApplicationEvent.Type;
 import org.glassfish.jersey.server.monitoring.ApplicationEventListener;
@@ -32,8 +31,6 @@ public class SetupApplicationListener implements ApplicationEventListener {
   @Inject
   private Datastore datastore;
 
-  @Inject
-  private RoleService roleService;
 
   @Inject
   private UserService userService;
@@ -66,18 +63,12 @@ public class SetupApplicationListener implements ApplicationEventListener {
 
   private void createDefaultData() throws CannotPerformOperationException {
 
-    final List<String> roleList = this.roleService.getAllRoles();
-
-    for (final String r : roleList) {
-      this.datastore.save(r);
-    }
-
-
     final String pw = PasswordStorage.createHash("password");
 
     if (this.datastore.getCount(User.class) == 0) {
       try {
-        this.userService.saveNewEntity(new User(null, ADMIN_NAME, pw, Arrays.asList("admin")));
+        this.userService
+            .saveNewEntity(new User(null, ADMIN_NAME, pw, Arrays.asList(Role.ADMIN)));
       } catch (final UserCrudException e) {
         if (LOGGER.isErrorEnabled()) {
           LOGGER.error("Default admin not created");
