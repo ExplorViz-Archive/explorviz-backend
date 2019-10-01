@@ -9,7 +9,8 @@ services:
     volumes:
       - "./traefik/traefik-static.toml:/etc/traefik/traefik.toml"
       - "./traefik/traefik-dynamic-linux.toml:/etc/traefik/traefik-dynamic.toml"
-
+    network_mode: "host"
+    
    mongo-auth:
     image: mongo
     container_name: explorviz-auth-mongo
