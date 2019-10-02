@@ -2,10 +2,15 @@ version: "3.2"
 services:
 
    reverse-proxy:
-    image: explorviz/reverse-proxy:latest
-    container_name: explorviz-reverse-proxy
+    image: "traefik:v2.0.1"
+    container_name: "explorviz-reverse-proxy"
+    ports:
+      - "8080:8080"
+    volumes:
+      - "./traefik/traefik-static.toml:/etc/traefik/traefik.toml"
+      - "./traefik/traefik-dynamic-linux.toml:/etc/traefik/traefik-dynamic.toml"
     network_mode: "host"
-
+    
    mongo-auth:
     image: mongo
     container_name: explorviz-auth-mongo
