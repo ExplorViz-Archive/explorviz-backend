@@ -53,7 +53,7 @@ public class BatchCreationServiceTest {
 
 
     final UserBatchRequest batch =
-        new UserBatchRequest("test", size, passwords, Arrays.asList(Role.ADMIN), null);
+        new UserBatchRequest("test", size, passwords, Arrays.asList(Role.ADMIN_NAME), null);
 
     Mockito.doAnswer(new Answer<User>() {
 

@@ -23,7 +23,7 @@ import net.explorviz.shared.security.model.roles.Role;
  *
  */
 @Path("v1/landscapes/broadcast")
-@RolesAllowed({Role.ADMIN})
+@RolesAllowed({Role.ADMIN_NAME})
 @Tag(name = "Broadcasts")
 @SecurityScheme(type = SecuritySchemeType.HTTP, name = "token", scheme = "bearer",
     bearerFormat = "JWT")

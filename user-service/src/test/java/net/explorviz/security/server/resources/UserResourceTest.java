@@ -181,11 +181,11 @@ public class UserResourceTest {
 
     final User u1 = new User("testuser");
     u1.setPassword("password");
-    u1.setRoles(Arrays.asList(Role.USER));
+    u1.setRoles(Arrays.asList(Role.USER_NAME));
 
     final User u2 = new User("testuser2");
     u2.setPassword("password");
-    u2.setRoles(Arrays.asList(Role.USER));
+    u2.setRoles(Arrays.asList(Role.USER_NAME));
 
     this.userResource.newUser(u1);
     this.userResource.newUser(u2);
@@ -253,10 +253,10 @@ public class UserResourceTest {
 
     final String uid = newUser.getId();
 
-    final User update = new User(null, null, null, Arrays.asList(Role.USER));
+    final User update = new User(null, null, null, Arrays.asList(Role.USER_NAME));
     final User updatedUser = this.userResource.updateUser(uid, update);
 
-    assertTrue(updatedUser.getRoles().stream().anyMatch(r -> r.equals(Role.USER)));
+    assertTrue(updatedUser.getRoles().stream().anyMatch(r -> r.equals(Role.USER_NAME)));
     assertEquals(newUser.getId(), updatedUser.getId());
     assertEquals(u1.getUsername(), updatedUser.getUsername());
     assertEquals(u1.getPassword(), updatedUser.getPassword());

@@ -22,6 +22,7 @@ import net.explorviz.shared.querying.PaginationParameterFilter;
 import net.explorviz.shared.security.filters.AuthorizationFilter;
 import net.explorviz.shared.security.filters.CorsResponseFilter;
 import net.explorviz.shared.security.model.User;
+import net.explorviz.shared.security.model.roles.Role;
 import org.glassfish.jersey.jackson.JacksonFeature;
 import org.glassfish.jersey.server.ResourceConfig;
 
@@ -38,6 +39,7 @@ public class Application extends ResourceConfig {
   public Application() { // NOPMD
 
     GenericTypeFinder.getTypeMap().put("User", User.class);
+    GenericTypeFinder.getTypeMap().put("Role", Role.class);
     GenericTypeFinder.getTypeMap().put("UserBatchRequest", UserBatchRequest.class);
     GenericTypeFinder.getTypeMap().put("UserPreference", UserPreference.class);
 

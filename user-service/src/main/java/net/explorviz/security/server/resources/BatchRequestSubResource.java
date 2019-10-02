@@ -56,7 +56,7 @@ public class BatchRequestSubResource {
   @POST
   @Consumes(MEDIA_TYPE)
   @Produces(MEDIA_TYPE)
-  @RolesAllowed({Role.ADMIN})
+  @RolesAllowed({Role.ADMIN_NAME})
   @Operation(summary = "Create a batch of users with a single request")
   @ApiResponse(responseCode = "200",
       description = "Contains all users created through this batch request. "

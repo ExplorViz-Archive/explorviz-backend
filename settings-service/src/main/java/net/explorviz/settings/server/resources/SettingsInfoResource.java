@@ -109,7 +109,7 @@ public class SettingsInfoResource {
   @DELETE
   @Produces(MEDIA_TYPE)
   @Path("/{id}")
-  @RolesAllowed({Role.ADMIN})
+  @RolesAllowed({Role.ADMIN_NAME})
   @Operation(summary = "Delete a setting")
   @ApiResponse(description = "Setting with given id does not exist (anymore)", responseCode = "204")
   public Response deleteById(
@@ -128,7 +128,7 @@ public class SettingsInfoResource {
    */
   @POST
   @Consumes(MEDIA_TYPE)
-  @RolesAllowed({Role.ADMIN})
+  @RolesAllowed({Role.ADMIN_NAME})
   @Operation(summary = "Creat a new setting")
   @ApiResponse(description = "Setting created, response contains the created setting.",
       responseCode = "200", content = @Content(schema = @Schema(implementation = Setting.class)))
