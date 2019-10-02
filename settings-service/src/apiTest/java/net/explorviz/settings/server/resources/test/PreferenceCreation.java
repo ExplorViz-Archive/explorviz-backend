@@ -15,14 +15,14 @@ import org.junit.jupiter.api.Test;
 
 public class PreferenceCreation {
 
-  private static final String USER_PREF_URL =
-      "http://localhost:8090/v1/users/{uid}/settings/preferences";
+  // private static final String USER_PREF_URL =
+  // "http://localhost:8090/v1/users/{uid}/settings/preferences";
   private static final String PREF_URL = "http://localhost:8090/v1/users/settings/preferences";
 
   private static String adminToken;
   private static String normieToken;
 
-  private Header authHeaderAdmin;
+  // private Header authHeaderAdmin;
   private Header authHeaderNormie;
 
   private static final String MEDIA_TYPE = "application/vnd.api+json";
@@ -42,7 +42,7 @@ public class PreferenceCreation {
 
   @BeforeEach
   void setUp() {
-    this.authHeaderAdmin = new Header("authorization", "Bearer " + adminToken);
+    // this.authHeaderAdmin = new Header("authorization", "Bearer " + adminToken);
     this.authHeaderNormie = new Header("authorization", "Bearer " + normieToken);
   }
 

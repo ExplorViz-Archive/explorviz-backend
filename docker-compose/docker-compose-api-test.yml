@@ -6,8 +6,10 @@
 # properties file of each service, e.g,
 # https://github.com/ExplorViz/explorviz-backend/blob/dev-1/user-service/src/main/resources/explorviz.properties
 
+# !!!!!!!!!!!!!!!!!!!!!!!!
 # ATTENTION: DO NOT USE depends_on, since the Gradle Docker Plugin will not 
-# remove these containers.
+# remove depending containers.
+# !!!!!!!!!!!!!!!!!!!!!!!!
 
 version: "3.3"
 services:
@@ -17,18 +19,36 @@ services:
   user-service:
     build: ../user-service
     container_name: explorviz-backend-user-service
+    expose:
+      - "8082"
     environment:
       - MONGO_HOST=mongo-user
       - EXCHANGE_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.user-service.rule=PathPrefix(`/v1/tokens`) || PathPrefix(`/v1/users`)"
+      - "traefik.port=8082"        
+      - "traefik.http.services.settings-service.loadbalancer.healthcheck.port=8080"  
+      - "traefik.http.services.user-service.loadbalancer.healthcheck.path=/v1/tokens"
+      - "traefik.http.routers.user-service.service=user-service"  
     networks:
       - explorviz
 
   settings-service:
     build: ../settings-service
     container_name: explorviz-backend-settings-service
+    expose:
+      - "8087"
     environment:
       - MONGO_HOST=mongo-settings
       - EXCHANGE_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.settings-service.rule=PathPrefix(`/v1/settings/info`) || PathPrefix(`/v1/users/{uid}/settings`) || PathPrefix(`/v1/users/settings/preferences`)"
+      - "traefik.port=8087"
+      # - "traefik.http.routers.settings-service.service=settings-service"
+      #- "traefik.http.services.settings-service.loadbalancer.healthcheck.port=8080"
+      #- "traefik.http.services.settings-service.loadbalancer.healthcheck.path=/v1/settings/info"
     networks:
       - explorviz
 
@@ -41,26 +61,39 @@ services:
     expose:
       - "10135"
     ports:
-      - 10135:10135
+      - "10135:10135"
     networks:
       - explorviz
 
   broadcast-service:
     build: ../broadcast-service
     container_name: explorviz-backend-broadcast-service
+    expose:
+      - "8081"
     environment:
       - EXCHANGE_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
       - EXCHANGE_KAFKA_TOPIC_NAME=landscape-update
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.broadcast-service.rule=PathPrefix(`/v1/landscapes/broadcast`)"
+      - "traefik.port=8081"
+      - "traefik.http.routers.broadcast-service.priority=200"
     networks:
       - explorviz
 
   history-service:
     build: ../history-service
     container_name: explorviz-backend-history-service
+    expose:
+      - "8086"
     environment:
       - MONGO_HOST=mongo-history
       - EXCHANGE_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
       - EXCHANGE_KAFKA_TOPIC_NAME=landscape-update
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.history-service.rule=PathPrefix(`/v1/landscapes`) || PathPrefix(`/v1/timestamps`) "
+      - "traefik.port=8086"
     networks:
       - explorviz
 
@@ -75,18 +108,36 @@ services:
   discovery-service:
     build: ../discovery-service
     container_name: explorviz-backend-discovery-service
+    expose:
+      - "8083"
     ports:
       - "8083:8083"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.discovery-service.rule=PathPrefix(`/v1/agents`)"
+      - "traefik.port=8083"
     networks:
       - explorviz
 
   reverse-proxy:
-    image: explorviz/reverse-proxy
-    container_name: explorviz-reverse-proxy
+    image: "traefik:v2.0.1"
+    container_name: "explorviz-reverse-proxy"
+    command:
+      - "--entrypoints.web.address=:8080"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      #- "--log.level=DEBUG"
     ports:
-      - 8090:80
+      - "8090:8080"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
     networks:
       - explorviz
+    #healthcheck:
+    #  test: ["CMD", "traefik" ,"healthcheck"]
+    #  interval: 30s
+    #  timeout: 3s
+    #  retries: 30
 
   ### Software Stack ###
 

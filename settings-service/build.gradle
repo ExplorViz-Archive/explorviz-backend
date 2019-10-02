@@ -14,10 +14,23 @@ dockerCompose {
   settingsApiTests {
     buildBeforeUp = true
     useComposeFiles = ['docker-compose/docker-compose-api-test.yml']
-    startedServices = ['settings-service', 'user-service', 'mongo-settings', 'mongo-user', 'zookeeper', 'kafka', 'frontend']
+    startedServices = ['reverse-proxy', 'settings-service', 'user-service', 'mongo-settings', 'mongo-user', 'zookeeper', 'kafka']
     isRequiredBy(this.tasks.getByName('apiTest'))
-    removeContainers = true
+    projectName = 'explorviz-api-test'
   }
+}
+
+// prior to api testing, check if HTTP service is 
+// up and running (!= Docker container is running)
+apiTest.doFirst {
+	println "Checking if HTTP service is accessible..."
+    def startTime = System.currentTimeMillis()
+    //def maxWaitMillis = TimeUnit.SECONDS.toMillis(30)
+    
+    //while (System.currentTimeMillis() - startTime < maxWaitMillis) {	    
+        println "Waiting for createdb...)"
+        sleep(10000)	    
+	//}
 }
 
 dependencies {

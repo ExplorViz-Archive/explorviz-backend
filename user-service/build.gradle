@@ -14,9 +14,10 @@ dockerCompose {
   userApiTests {
     buildBeforeUp = true
     useComposeFiles = ['docker-compose/docker-compose-api-test.yml']
-    startedServices = ['user-service', 'settings-service', 'mongo-user', 'mongo-settings', 'zookeeper', 'kafka']
+    startedServices = ['reverse-proxy', 'user-service', 'settings-service', 'mongo-user', 'mongo-settings', 'zookeeper', 'kafka']
     isRequiredBy(this.tasks.getByName('apiTest'))
     removeContainers = true
+    //upAdditionalArgs = ['--project-name explorviz/api-test']
   }
 }
 
