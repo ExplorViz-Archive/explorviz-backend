@@ -1,0 +1,10 @@
+# Static Configuration
+[providers]
+  [providers.file]
+    directory = "/etc/traefik"
+    watch = true
+    filename = "traefik-dynamic.toml"
+
+[api]
+  insecure = true
+  dashboard = true
