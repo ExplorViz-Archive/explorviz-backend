@@ -22,6 +22,7 @@ import net.explorviz.security.services.exceptions.DuplicateUserException;
 import net.explorviz.security.services.exceptions.MalformedBatchRequestException;
 import net.explorviz.security.services.exceptions.UserCrudException;
 import net.explorviz.shared.security.model.User;
+import net.explorviz.shared.security.model.roles.Role;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,7 +36,6 @@ public class BatchRequestSubResource {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(BatchRequestSubResource.class);
 
-  private static final String ADMIN_ROLE = "admin";
   private static final String MEDIA_TYPE = "application/vnd.api+json";
   private static final int MAX_COUNT = 300;
 
@@ -56,7 +56,7 @@ public class BatchRequestSubResource {
   @POST
   @Consumes(MEDIA_TYPE)
   @Produces(MEDIA_TYPE)
-  @RolesAllowed({ADMIN_ROLE})
+  @RolesAllowed({Role.ADMIN})
   @Operation(summary = "Create a batch of users with a single request")
   @ApiResponse(responseCode = "200",
       description = "Contains all users created through this batch request. "

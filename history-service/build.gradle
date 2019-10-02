@@ -28,6 +28,7 @@ dependencies {
   	implementation group: 'net.explorviz', name: 'exception-handling', version: "${sharedProjectVersion}"
   	implementation group: 'net.explorviz', name: 'common-concerns', version: "${sharedProjectVersion}"
   	implementation group: 'net.explorviz', name: 'query', version: "${sharedProjectVersion}"
+	implementation group: 'net.explorviz', name: 'user', version: "${sharedProjectVersion}"
   }
   else {
     implementation project(':config-injection')
@@ -35,6 +36,7 @@ dependencies {
     implementation project(':exception-handling')
     implementation project(':common-concerns')
 	implementation project(':query')
+    implementation project(':user')
   } 
   
   	// multipart/form-data type
