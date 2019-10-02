@@ -27,10 +27,10 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.user-service.rule=PathPrefix(`/v1/tokens`) || PathPrefix(`/v1/users`)"
-      - "traefik.port=8082"        
-      - "traefik.http.services.settings-service.loadbalancer.healthcheck.port=8080"  
-      - "traefik.http.services.user-service.loadbalancer.healthcheck.path=/v1/tokens"
-      - "traefik.http.routers.user-service.service=user-service"  
+      - "traefik.port=8082"
+      - "traefik.http.routers.user-service.service=user"
+      #- "traefik.http.services.user.loadbalancer.healthcheck.port=8082"
+      - "traefik.http.services.user.loadbalancer.healthcheck.path=/v1/tokens"      
     networks:
       - explorviz
 
@@ -126,7 +126,7 @@ services:
       - "--entrypoints.web.address=:8080"
       - "--providers.docker=true"
       - "--providers.docker.exposedbydefault=false"
-      #- "--log.level=DEBUG"
+      - "--log.level=DEBUG"
     ports:
       - "8090:8080"
     volumes:
