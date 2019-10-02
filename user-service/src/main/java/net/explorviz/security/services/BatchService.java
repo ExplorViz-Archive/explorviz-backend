@@ -31,7 +31,6 @@ import net.explorviz.shared.config.annotations.Config;
 import net.explorviz.shared.querying.Query;
 import net.explorviz.shared.querying.QueryResult;
 import net.explorviz.shared.security.model.User;
-import net.explorviz.shared.security.model.roles.Role;
 import org.eclipse.jetty.http.HttpStatus;
 import org.jvnet.hk2.annotations.Service;
 import org.slf4j.Logger;
@@ -141,7 +140,7 @@ public class BatchService {
       } catch (final UserCrudException e) {
         // This should never happen
         if (LOGGER.isErrorEnabled()) {
-          LOGGER.error(String.format("Rollback failed for user with id", user.getId()), e);
+          LOGGER.error(String.format("Rollback failed for user with id %s", user.getId()), e);
         }
       }
     }
@@ -260,7 +259,7 @@ public class BatchService {
   }
 
   private User newUser(final String pref, final int num, final String password,
-      final List<Role> roles, final String batchId) throws CannotPerformOperationException {
+      final List<String> roles, final String batchId) throws CannotPerformOperationException {
     final StringBuilder sb = new StringBuilder();
     final String name = sb.append(pref).append('-').append(num).toString();
 

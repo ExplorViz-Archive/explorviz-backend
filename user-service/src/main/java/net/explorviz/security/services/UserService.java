@@ -16,7 +16,6 @@ import net.explorviz.shared.querying.Query;
 import net.explorviz.shared.querying.QueryResult;
 import net.explorviz.shared.querying.Queryable;
 import net.explorviz.shared.security.model.User;
-import net.explorviz.shared.security.model.roles.Role;
 import org.jvnet.hk2.annotations.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -166,16 +165,11 @@ public class UserService implements Queryable<User> {
       return false;
     }
 
-    final boolean isadmin =
-        user.getRoles().stream().filter(r -> r.getDescriptor().equals(ADMIN)).count() == 1;
+    final boolean isadmin = user.getRoles().stream().filter(r -> r.equals(ADMIN)).count() == 1;
 
     final boolean otheradmin = this.getAll()
         .stream()
-        .filter(u -> u.getRoles()
-            .stream()
-            .map(r -> r.getDescriptor())
-            .collect(Collectors.toList())
-            .contains(ADMIN))
+        .filter(u -> u.getRoles().stream().collect(Collectors.toList()).contains(ADMIN))
         .filter(u -> !u.getId().equals(id))
         .count() > 0;
 
@@ -216,8 +210,7 @@ public class UserService implements Queryable<User> {
 
       // Filter by roles
       if (roles != null) {
-        q.field(roleField)
-            .hasAllOf(roles.stream().map(r -> new Role(r)).collect(Collectors.toList()));
+        q.field(roleField).hasAllOf(roles.stream().collect(Collectors.toList()));
       }
 
       // Filter by batch id, if more than one is give, ignore all but the first

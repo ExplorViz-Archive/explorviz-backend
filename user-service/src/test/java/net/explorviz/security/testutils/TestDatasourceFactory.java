@@ -3,7 +3,6 @@ package net.explorviz.security.testutils;
 import com.mongodb.MongoClient;
 import net.explorviz.shared.config.annotations.Config;
 import net.explorviz.shared.security.model.User;
-import net.explorviz.shared.security.model.roles.Role;
 import org.glassfish.hk2.api.Factory;
 import xyz.morphia.Datastore;
 import xyz.morphia.Morphia;
@@ -33,7 +32,7 @@ public class TestDatasourceFactory implements Factory<Datastore> {
     final Morphia morphia = new Morphia();
 
     // Map the model classes
-    morphia.map(User.class, Role.class);
+    morphia.map(User.class);
 
     this.datastore = morphia.createDatastore(new MongoClient(host + ":" + port), "explorviz_test");
     this.datastore.ensureIndexes();

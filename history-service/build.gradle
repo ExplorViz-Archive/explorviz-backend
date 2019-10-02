@@ -1,7 +1,8 @@
 plugins {
 	id "application"
-	id "com.github.johnrengelman.shadow" version "4.0.4"
+	id "com.github.johnrengelman.shadow" version "5.1.0"
 	id "com.github.spotbugs" version "1.6.10"
+	id "maven"
 }
 
 // Force new Dependencies 
@@ -16,20 +17,19 @@ repositories {
 dependencies {
 
 	// Swagger
-  	compile group: 'io.swagger.core.v3', name: 'swagger-core', version: '2.0.8'
-  	compile group: 'io.swagger.core.v3', name: 'swagger-jaxrs2', version: '2.0.8' 
+  	implementation group: 'io.swagger.core.v3', name: 'swagger-core', version: '2.0.8'
+  	implementation group: 'io.swagger.core.v3', name: 'swagger-jaxrs2', version: '2.0.8'
+    implementation project(':landscape-service:landscape-model')
 
   // ExplorViz Shared Dependencies
   if(useRemoteSharedProject.toBoolean()) {
-    implementation "com.github.explorviz.explorviz-backend-shared:landscape-model:${sharedProjectVersion}"
-    implementation "com.github.explorviz.explorviz-backend-shared:config-injection:${sharedProjectVersion}"
-    implementation "com.github.explorviz.explorviz-backend-shared:security:${sharedProjectVersion}"
-    implementation "com.github.explorviz.explorviz-backend-shared:exception-handling:${sharedProjectVersion}"
-    implementation "com.github.explorviz.explorviz-backend-shared:common-concerns:${sharedProjectVersion}"
-	implementation "com.github.explorviz.explorviz-backend-shared:query:${sharedProjectVersion}"
+  	implementation group: 'net.explorviz', name: 'config-injection', version: "${sharedProjectVersion}"
+  	implementation group: 'net.explorviz', name: 'security', version: "${sharedProjectVersion}"
+  	implementation group: 'net.explorviz', name: 'exception-handling', version: "${sharedProjectVersion}"
+  	implementation group: 'net.explorviz', name: 'common-concerns', version: "${sharedProjectVersion}"
+  	implementation group: 'net.explorviz', name: 'query', version: "${sharedProjectVersion}"
   }
   else {
-    implementation project(':landscape-model')
     implementation project(':config-injection')
     implementation project(':security')
     implementation project(':exception-handling')
@@ -37,7 +37,12 @@ dependencies {
 	implementation project(':query')
   } 
   
-  implementation group: 'org.apache.kafka', name: 'kafka_2.12', version: '2.2.0'
+  	// multipart/form-data type
+  	implementation group: 'org.glassfish.jersey.media', name:'jersey-media-multipart', version:'2.26'
+  	
+  	implementation group: 'commons-io', name: 'commons-io', version: '2.6'
+  	 
+  	implementation group: 'org.apache.kafka', name: 'kafka_2.12', version: '2.2.0'
 }
 
 assemble.dependsOn shadowJar
@@ -56,7 +61,8 @@ application {
 }
 
 shadowJar {
-  archiveName = "explorviz-${project.name}.${extension}"
+  baseName = "explorviz-${project.name}"
+  classifier = null
 }
 
 spotbugs {
@@ -83,10 +89,6 @@ task spotbugs {
   
   dependsOn 'spotbugsMain'
   dependsOn 'spotbugsTest'
-}
-
-artifacts {
-  archives shadowJar
 }
 
 // START environment task

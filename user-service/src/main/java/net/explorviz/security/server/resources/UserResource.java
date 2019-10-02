@@ -41,7 +41,6 @@ import net.explorviz.security.util.PasswordStorage.CannotPerformOperationExcepti
 import net.explorviz.shared.querying.Query;
 import net.explorviz.shared.querying.QueryResult;
 import net.explorviz.shared.security.model.User;
-import net.explorviz.shared.security.model.roles.Role;
 import org.eclipse.jetty.http.HttpStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -66,6 +65,7 @@ public class UserResource {
   private static final String MSG_USER_NOT_RETRIEVED = "Could not retrieve user ";
   private static final String MSG_UNKOWN_ROLE = "Unknown role";
   private static final String ADMIN_ROLE = "admin";
+  private static final String USER_ROLE = "user";
 
   private final UserService userCrudService;
 
@@ -125,7 +125,7 @@ public class UserResource {
       throw new BadRequestException("Can't create user with id. Payload must not have an id.");
     }
 
-    for (final Role r : user.getRoles()) {
+    for (final String r : user.getRoles()) {
       if (!this.roleService.getAllRoles().contains(r)) {
         throw new BadRequestException(MSG_UNKOWN_ROLE + ": " + r);
       }
@@ -220,7 +220,7 @@ public class UserResource {
     }
 
     if (updatedUser.getRoles() != null) {
-      for (final Role r : updatedUser.getRoles()) {
+      for (final String r : updatedUser.getRoles()) {
         if (!this.roleService.getAllRoles().contains(r)) {
           throw new BadRequestException("Unknown role: " + r);
         }
@@ -274,7 +274,7 @@ public class UserResource {
    */
   @GET
   @Path("{id}")
-  @RolesAllowed({ADMIN_ROLE})
+  @RolesAllowed({ADMIN_ROLE, USER_ROLE})
   @Produces(MEDIA_TYPE)
   @Operation(summary = "Find a user by its id")
   @ApiResponse(responseCode = "200", description = "The requested user",
@@ -286,16 +286,13 @@ public class UserResource {
       throw new BadRequestException("Invalid id");
     }
 
+    // TODO if a user is a normal user check if he tries to get just his own data?
     User foundUser = null;
-
-
     foundUser = this.userCrudService.getEntityById(id).orElseThrow(() -> new NotFoundException());
 
     this.userCrudService.updateEntity(foundUser);
 
-
     return foundUser;
-
   }
 
   /**

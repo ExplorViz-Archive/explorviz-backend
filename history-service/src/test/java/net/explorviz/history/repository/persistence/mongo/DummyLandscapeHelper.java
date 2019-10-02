@@ -1,19 +1,20 @@
 package net.explorviz.history.repository.persistence.mongo;
 
+import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.atomic.AtomicInteger;
 import net.explorviz.shared.common.idgen.IdGenerator;
-import net.explorviz.shared.landscape.model.application.Application;
-import net.explorviz.shared.landscape.model.application.ApplicationCommunication;
-import net.explorviz.shared.landscape.model.application.Clazz;
-import net.explorviz.shared.landscape.model.application.Component;
-import net.explorviz.shared.landscape.model.event.EEventType;
-import net.explorviz.shared.landscape.model.helper.EProgrammingLanguage;
-import net.explorviz.shared.landscape.model.helper.ModelHelper;
-import net.explorviz.shared.landscape.model.landscape.Landscape;
-import net.explorviz.shared.landscape.model.landscape.Node;
-import net.explorviz.shared.landscape.model.landscape.NodeGroup;
-import net.explorviz.shared.landscape.model.landscape.System;
+import net.explorviz.landscape.model.application.Application;
+import net.explorviz.landscape.model.application.ApplicationCommunication;
+import net.explorviz.landscape.model.application.Clazz;
+import net.explorviz.landscape.model.application.Component;
+import net.explorviz.landscape.model.event.EEventType;
+import net.explorviz.landscape.model.helper.EProgrammingLanguage;
+import net.explorviz.landscape.model.helper.ModelHelper;
+import net.explorviz.landscape.model.landscape.Landscape;
+import net.explorviz.landscape.model.landscape.Node;
+import net.explorviz.landscape.model.landscape.NodeGroup;
+import net.explorviz.landscape.model.landscape.System;
 
 /**
  * Helper class providing methods for creating a dummy landscape.
@@ -127,7 +128,7 @@ public final class DummyLandscapeHelper {
     application.setLastUsage(java.lang.System.currentTimeMillis());
     application.setProgrammingLanguage(EProgrammingLanguage.JAVA);
 
-    if (name == "Eprints") {
+    if (Objects.equals(name, "Eprints")) {
       application.setProgrammingLanguage(EProgrammingLanguage.PERL);
     }
 

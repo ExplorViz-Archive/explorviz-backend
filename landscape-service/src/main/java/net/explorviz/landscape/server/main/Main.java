@@ -1,79 +1,36 @@
 package net.explorviz.landscape.server.main;
 
-import net.explorviz.shared.config.helper.PropertyHelper;
-import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.servlet.ServletContextHandler;
-import org.eclipse.jetty.servlet.ServletHolder;
-import org.glassfish.jersey.server.ResourceConfig;
-import org.glassfish.jersey.servlet.ServletContainer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import net.explorviz.landscape.model.helper.TypeProvider;
+import net.explorviz.shared.common.provider.GenericTypeFinder;
+import org.glassfish.hk2.api.ServiceLocator;
+import org.glassfish.hk2.utilities.ServiceLocatorUtilities;
 
+/**
+ * Starts the Java application.
+ */
 public final class Main {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(Main.class);
-  private static final int DEFAULT_PORT = 8081;
-
   private Main() {
-    // Utility Class
+    // no instantiation
   }
 
   /**
-   * Starts the landscape service server.
+   * Configures / starts {@link TypeProvider}, the dependency injection, and the actual landscape
+   * service via the {@link LandscapeApplication}.
    *
    */
   public static void main(final String[] args) {
+    // register landscape model classes
+    // this must happen before initializing the ServiceLocator
+    TypeProvider.getExplorVizCoreTypesAsMap().forEach((classname, classRef) -> {
+      GenericTypeFinder.getTypeMap().put(classname, classRef);
+    });
 
-    final Server server = new Server(getPort());
-
-    final ServletHolder jerseyServlet = new ServletHolder(new ServletContainer(createJaxRsApp()));
-    final ServletContextHandler context = new ServletContextHandler(server, getContextPath());
-    context.addServlet(jerseyServlet, "/*");
-
-    try {
-      server.start();
-    } catch (final Exception e) { // NOPMD
-      LOGGER.error("Server start failed", e);
-    }
-
-    Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-      try {
-        server.stop();
-      } catch (final Exception e) { // NOPMD
-        LOGGER.error("Server stop failed", e);
-      }
-    }));
+    final ServiceLocator locator = ServiceLocatorUtilities.bind(new DependencyInjectionBinder());
+    final LandscapeApplication app = locator.createAndInitialize(LandscapeApplication.class);
+    app.startApplication();
   }
 
-  private static int getPort() {
-    try {
-      return PropertyHelper.getIntegerProperty("server.port");
-    } catch (final NumberFormatException e) {
-      if (LOGGER.isInfoEnabled()) {
-        LOGGER.info(
-            "ATTENTION: Using default port " + DEFAULT_PORT + ". Check explorviz.properties file.",
-            e);
-      }
-    }
-    return DEFAULT_PORT;
-  }
 
-  private static String getContextPath() {
-    final String statedContextPath = PropertyHelper.getStringProperty("server.contextPath");
-
-    if (statedContextPath == null) {
-      if (LOGGER.isInfoEnabled()) {
-        LOGGER.info("ATTENTION: Using default contextPath '/' for server. "
-            + "Maybe your stated server.contextPath property is no valid string.");
-      }
-      return "/";
-    } else {
-      return statedContextPath;
-    }
-  }
-
-  private static ResourceConfig createJaxRsApp() {
-    return new ResourceConfig(new LandscapeApplication());
-  }
 
 }

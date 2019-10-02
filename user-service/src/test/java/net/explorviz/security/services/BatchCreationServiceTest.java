@@ -9,7 +9,6 @@ import net.explorviz.security.model.UserBatchRequest;
 import net.explorviz.security.services.exceptions.UserCrudException;
 import net.explorviz.shared.common.idgen.IdGenerator;
 import net.explorviz.shared.security.model.User;
-import net.explorviz.shared.security.model.roles.Role;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -53,7 +52,7 @@ public class BatchCreationServiceTest {
 
 
     final UserBatchRequest batch =
-        new UserBatchRequest("test", size, passwords, Arrays.asList(new Role("admin")), null);
+        new UserBatchRequest("test", size, passwords, Arrays.asList("admin"), null);
 
     Mockito.doAnswer(new Answer<User>() {
 

@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Defines a repository for persistent CRUD operations
+ * Defines a repository for persistent CRUD operations.
  *
  * @param <T> the root type this repository handles
  * @param <K> the key type
@@ -12,14 +12,14 @@ import java.util.Optional;
 public interface MongoRepository<T, K> {
 
   /**
-   * Persists a new object
+   * Persists a new object.
    *
    * @param entity the object to persist
    */
   T createOrUpdate(T entity);
 
   /**
-   * Searches the repository for an entity with the given id
+   * Searches the repository for an entity with the given id.
    *
    * @param key the key
    * @return the object
@@ -27,7 +27,7 @@ public interface MongoRepository<T, K> {
   Optional<T> find(K key);
 
   /**
-   * Searches all objects within the repository
+   * Searches all objects within the repository.
    *
    * @return a list of all persistent objects
    */
@@ -35,7 +35,7 @@ public interface MongoRepository<T, K> {
 
 
   /**
-   * Deletes an object
+   * Deletes an object.
    *
    * @param key the key of the object to delete
    */

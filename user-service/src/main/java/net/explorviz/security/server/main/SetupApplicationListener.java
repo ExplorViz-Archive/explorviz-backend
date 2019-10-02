@@ -10,7 +10,6 @@ import net.explorviz.security.services.exceptions.UserCrudException;
 import net.explorviz.security.util.PasswordStorage;
 import net.explorviz.security.util.PasswordStorage.CannotPerformOperationException;
 import net.explorviz.shared.security.model.User;
-import net.explorviz.shared.security.model.roles.Role;
 import org.glassfish.jersey.server.monitoring.ApplicationEvent;
 import org.glassfish.jersey.server.monitoring.ApplicationEvent.Type;
 import org.glassfish.jersey.server.monitoring.ApplicationEventListener;
@@ -67,9 +66,9 @@ public class SetupApplicationListener implements ApplicationEventListener {
 
   private void createDefaultData() throws CannotPerformOperationException {
 
-    final List<Role> roleList = this.roleService.getAllRoles();
+    final List<String> roleList = this.roleService.getAllRoles();
 
-    for (final Role r : roleList) {
+    for (final String r : roleList) {
       this.datastore.save(r);
     }
 
@@ -78,8 +77,7 @@ public class SetupApplicationListener implements ApplicationEventListener {
 
     if (this.datastore.getCount(User.class) == 0) {
       try {
-        this.userService
-            .saveNewEntity(new User(null, ADMIN_NAME, pw, Arrays.asList(roleList.get(0))));
+        this.userService.saveNewEntity(new User(null, ADMIN_NAME, pw, Arrays.asList("admin")));
       } catch (final UserCrudException e) {
         if (LOGGER.isErrorEnabled()) {
           LOGGER.error("Default admin not created");

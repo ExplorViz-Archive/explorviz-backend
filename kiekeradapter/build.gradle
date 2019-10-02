@@ -1,6 +1,6 @@
 plugins {
-	id 'eclipse'
-	id 'maven'
+	id "eclipse"
+	id "maven"
 	id "com.github.spotbugs" version "1.6.10"
 }
 
@@ -24,15 +24,13 @@ configurations.all {
     resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
 }
 
-// ##### BEGIN Jitpack section #####
-
 artifacts {
 	archives file: file('libs/explorviz-monitoring.jar'), name: 'explorviz-monitoring', type: 'jar'
   	archives jar
 }
 
 jar {
-	baseName = project.name
+	baseName = "explorviz-${project.name}"
 }
 
 install {
@@ -47,8 +45,6 @@ install {
     }
   }
 }
-
-// ##### END Jitpack section #####
 
 spotbugs {
   excludeFilter = file("../conf/spotbugs-exclude-filter.xml")

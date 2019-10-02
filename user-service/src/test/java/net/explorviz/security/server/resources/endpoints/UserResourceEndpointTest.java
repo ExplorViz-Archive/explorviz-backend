@@ -56,7 +56,7 @@ public class UserResourceEndpointTest extends EndpointTest {
     this.datastore.getCollection(User.class).drop();
     this.datastore.getCollection(Role.class).drop();
 
-    for (final Role r : this.roleService.getAllRoles()) {
+    for (final String r : this.roleService.getAllRoles()) {
       this.datastore.save(r);
     }
   }
@@ -229,8 +229,7 @@ public class UserResourceEndpointTest extends EndpointTest {
     assertEquals(null, responseBody.getPassword());
     assertTrue(createdUser.getRoles()
         .stream()
-        .anyMatch(
-            r -> r.getDescriptor().equals(this.roleService.getAllRoles().get(0).getDescriptor())));
+        .anyMatch(r -> r.equals(this.roleService.getAllRoles().get(0))));
   }
 
 
@@ -257,8 +256,7 @@ public class UserResourceEndpointTest extends EndpointTest {
     assertEquals("name", foundUser.getUsername());
     assertTrue(foundUser.getRoles()
         .stream()
-        .anyMatch(
-            r -> r.getDescriptor().equals(this.roleService.getAllRoles().get(0).getDescriptor())));
+        .anyMatch(r -> r.equals(this.roleService.getAllRoles().get(0))));
 
   }
 
@@ -298,7 +296,7 @@ public class UserResourceEndpointTest extends EndpointTest {
     this.datastore.getCollection(User.class).drop();
 
     final User u1 = new User("1", "user1", "pw", this.roleService.getAllRoles());
-    final User u2 = new User("2", "user2", "pw", Arrays.asList(new Role(ADMIN)));
+    final User u2 = new User("2", "user2", "pw", Arrays.asList(ADMIN));
     final User u3 = new User("3", "user3", "pw", null);
 
     this.userCrudService.saveNewEntity(u1);
@@ -372,7 +370,7 @@ public class UserResourceEndpointTest extends EndpointTest {
 
   @Test
   public void removeLastAdmin() throws UserCrudException {
-    final User u = new User(null, ADMIN, "pw", Arrays.asList(new Role(ADMIN)));
+    final User u = new User(null, ADMIN, "pw", Arrays.asList(ADMIN));
     this.userCrudService.saveNewEntity(u);
     final Response deleteResponse = this.target("v1/users/" + u.getId())
         .request()
