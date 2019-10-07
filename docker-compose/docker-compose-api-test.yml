@@ -29,8 +29,7 @@ services:
       - "traefik.http.routers.user-service.rule=PathPrefix(`/v1/tokens`) || PathPrefix(`/v1/users`)"
       - "traefik.port=8082"
       - "traefik.http.routers.user-service.service=user"
-      #- "traefik.http.services.user.loadbalancer.healthcheck.port=8082"
-      - "traefik.http.services.user.loadbalancer.healthcheck.path=/v1/tokens"      
+      - "traefik.http.services.user.loadbalancer.healthcheck.path=/v1/users/entry"      
     networks:
       - explorviz
 
@@ -44,11 +43,10 @@ services:
       - EXCHANGE_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.settings-service.rule=PathPrefix(`/v1/settings/info`) || PathPrefix(`/v1/users/{uid}/settings`) || PathPrefix(`/v1/users/settings/preferences`)"
+      - "traefik.http.routers.settings-service.rule=PathPrefix(`/v1/settings`) || PathPrefix(`/v1/users/{uid}/settings`) || PathPrefix(`/v1/users/settings/preferences`)"
       - "traefik.port=8087"
-      # - "traefik.http.routers.settings-service.service=settings-service"
-      #- "traefik.http.services.settings-service.loadbalancer.healthcheck.port=8080"
-      #- "traefik.http.services.settings-service.loadbalancer.healthcheck.path=/v1/settings/info"
+      - "traefik.http.routers.settings-service.service=settings-service"
+      - "traefik.http.services.settings-service.loadbalancer.healthcheck.path=/v1/settings/entry"
     networks:
       - explorviz
 
@@ -134,7 +132,7 @@ services:
     networks:
       - explorviz
     #healthcheck:
-    #  test: ["CMD", "traefik" ,"healthcheck"]
+    #  test: ["CMD", "traefik" ,"healthcheck", "--ping"]
     #  interval: 30s
     #  timeout: 3s
     #  retries: 30
