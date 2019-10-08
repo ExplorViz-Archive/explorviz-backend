@@ -26,10 +26,8 @@ services:
       - EXCHANGE_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.user-service.rule=PathPrefix(`/v1/tokens`) || PathPrefix(`/v1/users`)"
       - "traefik.port=8082"
-      - "traefik.http.routers.user-service.service=user"
-      - "traefik.http.services.user.loadbalancer.healthcheck.path=/v1/users/entry"      
+      - "traefik.http.routers.user-service.rule=PathPrefix(`/v1/tokens`) || PathPrefix(`/v1/users`)"
     networks:
       - explorviz
 
@@ -43,10 +41,8 @@ services:
       - EXCHANGE_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.settings-service.rule=PathPrefix(`/v1/settings`) || PathPrefix(`/v1/users/{uid}/settings`) || PathPrefix(`/v1/users/settings/preferences`)"
       - "traefik.port=8087"
-      - "traefik.http.routers.settings-service.service=settings-service"
-      - "traefik.http.services.settings-service.loadbalancer.healthcheck.path=/v1/settings/entry"
+      - "traefik.http.routers.settings-service.rule=PathPrefix(`/v1/settings`) || PathPrefix(`/v1/users/{uid}/settings`) || PathPrefix(`/v1/users/settings/preferences`)"
     networks:
       - explorviz
 
@@ -73,8 +69,8 @@ services:
       - EXCHANGE_KAFKA_TOPIC_NAME=landscape-update
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.broadcast-service.rule=PathPrefix(`/v1/landscapes/broadcast`)"
       - "traefik.port=8081"
+      - "traefik.http.routers.broadcast-service.rule=PathPrefix(`/v1/landscapes/broadcast`)"
       - "traefik.http.routers.broadcast-service.priority=200"
     networks:
       - explorviz
@@ -90,8 +86,8 @@ services:
       - EXCHANGE_KAFKA_TOPIC_NAME=landscape-update
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.history-service.rule=PathPrefix(`/v1/landscapes`) || PathPrefix(`/v1/timestamps`) "
       - "traefik.port=8086"
+      - "traefik.http.routers.history-service.rule=PathPrefix(`/v1/landscapes`) || PathPrefix(`/v1/timestamps`)"
     networks:
       - explorviz
 
@@ -112,8 +108,8 @@ services:
       - "8083:8083"
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.discovery-service.rule=PathPrefix(`/v1/agents`)"
       - "traefik.port=8083"
+      - "traefik.http.routers.discovery-service.rule=PathPrefix(`/v1/agents`)"
     networks:
       - explorviz
 
@@ -121,21 +117,16 @@ services:
     image: "traefik:v2.0.1"
     container_name: "explorviz-reverse-proxy"
     command:
-      - "--entrypoints.web.address=:8080"
+      - "--entrypoints.web.address=:8090"
       - "--providers.docker=true"
       - "--providers.docker.exposedbydefault=false"
-      - "--log.level=DEBUG"
+      #- "--log.level=DEBUG"
     ports:
-      - "8090:8080"
+      - "8090:8090"
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
     networks:
       - explorviz
-    #healthcheck:
-    #  test: ["CMD", "traefik" ,"healthcheck", "--ping"]
-    #  interval: 30s
-    #  timeout: 3s
-    #  retries: 30
 
   ### Software Stack ###
 

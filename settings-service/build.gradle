@@ -20,17 +20,35 @@ dockerCompose {
   }
 }
 
-// prior to api testing, check if HTTP service is 
+// prior to api testing, check if service entry point is reachable 
 // up and running (!= Docker container is running)
 apiTest.doFirst {
-	println "Checking if HTTP service is accessible..."
-    def startTime = System.currentTimeMillis()
-    //def maxWaitMillis = TimeUnit.SECONDS.toMillis(30)
+	long start = System.currentTimeMillis()
+    long maxWait = 180000
+    long initialWait = 15000
+    long retryWait = 5000
+
+    boolean healthy = false
+
+    println("Waiting for application to become healthy... (initial wait = ${initialWait}ms)")
+    sleep(initialWait)
+
+    while (System.currentTimeMillis() - start < maxWait && !healthy) {
     
-    //while (System.currentTimeMillis() - startTime < maxWaitMillis) {	    
-        println "Waiting for createdb...)"
-        sleep(10000)	    
-	//}
+        try {
+            def req = new URL("http://localhost:8090/v1/settings/entry").openConnection()
+            healthy = req.getResponseCode() == 200
+        } catch (Exception e) {}
+        
+        println("Waiting for application to become healthy... (retrying in ${retryWait}ms)")
+        sleep(retryWait)
+    }
+
+    if (healthy) {
+        println "Healthcheck SUCCESSFUL after ${System.currentTimeMillis() - start}ms"
+    } else {
+        throw new RuntimeException('Healthcheck FAILED')
+    }
 }
 
 dependencies {
