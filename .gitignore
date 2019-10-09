@@ -1,4 +1,4 @@
-target/@AnnotationForResourceOne
+target/
 .idea/
 **/out
 

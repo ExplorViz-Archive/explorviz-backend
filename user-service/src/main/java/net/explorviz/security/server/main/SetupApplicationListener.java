@@ -67,7 +67,8 @@ public class SetupApplicationListener implements ApplicationEventListener {
 
     if (this.datastore.getCount(User.class) == 0) {
       try {
-        this.userService.saveNewEntity(new User(null, ADMIN_NAME, pw, Arrays.asList(Role.ADMIN)));
+        this.userService
+            .saveNewEntity(new User(null, ADMIN_NAME, pw, Arrays.asList(Role.ADMIN_NAME)));
       } catch (final UserCrudException e) {
         if (LOGGER.isErrorEnabled()) {
           LOGGER.error("Default admin not created");

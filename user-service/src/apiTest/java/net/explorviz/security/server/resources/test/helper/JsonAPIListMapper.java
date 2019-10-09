@@ -9,6 +9,7 @@ import io.restassured.mapper.ObjectMapperSerializationContext;
 import java.util.List;
 import net.explorviz.settings.model.UserPreference;
 import net.explorviz.shared.security.model.User;
+import net.explorviz.shared.security.model.roles.Role;
 
 public class JsonAPIListMapper<T> implements ObjectMapper {
   private final ResourceConverter converter;
@@ -20,6 +21,7 @@ public class JsonAPIListMapper<T> implements ObjectMapper {
     this.converter = new ResourceConverter();
     this.converter.registerType(User.class);
     this.converter.registerType(UserPreference.class);
+    this.converter.registerType(Role.class);
   }
 
   @Override

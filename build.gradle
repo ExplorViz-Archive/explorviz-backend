@@ -3,6 +3,8 @@ plugins {
     id 'com.avast.gradle.docker-compose' version "0.9.4"
 }
 
+apply plugin: 'java'
+
 allprojects {
   apply plugin: 'java-library'
   apply plugin: "eclipse"

@@ -9,6 +9,7 @@ import io.restassured.mapper.ObjectMapperDeserializationContext;
 import io.restassured.mapper.ObjectMapperSerializationContext;
 import net.explorviz.security.model.UserBatchRequest;
 import net.explorviz.shared.security.model.User;
+import net.explorviz.shared.security.model.roles.Role;
 
 public class JsonAPIMapper<T> implements ObjectMapper {
   private final ResourceConverter converter;
@@ -20,6 +21,7 @@ public class JsonAPIMapper<T> implements ObjectMapper {
     this.converter = new ResourceConverter();
     this.converter.registerType(User.class);
     this.converter.registerType(UserBatchRequest.class);
+    this.converter.registerType(Role.class);
     this.converter.disableDeserializationOption(DeserializationFeature.REQUIRE_RESOURCE_ID);
   }
 

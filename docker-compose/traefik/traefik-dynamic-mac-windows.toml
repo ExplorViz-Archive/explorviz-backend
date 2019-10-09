@@ -18,7 +18,7 @@
     service = "settings"
 
   [http.routers.user]
-    rule = "PathPrefix(`/v1/tokens`) || PathPrefix(`/v1/users`)"
+    rule = "PathPrefix(`/v1/tokens`) || PathPrefix(`/v1/users`) || PathPrefix(`/v1/roles`)"
     service = "user"
 
 [http.services]

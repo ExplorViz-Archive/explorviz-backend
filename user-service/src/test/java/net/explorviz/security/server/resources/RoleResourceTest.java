@@ -2,6 +2,7 @@ package net.explorviz.security.server.resources;
 
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import net.explorviz.shared.security.model.roles.Role;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -14,12 +15,13 @@ class RoleResourceTest {
 
   @Test
   public void rolesContainAdmin() {
-    assertTrue(this.roleResource.getAllRoles().contains("admin"),
+    assertTrue(this.roleResource.getAllRoles().contains(Role.ADMIN),
         "Roles are missing 'admin' role.");
   }
 
   @Test
   public void rolesContainUser() {
-    assertTrue(this.roleResource.getAllRoles().contains("user"), "Roles are missing 'user' role.");
+    assertTrue(this.roleResource.getAllRoles().contains(Role.USER),
+        "Roles are missing 'user' role.");
   }
 }

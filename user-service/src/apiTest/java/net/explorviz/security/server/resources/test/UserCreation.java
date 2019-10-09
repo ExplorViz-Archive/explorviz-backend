@@ -7,7 +7,6 @@ import static org.hamcrest.Matchers.not;
 import io.restassured.http.ContentType;
 import io.restassured.http.Header;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import net.explorviz.security.model.UserCredentials;
@@ -15,6 +14,7 @@ import net.explorviz.security.server.resources.test.helper.AuthorizationHelper;
 import net.explorviz.security.server.resources.test.helper.JsonAPIMapper;
 import net.explorviz.security.server.resources.test.helper.UserSerializationHelper;
 import net.explorviz.shared.security.model.User;
+import net.explorviz.shared.security.model.roles.Role;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -78,8 +78,7 @@ class UserCreation {
   public void createValidAdmin() throws IOException {
     final String name = "testadmin";
     final String password = "password";
-    final String role = "admin";
-    final List<String> roles = new ArrayList<>(Arrays.asList(role));
+    final List<String> roles = Arrays.asList(Role.ADMIN_NAME);
 
     final User u = new User(null, name, password, roles);
 

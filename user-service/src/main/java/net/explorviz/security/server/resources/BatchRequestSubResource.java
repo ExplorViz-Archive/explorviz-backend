@@ -13,13 +13,17 @@ import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.ws.rs.BadRequestException;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.InternalServerErrorException;
 import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.Response;
 import net.explorviz.security.model.UserBatchRequest;
-import net.explorviz.security.services.BatchCreationService;
+import net.explorviz.security.services.BatchService;
 import net.explorviz.security.services.exceptions.DuplicateUserException;
 import net.explorviz.security.services.exceptions.MalformedBatchRequestException;
 import net.explorviz.security.services.exceptions.UserCrudException;
@@ -42,10 +46,10 @@ public class BatchRequestSubResource {
   public static final int MAX_COUNT = 300;
 
 
-  private final BatchCreationService bcs;
+  private final BatchService bcs;
 
   @Inject
-  public BatchRequestSubResource(final BatchCreationService batchCreationService) {
+  public BatchRequestSubResource(final BatchService batchCreationService) {
     this.bcs = batchCreationService;
   }
 
@@ -58,7 +62,7 @@ public class BatchRequestSubResource {
   @POST
   @Consumes(MEDIA_TYPE)
   @Produces(MEDIA_TYPE)
-  @RolesAllowed({Role.ADMIN})
+  @RolesAllowed({Role.ADMIN_NAME})
   @Operation(summary = "Create a batch of users with a single request")
   @ApiResponse(responseCode = "200",
       description = "Contains all users created through this batch request. "
@@ -111,8 +115,16 @@ public class BatchRequestSubResource {
       LOGGER.error(e.getMessage());
       throw new InternalServerErrorException("No user created.");
     }
-
-
   }
+
+
+  @DELETE
+  @Path("/{batch_id}")
+  public Response deleteBatch(@PathParam("batch_id") final String batchid) {
+    this.bcs.deleteBatch(batchid);
+
+    return Response.noContent().build();
+  }
+
 
 }

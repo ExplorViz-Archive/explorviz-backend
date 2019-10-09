@@ -4,8 +4,6 @@ import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.is;
 import io.restassured.http.Header;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import net.explorviz.security.server.resources.test.helper.AuthorizationHelper;
 import net.explorviz.security.server.resources.test.helper.JsonAPIListMapper;
@@ -20,7 +18,10 @@ public class RoleRetrieval {
 
   private static final String ROLE_URL = "http://localhost:8090/v1/roles";
 
-  // Currently only two roles exist, nameley 'user' and 'admin'
+  private static final int HTTP_OK_CODE = 200;
+  private static final int HTTP_FORBIDDEN_CODE = 403;
+
+  // Currently only two roles exist, namely 'user' and 'admin'
   // It's not possible to add more roles
 
   private static String adminToken;
@@ -28,7 +29,6 @@ public class RoleRetrieval {
 
   private Header authHeaderAdmin;
   private Header authHeaderNormie;
-
 
 
   /**
@@ -45,7 +45,7 @@ public class RoleRetrieval {
 
   @BeforeEach
   void setUp() {
-    this.authHeaderAdmin = new Header("authorization", "Bearer " + adminToken);
+    this.authHeaderAdmin = new Header("authorization", "Bearer " + adminToken); // NOCS
     this.authHeaderNormie = new Header("authorization", "Bearer " + normieToken);
   }
 
@@ -53,14 +53,14 @@ public class RoleRetrieval {
   @Test
   @DisplayName("Get all roles")
   @SuppressWarnings("unchecked")
-  public void getAll() {
-    final List<String> actualRoles = new ArrayList<>(Arrays.asList("admin", "user"));
+  public void testGetAllRolesAsAdmin() {
+    final List<Role> actualRoles = Role.ROLES;
 
     final List<Role> retrieved = given().header(this.authHeaderAdmin)
         .when()
         .get(ROLE_URL)
         .then()
-        .statusCode(200)
+        .statusCode(HTTP_OK_CODE)
         .body("data.size()", is(2))
         .extract()
         .body()
@@ -71,8 +71,12 @@ public class RoleRetrieval {
 
   @Test
   @DisplayName("Get all roles without privileges")
-  public void getAllAsNormie() {
-    given().header(this.authHeaderNormie).when().get(ROLE_URL).then().statusCode(403);
+  public void testGetAllRolesAsNormie() { // NOPMD
+    given().header(this.authHeaderNormie)
+        .when()
+        .get(ROLE_URL)
+        .then()
+        .statusCode(HTTP_FORBIDDEN_CODE);
   }
 
 }
