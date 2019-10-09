@@ -1,6 +1,6 @@
 # Start ExplorViz based on the current working directory for api testing purposes. This means:
 # - The services don't use persistent volumes, all data is lost after the tests finished
-# - Services are hidden behind API_GATEWAY, therefore no unnecessary port mapping
+# - Services are hidden behind API_GATEWAY, therefore no unnecessary port mapping and production-like conditions
 #
 # Environment Variables are based on the
 # properties file of each service, e.g,

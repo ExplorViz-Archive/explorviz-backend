@@ -2,18 +2,16 @@
 # means:
 #   - All ports of the microservices are forwarded
 #   - The services don't use persistent volumes, all data is lost after the tests finished
-# Start with
-#     ./gradlew clean shadowJar
-#     docker-compose build
-#     docker-compose run
-# Monitored applications can be connected
+# Start with "./gradlew clean integrationTest"
 
 # Environment Variables are based on the
 # properties file of each service, e.g,
 # https://github.com/ExplorViz/explorviz-backend/blob/dev-1/user-service/src/main/resources/explorviz.properties
 
+# !!!!!!!!!!!!!!!!!!!!!!!!
 # ATTENTION: DO NOT USE depends_on, since the Gradle Docker Plugin will not 
-# remove these containers.
+# remove depending containers.
+# !!!!!!!!!!!!!!!!!!!!!!!!
 
 version: "3.3"
 services:
@@ -42,8 +40,6 @@ services:
     ports:
       - 8087:8087
 
-
-
   landscape-service:
     build: ../landscape-service
     container_name: explorviz-backend-landscape-service
@@ -57,8 +53,6 @@ services:
     ports:
       - 10135:10135
 
-
-
   broadcast-service:
     build: ../broadcast-service
     container_name: explorviz-backend-broadcast-service
@@ -69,8 +63,6 @@ services:
       - explorviz
     ports:
       - 8081:8081
-
-
 
   history-service:
     build: ../history-service
@@ -84,8 +76,6 @@ services:
     ports:
       - 8086:8086
 
-
-
   analysis-service:
     build: ../analysis-service
     container_name: explorviz-backend-analysis-service
@@ -94,7 +84,6 @@ services:
     networks:
       - explorviz
 
-
   discovery-service:
     build: ../discovery-service
     container_name: explorviz-backend-discovery-service
@@ -102,18 +91,6 @@ services:
       - "8083:8083"
     networks:
       - explorviz
-
-
-  frontend:
-    image: explorviz/explorviz-frontend:dev
-    container_name: explorviz-frontend
-    ports:
-      - "8090:80"
-    environment:
-      - API_ROOT=http://localhost:8090
-    networks:
-      - explorviz
-
 
   ### Software Stack ###
 
@@ -142,8 +119,6 @@ services:
     command: ["redis-server", "--appendonly", "yes"]
     ports:
       - "6379:6379"
-    #volumes:
-    #  - explorviz-id-generator-test-data:/data
     networks:
       - explorviz
 
@@ -151,9 +126,6 @@ services:
     image: mongo
     container_name: explorviz-backend-user-mongo
     command: mongod --port 27017
-    #volumes:
-    #  - explorviz-user-mongo-test-data:/data/db
-    #  - explorviz-user-mongo-test-configdb:/data/configdb
     expose:
       - "27017"
     ports:
@@ -165,9 +137,6 @@ services:
     image: mongo
     container_name: explorviz-backend-landscape-mongo
     command: mongod --port 27018
-    #volumes:
-    #  - explorviz-history-mongo-test-data:/data/db
-    #  - explorviz-history-mongo-test-configdb:/data/configdb
     expose:
       - "27018"
     ports:
@@ -179,22 +148,10 @@ services:
     image: mongo
     container_name: explorviz-backend-settings-mongo
     command: mongod --port 27019
-    #volumes:
-    #  - explorviz-settings-mongo-test-data:/data/db
-    #  - explorviz-settings-mongo-test-configdb:/data/configdb
     networks:
       - explorviz
     ports:
       - 27019:27019
-
-#volumes:
-#  explorviz-user-mongo-test-data:
-#  explorviz-user-mongo-test-configdb:
-#  explorviz-history-mongo-test-data:
-#  explorviz-history-mongo-test-configdb:
-#  explorviz-settings-mongo-test-data:
-#  explorviz-settings-mongo-test-configdb:
-#  explorviz-id-generator-test-data:
 
 networks:
   explorviz:
