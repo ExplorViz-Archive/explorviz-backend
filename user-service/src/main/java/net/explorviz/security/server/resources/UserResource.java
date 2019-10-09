@@ -95,7 +95,7 @@ public class UserResource {
   @POST
   @Consumes(MEDIA_TYPE)
   @Produces(MEDIA_TYPE)
-  @RolesAllowed({Role.ADMIN})
+  @RolesAllowed({Role.ADMIN_NAME})
   @Operation(summary = "Create a new user")
   @ApiResponse(responseCode = "200", description = "User created",
       content = @Content(mediaType = MEDIA_TYPE, schema = @Schema(implementation = User.class)))
@@ -151,7 +151,7 @@ public class UserResource {
 
 
   @Path("batch")
-  public BatchRequestSubResource createAll() {
+  public BatchRequestSubResource batchRequest() {
     return this.batchSubResource;
   }
 
@@ -166,7 +166,7 @@ public class UserResource {
    */
   @PATCH
   @Path("{id}")
-  @RolesAllowed({Role.ADMIN})
+  @RolesAllowed({Role.ADMIN_NAME})
   @Produces(MEDIA_TYPE)
   @Consumes(MEDIA_TYPE)
   @Operation(summary = "Update an existing User")
@@ -242,7 +242,7 @@ public class UserResource {
    * @return a list of all users with the given role
    */
   @GET
-  @RolesAllowed({Role.ADMIN})
+  @RolesAllowed({Role.ADMIN_NAME})
   @Produces(MEDIA_TYPE)
   @Operation(description = "List all users")
   @Parameters({
@@ -270,7 +270,7 @@ public class UserResource {
    */
   @GET
   @Path("{id}")
-  @RolesAllowed({Role.ADMIN, Role.USER})
+  @RolesAllowed({Role.ADMIN_NAME, Role.USER_NAME})
   @Produces(MEDIA_TYPE)
   @Operation(summary = "Find a user by its id")
   @ApiResponse(responseCode = "200", description = "The requested user",
@@ -299,7 +299,7 @@ public class UserResource {
    */
   @DELETE
   @Path("{id}")
-  @RolesAllowed({Role.ADMIN})
+  @RolesAllowed({Role.ADMIN_NAME})
   @Operation(summary = "Remove a user identified by its Id")
   @ApiResponse(responseCode = "400",
       description = "Attempt to delete the last existing use with the admin role, "
@@ -328,7 +328,7 @@ public class UserResource {
    * @return 204 if no error occured
    */
   @DELETE
-  @RolesAllowed({Role.ADMIN})
+  @RolesAllowed({Role.ADMIN_NAME})
   @Operation(summary = "Delete a list of users")
   @ApiResponse(responseCode = "204", description = "All user deleted")
   @ApiResponse(responseCode = "400",

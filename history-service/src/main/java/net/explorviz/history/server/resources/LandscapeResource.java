@@ -40,7 +40,7 @@ import org.slf4j.LoggerFactory;
  * Resource providing persisted {@link Landscape} data for the frontend.
  */
 @Path("v1/landscapes")
-@RolesAllowed({Role.ADMIN, Role.USER})
+@RolesAllowed({Role.ADMIN_NAME, Role.USER_NAME})
 @Tag(name = "Landscapes")
 @SecurityScheme(type = SecuritySchemeType.HTTP, name = "token", scheme = "bearer",
     bearerFormat = "JWT")

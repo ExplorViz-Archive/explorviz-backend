@@ -4,7 +4,7 @@ import javax.inject.Singleton;
 import net.explorviz.security.injection.KafkaProducerFactory;
 import net.explorviz.security.server.injection.DatastoreFactory;
 import net.explorviz.security.server.resources.BatchRequestSubResource;
-import net.explorviz.security.services.BatchCreationService;
+import net.explorviz.security.services.BatchService;
 import net.explorviz.security.services.KafkaUserService;
 import net.explorviz.security.services.TokenService;
 import net.explorviz.security.services.UserService;
@@ -38,7 +38,7 @@ public class DependencyInjectionBinder extends CommonDependencyInjectionBinder {
     this.bind(UserService.class).to(UserService.class).in(Singleton.class);
 
     this.bind(IdGenerator.class).to(IdGenerator.class).in(Singleton.class);
-    this.bind(BatchCreationService.class).to(BatchCreationService.class).in(Singleton.class);
+    this.bind(BatchService.class).to(BatchService.class).in(Singleton.class);
     this.bind(BatchRequestSubResource.class).to(BatchRequestSubResource.class).in(Singleton.class);
 
   }

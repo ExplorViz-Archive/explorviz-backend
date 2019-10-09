@@ -28,6 +28,8 @@ import net.explorviz.shared.common.idgen.IdGenerator;
 import net.explorviz.shared.common.jsonapi.ResourceConverterFactory;
 import net.explorviz.shared.common.provider.JsonApiProvider;
 import net.explorviz.shared.config.annotations.Config;
+import net.explorviz.shared.querying.Query;
+import net.explorviz.shared.querying.QueryResult;
 import net.explorviz.shared.security.model.User;
 import org.eclipse.jetty.http.HttpStatus;
 import org.jvnet.hk2.annotations.Service;
@@ -39,9 +41,9 @@ import org.slf4j.LoggerFactory;
  *
  */
 @Service
-public class BatchCreationService {
+public class BatchService {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(BatchCreationService.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(BatchService.class);
   private static final String MEDIA_TYPE = "application/vnd.api+json";
   private static final String HTTP = "http://";
   private static final String MSG_FAIL = "Batch request failed, rolling back";
@@ -64,7 +66,7 @@ public class BatchCreationService {
    * @param settingServiceHost host of the settings service
    */
   @Inject
-  public BatchCreationService(final UserService userService, final ResourceConverter converter,
+  public BatchService(final UserService userService, final ResourceConverter converter,
       final IdGenerator idGen, @Config("services.settings") final String settingServiceHost,
       @Config("services.settings.preferences") final String settingsPrefPath) {
     this.userService = userService;
@@ -268,4 +270,23 @@ public class BatchCreationService {
     return new User(null, name, hashed, roles, batchId);
   }
 
+
+  /**
+   * Delets a users that belong to the given batch id.
+   * @param batchId The id of the batch to delete all users of
+   */
+  public void deleteBatch(String batchId) {
+    MultivaluedHashMap<String, String> qParams = new MultivaluedHashMap<>();
+    qParams.putSingle("filter[batchid]", batchId);
+    Query<User> batchQuery = Query.fromParameterMap(qParams);
+    QueryResult<User> res = userService.query(batchQuery);
+    LOGGER.info("Delete batch of " + res.getData().size() + " users");
+    res.getData().forEach(u -> {
+      try {
+        userService.deleteEntityById(u.getId());
+      } catch (UserCrudException e) {
+        LOGGER.warn("Skipped a user during batch deletion: " + e.getMessage());
+      }
+    });
+  }
 }

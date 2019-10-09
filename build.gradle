@@ -2,6 +2,8 @@ plugins {
     id 'com.adarshr.test-logger' version '1.6.0' apply false
 }
 
+apply plugin: 'java'
+
 allprojects {
   apply plugin: 'java-library'
   apply plugin: "eclipse"

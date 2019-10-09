@@ -30,7 +30,7 @@ import net.explorviz.shared.security.model.roles.Role;
  * frontend.
  */
 @Path("v1/timestamps")
-@RolesAllowed({Role.ADMIN})
+@RolesAllowed({Role.ADMIN_NAME})
 @SecurityRequirement(name = "token")
 @Tag(name = "Timestamps")
 public class TimestampResource {

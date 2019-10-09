@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 import javax.annotation.security.RolesAllowed;
@@ -19,19 +20,18 @@ import net.explorviz.shared.security.model.roles.Role;
  */
 @Path("v1/roles")
 @Tag(name = "Role")
+@SecurityRequirement(name = "token")
 public class RoleResource {
-
-  // private static final Logger LOGGER = LoggerFactory.getLogger(RoleResource.class); // NOPMD
 
   private static final String MEDIA_TYPE = "application/vnd.api+json";
 
   @GET
-  @RolesAllowed({Role.ADMIN})
+  @RolesAllowed({Role.ADMIN_NAME})
   @Produces(MEDIA_TYPE)
   @Operation(description = "Returns a list of all available roles")
   @ApiResponse(responseCode = "200", description = "List of all roles currently available.",
       content = @Content(array = @ArraySchema(schema = @Schema(implementation = Role.class))))
-  public List<String> getAllRoles() {
+  public List<Role> getAllRoles() {
     return Role.ROLES;
   }
 
