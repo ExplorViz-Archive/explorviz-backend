@@ -23,8 +23,6 @@ import net.explorviz.shared.security.model.roles.Role;
 @SecurityRequirement(name = "token")
 public class RoleResource {
 
-  // private static final Logger LOGGER = LoggerFactory.getLogger(RoleResource.class); // NOPMD
-
   private static final String MEDIA_TYPE = "application/vnd.api+json";
 
   @GET
