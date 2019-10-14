@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import javax.annotation.security.PermitAll;
 import javax.inject.Inject;
@@ -97,6 +98,7 @@ public class TokenResource {
           + "A refreshed token can't be refreshed further.",
       content = @Content(schema = @Schema(implementation = User.class)))
   @ApiResponse(responseCode = "403", description = "Token can't be refreshed.")
+  @SecurityRequirement(name = "token")
   public Token refresh(@Context final ContainerRequestContext context) {
 
     // curl -X POST
