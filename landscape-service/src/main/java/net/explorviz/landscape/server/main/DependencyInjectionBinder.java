@@ -3,8 +3,6 @@ package net.explorviz.landscape.server.main;
 import javax.inject.Singleton;
 import net.explorviz.landscape.injection.KafkaProducerFactory;
 import net.explorviz.landscape.repository.LandscapeRepositoryModel;
-import net.explorviz.landscape.repository.LandscapeRepositoryModelDummy;
-import net.explorviz.landscape.repository.LandscapeRepositoryModelImpl;
 import net.explorviz.landscape.repository.helper.LandscapeSerializationHelper;
 import net.explorviz.shared.common.idgen.RedisServiceIdGenerator;
 import net.explorviz.shared.common.idgen.ServiceIdGenerator;
@@ -26,8 +24,6 @@ public class DependencyInjectionBinder extends CommonDependencyInjectionBinder {
     final boolean useRedisForIdGeneration =
         PropertyHelper.getBooleanProperty("service.generator.id.redis");
 
-    final boolean useDummyMode = PropertyHelper.getBooleanProperty("service.dummyMode");
-
     if (useRedisForIdGeneration) {
       this.bind(RedisServiceIdGenerator.class)
           .to(ServiceIdGenerator.class)
@@ -38,14 +34,13 @@ public class DependencyInjectionBinder extends CommonDependencyInjectionBinder {
     this.bindFactory(KafkaProducerFactory.class)
         .to(new TypeLiteral<KafkaProducer<String, String>>() {});
 
-    this.bind(LandscapeSerializationHelper.class).to(LandscapeSerializationHelper.class)
+    this.bind(LandscapeSerializationHelper.class)
+        .to(LandscapeSerializationHelper.class)
         .in(Singleton.class);
 
-    if (!useDummyMode) {
-      this.bind(LandscapeRepositoryModelImpl.class).to(LandscapeRepositoryModel.class).in(Singleton.class);
-    } else {
-      this.bind(LandscapeRepositoryModelDummy.class).to(LandscapeRepositoryModel.class).in(Singleton.class);
-    }
+    this.bind(LandscapeRepositoryModel.class)
+        .to(LandscapeRepositoryModel.class)
+        .in(Singleton.class);
 
   }
 }
