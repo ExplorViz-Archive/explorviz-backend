@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
@@ -21,9 +22,13 @@ import net.explorviz.security.model.UserCredentials;
 import net.explorviz.security.services.TokenService;
 import net.explorviz.security.services.exceptions.UserValidationService;
 import net.explorviz.shared.security.TokenBasedSecurityContext;
-import net.explorviz.shared.security.annotations.Secured;
+
 import net.explorviz.shared.security.model.TokenDetails;
 import net.explorviz.shared.security.model.User;
+
+
+import static net.explorviz.shared.security.model.roles.Role.ANY;
+
 
 /**
  * The token resource class provides endpoints for token obtainment and refreshment.
@@ -89,7 +94,7 @@ public class TokenResource {
   @POST
   @Path("refresh")
   @Produces(MediaType.APPLICATION_JSON)
-  @Secured
+  @RolesAllowed(ANY)
   @Operation(description = "This method refreshes a Json Web Token (JWT). "
       + "The HTTP POST body must not contain data and the "
       + "to-be refreshed token inside of the ' Authorization: Bearer' header.")
