@@ -11,8 +11,10 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.sse.SseEventSink;
 import net.explorviz.discovery.repository.discovery.AgentRepository;
 import net.explorviz.discovery.server.services.BroadcastService;
+import net.explorviz.shared.security.filters.Secure;
 
 @Singleton
+@Secure
 public class AgentBroadcastSubResource {
 
   // private static final Logger LOGGER = LoggerFactory.getLogger(AgentBroadcastSubResource.class);

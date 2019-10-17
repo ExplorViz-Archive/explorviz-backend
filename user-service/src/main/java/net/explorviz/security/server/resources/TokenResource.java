@@ -23,6 +23,7 @@ import net.explorviz.security.services.TokenService;
 import net.explorviz.security.services.exceptions.UserValidationService;
 import net.explorviz.shared.security.TokenBasedSecurityContext;
 
+import net.explorviz.shared.security.filters.Secure;
 import net.explorviz.shared.security.model.TokenDetails;
 import net.explorviz.shared.security.model.User;
 
@@ -60,7 +61,6 @@ public class TokenResource {
   @POST
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MEDIA_TYPE)
-  @PermitAll
   @Operation(description = "Request an API token")
   @ApiResponse(responseCode = "200",
       description = "If the credentials are valid, the associated user is returned. "
@@ -104,6 +104,7 @@ public class TokenResource {
       content = @Content(schema = @Schema(implementation = User.class)))
   @ApiResponse(responseCode = "403", description = "Token can't be refreshed.")
   @SecurityRequirement(name = "token")
+  @Secure
   public Token refresh(@Context final ContainerRequestContext context) {
 
     // curl -X POST

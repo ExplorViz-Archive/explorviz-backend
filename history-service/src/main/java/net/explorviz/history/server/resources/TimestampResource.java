@@ -23,6 +23,7 @@ import net.explorviz.landscape.model.store.Timestamp;
 import net.explorviz.shared.querying.Query;
 import net.explorviz.shared.querying.QueryException;
 import net.explorviz.shared.querying.QueryResult;
+import net.explorviz.shared.security.filters.Secure;
 import net.explorviz.shared.security.model.roles.Role;
 
 /**
@@ -33,6 +34,7 @@ import net.explorviz.shared.security.model.roles.Role;
 @RolesAllowed({Role.ADMIN_NAME})
 @SecurityRequirement(name = "token")
 @Tag(name = "Timestamps")
+@Secure
 public class TimestampResource {
 
   private static final String MEDIA_TYPE = "application/vnd.api+json";
