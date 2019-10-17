@@ -21,14 +21,21 @@ This is only the backend, you will need the [explorviz-frontend](https://github.
 This gradle project includes or installs every necessary dependency.
 
 ## Reference
-How to cite ExplorViz:
+Citing ExplorViz as a tool:
 
 Florian Fittkau, Alexander Krause, Wilhelm Hasselbring (2017): Software landscape and application visualization for system comprehension with ExplorViz. Information and Software Technology, Volume 87. pp. 259-277. DOI https://doi.org/10.1016/j.infsof.2016.07.004.
 
 [[BibTex]](http://eprints.uni-kiel.de/cgi/export/eprint/33464/BibTeX/cau-eprint-33464.bib) | [[Endnote]](http://eprints.uni-kiel.de/cgi/export/eprint/33464/EndNote/cau-eprint-33464.enw)
 
+Citing ExplorViz' collaborative modularization process:
+
+Zirkelbach, Christian, Krause, Alexander and Hasselbring, Wilhelm (2019): Modularization of Research Software for Collaborative Open Source Development. In Proceedings of the Ninth International Conference on Advanced Collaborative Networks, Systems and Applications (COLLA 2019), June 30 - July 04, 2019, Rome, Italy.
+
+[[BibTex]](http://eprints.uni-kiel.de/cgi/export/eprint/46777/BibTeX/cau-eprint-46777.bib) | [[Endnote]](http://eprints.uni-kiel.de/cgi/export/eprint/46777/EndNote/cau-eprint-46777.enw)
+
 ## Documentation
-The API documentation is available [here](https://explorviz.github.io/explorviz-backend/).
+- The API documentation is available [here](https://explorviz.github.io/explorviz-backend/)
+* The documentation for endpoints of services (SwaggerUI) is available [here](http://localhost:8001), once all services are started
 
 ## Eclipse Setup
 1. Download the latest [Eclipse IDE for Java Developers](http://www.eclipse.org/downloads/eclipse-packages/) (ExplorViz requires JDK 8 compliance)
@@ -47,7 +54,6 @@ The API documentation is available [here](https://explorviz.github.io/explorviz-
 * Generating API Documentation: Travis CI automatically builds all Javadoc on successful master-branch builds
 
 ## Quick start with sample (dummy) monitoring
-
 1. Follow the above [Setup Development](#setup-development) procedure
 2. Clone [TestApplication](https://github.com/czirkelbach/kiekerSampleApplication)
 3. Start the [TestApplication](https://github.com/czirkelbach/kiekerSampleApplication) as described [here](https://github.com/czirkelbach/kiekerSampleApplication/blob/master/README.md).

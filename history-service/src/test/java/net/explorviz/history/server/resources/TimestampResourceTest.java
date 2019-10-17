@@ -9,7 +9,7 @@ import javax.ws.rs.core.MultivaluedHashMap;
 import javax.ws.rs.core.UriInfo;
 import net.explorviz.history.repository.persistence.mongo.TimestampRepository;
 import net.explorviz.history.server.resources.endpoints.TimestampResourceEndpointTest;
-import net.explorviz.shared.landscape.model.store.Timestamp;
+import net.explorviz.landscape.model.store.Timestamp;
 import net.explorviz.shared.querying.QueryException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

@@ -13,7 +13,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.ext.MessageBodyReader;
 import net.explorviz.shared.security.model.User;
-import net.explorviz.shared.security.model.roles.Role;
 import xyz.morphia.Datastore;
 
 public class UserJsonApiDeserializer implements MessageBodyReader<User> {
@@ -41,20 +40,6 @@ public class UserJsonApiDeserializer implements MessageBodyReader<User> {
       throws IOException, WebApplicationException {
 
     final User user = this.converter.readDocument(entityStream, type).get();
-
-    // enrich user with role based on the passed ID
-    // See https://github.com/ExplorViz/explorviz-frontend/issues/37
-    final List<Role> obtainedRolelist = new ArrayList<>();
-
-    for (final Role roleWithoutContent : user.getRoles()) {
-      final Role dbRole = this.datastore.get(Role.class, roleWithoutContent.getDescriptor());
-
-      if (dbRole != null) {
-        obtainedRolelist.add(dbRole);
-      }
-    }
-    user.setRoles(obtainedRolelist);
-
     return user;
   }
 

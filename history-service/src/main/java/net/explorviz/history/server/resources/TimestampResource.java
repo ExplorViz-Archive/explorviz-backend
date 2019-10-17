@@ -19,17 +19,18 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
 import net.explorviz.history.repository.persistence.mongo.TimestampRepository;
-import net.explorviz.shared.landscape.model.store.Timestamp;
+import net.explorviz.landscape.model.store.Timestamp;
 import net.explorviz.shared.querying.Query;
 import net.explorviz.shared.querying.QueryException;
 import net.explorviz.shared.querying.QueryResult;
+import net.explorviz.shared.security.model.roles.Role;
 
 /**
  * REST resource providing {@link net.explorviz.landscape.model.store.Timestamp} data for the
  * frontend.
  */
 @Path("v1/timestamps")
-@RolesAllowed({"admin"})
+@RolesAllowed({Role.ADMIN_NAME})
 @SecurityRequirement(name = "token")
 @Tag(name = "Timestamps")
 public class TimestampResource {

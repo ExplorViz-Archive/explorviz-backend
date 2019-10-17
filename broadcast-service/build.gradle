@@ -1,7 +1,8 @@
 plugins {
 	id "application"
-	id "com.github.johnrengelman.shadow" version "4.0.4"
+	id "com.github.johnrengelman.shadow" version "5.1.0"
 	id "com.github.spotbugs" version "1.6.10"
+	id "maven"
 }
 
 // Force new Dependencies 
@@ -13,25 +14,30 @@ configurations.all {
 dependencies {
 
 	// Swagger
-  	compile group: 'io.swagger.core.v3', name: 'swagger-core', version: '2.0.8'
-  	compile group: 'io.swagger.core.v3', name: 'swagger-jaxrs2', version: '2.0.8' 
+  	implementation group: 'io.swagger.core.v3', name: 'swagger-core', version: '2.0.8'
+  	implementation group: 'io.swagger.core.v3', name: 'swagger-jaxrs2', version: '2.0.8'
+  	
+  	implementation project(':landscape-service:landscape-model')
+  	
 
   // ExplorViz Shared Dependencies
   if(useRemoteSharedProject.toBoolean()) {
-    implementation "com.github.explorviz.explorviz-backend-shared:config-injection:${sharedProjectVersion}"
-    implementation "com.github.explorviz.explorviz-backend-shared:security:${sharedProjectVersion}"
-    implementation "com.github.explorviz.explorviz-backend-shared:exception-handling:${sharedProjectVersion}"
-    implementation "com.github.explorviz.explorviz-backend-shared:common-concerns:${sharedProjectVersion}"
-    implementation "com.github.explorviz.explorviz-backend-shared:landscape-model:${sharedProjectVersion}"
+  	implementation group: 'net.explorviz', name: 'config-injection', version: "${sharedProjectVersion}"
+  	implementation group: 'net.explorviz', name: 'security', version: "${sharedProjectVersion}"
+  	implementation group: 'net.explorviz', name: 'exception-handling', version: "${sharedProjectVersion}"
+  	implementation group: 'net.explorviz', name: 'common-concerns', version: "${sharedProjectVersion}"
+    implementation group: 'net.explorviz', name: 'user', version: "${sharedProjectVersion}"
   }
   else { 
     implementation project(':config-injection')    
     implementation project(':security')
+    implementation project(':user')
     implementation project(':exception-handling')
     implementation project(':common-concerns')
-    implementation project(':landscape-model')    
-  } 
-  
+  }
+
+  implementation project(':landscape-service:landscape-model')
+
   // SSE context for injection
   implementation group: 'org.glassfish.jersey.media', name: 'jersey-media-sse', version: '2.27'
   
@@ -54,7 +60,8 @@ application {
 }
 
 shadowJar {
-  archiveName = "explorviz-${project.name}.${extension}"
+  baseName = "explorviz-${project.name}"
+  classifier = null
 }
 
 spotbugs {
@@ -81,10 +88,6 @@ task spotbugs {
   
   dependsOn 'spotbugsMain'
   dependsOn 'spotbugsTest'
-}
-
-artifacts {
-  archives shadowJar
 }
 
 // START environment task

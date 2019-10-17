@@ -21,7 +21,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.stubbing.Answer;
 
 /**
- * Unit test for {@link BatchCreationService}.
+ * Unit test for {@link BatchService}.
  *
  */
 @ExtendWith(MockitoExtension.class)
@@ -37,13 +37,13 @@ public class BatchCreationServiceTest {
 
   private UserService userService;
 
-  private BatchCreationService bcs;
+  private BatchService bcs;
 
   private final List<User> users = new ArrayList<>();
 
   @BeforeEach
   public void setUp() {
-    this.bcs = new BatchCreationService(this.us, null, this.idGenerator, "", "");
+    this.bcs = new BatchService(this.us, null, this.idGenerator, "", "");
   }
 
   @Test
@@ -53,7 +53,7 @@ public class BatchCreationServiceTest {
 
 
     final UserBatchRequest batch =
-        new UserBatchRequest("test", size, passwords, Arrays.asList(new Role("admin")), null);
+        new UserBatchRequest("test", size, passwords, Arrays.asList(Role.ADMIN_NAME), null);
 
     Mockito.doAnswer(new Answer<User>() {
 

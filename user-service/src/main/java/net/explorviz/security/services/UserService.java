@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.mongodb.DuplicateKeyException;
 import com.mongodb.MongoException;
 import com.mongodb.WriteResult;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -16,7 +17,6 @@ import net.explorviz.shared.querying.Query;
 import net.explorviz.shared.querying.QueryResult;
 import net.explorviz.shared.querying.Queryable;
 import net.explorviz.shared.security.model.User;
-import net.explorviz.shared.security.model.roles.Role;
 import org.jvnet.hk2.annotations.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -167,17 +167,11 @@ public class UserService implements Queryable<User> {
     }
 
     final boolean isadmin =
-        user.getRoles().stream().filter(r -> r.getDescriptor().equals(ADMIN)).count() == 1;
+        user.getRoles().stream().filter(r -> r.equals(ADMIN)).count() == 1;
 
-    final boolean otheradmin = this.getAll()
-        .stream()
-        .filter(u -> u.getRoles()
-            .stream()
-            .map(r -> r.getDescriptor())
-            .collect(Collectors.toList())
-            .contains(ADMIN))
-        .filter(u -> !u.getId().equals(id))
-        .count() > 0;
+    final boolean otheradmin =
+        this.getAll().stream().filter(u -> new ArrayList<>(u.getRoles()).contains(ADMIN))
+            .anyMatch(u -> !u.getId().equals(id));
 
 
     return isadmin && !otheradmin;
@@ -217,7 +211,7 @@ public class UserService implements Queryable<User> {
       // Filter by roles
       if (roles != null) {
         q.field(roleField)
-            .hasAllOf(roles.stream().map(r -> new Role(r)).collect(Collectors.toList()));
+            .hasAllOf(new ArrayList<>(roles));
       }
 
       // Filter by batch id, if more than one is give, ignore all but the first

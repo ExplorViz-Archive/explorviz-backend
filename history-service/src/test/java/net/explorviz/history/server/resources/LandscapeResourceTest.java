@@ -3,7 +3,6 @@ package net.explorviz.history.server.resources;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
-
 import com.github.jasminb.jsonapi.ResourceConverter;
 import com.github.jasminb.jsonapi.SerializationFeature;
 import com.github.jasminb.jsonapi.exceptions.DocumentSerializationException;
@@ -17,8 +16,8 @@ import net.explorviz.history.server.resources.endpoints.LandscapeResourceEndpoin
 import net.explorviz.shared.common.idgen.AtomicEntityIdGenerator;
 import net.explorviz.shared.common.idgen.IdGenerator;
 import net.explorviz.shared.common.idgen.UuidServiceIdGenerator;
-import net.explorviz.shared.landscape.model.helper.TypeProvider;
-import net.explorviz.shared.landscape.model.landscape.Landscape;
+import net.explorviz.landscape.model.helper.TypeProvider;
+import net.explorviz.landscape.model.landscape.Landscape;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -64,7 +63,8 @@ public class LandscapeResourceTest {
         .thenReturn(Optional.of(this.currentLandscape));
     // when(this.replayRepo.getAllTimestamps()).thenReturn(this.userUploadedTimestamps);
 
-    this.landscapeResouce = new LandscapeResource(this.landscapeStringRepo, this.replayStringRepo);
+    this.landscapeResouce =
+        new LandscapeResource(this.landscapeStringRepo, this.replayStringRepo, serializationHelper);
   }
 
   @Test

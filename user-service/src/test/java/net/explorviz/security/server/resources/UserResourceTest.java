@@ -9,6 +9,7 @@ import static org.mockito.ArgumentMatchers.any;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,7 +19,6 @@ import javax.ws.rs.BadRequestException;
 import javax.ws.rs.core.MultivaluedHashMap;
 import javax.ws.rs.core.UriInfo;
 import net.explorviz.security.server.resources.endpoints.UserResourceEndpointTest;
-import net.explorviz.security.services.RoleService;
 import net.explorviz.security.services.UserService;
 import net.explorviz.security.services.exceptions.UserCrudException;
 import net.explorviz.security.util.PasswordStorage;
@@ -55,22 +55,17 @@ public class UserResourceTest {
   @Mock
   private UserService userCrudService;
 
-  @Mock
-  private RoleService roleService;
 
 
   private final Map<String, User> users = new HashMap<>();
 
-  private final List<Role> roles = new ArrayList<>();
+  private final List<String> roles = new ArrayList<>();
 
   private Long lastId = 0L;
 
   @BeforeEach
   public void setUp() throws UserCrudException {
 
-
-
-    Mockito.lenient().when(this.roleService.getAllRoles()).thenReturn(this.roles);
 
 
     Mockito.lenient().when(this.userCrudService.saveNewEntity(any())).thenAnswer(inv -> {
@@ -97,7 +92,7 @@ public class UserResourceTest {
         final String role = query.getFilters().get("role").get(0);
         data = this.users.values()
             .stream()
-            .filter(u -> u.getRoles().stream().anyMatch(r -> r.getDescriptor().equals(role)))
+            .filter(u -> u.getRoles().stream().anyMatch(r -> r.equals(role)))
             .collect(Collectors.toList());
       }
       return new QueryResult<>(inv.getArgument(0), data, data.size());
@@ -174,7 +169,7 @@ public class UserResourceTest {
 
   @Test
   public void testInvalidRoles() {
-    final User u = new User(null, "name", "pw", Arrays.asList(new Role("Unknown")));
+    final User u = new User(null, "name", "pw", Collections.singletonList("unknown"));
     assertThrows(BadRequestException.class, () -> this.userResource.newUser(u));
   }
 
@@ -183,33 +178,24 @@ public class UserResourceTest {
   @Test
   public void testUserByRole() {
 
-    this.roles.add(new Role("role1"));
-    this.roles.add(new Role("role2"));
-    this.roles.add(new Role("role3"));
 
     final User u1 = new User("testuser");
     u1.setPassword("password");
-    u1.setRoles(Arrays.asList(new Role("role1"), new Role("role2")));
+    u1.setRoles(Arrays.asList(Role.USER_NAME));
 
     final User u2 = new User("testuser2");
     u2.setPassword("password");
-    u2.setRoles(Arrays.asList(new Role("role1")));
+    u2.setRoles(Arrays.asList(Role.USER_NAME));
 
     this.userResource.newUser(u1);
     this.userResource.newUser(u2);
 
     final MultivaluedHashMap<String, String> roleparams = new MultivaluedHashMap<>();
-    roleparams.add("filter[role]", "role1");
+    roleparams.add("filter[role]", "user");
     final UriInfo uri = Mockito.mock(UriInfo.class);
     Mockito.when(uri.getQueryParameters(true)).thenReturn(roleparams);
 
     assertEquals(2, this.userResource.find(uri).getData().size());
-
-    roleparams.putSingle("filter[role]", "role2");
-    assertEquals(1, this.userResource.find(uri).getData().size());
-
-    roleparams.putSingle("filter[role]", "role3");
-    assertEquals(0, this.userResource.find(uri).getData().size());
   }
 
   @Test
@@ -267,11 +253,10 @@ public class UserResourceTest {
 
     final String uid = newUser.getId();
 
-    final User update = new User(null, null, null, Arrays.asList(new Role("newrole")));
-    this.roles.add(new Role("newrole"));
+    final User update = new User(null, null, null, Arrays.asList(Role.USER_NAME));
     final User updatedUser = this.userResource.updateUser(uid, update);
 
-    assertTrue(updatedUser.getRoles().stream().anyMatch(r -> r.getDescriptor().equals("newrole")));
+    assertTrue(updatedUser.getRoles().stream().anyMatch(r -> r.equals(Role.USER_NAME)));
     assertEquals(newUser.getId(), updatedUser.getId());
     assertEquals(u1.getUsername(), updatedUser.getUsername());
     assertEquals(u1.getPassword(), updatedUser.getPassword());

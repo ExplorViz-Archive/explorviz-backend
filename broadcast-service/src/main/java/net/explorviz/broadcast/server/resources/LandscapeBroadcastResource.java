@@ -15,6 +15,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.sse.SseEventSink;
 import net.explorviz.broadcast.server.helper.LandscapeBroadcastService;
+import net.explorviz.shared.security.model.roles.Role;
 
 /**
  * Resource class that contains an endpoint which clients, e.g., the ExplorViz Frontend, can use to
@@ -22,7 +23,7 @@ import net.explorviz.broadcast.server.helper.LandscapeBroadcastService;
  *
  */
 @Path("v1/landscapes/broadcast")
-@RolesAllowed({"admin", "user"})
+@RolesAllowed({Role.ADMIN_NAME})
 @Tag(name = "Broadcasts")
 @SecurityScheme(type = SecuritySchemeType.HTTP, name = "token", scheme = "bearer",
     bearerFormat = "JWT")
@@ -49,7 +50,7 @@ public class LandscapeBroadcastResource {
   @GET
   @Produces(MediaType.SERVER_SENT_EVENTS)
   @Operation(description = "Endpoint that clients can use to register for landscape updates.", 
-    summary = "Register for Landscape updates")
+      summary = "Register for Landscape updates")
   public void listenToBroadcast(@Context final SseEventSink eventSink,
       @Context final HttpServletResponse response) {
 

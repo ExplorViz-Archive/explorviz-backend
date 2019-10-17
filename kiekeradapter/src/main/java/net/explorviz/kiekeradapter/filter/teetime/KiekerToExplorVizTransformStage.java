@@ -22,13 +22,13 @@ import teetime.framework.AbstractConsumerStage;
 
 /**
  * Kieker Analysis Filter: Transforms Kieker Records to ExplorViz Records
- * 
+ *
  * @author Christian Zirkelbach (czi@informatik.uni-kiel.de)
  *
  */
 public class KiekerToExplorVizTransformStage extends AbstractConsumerStage<IMonitoringRecord> {
 
-  final Logger logger = LoggerFactory.getLogger(KiekerToExplorVizTransformStage.class.getName());
+  final Logger LOGGER = LoggerFactory.getLogger(KiekerToExplorVizTransformStage.class.getName());
   private final Stack<IMonitoringRecord> stack = new Stack<>();
 
   @Override
@@ -39,6 +39,9 @@ public class KiekerToExplorVizTransformStage extends AbstractConsumerStage<IMoni
   public void inputKiekerRecords(final IMonitoringRecord kiekerRecord) {
 
     // TODO Is a generic KiekerMetaDataRecord necessary?
+
+    // TODO [Issue 09.08.2019] Bug? getTimestamp() returns always -1 --> change to getTimestamp() as
+    // a workaround
 
     // ApplicationTraceMetadata (determine the belonging hostname and
     // applicationName)
@@ -52,6 +55,7 @@ public class KiekerToExplorVizTransformStage extends AbstractConsumerStage<IMoni
       final String programmingLanguage = "";
 
       GenericExplorVizExternalLogAdapter.sendApplicationTraceMetaDataRecord(
+          // TODO [Issue 09.08.2019] - ApplicationTraceMetadata offers no getLoggingTimestamp()
           kiekerMetaDataRecord.getLoggingTimestamp(),
           systemName,
           ipAddress,
@@ -63,13 +67,13 @@ public class KiekerToExplorVizTransformStage extends AbstractConsumerStage<IMoni
       final String hostname = kiekerCPUUtilRecord.getHostname();
 
       GenericExplorVizExternalLogAdapter.sendSystemMonitoringRecord(kiekerCPUUtilRecord
-          .getLoggingTimestamp(), hostname, kiekerCPUUtilRecord.getTotalUtilization(), 0, 0);
+          .getTimestamp(), hostname, kiekerCPUUtilRecord.getTotalUtilization(), 0, 0);
     } else if (kiekerRecord instanceof MemSwapUsageRecord) {
       final MemSwapUsageRecord kiekerMemUsageRecord = (MemSwapUsageRecord) kiekerRecord;
       final String hostname = kiekerMemUsageRecord.getHostname();
 
       GenericExplorVizExternalLogAdapter.sendSystemMonitoringRecord(
-          kiekerMemUsageRecord.getLoggingTimestamp(),
+          kiekerMemUsageRecord.getTimestamp(),
           hostname,
           0,
           kiekerMemUsageRecord.getMemUsed(),
@@ -86,8 +90,7 @@ public class KiekerToExplorVizTransformStage extends AbstractConsumerStage<IMoni
 
       final String interfaceImpl = KiekerToExplorVizTransformationHelper.getInterface(kiekerRecord);
 
-      GenericExplorVizExternalLogAdapter.sendBeforeConstructorRecord(
-          kiekerBefore.getLoggingTimestamp(),
+      GenericExplorVizExternalLogAdapter.sendBeforeConstructorRecord(kiekerBefore.getTimestamp(),
           kiekerBefore.getTraceId(),
           kiekerBefore.getOrderIndex(),
           objectId,
@@ -103,13 +106,12 @@ public class KiekerToExplorVizTransformStage extends AbstractConsumerStage<IMoni
         if (beforeRecord instanceof BeforeConstructorEvent) {
           final BeforeConstructorEvent beforeConstructorEvent =
               (BeforeConstructorEvent) beforeRecord;
-          methodDuration =
-              kiekerAfter.getLoggingTimestamp() - beforeConstructorEvent.getLoggingTimestamp();
+          methodDuration = kiekerAfter.getTimestamp() - beforeConstructorEvent.getTimestamp();
         }
       }
 
       GenericExplorVizExternalLogAdapter.sendAfterFailedConstructorRecord(
-          kiekerAfter.getLoggingTimestamp(),
+          kiekerAfter.getTimestamp(),
           methodDuration,
           kiekerAfter.getTraceId(),
           kiekerAfter.getOrderIndex(),
@@ -123,13 +125,11 @@ public class KiekerToExplorVizTransformStage extends AbstractConsumerStage<IMoni
         if (beforeRecord instanceof BeforeConstructorEvent) {
           final BeforeConstructorEvent beforeConstructorEvent =
               (BeforeConstructorEvent) beforeRecord;
-          methodDuration =
-              kiekerAfter.getLoggingTimestamp() - beforeConstructorEvent.getLoggingTimestamp();
+          methodDuration = kiekerAfter.getTimestamp() - beforeConstructorEvent.getTimestamp();
         }
       }
 
-      GenericExplorVizExternalLogAdapter.sendAfterConstructorRecord(
-          kiekerAfter.getLoggingTimestamp(),
+      GenericExplorVizExternalLogAdapter.sendAfterConstructorRecord(kiekerAfter.getTimestamp(),
           methodDuration,
           kiekerAfter.getTraceId(),
           kiekerAfter.getOrderIndex());
@@ -145,7 +145,7 @@ public class KiekerToExplorVizTransformStage extends AbstractConsumerStage<IMoni
 
       final String interfaceImpl = KiekerToExplorVizTransformationHelper.getInterface(kiekerRecord);
 
-      GenericExplorVizExternalLogAdapter.sendBeforeRecord(kiekerBefore.getLoggingTimestamp(),
+      GenericExplorVizExternalLogAdapter.sendBeforeRecord(kiekerBefore.getTimestamp(),
           kiekerBefore.getTraceId(),
           kiekerBefore.getOrderIndex(),
           objectId,
@@ -160,12 +160,11 @@ public class KiekerToExplorVizTransformStage extends AbstractConsumerStage<IMoni
         final IMonitoringRecord beforeRecord = this.stack.pop();
         if (beforeRecord instanceof BeforeOperationEvent) {
           final BeforeOperationEvent beforeOperationEvent = (BeforeOperationEvent) beforeRecord;
-          methodDuration =
-              kiekerAfter.getLoggingTimestamp() - beforeOperationEvent.getLoggingTimestamp();
+          methodDuration = kiekerAfter.getTimestamp() - beforeOperationEvent.getTimestamp();
         }
       }
 
-      GenericExplorVizExternalLogAdapter.sendAfterFailedRecord(kiekerAfter.getLoggingTimestamp(),
+      GenericExplorVizExternalLogAdapter.sendAfterFailedRecord(kiekerAfter.getTimestamp(),
           methodDuration,
           kiekerAfter.getTraceId(),
           kiekerAfter.getOrderIndex(),
@@ -174,16 +173,16 @@ public class KiekerToExplorVizTransformStage extends AbstractConsumerStage<IMoni
       final AfterOperationEvent kiekerAfter = (AfterOperationEvent) kiekerRecord;
 
       long methodDuration = 0;
+
       if (!this.stack.isEmpty()) {
         final IMonitoringRecord beforeRecord = this.stack.pop();
         if (beforeRecord instanceof BeforeOperationEvent) {
           final BeforeOperationEvent beforeOperationEvent = (BeforeOperationEvent) beforeRecord;
-          methodDuration =
-              kiekerAfter.getLoggingTimestamp() - beforeOperationEvent.getLoggingTimestamp();
+          methodDuration = kiekerAfter.getTimestamp() - beforeOperationEvent.getTimestamp();
         }
       }
 
-      GenericExplorVizExternalLogAdapter.sendAfterRecord(kiekerAfter.getLoggingTimestamp(),
+      GenericExplorVizExternalLogAdapter.sendAfterRecord(kiekerAfter.getTimestamp(),
           methodDuration,
           kiekerAfter.getTraceId(),
           kiekerAfter.getOrderIndex());
@@ -203,8 +202,7 @@ public class KiekerToExplorVizTransformStage extends AbstractConsumerStage<IMoni
       // TODO deprecated?
       final String interfaceImpl = KiekerToExplorVizTransformationHelper.getInterface(kiekerRecord);
 
-      GenericExplorVizExternalLogAdapter.sendBeforeDatabaseEvent(
-          beforeDatabaseEvent.getLoggingTimestamp(),
+      GenericExplorVizExternalLogAdapter.sendBeforeDatabaseEvent(beforeDatabaseEvent.getTimestamp(),
           beforeDatabaseEvent.getClassSignature(),
           beforeDatabaseEvent.getTraceId(),
           beforeDatabaseEvent.getOrderIndex(),
@@ -221,12 +219,10 @@ public class KiekerToExplorVizTransformStage extends AbstractConsumerStage<IMoni
         final IMonitoringRecord beforeRecord = this.stack.pop();
         if (beforeRecord instanceof BeforeDatabaseEvent) {
           final BeforeDatabaseEvent beforeDatabaseEvent = (BeforeDatabaseEvent) beforeRecord;
-          methodDuration =
-              afterDatabaseEvent.getLoggingTimestamp() - beforeDatabaseEvent.getLoggingTimestamp();
+          methodDuration = afterDatabaseEvent.getTimestamp() - beforeDatabaseEvent.getTimestamp();
         }
       }
-      GenericExplorVizExternalLogAdapter.sendAfterDatabaseEvent(
-          afterDatabaseEvent.getLoggingTimestamp(),
+      GenericExplorVizExternalLogAdapter.sendAfterDatabaseEvent(afterDatabaseEvent.getTimestamp(),
           methodDuration,
           afterDatabaseEvent.getClassSignature(),
           afterDatabaseEvent.getTraceId(),
@@ -241,12 +237,10 @@ public class KiekerToExplorVizTransformStage extends AbstractConsumerStage<IMoni
         final IMonitoringRecord beforeRecord = this.stack.pop();
         if (beforeRecord instanceof BeforeDatabaseEvent) {
           final BeforeDatabaseEvent beforeOperationEvent = (BeforeDatabaseEvent) beforeRecord;
-          methodDuration = databaseFailedEvent.getLoggingTimestamp()
-              - beforeOperationEvent.getLoggingTimestamp();
+          methodDuration = databaseFailedEvent.getTimestamp() - beforeOperationEvent.getTimestamp();
         }
       }
-      GenericExplorVizExternalLogAdapter.sendDatabaseFailedEvent(
-          databaseFailedEvent.getLoggingTimestamp(),
+      GenericExplorVizExternalLogAdapter.sendDatabaseFailedEvent(databaseFailedEvent.getTimestamp(),
           methodDuration,
           databaseFailedEvent.getClassSignature(),
           databaseFailedEvent.getTraceId(),

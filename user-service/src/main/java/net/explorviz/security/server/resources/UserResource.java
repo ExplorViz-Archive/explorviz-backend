@@ -32,7 +32,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
-import net.explorviz.security.services.RoleService;
 import net.explorviz.security.services.UserService;
 import net.explorviz.security.services.exceptions.DuplicateUserException;
 import net.explorviz.security.services.exceptions.UserCrudException;
@@ -65,11 +64,10 @@ public class UserResource {
   private static final String MSG_INVALID_USERNAME = "Invalid username";
   private static final String MSG_USER_NOT_RETRIEVED = "Could not retrieve user ";
   private static final String MSG_UNKOWN_ROLE = "Unknown role";
-  private static final String ADMIN_ROLE = "admin";
+
 
   private final UserService userCrudService;
 
-  private final RoleService roleService;
 
   private final BatchRequestSubResource batchSubResource;
 
@@ -77,14 +75,12 @@ public class UserResource {
    * Constructor for this class.
    *
    * @param userCrudService - Service to obtain actual users.
-   * @param roleService - Service to obtain all Roles.
    * @param batchSubResource - Sub Resource Class.
    */
   @Inject
-  public UserResource(final UserService userCrudService, final RoleService roleService,
+  public UserResource(final UserService userCrudService,
       final BatchRequestSubResource batchSubResource) {
     this.userCrudService = userCrudService;
-    this.roleService = roleService;
     this.batchSubResource = batchSubResource;
   }
 
@@ -99,7 +95,7 @@ public class UserResource {
   @POST
   @Consumes(MEDIA_TYPE)
   @Produces(MEDIA_TYPE)
-  @RolesAllowed({ADMIN_ROLE})
+  @RolesAllowed({Role.ADMIN_NAME})
   @Operation(summary = "Create a new user")
   @ApiResponse(responseCode = "200", description = "User created",
       content = @Content(mediaType = MEDIA_TYPE, schema = @Schema(implementation = User.class)))
@@ -125,8 +121,8 @@ public class UserResource {
       throw new BadRequestException("Can't create user with id. Payload must not have an id.");
     }
 
-    for (final Role r : user.getRoles()) {
-      if (!this.roleService.getAllRoles().contains(r)) {
+    for (final String r : user.getRoles()) {
+      if (!Role.exists(r)) {
         throw new BadRequestException(MSG_UNKOWN_ROLE + ": " + r);
       }
     }
@@ -155,7 +151,7 @@ public class UserResource {
 
 
   @Path("batch")
-  public BatchRequestSubResource createAll() {
+  public BatchRequestSubResource batchRequest() {
     return this.batchSubResource;
   }
 
@@ -170,7 +166,7 @@ public class UserResource {
    */
   @PATCH
   @Path("{id}")
-  @RolesAllowed({ADMIN_ROLE})
+  @RolesAllowed({Role.ADMIN_NAME})
   @Produces(MEDIA_TYPE)
   @Consumes(MEDIA_TYPE)
   @Operation(summary = "Update an existing User")
@@ -220,8 +216,8 @@ public class UserResource {
     }
 
     if (updatedUser.getRoles() != null) {
-      for (final Role r : updatedUser.getRoles()) {
-        if (!this.roleService.getAllRoles().contains(r)) {
+      for (final String r : updatedUser.getRoles()) {
+        if (!Role.exists(r)) {
           throw new BadRequestException("Unknown role: " + r);
         }
       }
@@ -246,7 +242,7 @@ public class UserResource {
    * @return a list of all users with the given role
    */
   @GET
-  @RolesAllowed({ADMIN_ROLE})
+  @RolesAllowed({Role.ADMIN_NAME})
   @Produces(MEDIA_TYPE)
   @Operation(description = "List all users")
   @Parameters({
@@ -274,7 +270,7 @@ public class UserResource {
    */
   @GET
   @Path("{id}")
-  @RolesAllowed({ADMIN_ROLE})
+  @RolesAllowed({Role.ADMIN_NAME, Role.USER_NAME})
   @Produces(MEDIA_TYPE)
   @Operation(summary = "Find a user by its id")
   @ApiResponse(responseCode = "200", description = "The requested user",
@@ -286,16 +282,13 @@ public class UserResource {
       throw new BadRequestException("Invalid id");
     }
 
+    // TODO if a user is a normal user check if he tries to get just his own data?
     User foundUser = null;
-
-
     foundUser = this.userCrudService.getEntityById(id).orElseThrow(() -> new NotFoundException());
 
     this.userCrudService.updateEntity(foundUser);
 
-
     return foundUser;
-
   }
 
   /**
@@ -306,7 +299,7 @@ public class UserResource {
    */
   @DELETE
   @Path("{id}")
-  @RolesAllowed({ADMIN_ROLE})
+  @RolesAllowed({Role.ADMIN_NAME})
   @Operation(summary = "Remove a user identified by its Id")
   @ApiResponse(responseCode = "400",
       description = "Attempt to delete the last existing use with the admin role, "
@@ -335,7 +328,7 @@ public class UserResource {
    * @return 204 if no error occured
    */
   @DELETE
-  @RolesAllowed({ADMIN_ROLE})
+  @RolesAllowed({Role.ADMIN_NAME})
   @Operation(summary = "Delete a list of users")
   @ApiResponse(responseCode = "204", description = "All user deleted")
   @ApiResponse(responseCode = "400",

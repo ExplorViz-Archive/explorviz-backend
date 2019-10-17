@@ -107,6 +107,9 @@ public class ProcezzResource {
     if (httpStatus == Response.Status.OK.getStatusCode()) {
       final Procezz updatedProcezz = httpResponse.readEntity(Procezz.class);
 
+      // update internal procezz
+      this.agentRepository.exchangeProcezzInAgent(updatedProcezz, agentOptional.get());
+
       // return updated (possibly restarted) procezz to frontend
       return Response.status(httpStatus).entity(updatedProcezz).build();
     } else {
