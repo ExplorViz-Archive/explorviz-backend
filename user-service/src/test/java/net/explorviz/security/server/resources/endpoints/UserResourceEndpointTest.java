@@ -124,7 +124,7 @@ import xyz.morphia.Datastore;
     final Response response = this.target(BASE_URL).request()
         .header(HttpHeader.AUTHORIZATION.asString(), this.getNormieToken()).post(userEntity);
 
-    assertEquals(HttpStatus.FORBIDDEN_403, response.getStatus());
+    assertEquals(HttpStatus.UNAUTHORIZED_401, response.getStatus());
   }
 
   @Test public void createUserAsAnon() throws DocumentSerializationException {
@@ -138,7 +138,7 @@ import xyz.morphia.Datastore;
     final Entity<byte[]> body = Entity.entity(converted, MEDIA_TYPE);
     final Response response = this.target(BASE_URL).request().post(body);
 
-    assertEquals(HttpStatus.FORBIDDEN_403, response.getStatus());
+    assertEquals(HttpStatus.UNAUTHORIZED_401, response.getStatus());
   }
 
 
