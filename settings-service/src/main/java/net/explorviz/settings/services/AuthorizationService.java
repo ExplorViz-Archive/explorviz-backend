@@ -45,10 +45,7 @@ public class AuthorizationService {
   public boolean isAdmin(final String authHeader) {
     try {
       final TokenDetails details = this.tps.parseToken(authHeader.substring(7));
-      return details.getRoles()
-          .stream()
-          .map(r -> r.toLowerCase())
-          .anyMatch(r -> r.equals("admin"));
+      return details.getRoles().stream().map(r -> r.toLowerCase()).anyMatch(r -> r.equals("admin"));
     } catch (final NullPointerException e) {
       // No token
       return false;

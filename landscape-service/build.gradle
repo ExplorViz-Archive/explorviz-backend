@@ -11,6 +11,16 @@ configurations.all {
     resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
 }
 
+dockerCompose {
+  landscapeIntegrationTests {
+    buildBeforeUp = true
+    useComposeFiles = ['docker-compose/docker-compose-integration-test.yml']
+    startedServices = ['id-generator']
+    isRequiredBy(this.tasks.getByName('integrationTest'))
+    removeContainers = true
+  }
+}
+
 repositories {
 	maven {
 		url "https://oss.sonatype.org/content/repositories/snapshots"
@@ -35,12 +45,17 @@ dependencies {
   }
   else {        
     implementation project(':config-injection')
+    implementation project('::security')
+    implementation project(':exception-handling')
     implementation project(':common-concerns')
   }
 
   implementation project(':landscape-service:landscape-model')
   implementation group: 'com.github.jasminb', name: 'jsonapi-converter', version:'0.8'
 }
+
+// disable api tests, since there are none
+apiTest.enabled = false
 
 assemble.dependsOn shadowJar
 jar.enabled = false

@@ -82,8 +82,10 @@ public class UserPreferenceRepository
    * @return
    */
   private boolean prefExist(final String uid, final String sid) {
-    final long c = this.datastore.find(UserPreference.class).filter("userId ==", uid)
-        .filter("settingId ==", sid).count();
+    final long c = this.datastore.find(UserPreference.class)
+        .filter("userId ==", uid)
+        .filter("settingId ==", sid)
+        .count();
     return c > 0;
   }
 
@@ -119,7 +121,7 @@ public class UserPreferenceRepository
     final long total = q.count();
     final List<UserPreference> data = q.asList(options);
 
-    return new QueryResult<UserPreference>(query, data, total);
+    return new QueryResult<>(query, data, total);
 
   }
 

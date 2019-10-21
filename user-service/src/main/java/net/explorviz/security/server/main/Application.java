@@ -3,6 +3,7 @@ package net.explorviz.security.server.main;
 import net.explorviz.security.model.UserBatchRequest;
 import net.explorviz.security.server.providers.GenericJsonApiPaginationWriter;
 import net.explorviz.security.server.providers.UserJsonApiDeserializer;
+import net.explorviz.security.server.resources.EntryPointResource;
 import net.explorviz.security.server.resources.RoleResource;
 import net.explorviz.security.server.resources.TokenResource;
 import net.explorviz.security.server.resources.UserResource;
@@ -44,7 +45,7 @@ public class Application extends ResourceConfig {
     // register CDI
     this.register(new DependencyInjectionBinder());
 
-    //this.register(AuthenticationFilter.class);
+    // this.register(AuthenticationFilter.class);
     this.register(CorsResponseFilter.class);
     this.register(PaginationParameterFilter.class);
 
@@ -73,6 +74,7 @@ public class Application extends ResourceConfig {
     this.register(TokenResource.class);
     this.register(UserResource.class);
     this.register(RoleResource.class);
+    this.register(EntryPointResource.class);
 
     this.packages("io.swagger.v3.jaxrs2.integration.resources");
   }

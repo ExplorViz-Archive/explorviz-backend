@@ -98,8 +98,7 @@ public class LandscapeResource {
   }
 
   /**
-   * Returns {@link Landscape} with the passed query
-   * parameter.
+   * Returns {@link Landscape} with the passed query parameter.
    *
    * @param timestamp - query parameter
    * @return the requested timestamp
@@ -193,14 +192,14 @@ public class LandscapeResource {
     }
 
     LOGGER.info("Uploaded Filename: " + fileName);
-    
+
     // split the passed filename
     final String fileNameWithoutExtension = ResourceHelper.removeFileNameExtension(fileName);
-    String[] splittedFilename = fileNameWithoutExtension.split("-");
+    final String[] splittedFilename = fileNameWithoutExtension.split("-");
     final long parsedTimestamp = Long.valueOf(splittedFilename[0]);
 
     // check if landscape already exists in `replay` landscape repository
-    String found = Stream.of(this.replayStringRepo.getByTimestamp(parsedTimestamp))
+    final String found = Stream.of(this.replayStringRepo.getByTimestamp(parsedTimestamp))
         .filter(Optional::isPresent)
         .map(Optional::get)
         .findFirst()
@@ -218,7 +217,7 @@ public class LandscapeResource {
         this.replayStringRepo.save(parsedLandscape.getTimestamp().getTimestamp(),
             parsedLandscape,
             parsedLandscape.getTimestamp().getTotalRequests());
-      } catch (DocumentSerializationException e) {
+      } catch (final DocumentSerializationException e) {
         LOGGER.error("Could not save landscape with value {}", parsedLandscape, e);
       }
 

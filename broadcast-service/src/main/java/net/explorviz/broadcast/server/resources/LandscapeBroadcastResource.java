@@ -51,7 +51,7 @@ public class LandscapeBroadcastResource {
    */
   @GET
   @Produces(MediaType.SERVER_SENT_EVENTS)
-  @Operation(description = "Endpoint that clients can use to register for landscape updates.", 
+  @Operation(description = "Endpoint that clients can use to register for landscape updates.",
       summary = "Register for Landscape updates")
   public void listenToBroadcast(@Context final SseEventSink eventSink,
       @Context final HttpServletResponse response) {

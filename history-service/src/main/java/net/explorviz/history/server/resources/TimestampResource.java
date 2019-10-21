@@ -76,8 +76,8 @@ public class TimestampResource {
   public QueryResult<Timestamp> getTimestamps(@Context final UriInfo uriInfo) {
     final Query<Timestamp> q = Query.fromParameterMap(uriInfo.getQueryParameters(true));
     try {
-      return timestampRepo.query(q);
-    } catch (QueryException e) {
+      return this.timestampRepo.query(q);
+    } catch (final QueryException e) {
       throw new BadRequestException(e);
     }
   }

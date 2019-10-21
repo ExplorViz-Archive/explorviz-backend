@@ -193,6 +193,7 @@ public class UserResource {
 
     if (updatedUser.getId() != null && !updatedUser.getId().equals(id)) { // NOPMD
       LOGGER.info("Won't update id");
+      throw new BadRequestException("Can't update id, leave null");
     }
 
     if (updatedUser.getPassword() != null) {

@@ -273,6 +273,7 @@ public class BatchService {
 
   /**
    * Delets a users that belong to the given batch id.
+   * 
    * @param batchId The id of the batch to delete all users of
    */
   public void deleteBatch(String batchId) {
@@ -283,8 +284,8 @@ public class BatchService {
     LOGGER.info("Delete batch of " + res.getData().size() + " users");
     res.getData().forEach(u -> {
       try {
-        userService.deleteEntityById(u.getId());
-      } catch (UserCrudException e) {
+        this.userService.deleteEntityById(u.getId());
+      } catch (final UserCrudException e) {
         LOGGER.warn("Skipped a user during batch deletion: " + e.getMessage());
       }
     });

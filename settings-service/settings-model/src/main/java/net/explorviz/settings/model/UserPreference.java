@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.github.jasminb.jsonapi.annotations.Id;
 import com.github.jasminb.jsonapi.annotations.Type;
 import com.mongodb.DBObject;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import xyz.morphia.annotations.Converters;
 import xyz.morphia.annotations.Entity;
@@ -76,7 +78,33 @@ public class UserPreference {
     obj.removeField(VALUE);
   }
 
+  @Override
+  public boolean equals(final Object o) {
+    if (this == o) {
+      return true;
+    }
 
+    if (o == null || this.getClass() != o.getClass()) {
+      return false;
+    }
+
+    final UserPreference that = (UserPreference) o;
+
+    return new EqualsBuilder().append(this.id, that.id)
+        .append(this.userId, that.userId)
+        .append(this.settingId, that.settingId)
+        .append(this.value, that.value)
+        .isEquals();
+  }
+
+  @Override
+  public int hashCode() {
+    return new HashCodeBuilder(17, 37).append(this.id)
+        .append(this.userId)
+        .append(this.settingId)
+        .append(this.value)
+        .toHashCode();
+  }
 
   public String getUserId() {
     return this.userId;
@@ -90,7 +118,7 @@ public class UserPreference {
     return this.settingId;
   }
 
-  public void setId(String id) {
+  public void setId(final String id) {
     this.id = id;
   }
 
@@ -98,7 +126,7 @@ public class UserPreference {
     return this.value;
   }
 
-  public void setValue(Object value) {
+  public void setValue(final Object value) {
     this.value = value;
   }
 

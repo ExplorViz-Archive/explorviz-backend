@@ -20,7 +20,7 @@ public class ResourceHelper {
    * @return the trimmed fileName
    */
   public static String removeFileNameExtension(final String fileName) {
-    int extPos = fileName.lastIndexOf(".");
+    final int extPos = fileName.lastIndexOf(".");
     if (extPos == -1) {
       return fileName;
     } else {
@@ -39,22 +39,22 @@ public class ResourceHelper {
 
     try {
       inputByteArray = IOUtils.toByteArray(is);
-      InputStream inputStream = new ByteArrayInputStream(inputByteArray);
+      final InputStream inputStream = new ByteArrayInputStream(inputByteArray);
 
-      ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+      final ByteArrayOutputStream buffer = new ByteArrayOutputStream();
       int nRead;
-      byte[] data = new byte[1024];
+      final byte[] data = new byte[1024];
       while ((nRead = inputStream.read(data, 0, data.length)) != -1) {
         buffer.write(data, 0, nRead);
       }
 
       buffer.flush();
-      byte[] outputByteArray = buffer.toByteArray();
+      final byte[] outputByteArray = buffer.toByteArray();
 
-      String uploadedInputStreamString = new String(outputByteArray, StandardCharsets.UTF_8);
+      final String uploadedInputStreamString = new String(outputByteArray, StandardCharsets.UTF_8);
 
       return uploadedInputStreamString;
-    } catch (IOException e) {
+    } catch (final IOException e) {
 
       LOGGER.error(
           "Could not convert inputstream due to an I/O exception landscape with message {}",

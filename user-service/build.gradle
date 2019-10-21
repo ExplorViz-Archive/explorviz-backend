@@ -10,6 +10,47 @@ configurations.all {
   resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
 }
 
+dockerCompose {
+  userApiTests {
+    buildBeforeUp = true
+    useComposeFiles = ['docker-compose/docker-compose-api-test.yml']
+    startedServices = ['reverse-proxy', 'user-service', 'settings-service', 'mongo-user', 'mongo-settings', 'zookeeper', 'kafka']
+    isRequiredBy(this.tasks.getByName('apiTest'))
+    projectName = 'explorviz-api-test'
+  }
+}
+
+// prior to api testing, check if service entry point is reachable 
+// up and running (!= Docker container is running)
+apiTest.doFirst {
+	long start = System.currentTimeMillis()
+    long maxWait = 60000
+    long initialWait = 15000
+    long retryWait = 5000
+
+    boolean healthy = false
+
+    println("Waiting for application to become healthy... (initial wait = ${initialWait}ms)")
+    sleep(initialWait)
+
+    while (System.currentTimeMillis() - start < maxWait && !healthy) {
+    
+        try {
+            def req = new URL("http://localhost:8090/v1/users/entry").openConnection()
+            healthy = req.getResponseCode() == 200
+        } catch (Exception e) {}
+        
+        println("Waiting for application to become healthy... (retrying in ${retryWait}ms)")
+        sleep(retryWait)
+    }
+
+    if (healthy) {
+        println "Healthcheck SUCCESSFUL after ${System.currentTimeMillis() - start}ms"
+    } else {
+        throw new RuntimeException('Healthcheck FAILED')
+    }
+}
+
 dependencies {
 	
 	implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.9'
@@ -36,7 +77,9 @@ dependencies {
   }
   
   implementation group: 'io.swagger.core.v3', name: 'swagger-core', version: '2.0.8'
-  implementation group: 'io.swagger.core.v3', name: 'swagger-jaxrs2', version: '2.0.8' 
+  implementation group: 'io.swagger.core.v3', name: 'swagger-jaxrs2', version: '2.0.8'
+
+  apiTestImplementation 'io.rest-assured:rest-assured:4.0.0'
   
 }
 

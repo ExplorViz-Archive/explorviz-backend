@@ -14,6 +14,17 @@ repositories {
   maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
 }
 
+dockerCompose {
+  historyIntegrationTests {
+    buildBeforeUp = true
+    useComposeFiles = ['docker-compose/docker-compose-integration-test.yml']
+    startedServices = ['mongo-history']
+    isRequiredBy(this.tasks.getByName('integrationTest'))
+    removeContainers = true
+  }
+}
+
+
 dependencies {
 
 	// Swagger
@@ -35,7 +46,7 @@ dependencies {
     implementation project(':security')
     implementation project(':exception-handling')
     implementation project(':common-concerns')
-	implementation project(':query')
+	  implementation project(':query')
     implementation project(':user')
   } 
   

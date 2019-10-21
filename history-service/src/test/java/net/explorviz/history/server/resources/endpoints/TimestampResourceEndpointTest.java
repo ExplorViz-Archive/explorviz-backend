@@ -67,7 +67,7 @@ public class TimestampResourceEndpointTest extends JerseyTest {
     this.userUploadedTimestamps.add(new Timestamp("12", 1_556_302_910L, 1100));
     // CHECKSTYLE.ON: MagicNumber
 
-    timestampRepo = Mockito.mock(TimestampRepository.class);
+    this.timestampRepo = Mockito.mock(TimestampRepository.class);
 
     when(this.timestampRepo.getLandscapeTimestamps()).thenReturn(this.serviceGeneratedTimestamps);
     when(this.timestampRepo.getReplayTimestamps()).thenReturn(this.userUploadedTimestamps);
@@ -78,12 +78,13 @@ public class TimestampResourceEndpointTest extends JerseyTest {
   @Test
   public void checkOkStatusCodes() throws QueryException { // NOPMD
     when(this.timestampRepo.query(ArgumentMatchers.any())).thenCallRealMethod();
-    Response response = target().path(BASE_URL).request().get();
+    Response response = this.target().path(BASE_URL).request().get();
     assertEquals("Wrong HTTP Status code for all service-generated timestamps: ",
         Status.OK.getStatusCode(),
         response.getStatus());
 
-    response = target().path(BASE_URL)
+    response = this.target()
+        .path(BASE_URL)
         .queryParam(FILTER_FROM, 1_556_302_800L) // NOCS
         .request()
         .get();
@@ -91,7 +92,8 @@ public class TimestampResourceEndpointTest extends JerseyTest {
         Status.OK.getStatusCode(),
         response.getStatus());
 
-    response = target().path(BASE_URL)
+    response = this.target()
+        .path(BASE_URL)
         .queryParam(FILTER_FROM, 1_556_302_800L) // NOCS
         .queryParam(PAGE_SIZE, 2) // NOCS
         .queryParam(PAGE_NUMBER, 0)
@@ -103,7 +105,7 @@ public class TimestampResourceEndpointTest extends JerseyTest {
         Status.OK.getStatusCode(),
         response.getStatus());
 
-    response = target().path(BASE_URL).queryParam(FILTER_TYPE, "replay").request().get();
+    response = this.target().path(BASE_URL).queryParam(FILTER_TYPE, "replay").request().get();
     assertEquals("Wrong HTTP Status code for all user-uploaded timestamps: ",
         Status.OK.getStatusCode(),
         response.getStatus());
@@ -111,13 +113,14 @@ public class TimestampResourceEndpointTest extends JerseyTest {
 
   @Test
   public void checkBadRequestStatusCodes() throws QueryException { // NOPMD
-    when(timestampRepo.query(ArgumentMatchers.any())).thenCallRealMethod();
-    Response response = target().path(BASE_URL).queryParam(FILTER_FROM, "nonumber").request().get();
+    when(this.timestampRepo.query(ArgumentMatchers.any())).thenCallRealMethod();
+    Response response =
+        this.target().path(BASE_URL).queryParam(FILTER_FROM, "nonumber").request().get();
     assertEquals(GENERIC_STATUS_ERROR_MESSAGE,
         Status.BAD_REQUEST.getStatusCode(),
         response.getStatus());
 
-    response = target().path(BASE_URL).queryParam(FILTER_FROM, -1).request().get();
+    response = this.target().path(BASE_URL).queryParam(FILTER_FROM, -1).request().get();
     assertEquals(GENERIC_STATUS_ERROR_MESSAGE,
         Status.BAD_REQUEST.getStatusCode(),
         response.getStatus());
@@ -127,7 +130,8 @@ public class TimestampResourceEndpointTest extends JerseyTest {
 
   @Test
   public void checkNotAcceptableMediaTypeStatusCode() {
-    final Response response = target().path(BASE_URL).request().accept(MediaType.TEXT_PLAIN).get();
+    final Response response =
+        this.target().path(BASE_URL).request().accept(MediaType.TEXT_PLAIN).get();
     assertEquals(GENERIC_MEDIA_TYPE_ERROR_MESSAGE,
         Status.NOT_ACCEPTABLE.getStatusCode(),
         response.getStatus());
@@ -139,14 +143,14 @@ public class TimestampResourceEndpointTest extends JerseyTest {
     when(this.timestampRepo.query(ArgumentMatchers.any()))
         .thenReturn(new QueryResult<Timestamp>(null, null, -1));
 
-    final Response response = target().path(BASE_URL).request().get();
+    final Response response = this.target().path(BASE_URL).request().get();
     assertEquals(GENERIC_MEDIA_TYPE_ERROR_MESSAGE, MEDIA_TYPE, response.getMediaType().toString());
   }
 
   @Test
   public void checkMediaTypeOfValidRequestAndResponseWithAcceptHeader() throws QueryException {
-    when(timestampRepo.query(ArgumentMatchers.any())).thenCallRealMethod();
-    final Response response = target().path(BASE_URL).request().accept(MEDIA_TYPE).get();
+    when(this.timestampRepo.query(ArgumentMatchers.any())).thenCallRealMethod();
+    final Response response = this.target().path(BASE_URL).request().accept(MEDIA_TYPE).get();
     assertEquals(GENERIC_MEDIA_TYPE_ERROR_MESSAGE, MEDIA_TYPE, response.getMediaType().toString());
   }
 

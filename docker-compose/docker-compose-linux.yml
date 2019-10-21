@@ -43,7 +43,6 @@ services:
      - explorviz-settings-mongo-configdb:/data/configdb
      network_mode: "host"
     
-    
    ids-redis:
      image: redis
      container_name: explorviz-ids-redis

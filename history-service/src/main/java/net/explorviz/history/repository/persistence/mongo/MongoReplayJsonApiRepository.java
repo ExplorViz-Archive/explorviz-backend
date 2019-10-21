@@ -16,7 +16,6 @@ import net.explorviz.history.repository.persistence.ReplayRepository;
 import net.explorviz.landscape.model.landscape.Landscape;
 import net.explorviz.landscape.model.store.Timestamp;
 import net.explorviz.shared.config.annotations.Config;
-
 import org.bson.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -76,7 +75,9 @@ public class MongoReplayJsonApiRepository implements ReplayRepository<String> {
     }
     if (LOGGER.isInfoEnabled()) {
       LOGGER.info(String.format("Saved landscape {timestamp: %d, id: %s, totalRequests: %d}",
-          timestamp, replayLandscape.getId(), totalRequests));
+          timestamp,
+          replayLandscape.getId(),
+          totalRequests));
     }
   }
 
@@ -151,7 +152,8 @@ public class MongoReplayJsonApiRepository implements ReplayRepository<String> {
     // TODO: Replays
     if (LOGGER.isInfoEnabled()) {
       LOGGER.info(String.format("Cleaned %d landscape and %d replay objects",
-          landsapeResult.getDeletedCount(), replayResult.getDeletedCount()));
+          landsapeResult.getDeletedCount(),
+          replayResult.getDeletedCount()));
     }
   }
 
