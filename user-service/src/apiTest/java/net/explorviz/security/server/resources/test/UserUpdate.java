@@ -136,7 +136,7 @@ public class UserUpdate {
         .when()
         .patch(this.userUri)
         .then()
-        .statusCode(403);
+        .statusCode(401);
 
   }
 

@@ -75,7 +75,7 @@ class SettingsInfoDeletion {
         .when()
         .delete(SETTINGS_URL + "/sampleid")
         .then()
-        .statusCode(403);
+        .statusCode(401);
   }
 
 

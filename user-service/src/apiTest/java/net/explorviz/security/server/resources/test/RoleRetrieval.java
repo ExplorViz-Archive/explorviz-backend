@@ -19,7 +19,7 @@ public class RoleRetrieval {
   private static final String ROLE_URL = "http://localhost:8090/v1/roles";
 
   private static final int HTTP_OK_CODE = 200;
-  private static final int HTTP_FORBIDDEN_CODE = 403;
+  private static final int HTTP_FORBIDDEN_CODE = 401;
 
   // Currently only two roles exist, namely 'user' and 'admin'
   // It's not possible to add more roles

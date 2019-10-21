@@ -79,7 +79,7 @@ class SettingsInfoCreation {
         .when()
         .post(SETTINGS_URL)
         .then()
-        .statusCode(403);
+        .statusCode(401);
   }
 
   private void deleteSetting(final String id) {

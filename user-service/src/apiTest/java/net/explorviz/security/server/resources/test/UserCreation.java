@@ -138,7 +138,7 @@ class UserCreation {
 
 
   @Test
-  @DisplayName("Create user unauthenticated")
+  @DisplayName("Create user without token.")
   void createUserUnauthenticated() {
     final User u = new User(null, "name", null, null);
 
@@ -147,11 +147,11 @@ class UserCreation {
         .when()
         .post(BASE_URI + "users/")
         .then()
-        .statusCode(403);
+        .statusCode(401);
   }
 
   @Test
-  @DisplayName("Create user unauthenticated")
+  @DisplayName("Create user unauthenticated.")
   void createUserAsNormie() {
     final User u = new User(null, "name", null, null);
 
@@ -161,6 +161,6 @@ class UserCreation {
         .when()
         .post(BASE_URI + "users/")
         .then()
-        .statusCode(403);
+        .statusCode(401);
   }
 }

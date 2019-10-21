@@ -24,7 +24,7 @@ dockerCompose {
 // up and running (!= Docker container is running)
 apiTest.doFirst {
 	long start = System.currentTimeMillis()
-    long maxWait = 180000
+    long maxWait = 60000
     long initialWait = 15000
     long retryWait = 5000
 

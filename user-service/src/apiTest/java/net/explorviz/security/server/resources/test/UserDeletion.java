@@ -72,7 +72,7 @@ public class UserDeletion {
         .when()
         .delete(BASE_URI + "users/" + deleteMe.get().getId())
         .then()
-        .statusCode(403);
+        .statusCode(401);
 
     UsersHelper.getInstance().deleteUserById(deleteMe.get().getId());
   }

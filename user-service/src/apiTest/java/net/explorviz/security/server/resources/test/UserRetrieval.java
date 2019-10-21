@@ -89,13 +89,13 @@ public class UserRetrieval {
   @Test
   @DisplayName("Get all users in the database as normie")
   public void getAllAsNormie() {
-    // Should return 403 status code
+    // Should return 401 status code
     given().contentType(MEDIA_TYPE)
         .header(this.authHeaderNormie)
         .when()
         .get(BASE_URI + "users")
         .then()
-        .statusCode(403);
+        .statusCode(401);
   }
 
 
@@ -122,7 +122,7 @@ public class UserRetrieval {
         .when()
         .get(BASE_URI + "users/" + id)
         .then()
-        .statusCode(403);
+        .statusCode(401);
   }
 
   @Test
