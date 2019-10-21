@@ -1,28 +1,47 @@
+dist: trusty
+# https://travis-ci.community/t/install-of-oracle-jdk-8-failing/3038/9
+
 language: java
 
-env:
-  global:
-    - MONGODB_VERSION=4.0.6
-
 services:
-  - mongodb
   - docker
-  - redis-server
 
 jobs:
   fast_finish: true
   allow_failures:
     - jdk: oraclejdk8
   include:
-    - jdk: openjdk8
-    - jdk: oraclejdk8
+    - stage: test
+      name: "Unit Testing"
+      jdk: openjdk8
+      script: ./gradlew clean test
+
+    - stage: test
+      name: "Unit Testing (oraclejdk8)"
+      jdk: oraclejdk8
+      script: ./gradlew clean test
+
+    - stage: test
+      name: "Integration Testing"
+      jdk: openjdk8
+      script: ./gradlew clean integrationTest
+
+    - stage: test
+      name: "API Testing"
+      jdk: openjdk8
+      script: ./gradlew clean apiTest
+
+    - stage: test
+      name: "Source Code Analysis"
+      jdk: openjdk8
+      script: ./gradlew checkstyle pmd spotbugs
 
     - stage: snapshot
       name: "Snapshot Publishing"
       if: (type = push) AND ((branch = dev-1) OR (branch = master))
       jdk: openjdk8
       script: ./gradlew clean landscape-service:landscape-model:uploadArchives settings-service:settings-model:uploadArchives
-    
+
     - stage: deploy
       name: "Docker Image: Analysis Service"
       if: (type = push) AND ((branch = dev-1) OR (branch = master))
@@ -72,10 +91,6 @@ jobs:
     
 before_script:
   - chmod +x .travis/docker_push.sh
-
-before_install:
-  - chmod +x .travis/mongoDB_setup.sh
-  - .travis/mongoDB_setup.sh
   
 branches:
   only:

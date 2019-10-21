@@ -41,22 +41,22 @@ public class TimestampRepository implements Queryable<Timestamp> {
     final String filterArgTo = "to";
 
 
-    List<Timestamp> result = new ArrayList<Timestamp>();
+    List<Timestamp> result = new ArrayList<>();
 
     if (query.getFilters().get(filterArgType) != null) {
       for (final String type : query.getFilters().get(filterArgType)) {
         if (type.toLowerCase().contentEquals("landscape")) {
-          result.addAll(getLandscapeTimestamps());
+          result.addAll(this.getLandscapeTimestamps());
         } else if (type.toLowerCase().contentEquals("replay")) {
-          result.addAll(getReplayTimestamps());
+          result.addAll(this.getReplayTimestamps());
         } else {
           // Unknown type
-          return new QueryResult<Timestamp>(query, new ArrayList<Timestamp>(), 0);
+          return new QueryResult<>(query, new ArrayList<Timestamp>(), 0);
         }
       }
     } else { // Add all
-      result.addAll(getReplayTimestamps());
-      result.addAll(getLandscapeTimestamps());
+      result.addAll(this.getReplayTimestamps());
+      result.addAll(this.getLandscapeTimestamps());
     }
 
     if (query.getFilters().get(filterArgFrom) != null) {
@@ -111,7 +111,7 @@ public class TimestampRepository implements Queryable<Timestamp> {
       result = new ArrayList<>(result.subList(pageFrom, pageTo));
     }
 
-    return new QueryResult<Timestamp>(query, result, total);
+    return new QueryResult<>(query, result, total);
   }
 
 

@@ -273,18 +273,19 @@ public class BatchService {
 
   /**
    * Delets a users that belong to the given batch id.
+   * 
    * @param batchId The id of the batch to delete all users of
    */
-  public void deleteBatch(String batchId) {
-    MultivaluedHashMap<String, String> qParams = new MultivaluedHashMap<>();
+  public void deleteBatch(final String batchId) {
+    final MultivaluedHashMap<String, String> qParams = new MultivaluedHashMap<>();
     qParams.putSingle("filter[batchid]", batchId);
-    Query<User> batchQuery = Query.fromParameterMap(qParams);
-    QueryResult<User> res = userService.query(batchQuery);
+    final Query<User> batchQuery = Query.fromParameterMap(qParams);
+    final QueryResult<User> res = this.userService.query(batchQuery);
     LOGGER.info("Delete batch of " + res.getData().size() + " users");
     res.getData().forEach(u -> {
       try {
-        userService.deleteEntityById(u.getId());
-      } catch (UserCrudException e) {
+        this.userService.deleteEntityById(u.getId());
+      } catch (final UserCrudException e) {
         LOGGER.warn("Skipped a user during batch deletion: " + e.getMessage());
       }
     });

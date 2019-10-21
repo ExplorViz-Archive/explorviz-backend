@@ -11,11 +11,17 @@ import io.swagger.v3.oas.annotations.tags.Tags;
 import java.util.List;
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
-import javax.ws.rs.*;
+import javax.ws.rs.BadRequestException;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.InternalServerErrorException;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
-
 import net.explorviz.security.model.UserBatchRequest;
 import net.explorviz.security.services.BatchService;
 import net.explorviz.security.services.exceptions.DuplicateUserException;
@@ -37,7 +43,7 @@ public class BatchRequestSubResource {
   private static final Logger LOGGER = LoggerFactory.getLogger(BatchRequestSubResource.class);
 
   private static final String MEDIA_TYPE = "application/vnd.api+json";
-  private static final int MAX_COUNT = 300;
+  public static final int MAX_COUNT = 300;
 
 
   private final BatchService bcs;
@@ -114,8 +120,8 @@ public class BatchRequestSubResource {
 
   @DELETE
   @Path("/{batch_id}")
-  public Response deleteBatch(@PathParam("batch_id") String batchid){
-    bcs.deleteBatch(batchid);
+  public Response deleteBatch(@PathParam("batch_id") final String batchid) {
+    this.bcs.deleteBatch(batchid);
 
     return Response.noContent().build();
   }

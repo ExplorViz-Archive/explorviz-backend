@@ -7,6 +7,8 @@ import com.github.jasminb.jsonapi.annotations.Id;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 /**
@@ -29,8 +31,8 @@ public abstract class Setting {
   public static final List<Class<? extends Setting>> TYPES =
       new ArrayList<Class<? extends Setting>>() {
         {
-          add(RangeSetting.class);
-          add(FlagSetting.class);
+          this.add(RangeSetting.class);
+          this.add(FlagSetting.class);
         }
       };
 
@@ -95,7 +97,7 @@ public abstract class Setting {
     return this.id;
   }
 
-  public void setId(String id) {
+  public void setId(final String id) {
     this.id = id;
   }
 
@@ -111,6 +113,31 @@ public abstract class Setting {
     return this.origin;
   }
 
+  @Override
+  public boolean equals(final Object o) {
+    if (this == o) {
+      return true;
+    }
 
+    if (o == null || this.getClass() != o.getClass()) {
+      return false;
+    }
 
+    final Setting setting = (Setting) o;
+
+    return new EqualsBuilder().append(this.id, setting.id)
+        .append(this.displayName, setting.displayName)
+        .append(this.description, setting.description)
+        .append(this.origin, setting.origin)
+        .isEquals();
+  }
+
+  @Override
+  public int hashCode() {
+    return new HashCodeBuilder(17, 37).append(this.id)
+        .append(this.displayName)
+        .append(this.description)
+        .append(this.origin)
+        .toHashCode();
+  }
 }

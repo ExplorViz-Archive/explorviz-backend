@@ -63,10 +63,10 @@ public class SettingsRepositoryTest {
     // Add some default values
     this.rangeSettings = new ArrayList<>(Arrays.asList(new RangeSetting("r", "Double Setting",
         "Range Setting Description", "testoriging", 0.5, -1, 1)));
-    this.flagSettings = new ArrayList<FlagSetting>(Arrays.asList(new FlagSetting("b",
+    this.flagSettings = new ArrayList<>(Arrays.asList(new FlagSetting("b",
         "Boolean Setting", "Boolean Setting Description", "flag_origin", false)));
 
-    this.union = new ArrayList<Setting>();
+    this.union = new ArrayList<>();
     this.union.addAll(this.rangeSettings);
     this.union.addAll(this.flagSettings);
   }
@@ -146,7 +146,7 @@ public class SettingsRepositoryTest {
 
   @Test
   public void filterByType() {
-    final MultivaluedHashMap<String, String> params = new MultivaluedHashMap<String, String>();
+    final MultivaluedHashMap<String, String> params = new MultivaluedHashMap<>();
     params.putSingle("filter[type]", "flagsetting");
 
     final Query<FlagSetting> q = mock(Query.class);
@@ -162,7 +162,7 @@ public class SettingsRepositoryTest {
   @Test
   public void testPagination() {
     this.flagSettings.add(new FlagSetting("Name", "Desc", "Some", false));
-    final MultivaluedHashMap<String, String> params = new MultivaluedHashMap<String, String>();
+    final MultivaluedHashMap<String, String> params = new MultivaluedHashMap<>();
     params.putSingle("page[number]", "1");
     params.putSingle("page[size]", "1");
 

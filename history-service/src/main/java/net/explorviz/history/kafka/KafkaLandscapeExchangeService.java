@@ -88,8 +88,8 @@ public class KafkaLandscapeExchangeService implements Runnable {
           continue;
         }
 
-        this.mongoLandscapeRepo.save(l.getTimestamp().getTimestamp(), l,
-            l.getTimestamp().getTotalRequests());
+        this.mongoLandscapeRepo
+            .save(l.getTimestamp().getTimestamp(), l, l.getTimestamp().getTotalRequests());
       }
     }
 

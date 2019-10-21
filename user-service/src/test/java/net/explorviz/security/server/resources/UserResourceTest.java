@@ -18,7 +18,6 @@ import java.util.stream.Collectors;
 import javax.ws.rs.BadRequestException;
 import javax.ws.rs.core.MultivaluedHashMap;
 import javax.ws.rs.core.UriInfo;
-import net.explorviz.security.server.resources.endpoints.UserResourceEndpointTest;
 import net.explorviz.security.services.UserService;
 import net.explorviz.security.services.exceptions.UserCrudException;
 import net.explorviz.security.util.PasswordStorage;
@@ -32,8 +31,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.platform.runner.JUnitPlatform;
-import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -41,21 +38,17 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 /**
  * Unit tests for {@link UserResource}. All tests are performed by just calling the methods of
- * {@link UserResource}. See {@link UserResourceEndpointTest} for tests that use web requests.
- *
+ * {@link UserResource}.
  */
 @ExtendWith(MockitoExtension.class)
-@RunWith(JUnitPlatform.class)
 @SuppressWarnings("PMD")
-public class UserResourceTest {
+class UserResourceTest {
 
   @InjectMocks
   private UserResource userResource;
 
   @Mock
   private UserService userCrudService;
-
-
 
   private final Map<String, User> users = new HashMap<>();
 

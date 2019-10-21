@@ -1,5 +1,6 @@
 plugins {
     id 'com.adarshr.test-logger' version '1.6.0' apply false
+    id 'com.avast.gradle.docker-compose' version "0.9.4"
 }
 
 apply plugin: 'java'
@@ -13,6 +14,8 @@ allprojects {
 def	projectVersion = 'v1.3.0'
 def projectURL= 'https://www.explorviz.net'
 def footerText = '<span>Copyright 2013 - 2019</span> by the <a href="https://www.explorviz.net" target="_blank">ExplorViz project</a>'
+
+
 
 // BEGIN aggregated Javadoc in multiproject Gradle build
 def exportedProjects= [
@@ -36,6 +39,16 @@ task alljavadoc(type: Javadoc) {
     options.setFooter(footerText)
 }
 
+sourceSets {
+    main {
+        resources {
+            srcDirs = ["src/main/resources"]
+        }
+    }
+}
+
+
+
 
 // END aggregated Javadoc in multiproject Gradle build
 subprojects {
@@ -58,6 +71,7 @@ subprojects {
   apply plugin: 'pmd'
   apply plugin: 'checkstyle'
   apply plugin: 'com.adarshr.test-logger'
+  apply plugin: 'eclipse'
 	
   pmd {
     ruleSets = []
@@ -89,7 +103,72 @@ subprojects {
     dependsOn 'pmdMain'
     dependsOn 'pmdTest'
   }
-	
+
+  sourceSets {
+    integrationTest {
+      java.srcDir file('src/integrationTest/java')
+      compileClasspath += sourceSets.main.output
+      runtimeClasspath += sourceSets.main.output
+    }
+    
+    apiTest {
+      java.srcDir file('src/apiTest/java')
+      compileClasspath += sourceSets.main.output
+      runtimeClasspath += sourceSets.main.output
+    }
+  }
+  
+  task integrationTest(type: Test) {
+    useJUnitPlatform{
+      excludeTags 'slow'
+      includeEngines 'junit-jupiter'
+    }
+    description = 'Runs integration tests.'
+    group = 'verification'
+
+    testClassesDirs = sourceSets.integrationTest.output.classesDirs
+    classpath = sourceSets.integrationTest.runtimeClasspath
+  }
+  
+  task apiTest(type: Test) {
+    useJUnitPlatform{
+      excludeTags 'slow'
+      includeEngines 'junit-jupiter'
+    }
+    description = 'Runs api tests.'
+    group = 'verification'
+
+    testClassesDirs = sourceSets.apiTest.output.classesDirs
+    classpath = sourceSets.apiTest.runtimeClasspath
+  }
+  
+  configurations {
+    integrationTestImplementation.extendsFrom implementation
+    integrationTestRuntimeOnly.extendsFrom runtimeOnly
+    
+    integrationTestImplementation.setCanBeResolved(true)
+    integrationTestRuntimeOnly.setCanBeResolved(true)
+    
+    apiTestImplementation.extendsFrom implementation
+    apiTestRuntimeOnly.extendsFrom runtimeOnly
+    
+    apiTestImplementation.setCanBeResolved(true)
+    apiTestRuntimeOnly.setCanBeResolved(true)
+  }
+
+  eclipse {
+    classpath {
+        plusConfigurations.add configurations.integrationTestRuntimeOnly
+        plusConfigurations.add configurations.integrationTestImplementation
+        
+        plusConfigurations.add configurations.apiTestRuntimeOnly
+        plusConfigurations.add configurations.apiTestImplementation
+    }
+  }
+  
+  
+
+
   // END QA Tooling for subprojects
 
   repositories {
@@ -110,6 +189,8 @@ subprojects {
     
     // Kafka
     implementation group: 'org.apache.kafka', name: 'kafka_2.12', version: '2.2.0'
+
+
     
     if (project.name == 'user-service' || project.name == 'discovery-service' || project.name == 'settings-service' || project.name == 'history-service' || project.name == 'broadcast-service') {
     	// subprojects, which are supposed to be a JAX-RS-based microservice
@@ -146,6 +227,12 @@ subprojects {
 	testImplementation group: 'org.junit.vintage', name: 'junit-vintage-engine', version: '5.4.0'
 	testImplementation 'org.mockito:mockito-core:2.24.0'	
 	testImplementation group: 'org.mockito', name: 'mockito-junit-jupiter', version: '2.27.0'
+
+    integrationTestImplementation 'org.junit.jupiter:junit-jupiter-engine:5.4.0'
+    integrationTestImplementation 'org.junit.platform:junit-platform-runner:1.4.0'
+    
+    apiTestImplementation 'org.junit.jupiter:junit-jupiter-engine:5.4.0'
+    apiTestImplementation 'org.junit.platform:junit-platform-runner:1.4.0'
   }
   
   test {
@@ -155,5 +242,8 @@ subprojects {
     }
     failFast = true
   }
-    
+
 }
+
+task apiTest
+apiTest.dependsOn subprojects*.assemble
