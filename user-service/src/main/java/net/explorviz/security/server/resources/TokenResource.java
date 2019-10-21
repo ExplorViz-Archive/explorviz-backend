@@ -8,7 +8,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import javax.annotation.security.PermitAll;
-import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
@@ -22,7 +21,6 @@ import net.explorviz.security.model.UserCredentials;
 import net.explorviz.security.services.TokenService;
 import net.explorviz.security.services.exceptions.UserValidationService;
 import net.explorviz.shared.security.TokenBasedSecurityContext;
-
 import net.explorviz.shared.security.filters.Secure;
 import net.explorviz.shared.security.model.TokenDetails;
 import net.explorviz.shared.security.model.User;

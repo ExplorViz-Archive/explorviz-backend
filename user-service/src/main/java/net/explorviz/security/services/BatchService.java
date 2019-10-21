@@ -276,9 +276,9 @@ public class BatchService {
    * @param batchId The id of the batch to delete all users of
    */
   public void deleteBatch(String batchId) {
-    MultivaluedHashMap<String, String> qParams = new MultivaluedHashMap<>();
-    qParams.putSingle("filter[batchid]", batchId);
-    Query<User> batchQuery = Query.fromParameterMap(qParams);
+    MultivaluedHashMap<String, String> queryParams = new MultivaluedHashMap<>();
+    queryParams.putSingle("filter[batchid]", batchId);
+    Query<User> batchQuery = Query.fromParameterMap(queryParams);
     QueryResult<User> res = userService.query(batchQuery);
     LOGGER.info("Delete batch of " + res.getData().size() + " users");
     res.getData().forEach(u -> {
