@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.ws.rs.BadRequestException;
@@ -44,6 +45,7 @@ import net.explorviz.shared.security.model.roles.Role;
     bearerFormat = "JWT")
 @SecurityRequirement(name = "token")
 @Secure
+@PermitAll
 public class SettingsInfoResource {
 
   private static final String MEDIA_TYPE = "application/vnd.api+json";
