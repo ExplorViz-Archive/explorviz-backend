@@ -39,6 +39,7 @@ import net.explorviz.security.util.PasswordStorage;
 import net.explorviz.security.util.PasswordStorage.CannotPerformOperationException;
 import net.explorviz.shared.querying.Query;
 import net.explorviz.shared.querying.QueryResult;
+import net.explorviz.shared.security.filters.Secure;
 import net.explorviz.shared.security.model.User;
 import net.explorviz.shared.security.model.roles.Role;
 import org.eclipse.jetty.http.HttpStatus;
@@ -54,6 +55,7 @@ import org.slf4j.LoggerFactory;
 @SecurityScheme(type = SecuritySchemeType.HTTP, name = "token", scheme = "bearer",
     bearerFormat = "JWT")
 @SecurityRequirement(name = "token")
+@Secure
 public class UserResource {
 
   private static final String MEDIA_TYPE = "application/vnd.api+json";

@@ -15,6 +15,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.sse.SseEventSink;
 import net.explorviz.broadcast.server.helper.LandscapeBroadcastService;
+import net.explorviz.shared.security.filters.Secure;
 import net.explorviz.shared.security.model.roles.Role;
 
 /**
@@ -28,6 +29,7 @@ import net.explorviz.shared.security.model.roles.Role;
 @SecurityScheme(type = SecuritySchemeType.HTTP, name = "token", scheme = "bearer",
     bearerFormat = "JWT")
 @SecurityRequirement(name = "token")
+@Secure
 public class LandscapeBroadcastResource {
 
   private final LandscapeBroadcastService broadcastService;

@@ -29,6 +29,7 @@ import net.explorviz.history.repository.persistence.ReplayRepository;
 import net.explorviz.history.repository.persistence.mongo.LandscapeSerializationHelper;
 import net.explorviz.history.util.ResourceHelper;
 import net.explorviz.landscape.model.landscape.Landscape;
+import net.explorviz.shared.security.filters.Secure;
 import net.explorviz.shared.security.model.roles.Role;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
@@ -45,6 +46,7 @@ import org.slf4j.LoggerFactory;
 @SecurityScheme(type = SecuritySchemeType.HTTP, name = "token", scheme = "bearer",
     bearerFormat = "JWT")
 @SecurityRequirement(name = "token")
+@Secure
 public class LandscapeResource {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(LandscapeResource.class);

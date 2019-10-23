@@ -43,6 +43,7 @@ import net.explorviz.shared.discovery.exceptions.agent.AgentNotFoundException;
 import net.explorviz.shared.discovery.exceptions.mapper.ResponseUtil;
 import net.explorviz.shared.discovery.model.Agent;
 import net.explorviz.shared.discovery.services.ClientService;
+import net.explorviz.shared.security.filters.Secure;
 import org.glassfish.jersey.media.sse.EventListener;
 import org.glassfish.jersey.media.sse.EventSource;
 import org.glassfish.jersey.media.sse.InboundEvent;
@@ -54,6 +55,7 @@ import org.slf4j.LoggerFactory;
 @SecurityScheme(type = SecuritySchemeType.HTTP, name = "token", scheme = "bearer",
     bearerFormat = "JWT")
 @Path("v1/agents")
+@Secure
 public class AgentResource {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(AgentResource.class);

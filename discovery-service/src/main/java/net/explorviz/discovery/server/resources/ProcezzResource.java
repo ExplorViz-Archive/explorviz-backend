@@ -29,10 +29,12 @@ import net.explorviz.shared.discovery.model.Agent;
 import net.explorviz.shared.discovery.model.Procezz;
 import net.explorviz.shared.discovery.services.ClientService;
 import net.explorviz.shared.discovery.services.PropertyService;
+import net.explorviz.shared.security.filters.Secure;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @PermitAll
+@Secure
 public class ProcezzResource {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ProcezzResource.class);
