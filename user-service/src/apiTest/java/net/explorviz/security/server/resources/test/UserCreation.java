@@ -14,7 +14,7 @@ import net.explorviz.security.server.resources.test.helper.AuthorizationHelper;
 import net.explorviz.security.server.resources.test.helper.JsonAPIMapper;
 import net.explorviz.security.server.resources.test.helper.UserSerializationHelper;
 import net.explorviz.shared.security.model.User;
-import net.explorviz.shared.security.model.roles.Role;
+import net.explorviz.security.user.Role;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

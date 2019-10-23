@@ -23,11 +23,11 @@ import net.explorviz.security.services.TokenService;
 import net.explorviz.security.services.exceptions.UserValidationService;
 import net.explorviz.shared.security.TokenBasedSecurityContext;
 
-import net.explorviz.shared.security.model.TokenDetails;
+import net.explorviz.shared.security.TokenDetails;
 import net.explorviz.shared.security.model.User;
 
 
-import static net.explorviz.shared.security.model.roles.Role.ANY;
+import static net.explorviz.security.user.Role.ANY;
 
 
 /**

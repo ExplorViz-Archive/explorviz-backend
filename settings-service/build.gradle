@@ -64,7 +64,6 @@ dependencies {
 	
 	// ExplorViz Shared Dependencies
 	if(useRemoteSharedProject.toBoolean()) {
-		implementation group: 'net.explorviz', name: 'user', version: "${sharedProjectVersion}"
 		implementation group: 'net.explorviz', name: 'config-injection', version: "${sharedProjectVersion}"
 	  	implementation group: 'net.explorviz', name: 'security', version: "${sharedProjectVersion}"
 	  	implementation group: 'net.explorviz', name: 'exception-handling', version: "${sharedProjectVersion}"
@@ -72,7 +71,6 @@ dependencies {
 	  	implementation group: 'net.explorviz', name: 'query', version: "${sharedProjectVersion}"
   	}
   	else {
-	    implementation project(':user')
     	implementation project(':config-injection')
     	implementation project(':security')
     	implementation project(':exception-handling')

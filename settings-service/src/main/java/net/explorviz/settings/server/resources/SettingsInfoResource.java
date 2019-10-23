@@ -31,7 +31,7 @@ import net.explorviz.settings.model.Setting;
 import net.explorviz.settings.services.SettingsRepository;
 import net.explorviz.shared.querying.Query;
 import net.explorviz.shared.querying.QueryResult;
-import net.explorviz.shared.security.model.roles.Role;
+import net.explorviz.security.user.Role;
 
 /**
  * API for handling {@link Setting}s and their associated information.

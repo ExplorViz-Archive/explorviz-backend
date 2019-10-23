@@ -1,0 +1,20 @@
+plugins {
+  id "java-library"
+  id "com.github.spotbugs"
+  id "maven"
+}
+
+
+dependencies {
+
+  // JSON-API parsing
+  implementation group: 'com.github.jasminb', name: 'jsonapi-converter', version:'0.8'
+
+  // MongoDB ORM
+  api 'xyz.morphia.morphia:core:1.4.0'
+
+  // HashCode- and EqualBuilder
+  implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.8.1'
+
+  implementation group: 'org.glassfish.jersey.containers', name: 'jersey-container-servlet', version:'2.27'
+}

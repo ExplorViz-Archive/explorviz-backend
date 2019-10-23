@@ -21,7 +21,7 @@ import net.explorviz.shared.querying.PaginationParameterFilter;
 import net.explorviz.shared.security.filters.AuthorizationFilter;
 import net.explorviz.shared.security.filters.CorsResponseFilter;
 import net.explorviz.shared.security.model.User;
-import net.explorviz.shared.security.model.roles.Role;
+import net.explorviz.security.user.Role;
 import org.glassfish.jersey.jackson.JacksonFeature;
 import org.glassfish.jersey.server.ResourceConfig;
 

@@ -12,7 +12,7 @@ import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import net.explorviz.shared.security.model.roles.Role;
+import net.explorviz.security.user.Role;
 
 /**
  * Provides endpoints for user roles.

@@ -29,7 +29,7 @@ import net.explorviz.history.repository.persistence.ReplayRepository;
 import net.explorviz.history.repository.persistence.mongo.LandscapeSerializationHelper;
 import net.explorviz.history.util.ResourceHelper;
 import net.explorviz.landscape.model.landscape.Landscape;
-import net.explorviz.shared.security.model.roles.Role;
+import net.explorviz.security.user.Role;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.slf4j.Logger;

@@ -23,7 +23,7 @@ import net.explorviz.landscape.model.store.Timestamp;
 import net.explorviz.shared.querying.Query;
 import net.explorviz.shared.querying.QueryException;
 import net.explorviz.shared.querying.QueryResult;
-import net.explorviz.shared.security.model.roles.Role;
+import net.explorviz.security.user.Role;
 
 /**
  * REST resource providing {@link net.explorviz.landscape.model.store.Timestamp} data for the

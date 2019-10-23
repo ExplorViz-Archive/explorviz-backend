@@ -26,7 +26,7 @@ import net.explorviz.security.util.PasswordStorage.InvalidHashException;
 import net.explorviz.shared.querying.Query;
 import net.explorviz.shared.querying.QueryResult;
 import net.explorviz.shared.security.model.User;
-import net.explorviz.shared.security.model.roles.Role;
+import net.explorviz.security.user.Role;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

@@ -28,7 +28,7 @@ import net.explorviz.security.services.exceptions.DuplicateUserException;
 import net.explorviz.security.services.exceptions.MalformedBatchRequestException;
 import net.explorviz.security.services.exceptions.UserCrudException;
 import net.explorviz.shared.security.model.User;
-import net.explorviz.shared.security.model.roles.Role;
+import net.explorviz.security.user.Role;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

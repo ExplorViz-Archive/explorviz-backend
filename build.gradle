@@ -28,7 +28,8 @@ def exportedProjects= [
 		':landscape-service',
 		':settings-service:settings-model',
 		':settings-service',
-		':user-service'
+		':user-service',
+        ':user-service:user-model'
 ]
 
 task alljavadoc(type: Javadoc) {
