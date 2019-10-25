@@ -19,7 +19,7 @@ import net.explorviz.security.server.resources.test.helper.JsonAPIListMapper;
 import net.explorviz.security.server.resources.test.helper.JsonAPIMapper;
 import net.explorviz.security.server.resources.test.helper.UsersHelper;
 import net.explorviz.settings.model.UserPreference;
-import net.explorviz.shared.security.model.User;
+import net.explorviz.security.user.User;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;

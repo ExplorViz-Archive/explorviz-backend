@@ -56,6 +56,8 @@ dependencies {
 	implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.9'
 	
 	implementation project(':settings-service:settings-model')
+	implementation project(':user-service:user-model')
+
 	
 	// ExplorViz Shared Dependencies
 	if(useRemoteSharedProject.toBoolean()) {
@@ -64,6 +66,7 @@ dependencies {
 	  	implementation group: 'net.explorviz', name: 'exception-handling', version: "${sharedProjectVersion}"
 	  	implementation group: 'net.explorviz', name: 'common-concerns', version: "${sharedProjectVersion}"
 	  	implementation group: 'net.explorviz', name: 'query', version: "${sharedProjectVersion}"
+        implementation group: 'net.explorviz', name: 'security', version: "${sharedProjectVersion}"
   	}
   	else {
     	implementation project(':config-injection')
@@ -71,6 +74,7 @@ dependencies {
     	implementation project(':exception-handling')
     	implementation project(':common-concerns')
     	implementation project(':query')
+        implementation project(':security')
   }
   
   implementation group: 'io.swagger.core.v3', name: 'swagger-core', version: '2.0.8'

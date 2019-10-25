@@ -13,7 +13,7 @@ import net.explorviz.security.model.UserCredentials;
 import net.explorviz.security.server.resources.test.helper.AuthorizationHelper;
 import net.explorviz.security.server.resources.test.helper.JsonAPIMapper;
 import net.explorviz.security.server.resources.test.helper.UserSerializationHelper;
-import net.explorviz.shared.security.model.User;
+import net.explorviz.security.user.User;
 import net.explorviz.security.user.Role;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;

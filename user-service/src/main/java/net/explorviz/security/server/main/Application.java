@@ -1,5 +1,6 @@
 package net.explorviz.security.server.main;
 
+import javax.management.relation.Role;
 import net.explorviz.security.model.UserBatchRequest;
 import net.explorviz.security.server.providers.GenericJsonApiPaginationWriter;
 import net.explorviz.security.server.providers.UserJsonApiDeserializer;
@@ -7,6 +8,7 @@ import net.explorviz.security.server.resources.EntryPointResource;
 import net.explorviz.security.server.resources.RoleResource;
 import net.explorviz.security.server.resources.TokenResource;
 import net.explorviz.security.server.resources.UserResource;
+import net.explorviz.security.user.User;
 import net.explorviz.settings.model.UserPreference;
 import net.explorviz.shared.common.jsonapi.ResourceConverterFactory;
 import net.explorviz.shared.common.provider.GenericTypeFinder;
@@ -18,10 +20,9 @@ import net.explorviz.shared.exceptions.mapper.UnregisteredTypeExceptionMapper;
 import net.explorviz.shared.exceptions.mapper.WebApplicationExceptionMapper;
 import net.explorviz.shared.querying.PaginationJsonApiWriter;
 import net.explorviz.shared.querying.PaginationParameterFilter;
+import net.explorviz.shared.security.filters.AuthenticationFilter;
 import net.explorviz.shared.security.filters.AuthorizationFilter;
 import net.explorviz.shared.security.filters.CorsResponseFilter;
-import net.explorviz.shared.security.model.User;
-import net.explorviz.security.user.Role;
 import org.glassfish.jersey.jackson.JacksonFeature;
 import org.glassfish.jersey.server.ResourceConfig;
 
@@ -49,7 +50,7 @@ public class Application extends ResourceConfig {
     this.register(CorsResponseFilter.class);
     this.register(PaginationParameterFilter.class);
 
-    this.register(net.explorviz.shared.security.filters.AuthenticationFilter.class);
+    this.register(AuthenticationFilter.class);
     this.register(AuthorizationFilter.class);
 
     // exception handling (mind the order !)

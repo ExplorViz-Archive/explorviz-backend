@@ -1,8 +1,8 @@
 package net.explorviz.security.server.injection;
 
 import com.mongodb.MongoClient;
+import net.explorviz.security.user.User;
 import net.explorviz.shared.config.annotations.Config;
-import net.explorviz.shared.security.model.User;
 import org.glassfish.hk2.api.Factory;
 import xyz.morphia.Datastore;
 import xyz.morphia.Morphia;

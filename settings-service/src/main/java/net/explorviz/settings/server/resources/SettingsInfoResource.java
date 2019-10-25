@@ -27,11 +27,12 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
+import net.explorviz.security.user.Role;
 import net.explorviz.settings.model.Setting;
 import net.explorviz.settings.services.SettingsRepository;
 import net.explorviz.shared.querying.Query;
 import net.explorviz.shared.querying.QueryResult;
-import net.explorviz.security.user.Role;
+
 
 /**
  * API for handling {@link Setting}s and their associated information.

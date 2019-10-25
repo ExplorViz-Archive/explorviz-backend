@@ -61,7 +61,8 @@ dependencies {
   	implementation group: 'io.swagger.core.v3', name: 'swagger-jaxrs2', version: '2.0.8' 
 	
 	implementation project(':settings-service:settings-model')
-	
+	implementation project(':user-service:user-model')
+
 	// ExplorViz Shared Dependencies
 	if(useRemoteSharedProject.toBoolean()) {
 		implementation group: 'net.explorviz', name: 'config-injection', version: "${sharedProjectVersion}"

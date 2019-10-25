@@ -8,7 +8,7 @@ import io.restassured.mapper.ObjectMapper;
 import io.restassured.mapper.ObjectMapperDeserializationContext;
 import io.restassured.mapper.ObjectMapperSerializationContext;
 import net.explorviz.security.model.UserBatchRequest;
-import net.explorviz.shared.security.model.User;
+import net.explorviz.security.user.User;
 import net.explorviz.security.user.Role;
 
 public class JsonAPIMapper<T> implements ObjectMapper {
