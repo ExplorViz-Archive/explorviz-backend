@@ -42,15 +42,6 @@ services:
      - explorviz-settings-mongo-data:/data/db
      - explorviz-settings-mongo-configdb:/data/configdb
      network_mode: "host"
-    
-   ids-redis:
-     image: redis
-     container_name: explorviz-ids-redis
-     command: ["redis-server", "--appendonly", "yes"]
-     ports:
-       - 6379:6379
-     volumes:
-       - explorviz-ids-redis:/data
 
    zookeeper:
     container_name: zookeeper
