@@ -29,6 +29,7 @@ import net.explorviz.security.services.exceptions.MalformedBatchRequestException
 import net.explorviz.security.services.exceptions.UserCrudException;
 import net.explorviz.security.user.Role;
 import net.explorviz.security.user.User;
+import net.explorviz.shared.security.filters.Secure;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,6 +39,7 @@ import org.slf4j.LoggerFactory;
  */
 @Tags(value = {@Tag(name = "Batch"), @Tag(name = "User")})
 @SecurityRequirement(name = "token")
+@Secure
 public class BatchRequestSubResource {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(BatchRequestSubResource.class);

@@ -36,6 +36,7 @@ import net.explorviz.settings.services.UserPreferenceService;
 import net.explorviz.settings.services.validation.PreferenceValidationException;
 import net.explorviz.shared.querying.Query;
 import net.explorviz.shared.querying.QueryResult;
+import net.explorviz.shared.security.filters.Secure;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,6 +47,7 @@ import org.slf4j.LoggerFactory;
 @Path("v1/users")
 @Tag(name = "Preferences")
 @SecurityRequirement(name = "token")
+@Secure
 public class UserPreferencesResource {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(UserPreferencesResource.class);

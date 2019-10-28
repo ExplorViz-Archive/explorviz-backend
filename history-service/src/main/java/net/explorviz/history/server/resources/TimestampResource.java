@@ -24,6 +24,7 @@ import net.explorviz.security.user.Role;
 import net.explorviz.shared.querying.Query;
 import net.explorviz.shared.querying.QueryException;
 import net.explorviz.shared.querying.QueryResult;
+import net.explorviz.shared.security.filters.Secure;
 
 
 /**
@@ -34,6 +35,7 @@ import net.explorviz.shared.querying.QueryResult;
 @RolesAllowed({Role.ADMIN_NAME})
 @SecurityRequirement(name = "token")
 @Tag(name = "Timestamps")
+@Secure
 public class TimestampResource {
 
   private static final String MEDIA_TYPE = "application/vnd.api+json";

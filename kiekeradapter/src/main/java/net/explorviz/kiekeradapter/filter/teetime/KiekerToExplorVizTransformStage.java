@@ -21,14 +21,15 @@ import org.slf4j.LoggerFactory;
 import teetime.framework.AbstractConsumerStage;
 
 /**
- * Kieker Analysis Filter: Transforms Kieker Records to ExplorViz Records
+ * Kieker Analysis Filter: Transforms Kieker Records to ExplorViz Records.
  *
  * @author Christian Zirkelbach (czi@informatik.uni-kiel.de)
  *
  */
 public class KiekerToExplorVizTransformStage extends AbstractConsumerStage<IMonitoringRecord> {
 
-  final Logger LOGGER = LoggerFactory.getLogger(KiekerToExplorVizTransformStage.class.getName());
+  private static final  Logger LOGGER =
+      LoggerFactory.getLogger(KiekerToExplorVizTransformStage.class.getName());
   private final Stack<IMonitoringRecord> stack = new Stack<>();
 
   @Override

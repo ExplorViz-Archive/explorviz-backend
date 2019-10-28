@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.ws.rs.BadRequestException;
@@ -32,6 +33,7 @@ import net.explorviz.settings.model.Setting;
 import net.explorviz.settings.services.SettingsRepository;
 import net.explorviz.shared.querying.Query;
 import net.explorviz.shared.querying.QueryResult;
+import net.explorviz.shared.security.filters.Secure;
 
 
 /**
@@ -43,6 +45,7 @@ import net.explorviz.shared.querying.QueryResult;
 @SecurityScheme(type = SecuritySchemeType.HTTP, name = "token", scheme = "bearer",
     bearerFormat = "JWT")
 @SecurityRequirement(name = "token")
+@Secure
 public class SettingsInfoResource {
 
   private static final String MEDIA_TYPE = "application/vnd.api+json";
@@ -76,6 +79,7 @@ public class SettingsInfoResource {
       @Parameter(in = ParameterIn.QUERY, name = "filter[type]",
           description = "The response only contains settings of the specified type, "
               + "matching the JSON:API type")})
+  @PermitAll
   public QueryResult<Setting> getAll(@Context final UriInfo uriInfo) {
     final Query<Setting> query = Query.fromParameterMap(uriInfo.getQueryParameters(true));
 
@@ -96,6 +100,7 @@ public class SettingsInfoResource {
   @ApiResponse(description = "Responds with the requestes settings.", responseCode = "200",
       content = @Content(schema = @Schema(implementation = Setting.class)))
   @ApiResponse(description = "No setting with such id.", responseCode = "404")
+  @PermitAll
   public Setting getById(@Parameter(description = "Id of the setting",
       required = true) @PathParam("id") final String id) {
     return this.repo.find(id).orElseThrow(NotFoundException::new);
