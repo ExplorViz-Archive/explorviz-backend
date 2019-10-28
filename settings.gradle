@@ -11,7 +11,8 @@ if(useRemoteSharedProject.toBoolean()) {
 			':landscape-service',
 			':settings-service:settings-model',
 			':settings-service',
-			':user-service'
+			':user-service',
+			':user-service:user-model'
 } else {
 	include ':analysis-service',
 			':broadcast-service',
@@ -23,6 +24,7 @@ if(useRemoteSharedProject.toBoolean()) {
 			':settings-service:settings-model',
 			':settings-service',
 			':user-service',
+            ':user-service:user-model',
 			':common-concerns',
 			':config-injection',
 			':discovery-common',

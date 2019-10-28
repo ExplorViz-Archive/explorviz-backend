@@ -7,10 +7,10 @@ import java.util.Date;
 import java.util.UUID;
 import javax.inject.Inject;
 import javax.ws.rs.ForbiddenException;
+import net.explorviz.security.user.User;
 import net.explorviz.shared.config.annotations.Config;
+import net.explorviz.shared.security.TokenDetails;
 import net.explorviz.shared.security.TokenParserService;
-import net.explorviz.shared.security.model.TokenDetails;
-import net.explorviz.shared.security.model.User;
 import org.jvnet.hk2.annotations.Service;
 
 /**

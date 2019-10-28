@@ -10,7 +10,7 @@ import net.explorviz.settings.server.resources.test.helper.DefaultSettings;
 import net.explorviz.settings.server.resources.test.helper.JsonAPIListMapper;
 import net.explorviz.settings.server.resources.test.helper.JsonAPIMapper;
 import net.explorviz.settings.server.resources.test.helper.UsersHelper;
-import net.explorviz.shared.security.model.User;
+import net.explorviz.security.user.User;
 import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
 import org.junit.jupiter.api.BeforeAll;

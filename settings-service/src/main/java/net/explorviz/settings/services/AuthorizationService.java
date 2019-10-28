@@ -2,7 +2,7 @@ package net.explorviz.settings.services;
 
 import javax.inject.Inject;
 import net.explorviz.shared.security.TokenParserService;
-import net.explorviz.shared.security.model.TokenDetails;
+import net.explorviz.shared.security.TokenDetails;
 import org.jvnet.hk2.annotations.Service;
 
 /**

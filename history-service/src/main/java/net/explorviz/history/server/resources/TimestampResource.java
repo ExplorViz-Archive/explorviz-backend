@@ -20,11 +20,12 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
 import net.explorviz.history.repository.persistence.mongo.TimestampRepository;
 import net.explorviz.landscape.model.store.Timestamp;
+import net.explorviz.security.user.Role;
 import net.explorviz.shared.querying.Query;
 import net.explorviz.shared.querying.QueryException;
 import net.explorviz.shared.querying.QueryResult;
 import net.explorviz.shared.security.filters.Secure;
-import net.explorviz.shared.security.model.roles.Role;
+
 
 /**
  * REST resource providing {@link net.explorviz.landscape.model.store.Timestamp} data for the

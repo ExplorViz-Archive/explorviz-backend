@@ -5,7 +5,7 @@ import com.github.jasminb.jsonapi.exceptions.ResourceParseException;
 import io.restassured.mapper.ObjectMapperType;
 import java.util.Optional;
 import net.explorviz.security.model.UserCredentials;
-import net.explorviz.shared.security.model.User;
+import net.explorviz.security.user.User;
 
 public class AuthorizationHelper {
 

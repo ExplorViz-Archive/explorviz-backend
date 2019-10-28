@@ -1,25 +1,22 @@
 plugins {
-	id "java-library"
-	id "com.github.spotbugs"
-	id "maven"
+  id "java-library"
+  id "com.github.spotbugs"
+  id "maven"
 }
 
-// Force new Dependencies 
-configurations.all {
-    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
-}
 
 dependencies {
 
-  if(useRemoteSharedProject.toBoolean()) {
-  	implementation group: 'net.explorviz', name: 'common-concerns', version: "${sharedProjectVersion}"
-  } else {
-    implementation project(':common-concerns')
-  }
-	
-	  // JSON-API parsing
-  	implementation group: 'com.github.jasminb', name: 'jsonapi-converter', version:'0.8' 	
-	implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.9'
+  // JSON-API parsing
+  implementation group: 'com.github.jasminb', name: 'jsonapi-converter', version:'0.9'
+
+  // MongoDB ORM
+  api 'xyz.morphia.morphia:core:1.4.0'
+
+  // HashCode- and EqualBuilder
+  implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.8.1'
+
+  implementation group: 'org.glassfish.jersey.containers', name: 'jersey-container-servlet', version:'2.27'
 }
 
 // disable integration tests, since there are none
@@ -27,10 +24,6 @@ integrationTest.enabled = false
 
 // disable api tests, since there are none
 apiTest.enabled = false
-
-jar {
-	baseName = "explorviz-${project.name}"
-}
 
 // BEGIN Sonatype Snapshot publishing
 uploadArchives {

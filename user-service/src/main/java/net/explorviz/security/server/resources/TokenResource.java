@@ -20,10 +20,10 @@ import net.explorviz.security.model.Token;
 import net.explorviz.security.model.UserCredentials;
 import net.explorviz.security.services.TokenService;
 import net.explorviz.security.services.exceptions.UserValidationService;
+import net.explorviz.security.user.User;
 import net.explorviz.shared.security.TokenBasedSecurityContext;
 import net.explorviz.shared.security.filters.Secure;
-import net.explorviz.shared.security.model.TokenDetails;
-import net.explorviz.shared.security.model.User;
+import net.explorviz.shared.security.TokenDetails;
 
 
 /**
@@ -89,6 +89,7 @@ public class TokenResource {
   @POST
   @Path("refresh")
   @Produces(MediaType.APPLICATION_JSON)
+  @PermitAll
   @Operation(description = "This method refreshes a Json Web Token (JWT). "
       + "The HTTP POST body must not contain data and the "
       + "to-be refreshed token inside of the ' Authorization: Bearer' header.")
@@ -99,7 +100,6 @@ public class TokenResource {
   @ApiResponse(responseCode = "403", description = "Token can't be refreshed.")
   @SecurityRequirement(name = "token")
   @Secure
-  @PermitAll
   public Token refresh(@Context final ContainerRequestContext context) {
 
     // curl -X POST

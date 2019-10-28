@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.io.IOException;
-import net.explorviz.shared.security.model.User;
+import net.explorviz.security.user.User;
 
 public class UserSerializationHelper {
 

@@ -10,18 +10,15 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.ext.MessageBodyReader;
-import net.explorviz.shared.security.model.User;
-import xyz.morphia.Datastore;
+import net.explorviz.security.user.User;
 
 public class UserJsonApiDeserializer implements MessageBodyReader<User> {
 
   private final ResourceConverter converter;
-  private final Datastore datastore;
 
   @Inject
-  public UserJsonApiDeserializer(final ResourceConverter converter, final Datastore datastore) {
+  public UserJsonApiDeserializer(final ResourceConverter converter) {
     this.converter = converter;
-    this.datastore = datastore;
   }
 
   @Override

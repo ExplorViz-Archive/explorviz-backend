@@ -28,12 +28,13 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
+import net.explorviz.security.user.Role;
 import net.explorviz.settings.model.Setting;
 import net.explorviz.settings.services.SettingsRepository;
 import net.explorviz.shared.querying.Query;
 import net.explorviz.shared.querying.QueryResult;
 import net.explorviz.shared.security.filters.Secure;
-import net.explorviz.shared.security.model.roles.Role;
+
 
 /**
  * API for handling {@link Setting}s and their associated information.
@@ -45,7 +46,6 @@ import net.explorviz.shared.security.model.roles.Role;
     bearerFormat = "JWT")
 @SecurityRequirement(name = "token")
 @Secure
-@PermitAll
 public class SettingsInfoResource {
 
   private static final String MEDIA_TYPE = "application/vnd.api+json";
@@ -79,6 +79,7 @@ public class SettingsInfoResource {
       @Parameter(in = ParameterIn.QUERY, name = "filter[type]",
           description = "The response only contains settings of the specified type, "
               + "matching the JSON:API type")})
+  @PermitAll
   public QueryResult<Setting> getAll(@Context final UriInfo uriInfo) {
     final Query<Setting> query = Query.fromParameterMap(uriInfo.getQueryParameters(true));
 
@@ -99,6 +100,7 @@ public class SettingsInfoResource {
   @ApiResponse(description = "Responds with the requestes settings.", responseCode = "200",
       content = @Content(schema = @Schema(implementation = Setting.class)))
   @ApiResponse(description = "No setting with such id.", responseCode = "404")
+  @PermitAll
   public Setting getById(@Parameter(description = "Id of the setting",
       required = true) @PathParam("id") final String id) {
     return this.repo.find(id).orElseThrow(NotFoundException::new);
