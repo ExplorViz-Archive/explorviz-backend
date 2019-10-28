@@ -1,6 +1,5 @@
 package net.explorviz.security.server.main;
 
-import javax.management.relation.Role;
 import net.explorviz.security.model.UserBatchRequest;
 import net.explorviz.security.server.providers.GenericJsonApiPaginationWriter;
 import net.explorviz.security.server.providers.UserJsonApiDeserializer;
@@ -8,6 +7,7 @@ import net.explorviz.security.server.resources.EntryPointResource;
 import net.explorviz.security.server.resources.RoleResource;
 import net.explorviz.security.server.resources.TokenResource;
 import net.explorviz.security.server.resources.UserResource;
+import net.explorviz.security.user.Role;
 import net.explorviz.security.user.User;
 import net.explorviz.settings.model.UserPreference;
 import net.explorviz.shared.common.jsonapi.ResourceConverterFactory;

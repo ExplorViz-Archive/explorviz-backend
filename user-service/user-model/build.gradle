@@ -8,7 +8,7 @@ plugins {
 dependencies {
 
   // JSON-API parsing
-  implementation group: 'com.github.jasminb', name: 'jsonapi-converter', version:'0.8'
+  implementation group: 'com.github.jasminb', name: 'jsonapi-converter', version:'0.9'
 
   // MongoDB ORM
   api 'xyz.morphia.morphia:core:1.4.0'

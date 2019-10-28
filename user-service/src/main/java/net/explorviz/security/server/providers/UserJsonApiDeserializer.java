@@ -11,7 +11,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.ext.MessageBodyReader;
 import net.explorviz.security.user.User;
-import xyz.morphia.Datastore;
 
 public class UserJsonApiDeserializer implements MessageBodyReader<User> {
 
