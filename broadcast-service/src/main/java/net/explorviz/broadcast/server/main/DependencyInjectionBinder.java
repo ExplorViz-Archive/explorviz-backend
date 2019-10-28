@@ -4,10 +4,7 @@ import javax.inject.Singleton;
 import net.explorviz.broadcast.kafka.KafkaLandscapeExchangeService;
 import net.explorviz.broadcast.kafka.LandscapeSerializationHelper;
 import net.explorviz.broadcast.server.helper.LandscapeBroadcastService;
-import net.explorviz.shared.common.idgen.RedisServiceIdGenerator;
-import net.explorviz.shared.common.idgen.ServiceIdGenerator;
 import net.explorviz.shared.common.injection.CommonDependencyInjectionBinder;
-import net.explorviz.shared.config.helper.PropertyHelper;
 
 /**
  * Configures the dependency binding setup for inject during runtime.
@@ -18,16 +15,6 @@ public class DependencyInjectionBinder extends CommonDependencyInjectionBinder {
   public void configure() {
 
     super.configure();
-
-    final boolean useRedisForIdGeneration =
-        PropertyHelper.getBooleanProperty("service.generator.id.redis");
-
-    if (useRedisForIdGeneration) {
-      this.bind(RedisServiceIdGenerator.class)
-          .to(ServiceIdGenerator.class)
-          .in(Singleton.class)
-          .ranked(1000); // NOCS
-    }
 
     this.bind(LandscapeSerializationHelper.class)
         .to(LandscapeSerializationHelper.class)
