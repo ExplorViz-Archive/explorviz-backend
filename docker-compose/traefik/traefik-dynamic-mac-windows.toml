@@ -14,7 +14,7 @@
     service = "history"
 
   [http.routers.settings]
-    rule = "PathPrefix(`/v1/settings/info`) || PathPrefix(`/v1/users/{uid}/settings`) || PathPrefix(`/v1/settings/preferences`)"
+    rule = "PathPrefix(`/v1/settings/info`) || PathPrefix(`/v1/users/{uid}/settings`) || PathPrefix(`/v1/users/settings/preferences`)"
     service = "settings"
 
   [http.routers.user]
