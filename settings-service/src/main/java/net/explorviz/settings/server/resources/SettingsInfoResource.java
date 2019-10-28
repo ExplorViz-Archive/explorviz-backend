@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.ws.rs.BadRequestException;
@@ -31,6 +32,7 @@ import net.explorviz.settings.model.Setting;
 import net.explorviz.settings.services.SettingsRepository;
 import net.explorviz.shared.querying.Query;
 import net.explorviz.shared.querying.QueryResult;
+import net.explorviz.shared.security.filters.Secure;
 import net.explorviz.shared.security.model.roles.Role;
 
 /**
@@ -42,6 +44,8 @@ import net.explorviz.shared.security.model.roles.Role;
 @SecurityScheme(type = SecuritySchemeType.HTTP, name = "token", scheme = "bearer",
     bearerFormat = "JWT")
 @SecurityRequirement(name = "token")
+@Secure
+@PermitAll
 public class SettingsInfoResource {
 
   private static final String MEDIA_TYPE = "application/vnd.api+json";

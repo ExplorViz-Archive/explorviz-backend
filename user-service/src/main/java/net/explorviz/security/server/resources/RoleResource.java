@@ -12,6 +12,7 @@ import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import net.explorviz.shared.security.filters.Secure;
 import net.explorviz.shared.security.model.roles.Role;
 
 /**
@@ -21,6 +22,7 @@ import net.explorviz.shared.security.model.roles.Role;
 @Path("v1/roles")
 @Tag(name = "Role")
 @SecurityRequirement(name = "token")
+@Secure
 public class RoleResource {
 
   private static final String MEDIA_TYPE = "application/vnd.api+json";
