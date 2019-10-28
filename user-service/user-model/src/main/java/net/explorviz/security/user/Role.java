@@ -27,7 +27,12 @@ public class Role {
   public static final  Role USER = new Role(USER_NAME);
 
 
-  public static final List<Role> ROLES = new ArrayList<Role>() { {
+  public static final List<Role> ROLES = new ArrayList<Role>() { /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
+
+  {
       add(ADMIN);
       add(USER);
     } };

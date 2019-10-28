@@ -248,3 +248,6 @@ subprojects {
 
 task apiTest
 apiTest.dependsOn subprojects*.assemble
+
+task integrationTest
+integrationTest.dependsOn subprojects*.assemble
