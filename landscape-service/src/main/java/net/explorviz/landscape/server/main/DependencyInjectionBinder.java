@@ -4,10 +4,7 @@ import javax.inject.Singleton;
 import net.explorviz.landscape.injection.KafkaProducerFactory;
 import net.explorviz.landscape.repository.LandscapeRepositoryModel;
 import net.explorviz.landscape.repository.helper.LandscapeSerializationHelper;
-import net.explorviz.shared.common.idgen.RedisServiceIdGenerator;
-import net.explorviz.shared.common.idgen.ServiceIdGenerator;
 import net.explorviz.shared.common.injection.CommonDependencyInjectionBinder;
-import net.explorviz.shared.config.helper.PropertyHelper;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.glassfish.hk2.api.TypeLiteral;
 
@@ -21,15 +18,6 @@ public class DependencyInjectionBinder extends CommonDependencyInjectionBinder {
 
     super.configure();
 
-    final boolean useRedisForIdGeneration =
-        PropertyHelper.getBooleanProperty("service.generator.id.redis");
-
-    if (useRedisForIdGeneration) {
-      this.bind(RedisServiceIdGenerator.class)
-          .to(ServiceIdGenerator.class)
-          .in(Singleton.class)
-          .ranked(1000); // NOCS
-    }
 
     this.bindFactory(KafkaProducerFactory.class)
         .to(new TypeLiteral<KafkaProducer<String, String>>() {});

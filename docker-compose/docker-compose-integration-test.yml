@@ -113,15 +113,6 @@ services:
     networks:
       - explorviz
 
-  id-generator:
-    image: redis
-    container_name: explorviz-id-generator
-    command: ["redis-server", "--appendonly", "yes"]
-    ports:
-      - "6379:6379"
-    networks:
-      - explorviz
-
   mongo-user:
     image: mongo
     container_name: explorviz-backend-user-mongo
