@@ -75,6 +75,5 @@ volumes:
   explorviz-auth-mongo-configdb:
   explorviz-landscape-mongo-data:
   explorviz-landscape-mongo-configdb:
-  explorviz-ids-redis:
   explorviz-settings-mongo-data:
   explorviz-settings-mongo-configdb:
