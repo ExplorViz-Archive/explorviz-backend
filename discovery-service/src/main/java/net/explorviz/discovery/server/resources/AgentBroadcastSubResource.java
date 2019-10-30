@@ -1,10 +1,5 @@
 package net.explorviz.discovery.server.resources;
 
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import javax.annotation.security.PermitAll;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
@@ -22,9 +17,6 @@ import net.explorviz.shared.security.filters.Secure;
  * register to agent updates.
  *
  */
-@SecurityScheme(type = SecuritySchemeType.HTTP, name = "token", scheme = "bearer",
-    bearerFormat = "JWT")
-@SecurityRequirement(name = "token")
 @Secure
 @PermitAll
 public class AgentBroadcastSubResource {
@@ -41,10 +33,6 @@ public class AgentBroadcastSubResource {
     this.agentRepository = agentRepository;
   }
 
-  // curl -v -X GET http://localhost:8081/v1/landscapes/broadcast/ -H
-  // "Content-Type:
-  // text/event-stream"
-
   /**
    * Endpoint that clients can use to register for agent updates.
    *
@@ -53,10 +41,6 @@ public class AgentBroadcastSubResource {
    */
   @GET
   @Produces(MediaType.SERVER_SENT_EVENTS)
-  @Operation(description = "Endpoint that clients can use to register for agent updates.",
-      summary = "Register for agent updates")
-  @ApiResponse(description = "If registered, returns updated agent objects with "
-      + "procezzes of the discovery agents.")
   public void listenToBroadcast(@Context final SseEventSink eventSink,
       @Context final HttpServletResponse response) {
 

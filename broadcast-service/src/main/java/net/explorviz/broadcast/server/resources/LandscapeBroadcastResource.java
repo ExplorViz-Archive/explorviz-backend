@@ -22,11 +22,11 @@ import net.explorviz.shared.security.filters.Secure;
  * register to landscape updates.
  *
  */
-@Path("v1/landscapes/broadcast")
-@Tag(name = "Broadcasts")
 @SecurityScheme(type = SecuritySchemeType.HTTP, name = "token", scheme = "bearer",
     bearerFormat = "JWT")
 @SecurityRequirement(name = "token")
+@Tag(name = "Landscape Broadcast")
+@Path("v1/landscapes/broadcast")
 @Secure
 @PermitAll
 public class LandscapeBroadcastResource {
@@ -37,10 +37,6 @@ public class LandscapeBroadcastResource {
   public LandscapeBroadcastResource(final LandscapeBroadcastService broadcastService) {
     this.broadcastService = broadcastService;
   }
-
-  // curl -v -X GET http://localhost:8081/v1/landscapes/broadcast/ -H
-  // "Content-Type:
-  // text/event-stream"
 
   /**
    * Endpoint that clients can use to register for landscape updates.
