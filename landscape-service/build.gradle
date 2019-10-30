@@ -15,7 +15,6 @@ dockerCompose {
   landscapeIntegrationTests {
     buildBeforeUp = true
     useComposeFiles = ['docker-compose/docker-compose-integration-test.yml']
-    startedServices = ['id-generator']
     isRequiredBy(this.tasks.getByName('integrationTest'))
     removeContainers = true
   }

@@ -37,8 +37,6 @@ public class DefaultGeneratorInjectionTest {
   @BeforeEach
   public void setUp() {
     final Properties props = PropertyHelper.getLoadedProperties();
-    props.remove("service.generator.id.redis");
-    props.put("service.generator.id.redis", false);
 
     this.updateConfigInjectionProperties(props);
 
