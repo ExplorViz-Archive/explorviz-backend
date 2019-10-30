@@ -56,6 +56,7 @@ import org.slf4j.LoggerFactory;
     bearerFormat = "JWT")
 @Path("v1/agents")
 @Secure
+@PermitAll
 public class AgentResource {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(AgentResource.class);
