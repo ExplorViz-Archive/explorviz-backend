@@ -2,7 +2,7 @@ package net.explorviz.security.server.resources;
 
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import net.explorviz.shared.security.model.roles.Role;
+import net.explorviz.security.user.Role;
 import org.junit.jupiter.api.Test;
 
 /**

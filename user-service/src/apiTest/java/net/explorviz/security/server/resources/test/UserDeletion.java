@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.util.Optional;
 import net.explorviz.security.server.resources.test.helper.AuthorizationHelper;
 import net.explorviz.security.server.resources.test.helper.UsersHelper;
-import net.explorviz.shared.security.model.User;
+import net.explorviz.security.user.User;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;

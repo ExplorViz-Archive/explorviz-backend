@@ -1,6 +1,7 @@
 package net.explorviz.discovery.server.resources;
 
 import io.swagger.v3.oas.annotations.Operation;
+import javax.annotation.security.PermitAll;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.servlet.http.HttpServletResponse;
@@ -11,8 +12,11 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.sse.SseEventSink;
 import net.explorviz.discovery.repository.discovery.AgentRepository;
 import net.explorviz.discovery.server.services.BroadcastService;
+import net.explorviz.shared.security.filters.Secure;
 
 @Singleton
+@Secure
+@PermitAll
 public class AgentBroadcastSubResource {
 
   // private static final Logger LOGGER = LoggerFactory.getLogger(AgentBroadcastSubResource.class);

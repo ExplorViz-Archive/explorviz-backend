@@ -7,8 +7,8 @@ import net.explorviz.security.services.UserService;
 import net.explorviz.security.util.PasswordStorage;
 import net.explorviz.security.util.PasswordStorage.CannotPerformOperationException;
 import net.explorviz.security.util.PasswordStorage.InvalidHashException;
-import net.explorviz.shared.security.model.User;
 import org.jvnet.hk2.annotations.Service;
+import net.explorviz.security.user.User;
 
 /**
  * Injectable service that contains utility methods for {@link UserCredentials} validation.

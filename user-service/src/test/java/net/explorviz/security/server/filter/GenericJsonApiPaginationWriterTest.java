@@ -14,7 +14,7 @@ import javax.ws.rs.core.MultivaluedHashMap;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.UriInfo;
 import net.explorviz.security.server.providers.GenericJsonApiPaginationWriter;
-import net.explorviz.shared.security.model.User;
+import net.explorviz.security.user.User;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;

@@ -35,12 +35,13 @@ import javax.ws.rs.core.UriInfo;
 import net.explorviz.security.services.UserService;
 import net.explorviz.security.services.exceptions.DuplicateUserException;
 import net.explorviz.security.services.exceptions.UserCrudException;
+import net.explorviz.security.user.User;
 import net.explorviz.security.util.PasswordStorage;
 import net.explorviz.security.util.PasswordStorage.CannotPerformOperationException;
 import net.explorviz.shared.querying.Query;
 import net.explorviz.shared.querying.QueryResult;
-import net.explorviz.shared.security.model.User;
-import net.explorviz.shared.security.model.roles.Role;
+import net.explorviz.security.user.Role;
+import net.explorviz.shared.security.filters.Secure;
 import org.eclipse.jetty.http.HttpStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,6 +55,7 @@ import org.slf4j.LoggerFactory;
 @SecurityScheme(type = SecuritySchemeType.HTTP, name = "token", scheme = "bearer",
     bearerFormat = "JWT")
 @SecurityRequirement(name = "token")
+@Secure
 public class UserResource {
 
   private static final String MEDIA_TYPE = "application/vnd.api+json";

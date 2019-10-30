@@ -4,7 +4,7 @@ import static io.restassured.RestAssured.given;
 import com.github.jasminb.jsonapi.exceptions.ResourceParseException;
 import io.restassured.mapper.ObjectMapperType;
 import java.util.Optional;
-import net.explorviz.shared.security.model.User;
+import net.explorviz.security.user.User;
 
 public class AuthorizationHelper {
 

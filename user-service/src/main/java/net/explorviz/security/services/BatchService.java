@@ -21,6 +21,7 @@ import javax.ws.rs.core.Response;
 import net.explorviz.security.model.UserBatchRequest;
 import net.explorviz.security.services.exceptions.MalformedBatchRequestException;
 import net.explorviz.security.services.exceptions.UserCrudException;
+import net.explorviz.security.user.User;
 import net.explorviz.security.util.PasswordStorage;
 import net.explorviz.security.util.PasswordStorage.CannotPerformOperationException;
 import net.explorviz.settings.model.UserPreference;
@@ -30,7 +31,6 @@ import net.explorviz.shared.common.provider.JsonApiProvider;
 import net.explorviz.shared.config.annotations.Config;
 import net.explorviz.shared.querying.Query;
 import net.explorviz.shared.querying.QueryResult;
-import net.explorviz.shared.security.model.User;
 import org.eclipse.jetty.http.HttpStatus;
 import org.jvnet.hk2.annotations.Service;
 import org.slf4j.Logger;
@@ -276,11 +276,11 @@ public class BatchService {
    * 
    * @param batchId The id of the batch to delete all users of
    */
-  public void deleteBatch(final String batchId) {
-    final MultivaluedHashMap<String, String> qParams = new MultivaluedHashMap<>();
-    qParams.putSingle("filter[batchid]", batchId);
-    final Query<User> batchQuery = Query.fromParameterMap(qParams);
-    final QueryResult<User> res = this.userService.query(batchQuery);
+  public void deleteBatch(String batchId) {
+    MultivaluedHashMap<String, String> queryParams = new MultivaluedHashMap<>();
+    queryParams.putSingle("filter[batchid]", batchId);
+    Query<User> batchQuery = Query.fromParameterMap(queryParams);
+    QueryResult<User> res = userService.query(batchQuery);
     LOGGER.info("Delete batch of " + res.getData().size() + " users");
     res.getData().forEach(u -> {
       try {

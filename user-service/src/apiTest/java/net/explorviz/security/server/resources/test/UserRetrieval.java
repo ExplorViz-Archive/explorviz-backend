@@ -16,7 +16,7 @@ import net.explorviz.security.server.resources.test.helper.AuthorizationHelper;
 import net.explorviz.security.server.resources.test.helper.JsonAPIListMapper;
 import net.explorviz.security.server.resources.test.helper.UsersHelper;
 import net.explorviz.security.services.exceptions.UserCrudException;
-import net.explorviz.shared.security.model.User;
+import net.explorviz.security.user.User;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;

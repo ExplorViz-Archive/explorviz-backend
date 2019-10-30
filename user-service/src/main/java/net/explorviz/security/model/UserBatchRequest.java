@@ -12,7 +12,7 @@ import io.swagger.v3.oas.annotations.media.Schema.AccessMode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import net.explorviz.shared.security.model.User;
+import net.explorviz.security.user.User;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 /**

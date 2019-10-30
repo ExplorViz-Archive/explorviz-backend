@@ -11,7 +11,7 @@ import net.explorviz.settings.model.FlagSetting;
 import net.explorviz.settings.model.RangeSetting;
 import net.explorviz.settings.model.Setting;
 import net.explorviz.settings.model.UserPreference;
-import net.explorviz.shared.security.model.User;
+import net.explorviz.security.user.User;
 
 public class JsonAPIMapper<T> implements ObjectMapper {
   private final ResourceConverter converter;

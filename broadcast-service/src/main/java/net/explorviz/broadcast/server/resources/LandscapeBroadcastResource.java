@@ -5,8 +5,9 @@ import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import javax.annotation.security.RolesAllowed;
+import javax.annotation.security.PermitAll;
 import javax.inject.Inject;
+
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -15,7 +16,8 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.sse.SseEventSink;
 import net.explorviz.broadcast.server.helper.LandscapeBroadcastService;
-import net.explorviz.shared.security.model.roles.Role;
+import net.explorviz.security.user.Role;
+import net.explorviz.shared.security.filters.Secure;
 
 /**
  * Resource class that contains an endpoint which clients, e.g., the ExplorViz Frontend, can use to
@@ -23,11 +25,12 @@ import net.explorviz.shared.security.model.roles.Role;
  *
  */
 @Path("v1/landscapes/broadcast")
-@RolesAllowed({Role.ADMIN_NAME})
 @Tag(name = "Broadcasts")
 @SecurityScheme(type = SecuritySchemeType.HTTP, name = "token", scheme = "bearer",
     bearerFormat = "JWT")
 @SecurityRequirement(name = "token")
+@Secure
+@PermitAll
 public class LandscapeBroadcastResource {
 
   private final LandscapeBroadcastService broadcastService;

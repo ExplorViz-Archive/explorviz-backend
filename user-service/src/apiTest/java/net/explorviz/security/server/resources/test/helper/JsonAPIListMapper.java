@@ -8,8 +8,8 @@ import io.restassured.mapper.ObjectMapperDeserializationContext;
 import io.restassured.mapper.ObjectMapperSerializationContext;
 import java.util.List;
 import net.explorviz.settings.model.UserPreference;
-import net.explorviz.shared.security.model.User;
-import net.explorviz.shared.security.model.roles.Role;
+import net.explorviz.security.user.User;
+import net.explorviz.security.user.Role;
 
 public class JsonAPIListMapper<T> implements ObjectMapper {
   private final ResourceConverter converter;
