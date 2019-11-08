@@ -88,7 +88,7 @@ public class UserPreferencesResource {
   @GET
   @Produces(MEDIA_TYPE)
   @PermitAll
-  @Path("{uid}/settings/preferences")
+  @Path("{uid}/preferences")
   @Operation(summary = "Get a user's preferences")
   @ApiResponse(responseCode = "200",
       description = "Return all preferences of the user with the given id.", content = @Content(
@@ -132,7 +132,7 @@ public class UserPreferencesResource {
    */
   @DELETE
   @PermitAll
-  @Path("settings/preferences/{id}")
+  @Path("/preferences/{id}")
   @Operation(summary = "Delete a preference",
       description = "If a preference is delete, the default value of the corresponding "
           + "setting applies again.")
@@ -169,7 +169,7 @@ public class UserPreferencesResource {
    */
   @PATCH
   @Produces(MEDIA_TYPE)
-  @Path("settings/preferences/{prefId}")
+  @Path("/preferences/{prefId}")
   @PermitAll
   @Operation(summary = "Update a preference value")
   @ApiResponse(responseCode = "200",
@@ -235,7 +235,7 @@ public class UserPreferencesResource {
   @POST
   @Consumes(MEDIA_TYPE)
   @PermitAll
-  @Path("settings/preferences")
+  @Path("/preferences")
   @Operation(summary = "Create a preference value")
   @ApiResponse(responseCode = "200",
       description = "Value was updated, the repsonse contains the update preference.",

@@ -40,7 +40,7 @@ import net.explorviz.shared.security.filters.Secure;
  * API for handling {@link Setting}s and their associated information.
  *
  */
-@Path("v1/settings/info")
+@Path("v1/settings")
 @Tag(name = "Settings")
 @SecurityScheme(type = SecuritySchemeType.HTTP, name = "token", scheme = "bearer",
     bearerFormat = "JWT")
