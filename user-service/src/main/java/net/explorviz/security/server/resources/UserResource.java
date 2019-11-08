@@ -71,7 +71,7 @@ public class UserResource {
   private final UserService userCrudService;
 
 
-  private final BatchRequestSubResource batchSubResource;
+  private final BatchRequestResource batchSubResource;
 
   /**
    * Constructor for this class.
@@ -81,7 +81,7 @@ public class UserResource {
    */
   @Inject
   public UserResource(final UserService userCrudService,
-      final BatchRequestSubResource batchSubResource) {
+      final BatchRequestResource batchSubResource) {
     this.userCrudService = userCrudService;
     this.batchSubResource = batchSubResource;
   }
@@ -148,13 +148,6 @@ public class UserResource {
       LOGGER.error("Error saving user", ex);
       throw new InternalServerErrorException();
     }
-  }
-
-
-
-  @Path("batch")
-  public BatchRequestSubResource batchRequest() {
-    return this.batchSubResource;
   }
 
   /**
