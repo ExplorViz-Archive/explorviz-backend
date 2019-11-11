@@ -65,7 +65,7 @@ subprojects {
         }
     }
     dependencies {
-        classpath "gradle.plugin.com.github.spotbugs:spotbugs-gradle-plugin:1.6.3"
+        classpath "com.github.spotbugs:spotbugs-gradle-plugin:2.0.1"
     }
   }
   
