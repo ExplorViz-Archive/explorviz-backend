@@ -112,7 +112,7 @@ public class UserPreferencesResource {
 
     final String authHeader = headers.getHeaderString(HttpHeaders.AUTHORIZATION);
 
-    if (this.canAccess(authHeader, uid)) {
+    if (!this.canAccess(authHeader, uid)) {
       if (LOGGER.isInfoEnabled()) {
         LOGGER.info(NO_ADMIN_MESSAGE);
       }
