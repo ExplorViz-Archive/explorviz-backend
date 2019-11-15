@@ -7,7 +7,13 @@ apply plugin: 'java'
 
 allprojects {
   apply plugin: 'java-library'
-  apply plugin: "eclipse"
+  apply plugin: "eclipse"  
+
+	java {
+	    sourceCompatibility = JavaVersion.VERSION_11
+	    targetCompatibility = JavaVersion.VERSION_11
+	}
+  
 }
 
 // defining project properties
