@@ -27,7 +27,8 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.port=8082"
-      - "traefik.http.routers.user-service.rule=PathPrefix(`/v1/tokens`) || PathPrefix(`/v1/users`) || PathPrefix(`/v1/roles`)"
+      - "traefik.http.routers.user-service.rule=PathPrefix(`/v1/tokens`) ||
+          PathPrefix(`/v1/users`) || PathPrefix(`/v1/roles`) || PathPrefix(`/v1/userbatch`)"
     networks:
       - explorviz
 

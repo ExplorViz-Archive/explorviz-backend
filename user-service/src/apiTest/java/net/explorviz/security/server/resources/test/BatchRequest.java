@@ -28,10 +28,10 @@ import org.junit.jupiter.api.Test;
 
 public class BatchRequest {
 
-  private static final String BATCH_URL = "http://localhost:8090/v1/users/batch";
+  private static final String BATCH_URL = "http://localhost:8090/v1/userbatch";
   private static final String USER_URL = "http://localhost:8090/v1/users/";
   private static final String PREF_URL =
-      "http://localhost:8090/v1/users/{uid}/settings/preferences";
+      "http://localhost:8090/v1/preferences?filter[user]={uid}";
 
   private static String adminToken;
   private static String normieToken;
