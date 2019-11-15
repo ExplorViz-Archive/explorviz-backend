@@ -42,7 +42,7 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.port=8087"
-      - "traefik.http.routers.settings-service.rule=PathPrefix(`/v1/settings`) || PathPrefix(`/v1/users/{uid}/settings`) || PathPrefix(`/v1/users/settings/preferences`)"
+      - "traefik.http.routers.settings-service.rule=PathPrefix(`/v1/settings`) || PathPrefix(`/v1/preferences`)"
     networks:
       - explorviz
 

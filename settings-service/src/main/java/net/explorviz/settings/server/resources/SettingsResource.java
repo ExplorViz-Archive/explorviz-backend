@@ -46,7 +46,7 @@ import net.explorviz.shared.security.filters.Secure;
     bearerFormat = "JWT")
 @SecurityRequirement(name = "token")
 @Secure
-public class SettingsInfoResource {
+public class SettingsResource {
 
   private static final String MEDIA_TYPE = "application/vnd.api+json";
 
@@ -54,7 +54,7 @@ public class SettingsInfoResource {
   private final SettingsRepository repo;
 
   @Inject
-  public SettingsInfoResource(final SettingsRepository repo) {
+  public SettingsResource(final SettingsRepository repo) {
     this.repo = repo;
   }
 
