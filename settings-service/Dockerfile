@@ -1,4 +1,4 @@
-FROM adoptopenjdk/openjdk11:jdk-11.0.4_11-alpine-slim
+FROM openjdk:11-jre-slim
 
 ENV SERVICE_PREFIX settings
 
