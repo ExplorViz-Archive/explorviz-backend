@@ -1,6 +1,3 @@
-dist: trusty
-# https://travis-ci.community/t/install-of-oracle-jdk-8-failing/3038/9
-
 language: java
 
 services:
@@ -9,7 +6,7 @@ services:
 jobs:
   fast_finish: true
   allow_failures:
-    - jdk: oraclejdk8
+    - jdk: oraclejdk11
   include:
     - stage: test
       name: "Unit Testing"
