@@ -85,7 +85,7 @@ public class UserDeletion {
     UsersHelper.getInstance()
         .getAll()
         .stream()
-        .filter(u -> u.getRoles().equals("admin"))
+        .filter(u -> u.getRoles().contains("admin"))
         .filter(u -> !u.getUsername().contentEquals("admin"))
         .map(User::getId)
         .forEach(i -> UsersHelper.getInstance().deleteUserById(i));
