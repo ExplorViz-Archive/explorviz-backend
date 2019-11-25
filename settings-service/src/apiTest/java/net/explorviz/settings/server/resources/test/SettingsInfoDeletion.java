@@ -14,7 +14,7 @@ import org.junit.jupiter.api.Test;
 
 class SettingsInfoDeletion {
 
-  private static final String SETTINGS_URL = "http://localhost:8090/v1/settings/info";
+  private static final String SETTINGS_URL = "http://localhost:8090/v1/settings";
 
   private static String adminToken;
   private static String normieToken;

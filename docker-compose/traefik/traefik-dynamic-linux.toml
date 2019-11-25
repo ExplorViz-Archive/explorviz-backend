@@ -14,11 +14,11 @@
     service = "history"
 
   [http.routers.settings]
-    rule = "PathPrefix(`/v1/settings/info`) || PathPrefix(`/v1/users/{uid}/settings`) || PathPrefix(`/v1/users/settings/preferences`)"
+    rule = "PathPrefix(`/v1/settings`) || PathPrefix(`/v1/preferences`)"
     service = "settings"
 
   [http.routers.user]
-    rule = "PathPrefix(`/v1/tokens`) || PathPrefix(`/v1/users`) || PathPrefix(`/v1/roles`)"
+    rule = "PathPrefix(`/v1/tokens`) || PathPrefix(`/v1/users`) || PathPrefix(`/v1/roles`) || PathPrefix(`/v1/userbatch`)"
     service = "user"
 
 [http.services]

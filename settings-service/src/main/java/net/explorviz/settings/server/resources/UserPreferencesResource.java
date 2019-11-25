@@ -12,8 +12,10 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.Arrays;
+import java.util.Optional;
 import javax.annotation.security.PermitAll;
 import javax.inject.Inject;
+import javax.swing.text.html.Option;
 import javax.ws.rs.BadRequestException;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -44,10 +46,11 @@ import org.slf4j.LoggerFactory;
  * Resource to access {@link UserPreference}, i.e. to handle user specific settings.
  *
  */
-@Path("v1/users")
+@Path("/v1/preferences")
 @Tag(name = "Preferences")
 @SecurityRequirement(name = "token")
 @Secure
+@PermitAll
 public class UserPreferencesResource {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(UserPreferencesResource.class);
@@ -80,15 +83,13 @@ public class UserPreferencesResource {
   }
 
   /**
-   * Access preferences of a user.
+   * Access all preferences, possible filtered for a specific of a user.
    *
-   * @param uid query parameter that denotes the user.
    * @return a list of all user preferences for a given user.
    */
   @GET
   @Produces(MEDIA_TYPE)
   @PermitAll
-  @Path("{uid}/settings/preferences")
   @Operation(summary = "Get a user's preferences")
   @ApiResponse(responseCode = "200",
       description = "Return all preferences of the user with the given id.", content = @Content(
@@ -99,16 +100,15 @@ public class UserPreferencesResource {
       @Parameter(in = ParameterIn.QUERY, name = "page[size]",
           description = "Controls the size, i.e., amount of entities, of each page."),
       @Parameter(in = ParameterIn.QUERY, name = "page[number]",
-          description = "Index of the page to return.")})
+          description = "Index of the page to return."),
+      @Parameter(in = ParameterIn.QUERY, name = "filter[user]",
+          description = "User id to filter preferences for")})
   public QueryResult<UserPreference> getPreferencesForUser(@Context final HttpHeaders headers,
-      @Context final UriInfo uriInfo,
-      @Parameter(description = "Id of the user") @PathParam("uid") final String uid) {
+      @Context final UriInfo uriInfo) {
 
     final Query<UserPreference> query = Query.fromParameterMap(uriInfo.getQueryParameters(true));
 
-    // Workaround to query only for a specific user
-    // Technically the path parameter 'uid' is handled as a query parameter
-    query.getFilters().put("userId", Arrays.asList(uid));
+    String uid = query.getFilters().get("user") == null?"":query.getFilters().get("user").get(0);
 
     final String authHeader = headers.getHeaderString(HttpHeaders.AUTHORIZATION);
 
@@ -132,7 +132,7 @@ public class UserPreferencesResource {
    */
   @DELETE
   @PermitAll
-  @Path("settings/preferences/{id}")
+  @Path("/{id}")
   @Operation(summary = "Delete a preference",
       description = "If a preference is delete, the default value of the corresponding "
           + "setting applies again.")
@@ -169,7 +169,7 @@ public class UserPreferencesResource {
    */
   @PATCH
   @Produces(MEDIA_TYPE)
-  @Path("settings/preferences/{prefId}")
+  @Path("/{id}")
   @PermitAll
   @Operation(summary = "Update a preference value")
   @ApiResponse(responseCode = "200",
@@ -184,7 +184,7 @@ public class UserPreferencesResource {
           + "the id of the corresponding setting must stay the same.")
   public UserPreference updatePref(
       @Parameter(
-          description = "Id of the preference to update.") @PathParam("prefId") final String prefId,
+          description = "Id of the preference to update.") @PathParam("id") final String prefId,
       @Context final HttpHeaders headers, final UserPreference updatedPref) {
 
     final UserPreference found = this.userPrefRepo.find(prefId).orElseThrow(NotFoundException::new);
@@ -234,8 +234,6 @@ public class UserPreferencesResource {
    */
   @POST
   @Consumes(MEDIA_TYPE)
-  @PermitAll
-  @Path("settings/preferences")
   @Operation(summary = "Create a preference value")
   @ApiResponse(responseCode = "200",
       description = "Value was updated, the repsonse contains the update preference.",

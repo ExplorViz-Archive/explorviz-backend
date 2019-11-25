@@ -13,7 +13,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import net.explorviz.security.model.UserBatchRequest;
-import net.explorviz.security.server.resources.BatchRequestSubResource;
+import net.explorviz.security.server.resources.BatchRequestResource;
 import net.explorviz.security.server.resources.test.helper.AuthorizationHelper;
 import net.explorviz.security.server.resources.test.helper.JsonAPIListMapper;
 import net.explorviz.security.server.resources.test.helper.JsonAPIMapper;
@@ -28,10 +28,10 @@ import org.junit.jupiter.api.Test;
 
 public class BatchRequest {
 
-  private static final String BATCH_URL = "http://localhost:8090/v1/users/batch";
+  private static final String BATCH_URL = "http://localhost:8090/v1/userbatch";
   private static final String USER_URL = "http://localhost:8090/v1/users/";
   private static final String PREF_URL =
-      "http://localhost:8090/v1/users/{uid}/settings/preferences";
+      "http://localhost:8090/v1/preferences?filter[user]={uid}";
 
   private static String adminToken;
   private static String normieToken;
@@ -222,7 +222,7 @@ public class BatchRequest {
 
   @Test
   void countLimit() {
-    final int count = BatchRequestSubResource.MAX_COUNT + 1;
+    final int count = BatchRequestResource.MAX_COUNT + 1;
     final List<String> passwords = IntStream.range(0, count)
         .mapToObj(i -> RandomStringUtils.random(5, "abcdefghijklmnopqrstuvwxyz"))
         .collect(Collectors.toList());

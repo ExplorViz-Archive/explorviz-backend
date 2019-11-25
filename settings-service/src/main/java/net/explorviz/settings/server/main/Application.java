@@ -7,7 +7,7 @@ import net.explorviz.settings.model.UserPreference;
 import net.explorviz.settings.server.providers.SettingJsonApiDeserializer;
 import net.explorviz.settings.server.providers.UserSettingJsonApiDeserializer;
 import net.explorviz.settings.server.resources.EntryPointResource;
-import net.explorviz.settings.server.resources.SettingsInfoResource;
+import net.explorviz.settings.server.resources.SettingsResource;
 import net.explorviz.settings.server.resources.UserPreferencesResource;
 import net.explorviz.shared.common.jsonapi.ResourceConverterFactory;
 import net.explorviz.shared.common.provider.GenericTypeFinder;
@@ -62,7 +62,7 @@ public class Application extends ResourceConfig {
     this.register(SetupApplicationListener.class);
 
     // register all resources
-    this.register(SettingsInfoResource.class);
+    this.register(SettingsResource.class);
     this.register(UserPreferencesResource.class);
     this.register(EntryPointResource.class);
 

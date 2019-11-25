@@ -99,13 +99,14 @@ public class UserPreferenceRepository
   @Override
   public QueryResult<UserPreference> query(final Query<UserPreference> query) {
     final String userIdField = "userId";
+    final String userFilterField = "user";
 
     final xyz.morphia.query.Query<UserPreference> q =
         this.datastore.createQuery(UserPreference.class);
 
 
     // Filter for user
-    final List<String> userFilter = query.getFilters().get(userIdField);
+    final List<String> userFilter = query.getFilters().get(userFilterField);
 
     if (userFilter != null && userFilter.size() == 1) {
       q.field(userIdField).contains(userFilter.get(0));

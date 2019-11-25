@@ -29,7 +29,7 @@ public class AuthorizationService {
   public boolean isSameUser(final String uid, final String authHeader) {
     try {
       final TokenDetails details = this.tps.parseToken(authHeader.substring(7));
-      return details.getUserId().equals(uid);
+      return details.getUserId().contentEquals(uid);
     } catch (final NullPointerException e) {
       // No token given
       return false;

@@ -40,9 +40,10 @@ import org.slf4j.LoggerFactory;
 @Tags(value = {@Tag(name = "Batch"), @Tag(name = "User")})
 @SecurityRequirement(name = "token")
 @Secure
-public class BatchRequestSubResource {
+@Path("v1/userbatch")
+public class BatchRequestResource {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(BatchRequestSubResource.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(BatchRequestResource.class);
 
   private static final String MEDIA_TYPE = "application/vnd.api+json";
   public static final int MAX_COUNT = 300;
@@ -51,7 +52,7 @@ public class BatchRequestSubResource {
   private final BatchService bcs;
 
   @Inject
-  public BatchRequestSubResource(final BatchService batchCreationService) {
+  public BatchRequestResource(final BatchService batchCreationService) {
     this.bcs = batchCreationService;
   }
 
