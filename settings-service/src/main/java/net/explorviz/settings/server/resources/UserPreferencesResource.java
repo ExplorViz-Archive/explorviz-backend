@@ -11,11 +11,8 @@ import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import java.util.Arrays;
-import java.util.Optional;
 import javax.annotation.security.PermitAll;
 import javax.inject.Inject;
-import javax.swing.text.html.Option;
 import javax.ws.rs.BadRequestException;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -46,7 +43,7 @@ import org.slf4j.LoggerFactory;
  * Resource to access {@link UserPreference}, i.e. to handle user specific settings.
  *
  */
-@Path("/v1/preferences")
+@Path("v1/preferences")
 @Tag(name = "Preferences")
 @SecurityRequirement(name = "token")
 @Secure
@@ -108,7 +105,8 @@ public class UserPreferencesResource {
 
     final Query<UserPreference> query = Query.fromParameterMap(uriInfo.getQueryParameters(true));
 
-    String uid = query.getFilters().get("user") == null?"":query.getFilters().get("user").get(0);
+    final String uid =
+        query.getFilters().get("user") == null ? "" : query.getFilters().get("user").get(0);
 
     final String authHeader = headers.getHeaderString(HttpHeaders.AUTHORIZATION);
 
@@ -132,7 +130,7 @@ public class UserPreferencesResource {
    */
   @DELETE
   @PermitAll
-  @Path("/{id}")
+  @Path("{id}")
   @Operation(summary = "Delete a preference",
       description = "If a preference is delete, the default value of the corresponding "
           + "setting applies again.")
@@ -169,7 +167,7 @@ public class UserPreferencesResource {
    */
   @PATCH
   @Produces(MEDIA_TYPE)
-  @Path("/{id}")
+  @Path("{id}")
   @PermitAll
   @Operation(summary = "Update a preference value")
   @ApiResponse(responseCode = "200",

@@ -95,7 +95,7 @@ public class SettingsResource {
    */
   @GET
   @Produces(MEDIA_TYPE)
-  @Path("/{id}")
+  @Path("{id}")
   @Operation(summary = "Find a single setting")
   @ApiResponse(description = "Responds with the requestes settings.", responseCode = "200",
       content = @Content(schema = @Schema(implementation = Setting.class)))
@@ -114,7 +114,7 @@ public class SettingsResource {
    */
   @DELETE
   @Produces(MEDIA_TYPE)
-  @Path("/{id}")
+  @Path("{id}")
   @RolesAllowed({Role.ADMIN_NAME})
   @Operation(summary = "Delete a setting")
   @ApiResponse(description = "Setting with given id does not exist (anymore)", responseCode = "204")
