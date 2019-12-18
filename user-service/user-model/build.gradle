@@ -1,0 +1,85 @@
+plugins {
+  id "java-library"
+  id "com.github.spotbugs"
+  id "maven"
+}
+
+
+dependencies {
+
+  // JSON-API parsing
+  implementation group: 'com.github.jasminb', name: 'jsonapi-converter', version:'0.9'
+
+  // MongoDB ORM
+  api 'xyz.morphia.morphia:core:1.4.0'
+
+  // HashCode- and EqualBuilder
+  implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.8.1'
+
+  implementation group: 'org.glassfish.jersey.containers', name: 'jersey-container-servlet', version:'2.27'
+}
+
+// disable integration tests, since there are none
+integrationTest.enabled = false
+
+// disable api tests, since there are none
+apiTest.enabled = false
+
+// BEGIN Sonatype Snapshot publishing
+uploadArchives {
+	repositories {
+		mavenDeployer {
+			def user = String.valueOf(System.getenv('SONATYPE_LOGIN'))
+			def pw = String.valueOf(System.getenv('SONATYPE_PW'))
+			
+			repository(url: "https://oss.sonatype.org/content/repositories/snapshots") {
+				authentication(userName: user, password: pw)
+			}
+			pom.version = "dev-1-SNAPSHOT"
+			pom.artifactId = project.name
+			pom.groupId = "net.explorviz"
+		}
+    }
+}
+// END Sonatype Snapshot publishing
+
+pmd {
+    ruleSets = []
+    ruleSetFiles = files("../../conf/pmd.xml")
+    ignoreFailures = true
+    toolVersion = "6.7.0"
+  }
+	
+  checkstyle {
+    configDir = file("../../conf")
+    configFile = file("../../conf/checkstyle.xml")
+    maxWarnings = 0
+    ignoreFailures = true
+    toolVersion = "8.12"
+  }	
+
+spotbugs {
+  excludeFilter = file("../../conf/spotbugs-exclude-filter.xml")
+  reportLevel = "low"
+  effort = "max"
+  ignoreFailures = true
+  toolVersion = '3.1.7'
+}
+
+// Per default XML reports for SpotBugs are generated
+// Include this to generate HTML reports
+tasks.withType(com.github.spotbugs.SpotBugsTask) {
+  reports {
+    // Either HTML or XML reports can be activated
+    html.enabled true
+    xml.enabled false
+  }
+}
+
+task spotbugs {
+  group 'Quality Assurance'
+  description 'Run SpotBugs'
+  
+  dependsOn 'spotbugsMain'
+  dependsOn 'spotbugsTest'
+}

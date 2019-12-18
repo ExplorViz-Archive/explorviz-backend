@@ -1,0 +1,44 @@
+[http.routers]
+
+  [http.routers.broadcast]
+    rule = "PathPrefix(`/v1/landscapes/broadcast`)"
+    service = "broadcast"
+    priority = 200
+
+  [http.routers.discovery]
+    rule = "PathPrefix(`/v1/agents`)"
+    service = "discovery"
+
+  [http.routers.history]
+    rule = "PathPrefix(`/v1/landscapes`) || PathPrefix(`/v1/timestamps`)"
+    service = "history"
+
+  [http.routers.settings]
+    rule = "PathPrefix(`/v1/settings`) || PathPrefix(`/v1/preferences`)"
+    service = "settings"
+
+  [http.routers.user]
+    rule = "PathPrefix(`/v1/tokens`) || PathPrefix(`/v1/users`) || PathPrefix(`/v1/roles`) || PathPrefix(`/v1/userbatch`)"
+    service = "user"
+
+[http.services]
+
+  [http.services.broadcast]  
+    [[http.services.broadcast.loadBalancer.servers]]
+      url = "http://host.docker.internal:8081"
+
+  [http.services.discovery]  
+    [[http.services.discovery.loadBalancer.servers]]
+      url = "http://host.docker.internal:8083"
+
+  [http.services.history]  
+    [[http.services.history.loadBalancer.servers]]
+      url = "http://host.docker.internal:8086"
+
+  [http.services.settings]  
+    [[http.services.settings.loadBalancer.servers]]
+      url = "http://host.docker.internal:8087"
+
+  [http.services.user]  
+    [[http.services.user.loadBalancer.servers]]
+      url = "http://host.docker.internal:8082"

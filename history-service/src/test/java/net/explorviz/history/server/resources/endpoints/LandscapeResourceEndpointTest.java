@@ -3,7 +3,6 @@ package net.explorviz.history.server.resources.endpoints;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.when;
-
 import com.github.jasminb.jsonapi.ResourceConverter;
 import com.github.jasminb.jsonapi.SerializationFeature;
 import com.github.jasminb.jsonapi.exceptions.DocumentSerializationException;
@@ -13,18 +12,19 @@ import javax.ws.rs.core.Application;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
+import net.explorviz.history.helper.LandscapeDummyCreator;
 import net.explorviz.history.repository.persistence.LandscapeRepository;
 import net.explorviz.history.repository.persistence.ReplayRepository;
-import net.explorviz.history.repository.persistence.mongo.LandscapeDummyCreator;
 import net.explorviz.history.repository.persistence.mongo.LandscapeSerializationHelper;
 import net.explorviz.history.server.resources.LandscapeResource;
 import net.explorviz.history.server.resources.LandscapeResourceTest;
+import net.explorviz.landscape.model.helper.TypeProvider;
+import net.explorviz.landscape.model.landscape.Landscape;
+import net.explorviz.landscape.model.store.Timestamp;
 import net.explorviz.shared.common.idgen.AtomicEntityIdGenerator;
 import net.explorviz.shared.common.idgen.IdGenerator;
 import net.explorviz.shared.common.idgen.UuidServiceIdGenerator;
-import net.explorviz.shared.landscape.model.helper.TypeProvider;
-import net.explorviz.shared.landscape.model.landscape.Landscape;
-import net.explorviz.shared.landscape.model.store.Timestamp;
+import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
 import org.junit.Test;
@@ -74,8 +74,8 @@ public class LandscapeResourceEndpointTest extends JerseyTest {
     this.currentLandscapeId = l.getId();
     this.currentLandscapeTimestamp = l.getTimestamp();
 
-    landscapeStringRepo = Mockito.mock(LandscapeRepository.class);
-    replayStringRepo = Mockito.mock(ReplayRepository.class);
+    this.landscapeStringRepo = Mockito.mock(LandscapeRepository.class);
+    this.replayStringRepo = Mockito.mock(ReplayRepository.class);
 
     when(this.landscapeStringRepo.getById(this.currentLandscapeId))
         .thenReturn(Optional.of(this.currentLandscape));
@@ -84,18 +84,26 @@ public class LandscapeResourceEndpointTest extends JerseyTest {
     when(this.landscapeStringRepo.getById("2L"))
         .thenThrow(new NotFoundException("Landscape not found for provided 2L."));
 
-    return new ResourceConfig()
-        .register(new LandscapeResource(this.landscapeStringRepo, this.replayStringRepo));
+    final ResourceConfig rc = new ResourceConfig();
+    rc.register(MultiPartFeature.class);
+    rc.register(new LandscapeResource(this.landscapeStringRepo, this.replayStringRepo,
+        serializationHelper));
+
+    return rc;
   }
 
   @Test
   public void checkOkStatusCodes() { // NOPMD
-    Response response = target().path(BASE_URL + "/" + currentLandscapeId).request().get();
+    Response response =
+        this.target().path(BASE_URL + "/" + this.currentLandscapeId).request().get();
     assertEquals(GENERIC_STATUS_ERR_MESSAGE, Status.OK.getStatusCode(), response.getStatus());
 
-    response = target().path(BASE_URL)
-        .queryParam(QUERY_PARAM_TIMESTAMP, this.currentLandscapeTimestamp.getTimestamp()).request()
-        .accept(MEDIA_TYPE).get();
+    response = this.target()
+        .path(BASE_URL)
+        .queryParam(QUERY_PARAM_TIMESTAMP, this.currentLandscapeTimestamp.getTimestamp())
+        .request()
+        .accept(MEDIA_TYPE)
+        .get();
 
     // TODO why fail?
     assertEquals(GENERIC_STATUS_ERR_MESSAGE, Status.OK.getStatusCode(), response.getStatus());
@@ -103,59 +111,79 @@ public class LandscapeResourceEndpointTest extends JerseyTest {
 
   @Test
   public void checkNotFoundStatusCodeForUnknownId() { // NOPMD
-    Response response = target().path(BASE_URL + "/2L").request().get();
-    assertEquals(GENERIC_STATUS_ERR_MESSAGE, Status.NOT_FOUND.getStatusCode(),
+    Response response = this.target().path(BASE_URL + "/2L").request().get();
+    assertEquals(GENERIC_STATUS_ERR_MESSAGE,
+        Status.NOT_FOUND.getStatusCode(),
         response.getStatus());
 
-    response = target().path(BASE_URL).queryParam(QUERY_PARAM_TIMESTAMP, "2").request()
-        .accept(MEDIA_TYPE).get();
+    response = this.target()
+        .path(BASE_URL)
+        .queryParam(QUERY_PARAM_TIMESTAMP, "2")
+        .request()
+        .accept(MEDIA_TYPE)
+        .get();
 
-    assertEquals(GENERIC_STATUS_ERR_MESSAGE, Status.NOT_FOUND.getStatusCode(),
+    assertEquals(GENERIC_STATUS_ERR_MESSAGE,
+        Status.NOT_FOUND.getStatusCode(),
         response.getStatus());
   }
 
   @Test
   public void checkNotFoundStatusCodeForUnknownLandscape() {
-    final Response response = target().path(BASE_URL + "/12").request().get();
-    assertEquals(GENERIC_STATUS_ERR_MESSAGE, Status.NOT_FOUND.getStatusCode(),
+    final Response response = this.target().path(BASE_URL + "/12").request().get();
+    assertEquals(GENERIC_STATUS_ERR_MESSAGE,
+        Status.NOT_FOUND.getStatusCode(),
         response.getStatus());
   }
 
   @Test
   public void checkNotAcceptableMediaTypeStatusCode() {
-    final Response response = target().path(BASE_URL + "/" + currentLandscapeId).request()
-        .accept(MediaType.TEXT_PLAIN).get();
-    assertEquals(GENERIC_MEDIA_TYPE_ERR_MESSAGE, Status.NOT_ACCEPTABLE.getStatusCode(),
+    final Response response = this.target()
+        .path(BASE_URL + "/" + this.currentLandscapeId)
+        .request()
+        .accept(MediaType.TEXT_PLAIN)
+        .get();
+    assertEquals(GENERIC_MEDIA_TYPE_ERR_MESSAGE,
+        Status.NOT_ACCEPTABLE.getStatusCode(),
         response.getStatus());
   }
 
   @Test
   public void checkBadRequestErrorCodeOnMissingQueryParam() {
-    final Response response = target().path(BASE_URL).request().get();
-    assertEquals(GENERIC_MEDIA_TYPE_ERR_MESSAGE, Status.BAD_REQUEST.getStatusCode(),
+    final Response response = this.target().path(BASE_URL).request().get();
+    assertEquals(GENERIC_MEDIA_TYPE_ERR_MESSAGE,
+        Status.BAD_REQUEST.getStatusCode(),
         response.getStatus());
   }
 
   @Test
   public void checkMediaTypeOfValidRequestAndResponse() {
-    final Response response = target().path(BASE_URL + "/" + currentLandscapeId).request().get();
+    final Response response =
+        this.target().path(BASE_URL + "/" + this.currentLandscapeId).request().get();
     assertEquals(GENERIC_MEDIA_TYPE_ERR_MESSAGE, MEDIA_TYPE, response.getMediaType().toString());
   }
 
   @Test
   public void checkMediaTypeOfValidRequestAndResponseWithAcceptHeader() {
-    final Response response =
-        target().path(BASE_URL + "/" + currentLandscapeId).request().accept(MEDIA_TYPE).get();
+    final Response response = this.target()
+        .path(BASE_URL + "/" + this.currentLandscapeId)
+        .request()
+        .accept(MEDIA_TYPE)
+        .get();
     assertEquals(GENERIC_MEDIA_TYPE_ERR_MESSAGE, MEDIA_TYPE, response.getMediaType().toString());
   }
 
   @Test
   public void checkQueryEndpointSuccess() {
-    final Response response = target().path(BASE_URL)
-        .queryParam(QUERY_PARAM_TIMESTAMP, this.currentLandscapeTimestamp.getTimestamp()).request()
-        .accept(MEDIA_TYPE).get();
+    final Response response = this.target()
+        .path(BASE_URL)
+        .queryParam(QUERY_PARAM_TIMESTAMP, this.currentLandscapeTimestamp.getTimestamp())
+        .request()
+        .accept(MEDIA_TYPE)
+        .get();
 
-    assertEquals("Query Parameter endpoint returned wrong value", this.currentLandscape,
+    assertEquals("Query Parameter endpoint returned wrong value",
+        this.currentLandscape,
         response.readEntity(String.class));
   }
 

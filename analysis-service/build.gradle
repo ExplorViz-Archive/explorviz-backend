@@ -1,7 +1,8 @@
 plugins {
 	id "application"
-	id "com.github.johnrengelman.shadow" version "4.0.4"
+	id "com.github.johnrengelman.shadow" version "5.1.0"
 	id "com.github.spotbugs" version "1.6.10"
+	id "maven"
 }
 
 // Force new Dependencies 
@@ -25,6 +26,12 @@ dependencies {
   implementation group: 'net.kieker-monitoring', name: 'kieker', version: '1.14-SNAPSHOT'
 }
 
+// disable integration tests, since there are none
+integrationTest.enabled = false
+
+// disable api tests, since there are none
+apiTest.enabled = false
+
 assemble.dependsOn shadowJar
 jar.enabled = false
 
@@ -41,7 +48,8 @@ application {
 }
 
 shadowJar {
-  archiveName = "explorviz-${project.name}.${extension}"
+  baseName = "explorviz-${project.name}"
+  classifier = null
 }
 
 spotbugs {
@@ -68,8 +76,4 @@ task spotbugs {
   
   dependsOn 'spotbugsMain'
   dependsOn 'spotbugsTest'
-}
-
-artifacts {
-  archives shadowJar
 }

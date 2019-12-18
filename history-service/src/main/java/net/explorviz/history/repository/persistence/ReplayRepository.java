@@ -1,9 +1,8 @@
 package net.explorviz.history.repository.persistence;
 
-import java.util.List;
 import java.util.Optional;
-import net.explorviz.shared.landscape.model.landscape.Landscape;
-import net.explorviz.shared.landscape.model.store.Timestamp;
+import net.explorviz.landscape.model.landscape.Landscape;
+import net.explorviz.landscape.model.store.Timestamp;
 
 /**
  * Represents a repository to store {@link Landscape} objects persistently for replay.
@@ -31,14 +30,6 @@ public interface ReplayRepository<T> {
    */
   int getTotalRequestsByTimestamp(long timestamp);
 
-
-  /**
-   * Retrieves all timestamps currently stored in the db. Each timestamp is a unique identifier of
-   * an object.
-   *
-   * @return list of all timestamps
-   */
-  List<Timestamp> getAllTimestamps();
 
   /**
    * Retrieves a replay landscape object with a specific timestamp from the repository.

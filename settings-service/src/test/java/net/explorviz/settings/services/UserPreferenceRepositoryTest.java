@@ -6,7 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-
 import com.mongodb.WriteResult;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -151,7 +150,8 @@ public class UserPreferenceRepositoryTest {
       public Long answer(final InvocationOnMock invocation) throws Throwable {
         final Long f = UserPreferenceRepositoryTest.this.userSettings.stream()
             .filter(u -> u.getUserId().contentEquals("1"))
-            .filter(u -> u.getSettingId().contentEquals("test")).count();
+            .filter(u -> u.getSettingId().contentEquals("test"))
+            .count();
 
         return f;
       }

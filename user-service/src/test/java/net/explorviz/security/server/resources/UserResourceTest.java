@@ -8,27 +8,29 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.ws.rs.BadRequestException;
-import net.explorviz.security.server.resources.endpoints.UserResourceEndpointTest;
-import net.explorviz.security.services.RoleService;
+import javax.ws.rs.core.MultivaluedHashMap;
+import javax.ws.rs.core.UriInfo;
 import net.explorviz.security.services.UserService;
 import net.explorviz.security.services.exceptions.UserCrudException;
+import net.explorviz.security.user.User;
 import net.explorviz.security.util.PasswordStorage;
 import net.explorviz.security.util.PasswordStorage.CannotPerformOperationException;
 import net.explorviz.security.util.PasswordStorage.InvalidHashException;
-import net.explorviz.shared.security.model.User;
-import net.explorviz.shared.security.model.roles.Role;
+import net.explorviz.shared.querying.Query;
+import net.explorviz.shared.querying.QueryResult;
+import net.explorviz.security.user.Role;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.platform.runner.JUnitPlatform;
-import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -36,13 +38,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 /**
  * Unit tests for {@link UserResource}. All tests are performed by just calling the methods of
- * {@link UserResource}. See {@link UserResourceEndpointTest} for tests that use web requests.
- *
+ * {@link UserResource}.
  */
 @ExtendWith(MockitoExtension.class)
-@RunWith(JUnitPlatform.class)
 @SuppressWarnings("PMD")
-public class UserResourceTest {
+class UserResourceTest {
 
   @InjectMocks
   private UserResource userResource;
@@ -50,22 +50,15 @@ public class UserResourceTest {
   @Mock
   private UserService userCrudService;
 
-  @Mock
-  private RoleService roleService;
-
-
   private final Map<String, User> users = new HashMap<>();
 
-  private final List<Role> roles = new ArrayList<>();
+  private final List<String> roles = new ArrayList<>();
 
   private Long lastId = 0L;
 
   @BeforeEach
   public void setUp() throws UserCrudException {
 
-
-
-    Mockito.lenient().when(this.roleService.getAllRoles()).thenReturn(this.roles);
 
 
     Mockito.lenient().when(this.userCrudService.saveNewEntity(any())).thenAnswer(inv -> {
@@ -85,12 +78,17 @@ public class UserResourceTest {
       return null;
     }).when(this.userCrudService).deleteEntityById(any());
 
-    Mockito.lenient().when(this.userCrudService.getUsersByRole(any())).thenAnswer(inv -> {
-      final String role = inv.getArgument(0);
-      return this.users.values()
-          .stream()
-          .filter(u -> u.getRoles().stream().anyMatch(r -> r.getDescriptor().equals(role)))
-          .collect(Collectors.toList());
+    Mockito.lenient().when(this.userCrudService.query(any())).thenAnswer(inv -> {
+      final Query<User> query = (Query<User>) inv.getArgument(0);
+      Collection<User> data = this.users.values();
+      if (query.doFilter()) {
+        final String role = query.getFilters().get("role").get(0);
+        data = this.users.values()
+            .stream()
+            .filter(u -> u.getRoles().stream().anyMatch(r -> r.equals(role)))
+            .collect(Collectors.toList());
+      }
+      return new QueryResult<>(inv.getArgument(0), data, data.size());
 
     });
 
@@ -118,9 +116,15 @@ public class UserResourceTest {
     u2.setPassword("testPassword");
     this.userResource.newUser(u2);
 
-    final List<User> usersFound = this.userResource.allUsers(null, null);
-    assertEquals(2, usersFound.size());
 
+
+    final MultivaluedHashMap<String, String> params = new MultivaluedHashMap<>();
+    final UriInfo uri = Mockito.mock(UriInfo.class);
+    Mockito.when(uri.getQueryParameters(true)).thenReturn(params);
+
+    final Collection<User> data = this.userResource.find(uri).getData();
+
+    assertEquals(2, data.size());
   }
 
   @Test
@@ -158,7 +162,7 @@ public class UserResourceTest {
 
   @Test
   public void testInvalidRoles() {
-    final User u = new User(null, "name", "pw", Arrays.asList(new Role("Unknown")));
+    final User u = new User(null, "name", "pw", Collections.singletonList("unknown"));
     assertThrows(BadRequestException.class, () -> this.userResource.newUser(u));
   }
 
@@ -167,30 +171,24 @@ public class UserResourceTest {
   @Test
   public void testUserByRole() {
 
-    this.roles.add(new Role("role1"));
-    this.roles.add(new Role("role2"));
-    this.roles.add(new Role("role3"));
 
     final User u1 = new User("testuser");
     u1.setPassword("password");
-    u1.setRoles(Arrays.asList(new Role("role1"), new Role("role2")));
+    u1.setRoles(Arrays.asList(Role.USER_NAME));
 
     final User u2 = new User("testuser2");
     u2.setPassword("password");
-    u2.setRoles(Arrays.asList(new Role("role1")));
+    u2.setRoles(Arrays.asList(Role.USER_NAME));
 
     this.userResource.newUser(u1);
     this.userResource.newUser(u2);
 
-    final List<User> role1Users = this.userResource.allUsers("role1", "");
-    assertEquals(2, role1Users.size());
+    final MultivaluedHashMap<String, String> roleparams = new MultivaluedHashMap<>();
+    roleparams.add("filter[role]", "user");
+    final UriInfo uri = Mockito.mock(UriInfo.class);
+    Mockito.when(uri.getQueryParameters(true)).thenReturn(roleparams);
 
-    final List<User> role2Users = this.userResource.allUsers("role2", "");
-    assertEquals(1, role2Users.size());
-
-    final List<User> role3Users = this.userResource.allUsers("role3", "");
-    assertEquals(0, role3Users.size());
-
+    assertEquals(2, this.userResource.find(uri).getData().size());
   }
 
   @Test
@@ -248,11 +246,10 @@ public class UserResourceTest {
 
     final String uid = newUser.getId();
 
-    final User update = new User(null, null, null, Arrays.asList(new Role("newrole")));
-    this.roles.add(new Role("newrole"));
+    final User update = new User(null, null, null, Arrays.asList(Role.USER_NAME));
     final User updatedUser = this.userResource.updateUser(uid, update);
 
-    assertTrue(updatedUser.getRoles().stream().anyMatch(r -> r.getDescriptor().equals("newrole")));
+    assertTrue(updatedUser.getRoles().stream().anyMatch(r -> r.equals(Role.USER_NAME)));
     assertEquals(newUser.getId(), updatedUser.getId());
     assertEquals(u1.getUsername(), updatedUser.getUsername());
     assertEquals(u1.getPassword(), updatedUser.getPassword());

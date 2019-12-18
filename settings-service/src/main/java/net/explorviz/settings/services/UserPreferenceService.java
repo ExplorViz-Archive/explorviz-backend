@@ -18,7 +18,7 @@ import org.slf4j.LoggerFactory;
 @Service
 public class UserPreferenceService {
 
-  private final static Logger LOGGER = LoggerFactory.getLogger(UserPreferenceService.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(UserPreferenceService.class);
 
   private final UserPreferenceRepository prefRepo;
   private final SettingsRepository settingRepo;
@@ -45,7 +45,9 @@ public class UserPreferenceService {
    * @param userId Id of the user
    */
   public List<UserPreference> getPreferencesForUser(final String userId) {
-    return this.prefRepo.findAll().stream().filter(c -> c.getUserId().equals(userId))
+    return this.prefRepo.findAll()
+        .stream()
+        .filter(c -> c.getUserId().equals(userId))
         .collect(Collectors.toList());
   }
 

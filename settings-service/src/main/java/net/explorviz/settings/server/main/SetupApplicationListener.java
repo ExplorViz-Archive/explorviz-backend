@@ -23,8 +23,6 @@ import org.glassfish.jersey.server.monitoring.RequestEventListener;
 @WebListener
 public class SetupApplicationListener implements ApplicationEventListener {
 
-  // private static final Logger LOGGER = LoggerFactory.getLogger(SetupApplicationListener.class);
-
   @Inject
   private SettingsRepository settingRepo;
 
@@ -65,7 +63,7 @@ public class SetupApplicationListener implements ApplicationEventListener {
     final String origin = "backend";
 
     // Workaround: Assign hardcoded ids
-    final List<Setting> defaults = new ArrayList<Setting>(Arrays.asList(
+    final List<Setting> defaults = new ArrayList<>(Arrays.asList(
         new FlagSetting("showFpsCounter", "Show FPS Counter",
             "\'Frames Per Second\' metrics in visualizations", origin, false),
         new FlagSetting("appVizTransparency", "Enable Transparent Components",
@@ -82,10 +80,12 @@ public class SetupApplicationListener implements ApplicationEventListener {
             5.0),
         new RangeSetting("appVizTransparencyIntensity",
             "Transparency Intensity in Application Visualization",
-            "Transparency effect intensity (\'Enable Transparent Components\' must be enabled)",
+            "Transparency effect intensity (\'Enable Transparent Components\' "
+                + "must be enabled)",
             origin, 0.1, 0.1, 0.5),
         new RangeSetting("appVizCurvyCommHeight", "Curviness of the Communication Lines",
-            "If greater 0.0, communication lines are rendered arc-shaped with set height (Straight lines: 0.0)",
+            "If greater 0.0, communication lines are rendered arc-shaped with set height"
+                + " (Straight lines: 0.0)",
             origin, 0.0, 0.0, 50.0)));
 
     defaults.stream().forEach(this.settingRepo::createOrOverride);

@@ -20,7 +20,7 @@ public final class KiekerAdapter {
    *
    * @return
    */
-  public synchronized static KiekerAdapter getInstance() {
+  public static synchronized KiekerAdapter getInstance() {
 
     if (KiekerAdapter.instance == null) {
       KiekerAdapter.instance = new KiekerAdapter();

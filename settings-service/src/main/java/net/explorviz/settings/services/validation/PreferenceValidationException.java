@@ -9,7 +9,9 @@ import net.explorviz.settings.model.UserPreference;
 @SuppressWarnings("serial")
 public class PreferenceValidationException extends Exception {
 
-  public PreferenceValidationException() {}
+  public PreferenceValidationException() {
+
+  }
 
   public PreferenceValidationException(final String arg0) {
     super(arg0);

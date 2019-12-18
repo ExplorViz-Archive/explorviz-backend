@@ -1,0 +1,149 @@
+# Start ExplorViz based on the current working directory for integration testing purposes. This
+# means:
+#   - All ports of the microservices are forwarded
+#   - The services don't use persistent volumes, all data is lost after the tests finished
+# Start with "./gradlew clean integrationTest"
+
+# Environment Variables are based on the
+# properties file of each service, e.g,
+# https://github.com/ExplorViz/explorviz-backend/blob/dev-1/user-service/src/main/resources/explorviz.properties
+
+# !!!!!!!!!!!!!!!!!!!!!!!!
+# ATTENTION: DO NOT USE depends_on, since the Gradle Docker Plugin will not 
+# remove depending containers.
+# !!!!!!!!!!!!!!!!!!!!!!!!
+
+version: "3.3"
+services:
+
+  ### ExplorViz Services ###
+
+  user-service:
+    build: ../user-service
+    container_name: explorviz-backend-user-service
+    environment:
+      - MONGO_HOST=mongo-user
+      - EXCHANGE_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+    networks:
+      - explorviz
+    ports:
+      - 8082:8082
+
+  settings-service:
+    build: ../settings-service
+    container_name: explorviz-backend-settings-service
+    environment:
+      - MONGO_HOST=mongo-settings
+      - EXCHANGE_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+    networks:
+      - explorviz
+    ports:
+      - 8087:8087
+
+  landscape-service:
+    build: ../landscape-service
+    container_name: explorviz-backend-landscape-service
+    environment:
+      - EXCHANGE_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+      - EXCHANGE_KAFKA_TOPIC_NAME=landscape-update
+    expose:
+      - "10135"
+    networks:
+      - explorviz
+    ports:
+      - 10135:10135
+
+  broadcast-service:
+    build: ../broadcast-service
+    container_name: explorviz-backend-broadcast-service
+    environment:
+      - EXCHANGE_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+      - EXCHANGE_KAFKA_TOPIC_NAME=landscape-update
+    networks:
+      - explorviz
+    ports:
+      - 8081:8081
+
+  history-service:
+    build: ../history-service
+    container_name: explorviz-backend-history-service
+    environment:
+      - MONGO_HOST=mongo-history
+      - EXCHANGE_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+      - EXCHANGE_KAFKA_TOPIC_NAME=landscape-update
+    networks:
+      - explorviz
+    ports:
+      - 8086:8086
+
+  analysis-service:
+    build: ../analysis-service
+    container_name: explorviz-backend-analysis-service
+    ports:
+      - "10133:10133"
+    networks:
+      - explorviz
+
+  discovery-service:
+    build: ../discovery-service
+    container_name: explorviz-backend-discovery-service
+    ports:
+      - "8083:8083"
+    networks:
+      - explorviz
+
+  ### Software Stack ###
+
+  zookeeper:
+    container_name: zookeeper
+    image: wurstmeister/zookeeper
+    expose:
+      - "2181"
+    networks:
+      - explorviz
+
+  kafka:
+    container_name: explorviz-kafka
+    image: wurstmeister/kafka
+    expose:
+      - "9092"
+    environment:
+      KAFKA_ADVERTISED_HOST_NAME: kafka
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+    networks:
+      - explorviz
+
+  mongo-user:
+    image: mongo
+    container_name: explorviz-backend-user-mongo
+    command: mongod --port 27017
+    expose:
+      - "27017"
+    ports:
+      - 27017:27017
+    networks:
+      - explorviz
+
+  mongo-history:
+    image: mongo
+    container_name: explorviz-backend-landscape-mongo
+    command: mongod --port 27018
+    expose:
+      - "27018"
+    ports:
+      - 27018:27018
+    networks:
+      - explorviz
+
+  mongo-settings:
+    image: mongo
+    container_name: explorviz-backend-settings-mongo
+    command: mongod --port 27019
+    networks:
+      - explorviz
+    ports:
+      - 27019:27019
+
+networks:
+  explorviz:
+    driver: bridge

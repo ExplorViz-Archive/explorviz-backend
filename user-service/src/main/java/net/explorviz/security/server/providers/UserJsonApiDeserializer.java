@@ -5,26 +5,20 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.List;
 import javax.inject.Inject;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.ext.MessageBodyReader;
-import net.explorviz.shared.security.model.User;
-import net.explorviz.shared.security.model.roles.Role;
-import xyz.morphia.Datastore;
+import net.explorviz.security.user.User;
 
 public class UserJsonApiDeserializer implements MessageBodyReader<User> {
 
   private final ResourceConverter converter;
-  private final Datastore datastore;
 
   @Inject
-  public UserJsonApiDeserializer(final ResourceConverter converter, final Datastore datastore) {
+  public UserJsonApiDeserializer(final ResourceConverter converter) {
     this.converter = converter;
-    this.datastore = datastore;
   }
 
   @Override
@@ -41,20 +35,6 @@ public class UserJsonApiDeserializer implements MessageBodyReader<User> {
       throws IOException, WebApplicationException {
 
     final User user = this.converter.readDocument(entityStream, type).get();
-
-    // enrich user with role based on the passed ID
-    // See https://github.com/ExplorViz/explorviz-frontend/issues/37
-    final List<Role> obtainedRolelist = new ArrayList<>();
-
-    for (final Role roleWithoutContent : user.getRoles()) {
-      final Role dbRole = this.datastore.get(Role.class, roleWithoutContent.getDescriptor());
-
-      if (dbRole != null) {
-        obtainedRolelist.add(dbRole);
-      }
-    }
-    user.setRoles(obtainedRolelist);
-
     return user;
   }
 

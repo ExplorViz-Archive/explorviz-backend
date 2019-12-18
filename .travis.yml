@@ -1,77 +1,95 @@
 language: java
 
-env:
-  global:
-    - MONGODB_VERSION=4.0.6
-
 services:
-  - mongodb
   - docker
-  - redis-server
 
 jobs:
   fast_finish: true
   allow_failures:
-    - jdk: oraclejdk8
+    - jdk: oraclejdk11
   include:
-    - jdk: openjdk8
-    - jdk: oraclejdk8
-    
+    - stage: test
+      name: "Unit Testing"
+      jdk: openjdk11
+      script: ./gradlew clean test
+
+    - stage: test
+      name: "Unit Testing (oraclejdk11)"
+      jdk: oraclejdk11
+      script: ./gradlew clean test
+
+    - stage: test
+      name: "Integration Testing"
+      jdk: openjdk11
+      script: ./gradlew clean integrationTest
+
+    - stage: test
+      name: "API Testing"
+      jdk: openjdk11
+      script: ./gradlew clean apiTest
+
+    - stage: test
+      name: "Source Code Analysis"
+      jdk: openjdk11
+      script: ./gradlew checkstyle pmd spotbugs
+
+    - stage: snapshot
+      name: "Snapshot Publishing"
+      if: (type = push) AND ((branch = dev-1) OR (branch = master))
+      jdk: openjdk11
+      script: ./gradlew clean landscape-service:landscape-model:uploadArchives settings-service:settings-model:uploadArchives user-service:user-model:uploadArchives
+
     - stage: deploy
       name: "Docker Image: Analysis Service"
       if: (type = push) AND ((branch = dev-1) OR (branch = master))
-      jdk: openjdk8
+      jdk: openjdk11
       script: cd analysis-service && ../.travis/docker_push.sh
-      
+
     - stage: deploy
       name: "Docker Image: User Service"
       if: (type = push) AND ((branch = dev-1) OR (branch = master))
-      jdk: openjdk8
+      jdk: openjdk11
       script: cd user-service && ../.travis/docker_push.sh
-      
+
     - stage: deploy
       name: "Docker Image: Discovery Service"
       if: (type = push) AND ((branch = dev-1) OR (branch = master))
-      jdk: openjdk8
+      jdk: openjdk11
       script: cd discovery-service && ../.travis/docker_push.sh
-      
+
     - stage: deploy
       name: "Docker Image: Landscape Service"
       if: (type = push) AND ((branch = dev-1) OR (branch = master))
-      jdk: openjdk8
+      jdk: openjdk11
       script: cd landscape-service && ../.travis/docker_push.sh
 
     - stage: deploy
       name: "Docker Image: History Service"
       if: (type = push) AND ((branch = dev-1) OR (branch = master))
-      jdk: openjdk8
+      jdk: openjdk11
       script: cd history-service && ../.travis/docker_push.sh
-    
+
     - stage: deploy
       name: "Docker Image: Broadcast Service"
       if: (type = push) AND ((branch = dev-1) OR (branch = master))
-      jdk: openjdk8
+      jdk: openjdk11
       script: cd broadcast-service && ../.travis/docker_push.sh
 
     - stage: deploy
       name: "Docker Image: Settings Service"
       if: (type = push) AND ((branch = dev-1) OR (branch = master))
-      jdk: openjdk8
+      jdk: openjdk11
       script: cd settings-service && ../.travis/docker_push.sh
-    
+
     - stage: documentation
       name: "Publish documentation"
       if: (type = push) AND (branch = master)
       script: chmod +x .travis/javadoc-push.sh && .travis/javadoc-push.sh
-    
+
 before_script:
   - chmod +x .travis/docker_push.sh
 
-before_install:
-  - chmod +x .travis/mongoDB_setup.sh
-  - .travis/mongoDB_setup.sh
-  
 branches:
   only:
-  - master
-  - dev-1
+    - master
+    - dev-1

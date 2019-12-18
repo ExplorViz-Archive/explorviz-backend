@@ -3,6 +3,16 @@ package net.explorviz.discovery.server.resources;
 import com.github.jasminb.jsonapi.JSONAPIDocument;
 import com.github.jasminb.jsonapi.ResourceConverter;
 import com.github.jasminb.jsonapi.exceptions.DocumentSerializationException;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.security.SecurityScheme;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -32,7 +42,9 @@ import net.explorviz.shared.discovery.exceptions.agent.AgentNoConnectionExceptio
 import net.explorviz.shared.discovery.exceptions.agent.AgentNotFoundException;
 import net.explorviz.shared.discovery.exceptions.mapper.ResponseUtil;
 import net.explorviz.shared.discovery.model.Agent;
+import net.explorviz.shared.discovery.model.Procezz;
 import net.explorviz.shared.discovery.services.ClientService;
+import net.explorviz.shared.security.filters.Secure;
 import org.glassfish.jersey.media.sse.EventListener;
 import org.glassfish.jersey.media.sse.EventSource;
 import org.glassfish.jersey.media.sse.InboundEvent;
@@ -40,6 +52,8 @@ import org.glassfish.jersey.media.sse.SseFeature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@SecurityScheme(type = SecuritySchemeType.HTTP, name = "token", scheme = "bearer",
+    bearerFormat = "JWT")
 @Path("v1/agents")
 public class AgentResource {
 
@@ -64,18 +78,32 @@ public class AgentResource {
     this.clientService.registerProviderWriter(new JsonApiProvider<>(converter));
   }
 
+  @Tag(name = "Agent Broadcast")
+  @Operation(description = "Endpoint that clients can use to register for agent updates.",
+      summary = "Register for agent updates")
+  @ApiResponse(description = "Updated agent objects with procezzes of the discovery agents.",
+      content = @Content(mediaType = MediaType.SERVER_SENT_EVENTS,
+          schema = @Schema(implementation = Agent.class)))
+  @SecurityRequirement(name = "token")
+  @Secure
+  @PermitAll
   @Path("/broadcast")
   public AgentBroadcastSubResource getAgentBroadcastResource(@Context final Sse sse,
       @Context final AgentBroadcastSubResource agentBroadcastSubResource) {
-
-    // curl -v -X GET http://localhost:8084/v1/agents/broadcast/ -H
-    // "Content-Type: text/event-stream"'
-
     return agentBroadcastSubResource;
   }
 
+  @Operation(description = "Endpoint that clients can use to obtain all procezzes for an agent id.",
+      summary = "Get procezzes for agent id.")
+  @ApiResponse(description = "List of procezzes for the passed agent id.",
+      content = @Content(mediaType = MediaType.SERVER_SENT_EVENTS,
+          schema = @Schema(implementation = Procezz.class)))
+  @SecurityRequirement(name = "token")
+  @Secure
+  @PermitAll
   @Path("{id}/procezzes")
-  public ProcezzResource getProcezzResource(@PathParam("id") final String agentID)
+  public ProcezzResource getProcezzResource(
+      @Parameter(description = "Id of the agent.") @PathParam("id") final String agentID)
       throws AgentNotFoundException {
 
     final Optional<Agent> agentOptional = this.agentRepository.lookupAgentById(agentID);
@@ -89,9 +117,17 @@ public class AgentResource {
 
   }
 
+  @Operation(
+      description = "Endpoint that discovery agents can use to register, so that the frontend will get their data.",
+      summary = "Register discovery agent.")
+  @ApiResponse(description = "List of procezzes for the passed agent id.",
+      content = @Content(mediaType = MediaType.SERVER_SENT_EVENTS,
+          schema = @Schema(implementation = Procezz.class)))
+
+  @RequestBody(description = "TODO",
+      content = @Content(schema = @Schema(implementation = Agent.class)))
   @POST
   @Consumes(MEDIA_TYPE)
-  @PermitAll
   public Agent registerAgent(final Agent newAgent) throws DocumentSerializationException {
 
     // Attention, registration of MessageBodyReader implementation (JsonApiProvier) is mandatory
@@ -121,11 +157,19 @@ public class AgentResource {
     return this.agentRepository.registerAgent(newAgent);
   }
 
+  @Operation(summary = "Update an agent")
+  @ApiResponse(responseCode = "422", description = "No agent with the given id exists.")
+  @ApiResponse(responseCode = "200",
+      description = "Update successful, response contains the updated agent.",
+      content = @Content(schema = @Schema(implementation = Agent.class)))
+  @RequestBody(description = "TODO",
+      content = @Content(schema = @Schema(implementation = Agent.class)))
   @PATCH
   @Path("{id}")
   @Consumes(MEDIA_TYPE)
-  public Agent patchAgent(@PathParam("id") final String agentID, final Agent agent)
-      throws AgentInternalErrorException, AgentNoConnectionException {
+  public Agent patchAgent(
+      @Parameter(description = "Id of th agent.") @PathParam("id") final String agentID,
+      final Agent agent) throws AgentInternalErrorException, AgentNoConnectionException {
 
     final Optional<Agent> agentOptional = this.agentRepository.lookupAgentById(agentID);
 
@@ -145,6 +189,14 @@ public class AgentResource {
     return this.clientService.doAgentPatchRequest(agent, url);
   }
 
+  @Operation(summary = "Update an agent")
+  @ApiResponse(responseCode = "422", description = "No agent with the given id exists.")
+  @ApiResponse(responseCode = "200",
+      description = "Update successful, response contains the updated agent.",
+      content = @Content(schema = @Schema(implementation = Agent.class)))
+  @RequestBody(description = "TODO",
+      content = @Content(schema = @Schema(implementation = Agent.class)))
+  @SecurityRequirement(name = "token")
   @GET
   @Produces(MEDIA_TYPE)
   public Response forwardAgentListRequest() throws DocumentSerializationException {

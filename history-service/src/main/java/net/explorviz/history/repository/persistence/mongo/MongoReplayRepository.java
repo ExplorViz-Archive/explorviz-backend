@@ -1,13 +1,12 @@
 package net.explorviz.history.repository.persistence.mongo;
 
 import com.github.jasminb.jsonapi.exceptions.DocumentSerializationException;
-import java.util.List;
 import java.util.Optional;
 import javax.inject.Inject;
 import javax.ws.rs.InternalServerErrorException;
 import net.explorviz.history.repository.persistence.ReplayRepository;
-import net.explorviz.shared.landscape.model.landscape.Landscape;
-import net.explorviz.shared.landscape.model.store.Timestamp;
+import net.explorviz.landscape.model.landscape.Landscape;
+import net.explorviz.landscape.model.store.Timestamp;
 
 /**
  * Stores and retrieves landscapes from a MongoDb instance used for replay landscapes. MongoDb
@@ -86,11 +85,6 @@ public class MongoReplayRepository implements ReplayRepository<Landscape> {
   @Override
   public void clear() {
     this.repo.clear();
-  }
-
-  @Override
-  public List<Timestamp> getAllTimestamps() {
-    return this.repo.getAllTimestamps();
   }
 
 

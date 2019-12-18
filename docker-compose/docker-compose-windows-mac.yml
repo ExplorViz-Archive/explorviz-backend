@@ -3,10 +3,13 @@ version: "3.2"
 services:
 
   reverse-proxy:
-    image: explorviz/reverse-proxy:macos-099f182ddf8bcf5580beb8553c2b35f3bfcfe32f
-    container_name: explorviz-reverse-proxy
+    image: "traefik:v2.0.1"
+    container_name: "explorviz-reverse-proxy"
     ports:
-      - 8080:8080
+      - "8080:8080"
+    volumes:
+      - "./traefik/traefik-static.toml:/etc/traefik/traefik.toml"
+      - "./traefik/traefik-dynamic-mac-windows.toml:/etc/traefik/traefik-dynamic.toml"
 
   mongo-auth:
     image: mongo
@@ -36,15 +39,6 @@ services:
     volumes:
       - explorviz-settings-mongo-data:/data/db
       - explorviz-settings-mongo-configdb:/data/configdb 
-    
-  ids-redis:
-    image: redis
-    container_name: explorviz-ids-redis
-    command: ["redis-server", "--appendonly", "yes"]
-    ports:
-        - 6379:6379
-    volumes:
-        - explorviz-ids-redis:/data
 
   zookeeper:
     container_name: zookeeper
@@ -64,11 +58,17 @@ services:
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
       
+  explorviz-swagger-ui:
+    image: swaggerapi/swagger-ui
+    ports:
+      - 8001:8080
+    env_file:
+      - apis.env
+
 volumes:
   explorviz-auth-mongo-data:
   explorviz-auth-mongo-configdb:
   explorviz-landscape-mongo-data:
   explorviz-landscape-mongo-configdb:
-  explorviz-ids-redis:
   explorviz-settings-mongo-data:
   explorviz-settings-mongo-configdb:

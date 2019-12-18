@@ -6,8 +6,6 @@ import com.mongodb.MongoException;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.result.DeleteResult;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
@@ -15,9 +13,9 @@ import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.InternalServerErrorException;
 import javax.ws.rs.core.Response;
 import net.explorviz.history.repository.persistence.ReplayRepository;
+import net.explorviz.landscape.model.landscape.Landscape;
+import net.explorviz.landscape.model.store.Timestamp;
 import net.explorviz.shared.config.annotations.Config;
-import net.explorviz.shared.landscape.model.landscape.Landscape;
-import net.explorviz.shared.landscape.model.store.Timestamp;
 import org.bson.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -77,7 +75,9 @@ public class MongoReplayJsonApiRepository implements ReplayRepository<String> {
     }
     if (LOGGER.isInfoEnabled()) {
       LOGGER.info(String.format("Saved landscape {timestamp: %d, id: %s, totalRequests: %d}",
-          timestamp, replayLandscape.getId(), totalRequests));
+          timestamp,
+          replayLandscape.getId(),
+          totalRequests));
     }
   }
 
@@ -152,7 +152,8 @@ public class MongoReplayJsonApiRepository implements ReplayRepository<String> {
     // TODO: Replays
     if (LOGGER.isInfoEnabled()) {
       LOGGER.info(String.format("Cleaned %d landscape and %d replay objects",
-          landsapeResult.getDeletedCount(), replayResult.getDeletedCount()));
+          landsapeResult.getDeletedCount(),
+          replayResult.getDeletedCount()));
     }
   }
 
@@ -164,23 +165,6 @@ public class MongoReplayJsonApiRepository implements ReplayRepository<String> {
     replayCollection.deleteMany(new Document());
   }
 
-  @Override
-  public List<Timestamp> getAllTimestamps() {
-    final MongoCollection<Document> landscapeCollection = this.mongoHelper.getReplayCollection();
 
-    final FindIterable<Document> documents = landscapeCollection.find();
-
-    final List<Timestamp> resultList = new ArrayList<>();
-
-    for (final Document doc : documents) {
-      final String id = String.valueOf(doc.get(MongoHelper.FIELD_ID));
-      final long timestamp = (long) doc.get(MongoHelper.FIELD_TIMESTAMP);
-      final int totalRequests = (int) doc.get(MongoHelper.FIELD_REQUESTS);
-
-      resultList.add(new Timestamp(id, timestamp, totalRequests)); // NOPMD
-    }
-
-    return resultList;
-  }
 
 }

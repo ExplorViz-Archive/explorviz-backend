@@ -1,8 +1,9 @@
 plugins {
 	id "application"
 	id "org.sonarqube" version "2.7"
-	id "com.github.johnrengelman.shadow" version "4.0.4"
+	id "com.github.johnrengelman.shadow" version "5.1.0"
 	id "com.github.spotbugs" version "1.6.10"
+	id "maven"
 }
 
 // Force new Dependencies 
@@ -10,8 +11,19 @@ configurations.all {
     resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
 }
 
+dockerCompose {
+  landscapeIntegrationTests {
+    buildBeforeUp = true
+    useComposeFiles = ['docker-compose/docker-compose-integration-test.yml']
+    isRequiredBy(this.tasks.getByName('integrationTest'))
+    removeContainers = true
+  }
+}
+
 repositories {
-	maven {url 'https://oss.sonatype.org/content/repositories/snapshots'}
+	maven {
+		url "https://oss.sonatype.org/content/repositories/snapshots"
+	}
 	mavenLocal()
 }
 
@@ -19,32 +31,30 @@ dependencies {
   // Any .jar in libs
   implementation fileTree(dir: 'libs', include: '*.jar')
   
+  implementation project(':landscape-service:landscape-model')
+  implementation group: 'org.glassfish.hk2', name: 'hk2', version: '2.6.0'
+  implementation group: 'com.github.jasminb', name: 'jsonapi-converter', version:'0.8'
+  
   // ExplorViz Shared Dependencies
   if(useRemoteSharedProject.toBoolean()) {
-    implementation "com.github.explorviz.explorviz-backend-shared:landscape-model:${sharedProjectVersion}"
-    implementation "com.github.explorviz.explorviz-backend-shared:config-injection:${sharedProjectVersion}"
-    implementation "com.github.explorviz.explorviz-backend-shared:security:${sharedProjectVersion}"
-    implementation "com.github.explorviz.explorviz-backend-shared:exception-handling:${sharedProjectVersion}"
-    implementation "com.github.explorviz.explorviz-backend-shared:common-concerns:${sharedProjectVersion}" 
+  	implementation group: 'net.explorviz', name: 'config-injection', version: "${sharedProjectVersion}"
+  	implementation group: 'net.explorviz', name: 'security', version: "${sharedProjectVersion}"
+  	implementation group: 'net.explorviz', name: 'exception-handling', version: "${sharedProjectVersion}"
+  	implementation group: 'net.explorviz', name: 'common-concerns', version: "${sharedProjectVersion}"
   }
-  else {    
-    implementation project(':landscape-model')
+  else {        
     implementation project(':config-injection')
-   	implementation project(':security')
-   	implementation project(':exception-handling')
-   	implementation project(':common-concerns')
+    implementation project('::security')
+    implementation project(':exception-handling')
+    implementation project(':common-concerns')
   }
-  
-  // SSE context for injection
-  implementation group: 'org.glassfish.jersey.media', name: 'jersey-media-sse', version: '2.27'
-  
-   
-  // multipart/form-data type
-  implementation group: 'org.glassfish.jersey.media', name:'jersey-media-multipart', version:'2.26'
-  
-  
-  
+
+  implementation project(':landscape-service:landscape-model')
+  implementation group: 'com.github.jasminb', name: 'jsonapi-converter', version:'0.8'
 }
+
+// disable api tests, since there are none
+apiTest.enabled = false
 
 assemble.dependsOn shadowJar
 jar.enabled = false
@@ -62,8 +72,17 @@ application {
 }
 
 shadowJar {
-  archiveName = "explorviz-${project.name}.${extension}"
+  baseName = "explorviz-${project.name}"
+  classifier = null
 }
+
+// BEGIN Jitpack publishing
+artifacts {
+  archives shadowJar
+}
+
+archivesBaseName = shadowJar.baseName
+// END Jitpack publishing
 
 // Javadoc settings
 javadoc {
@@ -96,11 +115,6 @@ task spotbugs {
   
   dependsOn 'spotbugsMain'
   dependsOn 'spotbugsTest'
-}
-
-// Jitpack publishing
-artifacts {
-  archives shadowJar
 }
 
 // START environment task

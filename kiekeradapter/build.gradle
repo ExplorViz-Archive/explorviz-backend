@@ -1,6 +1,6 @@
 plugins {
-	id 'eclipse'
-	id 'maven'
+	id "eclipse"
+	id "maven"
 	id "com.github.spotbugs" version "1.6.10"
 }
 
@@ -20,11 +20,15 @@ dependencies {
 	implementation group: 'net.kieker-monitoring', name: 'kieker', version: '1.14-SNAPSHOT'
 }
 
+// disable integration tests, since there are none
+integrationTest.enabled = false
+
+// disable api tests, since there are none
+apiTest.enabled = false
+
 configurations.all {
     resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
 }
-
-// ##### BEGIN Jitpack section #####
 
 artifacts {
 	archives file: file('libs/explorviz-monitoring.jar'), name: 'explorviz-monitoring', type: 'jar'
@@ -32,7 +36,7 @@ artifacts {
 }
 
 jar {
-	baseName = project.name
+	baseName = "explorviz-${project.name}"
 }
 
 install {
@@ -47,8 +51,6 @@ install {
     }
   }
 }
-
-// ##### END Jitpack section #####
 
 spotbugs {
   excludeFilter = file("../conf/spotbugs-exclude-filter.xml")

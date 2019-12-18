@@ -2,7 +2,6 @@ package net.explorviz.landscape.injection;
 
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import java.util.Properties;
 import javax.inject.Inject;
 import net.explorviz.landscape.server.main.DependencyInjectionBinder;
@@ -17,7 +16,6 @@ import org.glassfish.hk2.api.ServiceLocator;
 import org.glassfish.hk2.utilities.ServiceLocatorUtilities;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -25,7 +23,6 @@ import org.junit.jupiter.api.Test;
  *
  * @see DependencyInjectionBinder
  */
-@Disabled
 public class DefaultGeneratorInjectionTest {
 
   @Inject
@@ -40,8 +37,6 @@ public class DefaultGeneratorInjectionTest {
   @BeforeEach
   public void setUp() {
     final Properties props = PropertyHelper.getLoadedProperties();
-    props.remove("service.generator.id.redis");
-    props.put("service.generator.id.redis", false);
 
     this.updateConfigInjectionProperties(props);
 
@@ -67,8 +62,10 @@ public class DefaultGeneratorInjectionTest {
     final String failMessage = "Default service generator injection failed. "
         + "Injected wrong type, expected: '%s', but was '%s'";
 
-    assertTrue(this.serviceIdGen instanceof UuidServiceIdGenerator, String.format(failMessage,
-        UuidServiceIdGenerator.class.getName(), this.serviceIdGen.getClass().getName()));
+    assertTrue(this.serviceIdGen instanceof UuidServiceIdGenerator,
+        String.format(failMessage,
+            UuidServiceIdGenerator.class.getName(),
+            this.serviceIdGen.getClass().getName()));
   }
 
   /**

@@ -1,7 +1,8 @@
 plugins {
 	id "application"
-	id "com.github.johnrengelman.shadow" version "4.0.4"
+	id "com.github.johnrengelman.shadow" version "5.1.0"
 	id "com.github.spotbugs" version "1.6.10"
+	id "maven"
 }
 
 // Force new Dependencies 
@@ -9,27 +10,79 @@ configurations.all {
   resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
 }
 
+dockerCompose {
+  settingsApiTests {
+    buildBeforeUp = true
+    useComposeFiles = ['docker-compose/docker-compose-api-test.yml']
+    startedServices = ['reverse-proxy', 'settings-service', 'user-service', 'mongo-settings', 'mongo-user', 'zookeeper', 'kafka']
+    isRequiredBy(this.tasks.getByName('apiTest'))
+    projectName = 'explorviz-api-test'
+  }
+}
+
+// prior to api testing, check if service entry point is reachable 
+// up and running (!= Docker container is running)
+apiTest.doFirst {
+	long start = System.currentTimeMillis()
+    long maxWait = 60000
+    long initialWait = 15000
+    long retryWait = 5000
+
+    boolean healthy = false
+
+    println("Waiting for application to become healthy... (initial wait = ${initialWait}ms)")
+    sleep(initialWait)
+
+    while (System.currentTimeMillis() - start < maxWait && !healthy) {
+    
+        try {
+            def req = new URL("http://localhost:8090/v1/settings/entry").openConnection()
+            healthy = req.getResponseCode() == 200
+        } catch (Exception e) {}
+        
+        println("Waiting for application to become healthy... (retrying in ${retryWait}ms)")
+        sleep(retryWait)
+    }
+
+    if (healthy) {
+        println "Healthcheck SUCCESSFUL after ${System.currentTimeMillis() - start}ms"
+    } else {
+        throw new RuntimeException('Healthcheck FAILED')
+    }
+}
+
 dependencies {
 		
 	// MongoDB ORM
 	implementation 'xyz.morphia.morphia:core:1.4.0'
-	implementation project(':settings-service:settings-service-model')
 	
+	// Swagger
+  	implementation group: 'io.swagger.core.v3', name: 'swagger-core', version: '2.0.8'
+  	implementation group: 'io.swagger.core.v3', name: 'swagger-jaxrs2', version: '2.0.8' 
+	
+	implementation project(':settings-service:settings-model')
+	implementation project(':user-service:user-model')
+
 	// ExplorViz Shared Dependencies
 	if(useRemoteSharedProject.toBoolean()) {
-    	implementation "com.github.explorviz.explorviz-backend-shared:user:${sharedProjectVersion}"
-    	implementation "com.github.explorviz.explorviz-backend-shared:config-injection:${sharedProjectVersion}"
-		implementation "com.github.explorviz.explorviz-backend-shared:security:${sharedProjectVersion}"
-		implementation "com.github.explorviz.explorviz-backend-shared:exception-handling:${sharedProjectVersion}"
-		implementation "com.github.explorviz.explorviz-backend-shared:common-concerns:${sharedProjectVersion}" 
+		implementation group: 'net.explorviz', name: 'config-injection', version: "${sharedProjectVersion}"
+	  	implementation group: 'net.explorviz', name: 'security', version: "${sharedProjectVersion}"
+	  	implementation group: 'net.explorviz', name: 'exception-handling', version: "${sharedProjectVersion}"
+	  	implementation group: 'net.explorviz', name: 'common-concerns', version: "${sharedProjectVersion}"
+	  	implementation group: 'net.explorviz', name: 'query', version: "${sharedProjectVersion}"
   	}
   	else {
-	    implementation project(':user')
     	implementation project(':config-injection')
     	implementation project(':security')
     	implementation project(':exception-handling')
     	implementation project(':common-concerns')
+    	implementation project(':query')
   }
+
+
+  apiTestImplementation project(':user-service')    // For login
+  apiTestImplementation 'io.rest-assured:rest-assured:4.0.0'
+
 }
 
 assemble.dependsOn shadowJar
@@ -43,13 +96,13 @@ jar {
   }
 }
 
-
 application {
     mainClassName = 'net.explorviz.settings.server.main.Main'
 }
 
 shadowJar {
-  archiveName = "explorviz-${project.name}.${extension}"
+  baseName = "explorviz-${project.name}"
+  classifier = null
 }
 
 spotbugs {
@@ -76,8 +129,4 @@ task spotbugs {
   
   dependsOn 'spotbugsMain'
   dependsOn 'spotbugsTest'
-}
-
-artifacts {
-  archives shadowJar
 }

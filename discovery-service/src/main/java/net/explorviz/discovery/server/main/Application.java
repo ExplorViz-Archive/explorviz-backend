@@ -49,5 +49,8 @@ class Application extends ResourceConfig {
     // easy (de-)serializing models for HTTP Requests
     this.register(JsonApiProvider.class);
     this.register(JsonApiListProvider.class);
+
+    // swagger
+    this.packages("io.swagger.v3.jaxrs2.integration.resources");
   }
 }

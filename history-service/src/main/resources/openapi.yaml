@@ -1,0 +1,9 @@
+resourcePackages: # packages to consider
+   - net.explorviz.history.server.resources
+prettyPrint: true
+cacheTTL: 0
+openAPI:
+   info:
+      version: '1.4'
+      title: ExplorViz History Service
+      description: This service makes previously processed landscapes and replays accessible.
