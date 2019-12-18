@@ -38,7 +38,7 @@ Zirkelbach, Christian, Krause, Alexander and Hasselbring, Wilhelm (2019): Modula
 * The documentation for endpoints of services (SwaggerUI) is available [here](http://localhost:8001), once all services are started
 
 ## Eclipse Setup
-1. Download the latest [Eclipse IDE for Java Developers](http://www.eclipse.org/downloads/eclipse-packages/) (ExplorViz requires JDK 8 compliance)
+1. Download the latest [Eclipse IDE for Java Developers](http://www.eclipse.org/downloads/eclipse-packages/) (ExplorViz requires JDK 11 compliance)
 2. Follow the [CAU-SE guidelines for quality assurance](https://github.com/cau-se/code-quality-configurations/tree/master/java) (Only necessary if you contribute code)
 
 ## Setup Development (Docker and docker-compose are required)
