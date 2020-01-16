@@ -60,6 +60,7 @@ sourceSets {
 // END aggregated Javadoc in multiproject Gradle build
 subprojects {
 
+  ext.travisBranch = String.valueOf(System.getenv('TRAVIS_BRANCH'));
 
   // BEGIN QA Tooling for subprojects
   
