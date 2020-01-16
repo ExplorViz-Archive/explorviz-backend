@@ -35,7 +35,7 @@ jobs:
 
     - stage: snapshot
       name: "Snapshot Publishing"
-      if: (type = push) AND ((branch = dev-1) OR (branch = master))
+      if: (type = push) AND ((branch = dev-1) OR (branch = master) OR (tag IS present))
       jdk: openjdk11
       script: ./gradlew clean landscape-service:landscape-model:uploadArchives settings-service:settings-model:uploadArchives user-service:user-model:uploadArchives
 

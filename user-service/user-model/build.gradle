@@ -35,7 +35,7 @@ uploadArchives {
 			repository(url: "https://oss.sonatype.org/content/repositories/snapshots") {
 				authentication(userName: user, password: pw)
 			}
-			pom.version = "dev-1-SNAPSHOT"
+			pom.version = "${travisBranch}-SNAPSHOT"
 			pom.artifactId = project.name
 			pom.groupId = "net.explorviz"
 		}
