@@ -1,8 +1,8 @@
 version: "3.2"
 services:
 
-   reverse-proxy:
-    image: "traefik:v2.0.1"
+  reverse-proxy:
+    image: "traefik:v2.1"
     container_name: "explorviz-reverse-proxy"
     ports:
       - "8080:8080"
@@ -10,47 +10,47 @@ services:
       - "./traefik/traefik-static.toml:/etc/traefik/traefik.toml"
       - "./traefik/traefik-dynamic-linux.toml:/etc/traefik/traefik-dynamic.toml"
     network_mode: "host"
-    
-   mongo-auth:
+
+  mongo-auth:
     image: mongo
     container_name: explorviz-auth-mongo
     ports:
-       - 27017:27017
+      - 27017:27017
     volumes:
-       - explorviz-auth-mongo-data:/data/db
-       - explorviz-auth-mongo-configdb:/data/configdb
+      - explorviz-auth-mongo-data:/data/db
+      - explorviz-auth-mongo-configdb:/data/configdb
     network_mode: "host"
 
-   mongo-landscape:
+  mongo-landscape:
     image: mongo
     container_name: explorviz-landscape-mongo
     command: mongod --port 27018
     ports:
-       - 27018:27018
+      - 27018:27018
     volumes:
-       - explorviz-landscape-mongo-data:/data/db
-       - explorviz-landscape-mongo-configdb:/data/configdb
+      - explorviz-landscape-mongo-data:/data/db
+      - explorviz-landscape-mongo-configdb:/data/configdb
     network_mode: "host"
-    
-   mongo-settings:
-     image: mongo
-     container_name: explorviz-settings-mongo
-     command: mongod --port 27019
-     ports:
-     - 27019:27019
-     volumes:
-     - explorviz-settings-mongo-data:/data/db
-     - explorviz-settings-mongo-configdb:/data/configdb
-     network_mode: "host"
 
-   zookeeper:
-    container_name: zookeeper
+  mongo-settings:
+    image: mongo
+    container_name: explorviz-settings-mongo
+    command: mongod --port 27019
+    ports:
+      - 27019:27019
+    volumes:
+      - explorviz-settings-mongo-data:/data/db
+      - explorviz-settings-mongo-configdb:/data/configdb
+    network_mode: "host"
+
+  zookeeper:
+    container_name: explorviz-zookeeper
     image: wurstmeister/zookeeper
     ports:
       - "2181:2181"
 
-   kafka:
-    container_name: kafka
+  kafka:
+    container_name: explorviz-kafka
     image: wurstmeister/kafka
     depends_on:
       - zookeeper
@@ -61,14 +61,13 @@ services:
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
 
-   explorviz-swagger-ui:
-    container_name: swagger-ui
+  swagger-ui:
+    container_name: explorviz-swagger-ui
     image: swaggerapi/swagger-ui
     ports:
       - 8001:8080
     env_file:
       - apis.env
-
 
 volumes:
   explorviz-auth-mongo-data:
