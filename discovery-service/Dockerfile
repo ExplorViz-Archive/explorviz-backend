@@ -1,7 +1,9 @@
-FROM openjdk:11-jre-slim
+FROM adoptopenjdk/openjdk11:alpine-jre
 
-RUN mkdir /explorviz
-WORKDIR /explorviz
+RUN adduser -D -H explorviz
+
+WORKDIR /opt/explorviz
 COPY build/libs/explorviz-discovery-service.jar .
 
-CMD java -jar explorviz-discovery-service.jar
+USER explorviz
+CMD ["java", "-jar", "explorviz-discovery-service.jar"]
