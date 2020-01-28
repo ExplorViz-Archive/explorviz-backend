@@ -46,8 +46,6 @@ services:
     environment:
       - EXCHANGE_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
       - EXCHANGE_KAFKA_TOPIC_NAME=landscape-update
-    expose:
-      - "10135"
     networks:
       - explorviz
     ports:
@@ -95,8 +93,8 @@ services:
   ### Software Stack ###
 
   zookeeper:
-    container_name: zookeeper
-    image: wurstmeister/zookeeper
+    container_name: explorviz-zookeeper
+    image: zookeeper:3.5
     expose:
       - "2181"
     networks:
@@ -117,8 +115,6 @@ services:
     image: mongo
     container_name: explorviz-backend-user-mongo
     command: mongod --port 27017
-    expose:
-      - "27017"
     ports:
       - 27017:27017
     networks:
@@ -128,8 +124,6 @@ services:
     image: mongo
     container_name: explorviz-backend-landscape-mongo
     command: mongod --port 27018
-    expose:
-      - "27018"
     ports:
       - 27018:27018
     networks:

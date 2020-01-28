@@ -53,8 +53,6 @@ services:
     environment:
       - EXCHANGE_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
       - EXCHANGE_KAFKA_TOPIC_NAME=landscape-update
-    expose:
-      - "10135"
     ports:
       - "10135:10135"
     networks:
@@ -103,8 +101,6 @@ services:
   discovery-service:
     build: ../discovery-service
     container_name: explorviz-backend-discovery-service
-    expose:
-      - "8083"
     ports:
       - "8083:8083"
     labels:
@@ -115,8 +111,8 @@ services:
       - explorviz
 
   reverse-proxy:
-    image: "traefik:v2.0.1"
-    container_name: "explorviz-reverse-proxy"
+    image: "traefik:v2.1"
+    container_name: explorviz-reverse-proxy
     command:
       - "--entrypoints.web.address=:8090"
       - "--providers.docker=true"
@@ -132,8 +128,8 @@ services:
   ### Software Stack ###
 
   zookeeper:
-    container_name: zookeeper
-    image: wurstmeister/zookeeper
+    container_name: explorviz-zookeeper
+    image: zookeeper:3.5
     expose:
       - "2181"
     networks:
