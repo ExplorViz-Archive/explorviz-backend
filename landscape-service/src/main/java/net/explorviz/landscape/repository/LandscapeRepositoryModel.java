@@ -17,6 +17,7 @@ import net.explorviz.landscape.model.landscape.NodeGroup;
 import net.explorviz.landscape.model.landscape.System;
 import net.explorviz.landscape.model.store.Timestamp;
 import net.explorviz.landscape.repository.helper.LandscapeSerializationHelper;
+import net.explorviz.landscape.repository.helper.dummy.DummyLandscapeCreator;
 import net.explorviz.shared.common.idgen.IdGenerator;
 import net.explorviz.shared.config.annotations.Config;
 import org.apache.kafka.clients.producer.KafkaProducer;
@@ -39,17 +40,19 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
 
   private final LandscapeSerializationHelper serializationHelper;
 
-
   private final KafkaProducer<String, String> kafkaProducer;
 
   private final String kafkaTopicName;
 
   private final IdGenerator idGen;
 
+  private final boolean useDummyMode;
+
   @Inject
   public LandscapeRepositoryModel(final LandscapeSerializationHelper serializationHelper,
       final KafkaProducer<String, String> kafkaProducer, final IdGenerator idGen,
       @Config("repository.outputIntervalSeconds") final int outputIntervalSeconds,
+      @Config("repository.useDummyMode") final boolean useDummyMode,
       @Config("exchange.kafka.topic.name") final String kafkaTopicName) {
 
     this.serializationHelper = serializationHelper;
@@ -59,6 +62,7 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
     this.insertionRepositoryPart = new InsertionRepositoryPart(idGen);
     this.remoteCallRepositoryPart = new RemoteCallRepositoryPart();
     this.outputIntervalSeconds = outputIntervalSeconds;
+    this.useDummyMode = useDummyMode;
     this.kafkaTopicName = kafkaTopicName;
   }
 
@@ -99,26 +103,41 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
 
         final long milliseconds = java.lang.System.currentTimeMillis();
 
-        // calculates the total requests for the internal landscape and stores them in its timestamp
+        // calculates the total requests for the internal landscape and stores them in its
+        // timestamp
         int calculatedTotalRequests = 0;
 
-        calculatedTotalRequests = calculateTotalRequests(this.internalLandscape);
-        this.internalLandscape.getTimestamp().setTotalRequests(calculatedTotalRequests);
-        this.internalLandscape.setTimestamp(
-            new Timestamp(this.idGen.generateId(), milliseconds, calculatedTotalRequests));
+        if (this.useDummyMode) {
+          final Landscape dummyLandscape = DummyLandscapeCreator.createDummyLandscape(this.idGen);
 
-        this.internalLandscape.setId(this.idGen.generateId());
+          calculatedTotalRequests = calculateTotalRequests(dummyLandscape);
+          dummyLandscape.getTimestamp().setTotalRequests(calculatedTotalRequests);
+          dummyLandscape.setTimestamp(
+              new Timestamp(this.idGen.generateId(), milliseconds, calculatedTotalRequests));
 
-        this.sendLandscapeToKafka(this.internalLandscape, this.kafkaTopicName);
+          dummyLandscape.setId(this.idGen.generateId());
 
-        try {
-          final Landscape l = this.deepCopy(this.internalLandscape);
-          l.createOutgoingApplicationCommunication();
-          this.lastPeriodLandscape = l;
-        } catch (final DocumentSerializationException e) {
-          LOGGER.error("Error while deep-copying landscape.", e);
+          this.sendLandscapeToKafka(dummyLandscape, this.kafkaTopicName);
+          this.lastPeriodLandscape = dummyLandscape;
+
+        } else {
+          calculatedTotalRequests = calculateTotalRequests(this.internalLandscape);
+          this.internalLandscape.getTimestamp().setTotalRequests(calculatedTotalRequests);
+          this.internalLandscape.setTimestamp(
+              new Timestamp(this.idGen.generateId(), milliseconds, calculatedTotalRequests));
+
+          this.internalLandscape.setId(this.idGen.generateId());
+
+          this.sendLandscapeToKafka(this.internalLandscape, this.kafkaTopicName);
+
+          try {
+            final Landscape l = this.deepCopy(this.internalLandscape);
+            l.createOutgoingApplicationCommunication();
+            this.lastPeriodLandscape = l;
+          } catch (final DocumentSerializationException e) {
+            LOGGER.error("Error while deep-copying landscape.", e);
+          }
         }
-
         this.remoteCallRepositoryPart.checkForTimedoutRemoteCalls();
         this.resetCommunication();
       }
