@@ -9,4 +9,9 @@ scrape_configs:
     - job_name: 'node'
       scrape_interval: 5s
       static_configs:
-        - targets: ['prom-node-exporter:9100']
+        - targets: ['localhost:9100']
+    
+    - job_name: 'user-service'
+      scrape_interval: 5s
+      static_configs:
+        - targets: ['localhost:8082']
