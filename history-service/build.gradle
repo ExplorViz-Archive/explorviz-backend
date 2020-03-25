@@ -1,13 +1,13 @@
 plugins {
-	id "application"
-	id "com.github.johnrengelman.shadow" version "5.1.0"
-	id "com.github.spotbugs" version "1.6.10"
-	id "maven"
+  id "application"
+  id "com.github.johnrengelman.shadow" version "5.1.0"
+  id "com.github.spotbugs" version "1.6.10"
+  id "maven"
 }
 
 // Force new Dependencies 
 configurations.all {
-    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+  resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
 }
 
 repositories {
@@ -27,34 +27,43 @@ dockerCompose {
 
 dependencies {
 
-	// Swagger
-  	implementation group: 'io.swagger.core.v3', name: 'swagger-core', version: '2.0.8'
-  	implementation group: 'io.swagger.core.v3', name: 'swagger-jaxrs2', version: '2.0.8'
-    implementation project(':landscape-service:landscape-model')
-    implementation project(':user-service:user-model')
+  // Swagger
+  implementation group: 'io.swagger.core.v3', name: 'swagger-core', version: '2.0.8'
+  implementation group: 'io.swagger.core.v3', name: 'swagger-jaxrs2', version: '2.0.8'
+  implementation project(':landscape-service:landscape-model')
+  implementation project(':user-service:user-model')
 
   // ExplorViz Shared Dependencies
-  if(useRemoteSharedProject.toBoolean()) {
-  	implementation group: 'net.explorviz', name: 'config-injection', version: "${sharedProjectVersion}"
-  	implementation group: 'net.explorviz', name: 'security', version: "${sharedProjectVersion}"
-  	implementation group: 'net.explorviz', name: 'exception-handling', version: "${sharedProjectVersion}"
-  	implementation group: 'net.explorviz', name: 'common-concerns', version: "${sharedProjectVersion}"
-  	implementation group: 'net.explorviz', name: 'query', version: "${sharedProjectVersion}"
-  }
-  else {
+  if (useRemoteSharedProject.toBoolean()) {
+    implementation group: 'net.explorviz', name: 'config-injection', version: "${sharedProjectVersion}"
+    implementation group: 'net.explorviz', name: 'security', version: "${sharedProjectVersion}"
+    implementation group: 'net.explorviz', name: 'exception-handling', version: "${sharedProjectVersion}"
+    implementation group: 'net.explorviz', name: 'common-concerns', version: "${sharedProjectVersion}"
+    implementation group: 'net.explorviz', name: 'query', version: "${sharedProjectVersion}"
+  } else {
     implementation project(':config-injection')
     implementation project(':security')
     implementation project(':exception-handling')
     implementation project(':common-concerns')
     implementation project(':query')
-  } 
-  
-  	// multipart/form-data type
-  	implementation group: 'org.glassfish.jersey.media', name:'jersey-media-multipart', version:'2.26'
-  	
-  	implementation group: 'commons-io', name: 'commons-io', version: '2.6'
-  	 
-  	implementation group: 'org.apache.kafka', name: 'kafka_2.12', version: '2.2.0'
+  }
+
+
+  // Prometheus
+  // Base
+  implementation group: 'io.prometheus', name: 'simpleclient', version: '0.8.1'
+  //implementation group: 'io.prometheus', name: 'simpleclient_httpserver', version: '0.8.1'
+  // Expose via Jetty
+  implementation group: 'io.prometheus', name: 'simpleclient_servlet', version: '0.8.1'
+  // Collect Jetty stats
+  implementation group: 'io.prometheus', name: 'simpleclient_jetty', version: '0.8.1'
+
+  // multipart/form-data type
+  implementation group: 'org.glassfish.jersey.media', name: 'jersey-media-multipart', version: '2.26'
+
+  implementation group: 'commons-io', name: 'commons-io', version: '2.6'
+
+  implementation group: 'org.apache.kafka', name: 'kafka_2.12', version: '2.2.0'
 }
 
 assemble.dependsOn shadowJar
@@ -63,13 +72,13 @@ jar.enabled = false
 jar {
   manifest {
     attributes(
-      'Main-Class': 'net.explorviz.history.server.main.Main'
+            'Main-Class': 'net.explorviz.history.server.main.Main'
     )
   }
 }
 
 application {
-    mainClassName = 'net.explorviz.history.server.main.Main'
+  mainClassName = 'net.explorviz.history.server.main.Main'
 }
 
 shadowJar {
@@ -98,7 +107,7 @@ tasks.withType(com.github.spotbugs.SpotBugsTask) {
 task spotbugs {
   group 'Quality Assurance'
   description 'Run SpotBugs'
-  
+
   dependsOn 'spotbugsMain'
   dependsOn 'spotbugsTest'
 }
@@ -106,29 +115,29 @@ task spotbugs {
 // START environment task
 task updateEnvPropsInBuildDir {
 
-	// run with:
-	// .././gradlew run -Penvironment=production
+  // run with:
+  // .././gradlew run -Penvironment=production
 
-	doLast {
-		if (project.hasProperty("environment")) {
-   			def environment = project.findProperty("environment")
-   	
-   			if(environment.equals("production")) {
-   				println("Using the production properties file")
-   				delete("${buildDir}/resources/main/explorviz.properties")
-    		
-    			copy { 
-      				from "${buildDir}/resources/main" 
-    				into "${buildDir}/resources/main"
-    				rename "explorviz.production.properties", "explorviz.properties" 
-    			}
-    		
-    			delete("${buildDir}/resources/main/explorviz.production.properties")        		
-			}
-		} else {
-    		println("Using default properties file")
-		}
-	}
+  doLast {
+    if (project.hasProperty("environment")) {
+      def environment = project.findProperty("environment")
+
+      if (environment.equals("production")) {
+        println("Using the production properties file")
+        delete("${buildDir}/resources/main/explorviz.properties")
+
+        copy {
+          from "${buildDir}/resources/main"
+          into "${buildDir}/resources/main"
+          rename "explorviz.production.properties", "explorviz.properties"
+        }
+
+        delete("${buildDir}/resources/main/explorviz.production.properties")
+      }
+    } else {
+      println("Using default properties file")
+    }
+  }
 }
 
 run.dependsOn updateEnvPropsInBuildDir

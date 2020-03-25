@@ -40,6 +40,7 @@ public final class Main {
     context.addServlet(jerseyServlet, "/*");
 
 
+    // Prometheus
     StatisticsHandler stats = new StatisticsHandler();
     stats.setHandler(server.getHandler());
     server.setHandler(stats);

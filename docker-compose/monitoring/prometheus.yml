@@ -15,3 +15,24 @@ scrape_configs:
       scrape_interval: 5s
       static_configs:
         - targets: ['localhost:8082']
+
+    - job_name: 'settings-service'
+      scrape_interval: 5s
+      static_configs:
+        - targets: ['localhost:8087']
+
+    - job_name: 'history-service'
+      scrape_interval: 5s
+      static_configs:
+        - targets: ['localhost:8086']
+
+    - job_name: 'discovery-service'
+      scrape_interval: 5s
+      static_configs:
+        - targets: ['localhost:8083']
+    
+    - job_name: 'broadcast-service'
+      scrape_interval: 5s
+      static_configs:
+        - targets: ['localhost:8081']
+  

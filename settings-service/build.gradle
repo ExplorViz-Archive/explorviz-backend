@@ -79,6 +79,14 @@ dependencies {
     	implementation project(':query')
   }
 
+  // Prometheus
+  // Base
+  implementation group: 'io.prometheus', name: 'simpleclient', version: '0.8.1'
+  //implementation group: 'io.prometheus', name: 'simpleclient_httpserver', version: '0.8.1'
+  // Expose via Jetty
+  implementation group: 'io.prometheus', name: 'simpleclient_servlet', version: '0.8.1'
+  // Collect Jetty stats
+  implementation group: 'io.prometheus', name: 'simpleclient_jetty', version: '0.8.1'
 
   apiTestImplementation project(':user-service')    // For login
   apiTestImplementation 'io.rest-assured:rest-assured:4.0.0'

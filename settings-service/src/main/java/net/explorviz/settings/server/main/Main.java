@@ -1,7 +1,10 @@
 package net.explorviz.settings.server.main;
 
+import io.prometheus.client.exporter.MetricsServlet;
+import io.prometheus.client.jetty.JettyStatisticsCollector;
 import net.explorviz.shared.config.helper.PropertyHelper;
 import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.handler.StatisticsHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.glassfish.jersey.server.ResourceConfig;
@@ -31,6 +34,15 @@ public class Main {
     final ServletHolder jerseyServlet = new ServletHolder(new ServletContainer(createJaxRsApp()));
     final ServletContextHandler context = new ServletContextHandler(server, getContextPath());
     context.addServlet(jerseyServlet, "/*");
+
+    // Prometheus
+    StatisticsHandler stats = new StatisticsHandler();
+    stats.setHandler(server.getHandler());
+    server.setHandler(stats);
+
+    new JettyStatisticsCollector(stats).register();
+
+    context.addServlet(new ServletHolder(new MetricsServlet()), "/metrics");
 
     try {
       server.start();

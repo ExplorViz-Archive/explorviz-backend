@@ -33,7 +33,17 @@ dependencies {
   } 
   
   // SSE context for injection
-  implementation group: 'org.glassfish.jersey.media', name: 'jersey-media-sse', version: '2.27'  
+  implementation group: 'org.glassfish.jersey.media', name: 'jersey-media-sse', version: '2.27'
+
+  // Prometheus
+  // Base
+  implementation group: 'io.prometheus', name: 'simpleclient', version: '0.8.1'
+  //implementation group: 'io.prometheus', name: 'simpleclient_httpserver', version: '0.8.1'
+  // Expose via Jetty
+  implementation group: 'io.prometheus', name: 'simpleclient_servlet', version: '0.8.1'
+  // Collect Jetty stats
+  implementation group: 'io.prometheus', name: 'simpleclient_jetty', version: '0.8.1'
+
 }
 
 // disable integration tests, since there are none
