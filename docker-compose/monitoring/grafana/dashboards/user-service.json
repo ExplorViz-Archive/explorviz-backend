@@ -16,7 +16,6 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
-  "id": 3,
   "links": [],
   "panels": [
     {
@@ -66,7 +65,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "jvm_memory_bytes_used{job=\"user-service\", area=\"heap\"}",
+          "expr": "jvm_memory_bytes_used{job=\"$service\", area=\"heap\"}",
           "interval": "",
           "legendFormat": "Used Bytes (Heap)",
           "refId": "B"
@@ -129,7 +128,8 @@
       "aliasColors": {
         "1xx Response": "semi-dark-purple",
         "2xx Response": "green",
-        "5xx Response": "purple",
+        "3xx Response": "purple",
+        "5xx Response": "red",
         "Answered": "green",
         "Inbound Requests": "blue"
       },
@@ -174,7 +174,7 @@
       "steppedLine": true,
       "targets": [
         {
-          "expr": "floor(increase(jetty_requests_total{job=\"user-service\"}[$__interval] offset $__interval))",
+          "expr": "floor(increase(jetty_requests_total{job=\"$service\"}[$__interval] offset $__interval))",
           "format": "time_series",
           "instant": false,
           "interval": "",
@@ -183,7 +183,7 @@
           "refId": "A"
         },
         {
-          "expr": "floor(increase(jetty_responses_total{job=\"user-service\"}[$__interval] offset $__interval))",
+          "expr": "floor(increase(jetty_responses_total{job=\"$service\"}[$__interval] offset $__interval))",
           "format": "time_series",
           "hide": false,
           "instant": false,
@@ -235,6 +235,70 @@
         "align": false,
         "alignLevel": null
       }
+    },
+    {
+      "cards": {
+        "cardPadding": null,
+        "cardRound": null
+      },
+      "color": {
+        "cardColor": "#b4ff00",
+        "colorScale": "sqrt",
+        "colorScheme": "interpolateRdYlGn",
+        "exponent": 0.5,
+        "min": 0,
+        "mode": "spectrum"
+      },
+      "dataFormat": "tsbuckets",
+      "datasource": "Prometheus",
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 9
+      },
+      "heatmap": {},
+      "hideZeroBuckets": false,
+      "highlightCards": true,
+      "id": 6,
+      "legend": {
+        "show": true
+      },
+      "pluginVersion": "6.7.1",
+      "reverseYBuckets": false,
+      "targets": [
+        {
+          "expr": "explorviz_request_time_count{job=\"$service\"}",
+          "interval": "",
+          "legendFormat": "{{method}} {{path}}",
+          "refId": "A"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "API Calls Heatmap",
+      "tooltip": {
+        "show": true,
+        "showHistogram": true
+      },
+      "type": "heatmap",
+      "xAxis": {
+        "show": true
+      },
+      "xBucketNumber": null,
+      "xBucketSize": null,
+      "yAxis": {
+        "decimals": null,
+        "format": "short",
+        "logBase": 1,
+        "max": null,
+        "min": null,
+        "show": true,
+        "splitFactor": null
+      },
+      "yBucketBound": "middle",
+      "yBucketNumber": null,
+      "yBucketSize": null
     }
   ],
   "refresh": false,
@@ -242,7 +306,31 @@
   "style": "dark",
   "tags": [],
   "templating": {
-    "list": []
+    "list": [
+      {
+        "allValue": null,
+        "current": {
+          "selected": false,
+          "text": "user-service",
+          "value": "user-service"
+        },
+        "hide": 0,
+        "includeAll": false,
+        "label": null,
+        "multi": false,
+        "name": "service",
+        "options": [
+          {
+            "selected": true,
+            "text": "user-service",
+            "value": "user-service"
+          }
+        ],
+        "query": "user-service",
+        "skipUrlSync": false,
+        "type": "custom"
+      }
+    ]
   },
   "time": {
     "from": "now-5m",
@@ -268,5 +356,5 @@
   "variables": {
     "list": []
   },
-  "version": 7
+  "version": 1
 }

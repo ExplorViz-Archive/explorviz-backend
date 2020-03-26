@@ -1,17 +1,22 @@
 package net.explorviz.security.server.main;
 
 import io.prometheus.client.exporter.MetricsServlet;
+import io.prometheus.client.filter.MetricsFilter;
 import io.prometheus.client.hotspot.DefaultExports;
 import io.prometheus.client.jetty.JettyStatisticsCollector;
 import net.explorviz.shared.config.helper.PropertyHelper;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.StatisticsHandler;
+import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.servlet.ServletContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.servlet.DispatcherType;
+import java.util.EnumSet;
 
 /**
  * Entry point for the web service. This main method will start a web server based on the
@@ -41,6 +46,7 @@ public final class Main {
     context.addServlet(jerseyServlet, "/*");
 
 
+
     // Prometheus
     StatisticsHandler stats = new StatisticsHandler();
     stats.setHandler(server.getHandler());
@@ -50,7 +56,15 @@ public final class Main {
 
     context.addServlet(new ServletHolder(new MetricsServlet()), "/metrics");
 
+    // JVM Metrics
     DefaultExports.initialize();
+
+    MetricsFilter metricsFilter =
+        new MetricsFilter("explorviz_request_time",
+            "Filter to measure and forward request times", 20, null);
+    FilterHolder filterHolder = new FilterHolder(metricsFilter);
+    context.addFilter(filterHolder, "/v1/*", EnumSet.of(DispatcherType.REQUEST));
+
 
     try {
       server.start();
@@ -94,5 +108,7 @@ public final class Main {
   private static ResourceConfig createJaxRsApp() {
     return new ResourceConfig(new Application());
   }
+
+
 
 }
