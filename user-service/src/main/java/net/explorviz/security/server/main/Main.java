@@ -1,6 +1,7 @@
 package net.explorviz.security.server.main;
 
 import io.prometheus.client.exporter.MetricsServlet;
+import io.prometheus.client.hotspot.DefaultExports;
 import io.prometheus.client.jetty.JettyStatisticsCollector;
 import net.explorviz.shared.config.helper.PropertyHelper;
 import org.eclipse.jetty.server.Server;
@@ -48,6 +49,8 @@ public final class Main {
     new JettyStatisticsCollector(stats).register();
 
     context.addServlet(new ServletHolder(new MetricsServlet()), "/metrics");
+
+    DefaultExports.initialize();
 
     try {
       server.start();

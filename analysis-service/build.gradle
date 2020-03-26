@@ -24,6 +24,16 @@ dependencies {
 	
   // Kieker Monitoring Framework
   implementation group: 'net.kieker-monitoring', name: 'kieker', version: '1.14-SNAPSHOT'
+
+  // Prometheus
+  // Base
+  implementation group: 'io.prometheus', name: 'simpleclient', version: '0.8.1'
+  // Exposition server
+  implementation group: 'io.prometheus', name: 'simpleclient_httpserver', version: '0.8.1'
+  // JVM Metrics
+  implementation group: 'io.prometheus', name: 'simpleclient_hotspot', version: '0.8.1'
+
+
 }
 
 // disable integration tests, since there are none
