@@ -16,7 +16,7 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
-  "id": 1,
+  "id": 2,
   "links": [],
   "panels": [
     {
@@ -100,7 +100,7 @@
     },
     {
       "aliasColors": {},
-      "bars": false,
+      "bars": true,
       "dashLength": 10,
       "dashes": false,
       "datasource": "Prometheus",
@@ -127,7 +127,7 @@
         "total": false,
         "values": false
       },
-      "lines": true,
+      "lines": false,
       "linewidth": 1,
       "nullPointMode": "null",
       "options": {
@@ -135,7 +135,7 @@
       },
       "percentage": false,
       "pointradius": 1,
-      "points": true,
+      "points": false,
       "renderer": "flot",
       "seriesOverrides": [],
       "spaceLength": 10,
@@ -143,7 +143,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "rate(jetty_requests_total[1m])",
+          "expr": "sum(rate(jetty_requests_total[1m]))",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 1,
@@ -408,5 +408,5 @@
   "variables": {
     "list": []
   },
-  "version": 13
+  "version": 1
 }
