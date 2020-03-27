@@ -16,114 +16,9 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
+  "iteration": 1585316576289,
   "links": [],
   "panels": [
-    {
-      "aliasColors": {
-        "Max Heap Size": "rgb(255, 255, 255)"
-      },
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": "Prometheus",
-      "fill": 3,
-      "fillGradient": 6,
-      "gridPos": {
-        "h": 9,
-        "w": 12,
-        "x": 0,
-        "y": 0
-      },
-      "hiddenSeries": false,
-      "id": 4,
-      "legend": {
-        "avg": false,
-        "current": false,
-        "max": false,
-        "min": false,
-        "show": true,
-        "total": false,
-        "values": false
-      },
-      "lines": true,
-      "linewidth": 2,
-      "nullPointMode": "null",
-      "options": {
-        "dataLinks": []
-      },
-      "percentage": false,
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [
-        {
-          "$$hashKey": "object:2612"
-        }
-      ],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
-      "targets": [
-        {
-          "expr": "jvm_memory_bytes_used{job=\"$service\", area=\"heap\"}",
-          "interval": "",
-          "legendFormat": "Used Bytes (Heap)",
-          "refId": "B"
-        }
-      ],
-      "thresholds": [
-        {
-          "$$hashKey": "object:2620",
-          "colorMode": "critical",
-          "fill": true,
-          "line": true,
-          "op": "gt",
-          "value": null,
-          "yaxis": "left"
-        }
-      ],
-      "timeFrom": null,
-      "timeRegions": [],
-      "timeShift": null,
-      "title": "JVM Memory",
-      "tooltip": {
-        "shared": true,
-        "sort": 0,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "$$hashKey": "object:2377",
-          "format": "bytes",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        },
-        {
-          "$$hashKey": "object:2378",
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": false
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
-    },
     {
       "aliasColors": {
         "1xx Response": "semi-dark-purple",
@@ -140,9 +35,9 @@
       "fill": 4,
       "fillGradient": 6,
       "gridPos": {
-        "h": 9,
+        "h": 8,
         "w": 12,
-        "x": 12,
+        "x": 0,
         "y": 0
       },
       "hiddenSeries": false,
@@ -237,9 +132,100 @@
       }
     },
     {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "Prometheus",
+      "fill": 0,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 0
+      },
+      "hiddenSeries": false,
+      "id": 8,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "connected",
+      "options": {
+        "dataLinks": []
+      },
+      "percentage": false,
+      "pluginVersion": "6.7.1",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "rate(explorviz_request_time_sum{job=\"$service\"}[$__interval])/rate(explorviz_request_time_count{job=\"$service\"}[$__interval])",
+          "interval": "",
+          "legendFormat": "{{method}} {{path}}",
+          "refId": "A"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Average Request Duration",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "$$hashKey": "object:2341",
+          "format": "s",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "$$hashKey": "object:2342",
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
       "cards": {
         "cardPadding": null,
-        "cardRound": null
+        "cardRound": 5
       },
       "color": {
         "cardColor": "#b4ff00",
@@ -252,15 +238,16 @@
       "dataFormat": "tsbuckets",
       "datasource": "Prometheus",
       "gridPos": {
-        "h": 8,
+        "h": 6,
         "w": 24,
         "x": 0,
-        "y": 9
+        "y": 8
       },
       "heatmap": {},
       "hideZeroBuckets": false,
       "highlightCards": true,
       "id": 6,
+      "interval": "",
       "legend": {
         "show": true
       },
@@ -268,7 +255,7 @@
       "reverseYBuckets": false,
       "targets": [
         {
-          "expr": "explorviz_request_time_count{job=\"$service\"}",
+          "expr": "increase(explorviz_request_time_count{job=\"$service\"}[$__interval])",
           "interval": "",
           "legendFormat": "{{method}} {{path}}",
           "refId": "A"
@@ -276,11 +263,12 @@
       ],
       "timeFrom": null,
       "timeShift": null,
-      "title": "API Calls Heatmap",
+      "title": "API Calls per Minute",
       "tooltip": {
         "show": true,
-        "showHistogram": true
+        "showHistogram": false
       },
+      "tooltipDecimals": null,
       "type": "heatmap",
       "xAxis": {
         "show": true
@@ -301,7 +289,7 @@
       "yBucketSize": null
     }
   ],
-  "refresh": false,
+  "refresh": "",
   "schemaVersion": 22,
   "style": "dark",
   "tags": [],
@@ -310,7 +298,8 @@
       {
         "allValue": null,
         "current": {
-          "selected": false,
+          "$$hashKey": "object:3976",
+          "selected": true,
           "text": "user-service",
           "value": "user-service"
         },
@@ -321,12 +310,37 @@
         "name": "service",
         "options": [
           {
+            "$$hashKey": "object:3972",
+            "selected": false,
+            "text": "broadcast-service",
+            "value": "broadcast-service"
+          },
+          {
+            "$$hashKey": "object:3973",
+            "selected": false,
+            "text": "discovery-service",
+            "value": "discovery-service"
+          },
+          {
+            "$$hashKey": "object:3974",
+            "selected": false,
+            "text": "history-service",
+            "value": "history-service"
+          },
+          {
+            "$$hashKey": "object:3975",
+            "selected": false,
+            "text": "settings-service",
+            "value": "settings-service"
+          },
+          {
+            "$$hashKey": "object:3976",
             "selected": true,
             "text": "user-service",
             "value": "user-service"
           }
         ],
-        "query": "user-service",
+        "query": "broadcast-service, discovery-service, history-service,  settings-service, user-service,",
         "skipUrlSync": false,
         "type": "custom"
       }
@@ -351,7 +365,7 @@
     ]
   },
   "timezone": "",
-  "title": "User-Service",
+  "title": "HTTP APIs",
   "uid": "yKqsrprWk",
   "variables": {
     "list": []

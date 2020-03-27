@@ -61,7 +61,7 @@ public final class Main {
 
     MetricsFilter metricsFilter =
         new MetricsFilter("explorviz_request_time",
-            "Filter to measure and forward request times", 20, null);
+            "Filter to measure and forward request times", 2, null);
     FilterHolder filterHolder = new FilterHolder(metricsFilter);
     context.addFilter(filterHolder, "/v1/*", EnumSet.of(DispatcherType.REQUEST));
 

@@ -16,87 +16,106 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
-  "id": 2,
   "links": [],
   "panels": [
     {
       "cacheTimeout": null,
+      "columns": [
+        {
+          "$$hashKey": "object:453",
+          "text": "Current",
+          "value": "current"
+        }
+      ],
       "datasource": "Prometheus",
       "description": "Displays which services are currently up and running",
+      "fontSize": "100%",
       "gridPos": {
         "h": 9,
-        "w": 12,
+        "w": 6,
         "x": 0,
         "y": 0
       },
       "id": 8,
       "links": [],
-      "options": {
-        "fieldOptions": {
-          "calcs": [
-            "last"
-          ],
-          "defaults": {
-            "decimals": 0,
-            "mappings": [
-              {
-                "from": "",
-                "id": 1,
-                "operator": "",
-                "text": "Down",
-                "to": "",
-                "type": 1,
-                "value": "0"
-              },
-              {
-                "from": "",
-                "id": 2,
-                "operator": "",
-                "text": "Up",
-                "to": "",
-                "type": 1,
-                "value": "1"
-              }
-            ],
-            "max": 1,
-            "min": 0,
-            "thresholds": {
-              "mode": "absolute",
-              "steps": [
-                {
-                  "color": "red",
-                  "value": null
-                },
-                {
-                  "color": "green",
-                  "value": 0.1
-                }
-              ]
-            },
-            "title": "",
-            "unit": "short"
-          },
-          "overrides": [],
-          "values": false
-        },
-        "orientation": "auto",
-        "showThresholdLabels": false,
-        "showThresholdMarkers": false
-      },
+      "pageSize": null,
       "pluginVersion": "6.7.1",
       "repeat": null,
+      "showHeader": true,
+      "sort": {
+        "col": 0,
+        "desc": true
+      },
+      "styles": [
+        {
+          "$$hashKey": "object:86",
+          "alias": "Service",
+          "align": "right",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "decimals": 2,
+          "link": false,
+          "pattern": "Metric",
+          "preserveFormat": false,
+          "sanitize": false,
+          "thresholds": [
+            "0",
+            "1"
+          ],
+          "type": "string",
+          "unit": "short"
+        },
+        {
+          "$$hashKey": "object:1889",
+          "alias": "",
+          "align": "auto",
+          "colorMode": "value",
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "decimals": 2,
+          "mappingType": 1,
+          "pattern": "Current",
+          "thresholds": [
+            "0.1",
+            "1"
+          ],
+          "type": "string",
+          "unit": "short",
+          "valueMaps": [
+            {
+              "$$hashKey": "object:1973",
+              "text": "Up",
+              "value": "1"
+            },
+            {
+              "$$hashKey": "object:1996",
+              "text": "Down",
+              "value": "0"
+            }
+          ]
+        }
+      ],
       "targets": [
         {
           "expr": "up{job=~\"broadcast-service|user-service|settings-service|analysis-service|history-service|landscape-service|discovery-service\"}",
           "interval": "",
-          "legendFormat": "{{job}}",
+          "legendFormat": "{{job}} ({{instance}})",
           "refId": "A"
         }
       ],
       "timeFrom": null,
       "timeShift": null,
       "title": "Up/Down",
-      "type": "gauge"
+      "transform": "timeseries_aggregations",
+      "type": "table"
     },
     {
       "aliasColors": {},
@@ -109,8 +128,8 @@
       "fillGradient": 0,
       "gridPos": {
         "h": 9,
-        "w": 12,
-        "x": 12,
+        "w": 18,
+        "x": 6,
         "y": 0
       },
       "hiddenSeries": false,
@@ -143,11 +162,11 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(rate(jetty_requests_total[1m]))",
+          "expr": "sum(rate(jetty_requests_total[$__interval]))",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 1,
-          "legendFormat": "{{job}}",
+          "legendFormat": "Total Inbound Requests",
           "refId": "A"
         }
       ],
@@ -237,7 +256,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "100 - (avg by (instance) (irate(node_cpu_seconds_total{mode=\"idle\"}[5m])) * 100)",
+          "expr": "100 - (avg by (instance) (irate(node_cpu_seconds_total{mode=\"idle\"}[$__interval])) * 100)",
           "interval": "",
           "legendFormat": "{{instance}}",
           "refId": "A"

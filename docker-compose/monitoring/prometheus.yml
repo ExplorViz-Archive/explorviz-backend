@@ -1,9 +1,4 @@
 scrape_configs:
-    # Scrape Prometheus itself every 5 seconds.
-    - job_name: 'prometheus'
-      scrape_interval: 5s
-      static_configs:
-        - targets: ['localhost:9090']
   
     # Scrape the Node Exporter every 5 seconds.
     - job_name: 'node'
@@ -11,6 +6,7 @@ scrape_configs:
       static_configs:
         - targets: ['localhost:9100']
     
+    # Scrape all ExplorViz services every 5 seconds.
     - job_name: 'user-service'
       scrape_interval: 5s
       static_configs:
