@@ -18,6 +18,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
+
+import io.prometheus.client.Gauge;
+import io.prometheus.client.Summary;
 import net.explorviz.landscape.model.application.Application;
 import net.explorviz.landscape.model.application.Clazz;
 import net.explorviz.landscape.model.application.Component;
@@ -38,7 +41,16 @@ import net.explorviz.shared.common.idgen.IdGenerator;
  */
 public class InsertionRepositoryPart {
 
+
+  private static final Summary TIMER = Summary.build()
+      .name("explorviz_landscape_insertion_time")
+      .help("Time it took to insert a new record")
+      .register();
+
   private static final String DEFAULT_COMPONENT_NAME = "(default)";
+
+
+  private static long c = 0;
 
   private final Map<String, Node> nodeCache = new HashMap<>();
   private final Map<String, Application> applicationCache = new HashMap<>();
@@ -61,11 +73,14 @@ public class InsertionRepositoryPart {
   public void insertIntoModel(final IRecord inputIRecord, final Landscape landscape,
       final RemoteCallRepositoryPart remoteCallRepositoryPart) {
 
+    Summary.Timer insertionTimer = TIMER.startTimer();
+
     if (inputIRecord instanceof Trace) {
       final Trace trace = (Trace) inputIRecord;
 
       final List<HostApplicationMetaDataRecord> hostApplicationMetadataList =
           trace.getTraceEvents().get(0).getHostApplicationMetadataList();
+
 
       synchronized (landscape) {
         for (int i = 0; i < hostApplicationMetadataList.size(); i++) {
@@ -128,7 +143,6 @@ public class InsertionRepositoryPart {
       }
     } else if (inputIRecord instanceof SystemMonitoringRecord) {
       final SystemMonitoringRecord systemMonitoringRecord = (SystemMonitoringRecord) inputIRecord;
-
       for (final Node node : this.nodeCache.values()) {
         if (node.getName()
             .equalsIgnoreCase(systemMonitoringRecord.getHostApplicationMetadata().getHostname())
@@ -142,8 +156,11 @@ public class InsertionRepositoryPart {
           node.setUsedRAM(systemMonitoringRecord.getUsedRAM());
         }
       }
+
     }
 
+    insertionTimer.observeDuration();
+    insertionTimer.close();
   }
 
   /**
