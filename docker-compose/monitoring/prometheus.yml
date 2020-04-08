@@ -1,0 +1,44 @@
+scrape_configs:
+  
+    # Scrape the Node Exporter every 5 seconds.
+    - job_name: 'node'
+      scrape_interval: 5s
+      static_configs:
+        - targets: ['localhost:9100']
+    
+    # Scrape all ExplorViz services every 5 seconds.
+    - job_name: 'user-service'
+      scrape_interval: 5s
+      static_configs:
+        - targets: ['localhost:8082']
+    
+    - job_name: 'analysis-service'
+      scrape_interval: 5s
+      static_configs:
+        - targets: ['localhost:1234']
+
+    - job_name: 'landscape-service'
+      scrape_interval: 5s
+      static_configs:
+        - targets: ['localhost:1235']
+
+    - job_name: 'settings-service'
+      scrape_interval: 5s
+      static_configs:
+        - targets: ['localhost:8087']
+
+    - job_name: 'history-service'
+      scrape_interval: 5s
+      static_configs:
+        - targets: ['localhost:8086']
+
+    - job_name: 'discovery-service'
+      scrape_interval: 5s
+      static_configs:
+        - targets: ['localhost:8083']
+    
+    - job_name: 'broadcast-service'
+      scrape_interval: 5s
+      static_configs:
+        - targets: ['localhost:8081']
+  

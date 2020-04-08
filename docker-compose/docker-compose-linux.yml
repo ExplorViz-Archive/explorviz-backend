@@ -4,8 +4,6 @@ services:
   reverse-proxy:
     image: "traefik:v2.1"
     container_name: "explorviz-reverse-proxy"
-    ports:
-      - "8080:8080"
     volumes:
       - "./traefik/traefik-static.toml:/etc/traefik/traefik.toml"
       - "./traefik/traefik-dynamic-linux.toml:/etc/traefik/traefik-dynamic.toml"
@@ -68,6 +66,33 @@ services:
       - 8001:8080
     env_file:
       - apis.env
+
+  prometheus:
+    image: prom/prometheus
+    ports: 
+      - 9090:9090
+    volumes: 
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+    network_mode: "host"
+
+  prom-node-exporter:
+    image: prom/node-exporter
+    ports: 
+      - 9100:9100
+    network_mode: "host"
+
+  grafana:
+    image: grafana/grafana
+    ports: 
+      - 3000:3000
+    volumes:
+      - ./monitoring/grafana/config.ini:/etc/grafana/grafana.ini
+      - ./monitoring/grafana/provisioning:/etc/grafana/provisioning
+      - ./monitoring/grafana/dashboards:/var/lib/grafana/dashboards
+    network_mode: "host"
+
 
 volumes:
   explorviz-auth-mongo-data:

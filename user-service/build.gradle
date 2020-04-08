@@ -80,6 +80,20 @@ dependencies {
   implementation group: 'io.swagger.core.v3', name: 'swagger-core', version: '2.0.8'
   implementation group: 'io.swagger.core.v3', name: 'swagger-jaxrs2', version: '2.0.8'
 
+
+  // Prometheus
+  // Base
+  implementation group: 'io.prometheus', name: 'simpleclient', version: '0.8.1'
+  //implementation group: 'io.prometheus', name: 'simpleclient_httpserver', version: '0.8.1'
+  // Expose via Jetty
+  implementation group: 'io.prometheus', name: 'simpleclient_servlet', version: '0.8.1'
+  // Collect Jetty stats
+  implementation group: 'io.prometheus', name: 'simpleclient_jetty', version: '0.8.1'
+  // JVM Metrics
+  implementation group: 'io.prometheus', name: 'simpleclient_hotspot', version: '0.8.1'
+
+
+
   apiTestImplementation 'io.rest-assured:rest-assured:4.0.0'
   
 }
