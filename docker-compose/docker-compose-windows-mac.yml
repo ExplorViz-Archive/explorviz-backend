@@ -66,6 +66,29 @@ services:
     env_file:
       - apis.env
 
+  prometheus:
+    image: prom/prometheus
+    ports: 
+      - 9090:9090
+    volumes: 
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+
+  prom-node-exporter:
+    image: prom/node-exporter
+    ports: 
+      - 9100:9100
+
+  grafana:
+    image: grafana/grafana
+    ports: 
+      - 3000:3000
+    volumes:
+      - ./monitoring/grafana/config.ini:/etc/grafana/grafana.ini
+      - ./monitoring/grafana/provisioning:/etc/grafana/provisioning
+      - ./monitoring/grafana/dashboards:/var/lib/grafana/dashboards
+
 volumes:
   explorviz-auth-mongo-data:
   explorviz-auth-mongo-configdb:
