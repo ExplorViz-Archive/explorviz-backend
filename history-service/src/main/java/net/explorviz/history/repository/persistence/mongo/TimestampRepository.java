@@ -5,7 +5,7 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Projections;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Locale;
 import javax.inject.Inject;
 import net.explorviz.landscape.model.store.Timestamp;
 import net.explorviz.shared.querying.Query;
@@ -18,12 +18,14 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Auxiliary repository for accessing timestamps of persistent landscapes objects.
- *
- *
  */
 public class TimestampRepository implements Queryable<Timestamp> {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(TimestampRepository.class);
+
+  private static final String FILTER_ARG_TYPE = "type";
+  private static final String FILTER_ARG_FROM = "from";
+  private static final String FILTER_ARG_TO = "to";
 
   private final MongoHelper mongoHelper;
 
@@ -36,82 +38,53 @@ public class TimestampRepository implements Queryable<Timestamp> {
 
   @Override
   public QueryResult<Timestamp> query(final Query<Timestamp> query) throws QueryException {
-    final String filterArgType = "type";
-    final String filterArgFrom = "from";
-    final String filterArgTo = "to";
-
 
     List<Timestamp> result = new ArrayList<>();
 
-    if (query.getFilters().get(filterArgType) != null) {
-      for (final String type : query.getFilters().get(filterArgType)) {
-        if (type.toLowerCase().contentEquals("landscape")) {
-          result.addAll(this.getLandscapeTimestamps());
-        } else if (type.toLowerCase().contentEquals("replay")) {
-          result.addAll(this.getReplayTimestamps());
-        } else {
-          // Unknown type
-          return new QueryResult<>(query, new ArrayList<Timestamp>(), 0);
-        }
-      }
-    } else { // Add all
+    if (query.getFilters().get(FILTER_ARG_TYPE) == null) {
       result.addAll(this.getReplayTimestamps());
       result.addAll(this.getLandscapeTimestamps());
+    } else { // Add all
+      findOfType(query.getFilters().get(FILTER_ARG_TYPE), result);
     }
 
-    if (query.getFilters().get(filterArgFrom) != null) {
-      if (query.getFilters().get(filterArgFrom).size() > 1) {
-        LOGGER.warn("More than one 'from' given, only applying the first");
-      }
-      try {
-        final long fromTs = Long.parseLong(query.getFilters().get(filterArgFrom).get(0));
-        if (fromTs <= 0) {
-          throw new QueryException("Filter 'from' must be positive");
-        }
-        result = result.parallelStream()
-            .filter(t -> fromTs <= t.getTimestamp())
-            .collect(Collectors.toList());
-      } catch (final NumberFormatException e) {
-        throw new QueryException("Filter 'from' must be integral", e);
-      }
+
+    if (query.getFilters().get(FILTER_ARG_FROM).size() > 1 && LOGGER.isWarnEnabled()) {
+      LOGGER.warn("More than one 'from' given, only applying the first");
     }
 
-    if (query.getFilters().get(filterArgTo) != null) {
-      if (query.getFilters().get(filterArgTo).size() > 1) {
-        LOGGER.warn("More than one 'to' given, only applying the first");
-      }
-      try {
-        final long toTs = Long.parseLong(query.getFilters().get(filterArgTo).get(0));
-        if (toTs <= 0) {
-          throw new QueryException("Filter 'to' must be positive");
-        }
-        result = result.parallelStream()
-            .filter(t -> toTs >= t.getTimestamp())
-            .collect(Collectors.toList());
-      } catch (final NumberFormatException e) {
-        throw new QueryException("Filter 'from' must be integral", e);
-      }
+    if (query.getFilters().get(FILTER_ARG_TO).size() > 1 && LOGGER.isWarnEnabled()) {
+      LOGGER.warn("More than one 'to' given, only applying the first");
+    }
+    final String from = query.getFilters().get(FILTER_ARG_FROM).get(0);
+    final String to = query.getFilters().get(FILTER_ARG_FROM).get(0);
+
+    try {
+      result = TimestampQueryHelper.filterByTimeRange(result, from, to);
+    } catch (final NumberFormatException e) {
+      throw new QueryException("Filters 'from' and 'to' must be integral values", e);
     }
 
-    // Sort descending
-    result.sort((t1, t2) -> {
-      if (t1.getTimestamp() == t2.getTimestamp()) {
-        return 0;
-      }
-      return t1.getTimestamp() > t2.getTimestamp() ? -1 : 1;
-    });
+
+    result = TimestampQueryHelper.sort(result);
 
     // Paginate
     final long total = result.size();
     if (query.doPaginate()) {
-      final int pageFrom = Math.min(query.getPageNumber() * query.getPageSize(), result.size());
-      final int pageTo = Math.min(query.getPageSize() * query.getPageNumber() + query.getPageSize(),
-          result.size());
-
-      result = new ArrayList<>(result.subList(pageFrom, pageTo));
+      result = TimestampQueryHelper.paginate(result, query.getPageNumber(), query.getPageSize());
     }
 
     return new QueryResult<>(query, result, total);
+  }
+
+  private void findOfType(final List<String> types, final List<Timestamp> result) {
+    for (final String type : types) {
+      if (type.toLowerCase(Locale.ENGLISH).contentEquals("landscape")) {
+        result.addAll(this.getLandscapeTimestamps());
+      } else if (type.toLowerCase(Locale.ENGLISH).contentEquals("replay")) {
+        result.addAll(this.getReplayTimestamps());
+      }
+    }
   }
 
 

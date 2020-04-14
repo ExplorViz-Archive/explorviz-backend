@@ -90,11 +90,16 @@ public class MongoReplayJsonApiRepository implements ReplayRepository<String> {
 
     final FindIterable<Document> result = landscapeCollection.find(landscapeDocument);
 
-    if (result.first() == null) {
+    final Document first = result.first();
+    if (first == null) {
       return Optional.empty();
-    } else {
-      return Optional.of((String) result.first().get(MongoHelper.FIELD_LANDSCAPE));
     }
+
+    final Object landscape = first.get(MongoHelper.FIELD_LANDSCAPE);
+    if (landscape == null) {
+      return Optional.empty();
+    }
+    return Optional.of((String) landscape);
   }
 
   @Override
@@ -111,11 +116,16 @@ public class MongoReplayJsonApiRepository implements ReplayRepository<String> {
 
     final FindIterable<Document> result = landscapeCollection.find(landscapeDocument);
 
-    if (result.first() == null) {
+    final Document first = result.first();
+    if (first == null) {
       return Optional.empty();
-    } else {
-      return Optional.of((String) result.first().get(MongoHelper.FIELD_LANDSCAPE));
     }
+
+    final Object landscape = first.get(MongoHelper.FIELD_LANDSCAPE);
+    if (landscape == null) {
+      return Optional.empty();
+    }
+    return Optional.of((String) landscape);
   }
 
   @Override
@@ -127,13 +137,17 @@ public class MongoReplayJsonApiRepository implements ReplayRepository<String> {
 
     final FindIterable<Document> result = landscapeCollection.find(landscapeDocument);
 
-    if (result.first() == null) {
-      throw new ClientErrorException("Replay not found for provided timestamp " + timestamp,
+    final Document first = result.first();
+    if (first == null) {
+      throw new ClientErrorException("Landscape not found for provided timestamp " + timestamp,
           Response.Status.NOT_FOUND);
-    } else {
-      return (int) result.first().get(MongoHelper.FIELD_REQUESTS);
-
     }
+
+    final Object requests = first.get(MongoHelper.FIELD_REQUESTS);
+    if (requests == null) {
+      return 0;
+    }
+    return (int) requests;
   }
 
   @Override

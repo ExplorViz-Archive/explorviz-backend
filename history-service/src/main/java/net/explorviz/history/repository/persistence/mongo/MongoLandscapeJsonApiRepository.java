@@ -25,14 +25,13 @@ import org.slf4j.LoggerFactory;
  * {@code explorviz.properties} resource.
  *
  * <p>
- *
+ * <p>
  * This repository will return all requested landscape objects in the json api format, which is the
  * format the objects are persisted in internally. Prefer this class over
  * {@link MongoLandscapeRepository} if you don't need an actually landscape object to avoid costy
  * de-/serialization.
  *
  * </p>
- *
  */
 public class MongoLandscapeJsonApiRepository implements LandscapeRepository<String> {
 
@@ -48,7 +47,7 @@ public class MongoLandscapeJsonApiRepository implements LandscapeRepository<Stri
 
   @Inject
   public MongoLandscapeJsonApiRepository(final MongoHelper mongoHelper,
-      final LandscapeSerializationHelper helper) {
+                                         final LandscapeSerializationHelper helper) {
     this.mongoHelper = mongoHelper;
     this.serializationHelper = helper;
   }
@@ -95,12 +94,15 @@ public class MongoLandscapeJsonApiRepository implements LandscapeRepository<Stri
     landscapeDocument.append(MongoHelper.FIELD_TIMESTAMP, timestamp);
 
     final FindIterable<Document> result = landscapeCollection.find(landscapeDocument);
-
-    if (result.first() == null) {
+    final Document first = result.first();
+    if (first == null) {
       return Optional.empty();
-    } else {
-      return Optional.of((String) result.first().get(MongoHelper.FIELD_LANDSCAPE));
     }
+    final Object landscape = first.get(MongoHelper.FIELD_LANDSCAPE);
+    if (landscape == null) {
+      return Optional.empty();
+    }
+    return Optional.of((String) landscape);
   }
 
   @Override
@@ -117,12 +119,18 @@ public class MongoLandscapeJsonApiRepository implements LandscapeRepository<Stri
 
     final FindIterable<Document> result = landscapeCollection.find(landscapeDocument);
 
-    if (result.first() == null) {
+    final Document first = result.first();
+    if (first == null) {
       return Optional.empty();
-    } else {
-      return Optional.of((String) result.first().get(MongoHelper.FIELD_LANDSCAPE));
     }
+
+    final Object landscape = first.get(MongoHelper.FIELD_LANDSCAPE);
+    if (landscape == null) {
+      return Optional.empty();
+    }
+    return Optional.of((String) landscape);
   }
+
 
   @Override
   public void cleanup(final long from) {
@@ -162,12 +170,17 @@ public class MongoLandscapeJsonApiRepository implements LandscapeRepository<Stri
 
     final FindIterable<Document> result = landscapeCollection.find(landscapeDocument);
 
-    if (result.first() == null) {
+    final Document first = result.first();
+    if (first == null) {
       throw new ClientErrorException("Landscape not found for provided timestamp " + timestamp,
           Response.Status.NOT_FOUND);
-    } else {
-      return (int) result.first().get(MongoHelper.FIELD_REQUESTS);
     }
+
+    final Object requests = first.get(MongoHelper.FIELD_REQUESTS);
+    if (requests == null) {
+      return 0;
+    }
+    return (int) requests;
   }
 
 

@@ -27,7 +27,7 @@ import javax.ws.rs.QueryParam;
 import net.explorviz.history.repository.persistence.LandscapeRepository;
 import net.explorviz.history.repository.persistence.ReplayRepository;
 import net.explorviz.history.repository.persistence.mongo.LandscapeSerializationHelper;
-import net.explorviz.history.util.ResourceHelper;
+import net.explorviz.history.util.UploadHelper;
 import net.explorviz.landscape.model.landscape.Landscape;
 import net.explorviz.security.user.Role;
 import net.explorviz.shared.security.filters.Secure;
@@ -44,7 +44,7 @@ import org.slf4j.LoggerFactory;
 @RolesAllowed({Role.ADMIN_NAME, Role.USER_NAME})
 @Tag(name = "Landscapes")
 @SecurityScheme(type = SecuritySchemeType.HTTP, name = "token", scheme = "bearer",
-    bearerFormat = "JWT")
+                bearerFormat = "JWT")
 @SecurityRequirement(name = "token")
 @Secure
 public class LandscapeResource {
@@ -54,16 +54,25 @@ public class LandscapeResource {
   private static final String MEDIA_TYPE = "application/vnd.api+json";
   private static final long QUERY_PARAM_DEFAULT_VALUE_LONG = 0L;
   private static final String QUERY_PARAM_EMPTY_STRING = "";
+  private static final String TIMESTAMP_IS_MANDATORY = "Query parameter 'timestamp' is mandatory";
+
 
   private final LandscapeRepository<String> landscapeStringRepo;
   private final ReplayRepository<String> replayStringRepo;
 
   private final LandscapeSerializationHelper serializationHelper;
 
+  /**
+   * Creates a new resource. Handled by DI.
+   *
+   * @param landscapeStringRepo the repository for {@link Landscape}s
+   * @param replayStringRepo    the repository for Replay-{@link Landscape}s
+   * @param serializationHelper helper to serialize landscapes to JSON:API
+   */
   @Inject
   public LandscapeResource(final LandscapeRepository<String> landscapeStringRepo,
-      final ReplayRepository<String> replayStringRepo,
-      final LandscapeSerializationHelper serializationHelper) {
+                           final ReplayRepository<String> replayStringRepo,
+                           final LandscapeSerializationHelper serializationHelper) {
     this.landscapeStringRepo = landscapeStringRepo;
     this.replayStringRepo = replayStringRepo;
     this.serializationHelper = serializationHelper;
@@ -82,11 +91,12 @@ public class LandscapeResource {
   @Path("{id}")
   @Produces(MEDIA_TYPE)
   @Operation(summary = "Find a landscape by its id")
-  @ApiResponse(responseCode = "200", description = "Response contains the requested landscape.",
-      content = @Content(schema = @Schema(implementation = Landscape.class)))
-  @ApiResponse(responseCode = "404", description = "No landscape with such id.")
+  @ApiResponse(responseCode = HttpStatus.OK,
+               description = "Response contains the requested landscape.",
+               content = @Content(schema = @Schema(implementation = Landscape.class)))
+  @ApiResponse(responseCode = HttpStatus.NOT_FOUND, description = "No landscape with such id.")
   public String getLandscapeById(@Parameter(description = "Id of the landscape",
-      required = true) @PathParam("id") final String id) {
+                                            required = true) @PathParam("id") final String id) {
 
     // Check existence in landscapeRepo and replayRepo or throw Exception
     // this can be done better since Java 9
@@ -94,7 +104,8 @@ public class LandscapeResource {
         .filter(Optional::isPresent)
         .map(Optional::get)
         .findFirst()
-        .orElseThrow(() -> new NotFoundException("Landscape with id " + id + " not found.")); // NOCS
+        .orElseThrow(
+            () -> new NotFoundException("Landscape with id " + id + " not found.")); // NOCS
   }
 
   /**
@@ -106,15 +117,17 @@ public class LandscapeResource {
   @GET
   @Produces(MEDIA_TYPE)
   @Operation(summary = "Find a landscape by its timestamp")
-  @ApiResponse(responseCode = "200",
-      description = "Response contains the first landscape with the given timestamp.",
-      content = @Content(schema = @Schema(implementation = Landscape.class)))
-  @ApiResponse(responseCode = "404", description = "No landscape with the given timestamp.")
+  @ApiResponse(responseCode = HttpStatus.OK,
+               description = "Response contains the first landscape with the given timestamp.",
+               content = @Content(schema = @Schema(implementation = Landscape.class)))
+  @ApiResponse(responseCode = HttpStatus.NOT_FOUND,
+               description = "No landscape with the given timestamp.")
   public String getLandscape(@Parameter(description = "The timestamp to filter by.",
-      required = true) @QueryParam("timestamp") final long timestamp) {
+                                        required = true) @QueryParam("timestamp")
+                             final long timestamp) {
 
     if (timestamp == QUERY_PARAM_DEFAULT_VALUE_LONG) {
-      throw new BadRequestException("Query parameter 'timestamp' is mandatory");
+      throw new BadRequestException(TIMESTAMP_IS_MANDATORY);
     }
 
     // Check existence in landscapeRepo and replayRepo or throw Exception
@@ -130,25 +143,26 @@ public class LandscapeResource {
   }
 
   /**
-   * Provides a json file for downloading a landscape from the frontend
+   * Provides a json file for downloading a landscape from the frontend.
    *
    * @param timestamp of the {@link Landscape} to return
    * @return the {@link Landscape} as a json file with the given timestamp
-   *
    */
   @GET
   @Path("/download")
   @Produces("application/json")
   @Operation(summary = "Download a landscape by its timestamp")
-  @ApiResponse(responseCode = "200",
-      description = "Response contains the first landscape with the given timestamp.",
-      content = @Content(schema = @Schema(implementation = Landscape.class)))
-  @ApiResponse(responseCode = "404", description = "No landscape with the given timestamp.")
+  @ApiResponse(responseCode = HttpStatus.OK,
+               description = "Response contains the first landscape with the given timestamp.",
+               content = @Content(schema = @Schema(implementation = Landscape.class)))
+  @ApiResponse(responseCode = HttpStatus.NOT_FOUND,
+               description = "No landscape with the given timestamp.")
   public String downloadLandscape(@Parameter(description = "The timestamp to filter by.",
-      required = true) @QueryParam("timestamp") final long timestamp) {
+                                             required = true) @QueryParam("timestamp")
+                                  final long timestamp) {
 
     if (timestamp == QUERY_PARAM_DEFAULT_VALUE_LONG) {
-      throw new BadRequestException("Query parameter 'timestamp' is mandatory");
+      throw new BadRequestException(TIMESTAMP_IS_MANDATORY);
     }
 
     // Check existence in landscapeRepo and replayRepo or throw Exception
@@ -165,36 +179,41 @@ public class LandscapeResource {
   }
 
   /**
-   * Accepts uploading a landscape from the frontend
+   * Accepts uploading a landscape from the frontend.
    *
    * @param uploadedInputStream json-file of the uploaded landscape
-   * @param fileInfo information of the file, e.g., the filename
+   * @param fileInfo            information of the file, e.g., the filename
    */
   @POST
   @Path("/replay/upload")
   @Consumes("multipart/form-data")
   @Produces(MEDIA_TYPE)
   @Operation(summary = "Upload a landscape file from the frontend")
-  @ApiResponse(responseCode = "200", description = "Response contains the uploaded landscape file.",
-      content = @Content(schema = @Schema(implementation = Landscape.class)))
-  @ApiResponse(responseCode = "404", description = "Landscape file could not be uploaded.")
+  @ApiResponse(responseCode = HttpStatus.OK,
+               description = "Response contains the uploaded landscape file.",
+               content = @Content(schema = @Schema(implementation = Landscape.class)))
+  @ApiResponse(responseCode = HttpStatus.NOT_FOUND,
+               description = "Landscape file could not be uploaded.")
   public String uploadLandscape(
       @Parameter(description = "The name of the file.",
-          required = true) @QueryParam("filename") final String fileName,
+                 required = true) @QueryParam("filename") final String fileName,
       @Parameter(description = "The uploaded landscape file.",
-          required = true) @FormDataParam("file") final InputStream uploadedInputStream,
+                 required = true) @FormDataParam("file") final InputStream uploadedInputStream,
       @Parameter(description = "The file information of the uploaded landscape.",
-          required = true) @FormDataParam("file") final FormDataContentDisposition fileInfo) {
+                 required = true) @FormDataParam("file")
+      final FormDataContentDisposition fileInfo) {
 
     // TODO check for empty uploaded landscape file
-    if (fileName == QUERY_PARAM_EMPTY_STRING) {
+    if (fileName.equals(QUERY_PARAM_EMPTY_STRING)) {
       throw new BadRequestException("Query parameter 'filename' is mandatory");
     }
 
-    LOGGER.info("Uploaded Filename: " + fileName);
+    if (LOGGER.isInfoEnabled()) {
+      LOGGER.info("Uploaded Filename: " + fileName);
+    }
 
     // split the passed filename
-    final String fileNameWithoutExtension = ResourceHelper.removeFileNameExtension(fileName);
+    final String fileNameWithoutExtension = UploadHelper.removeFileNameExtension(fileName);
     final String[] splittedFilename = fileNameWithoutExtension.split("-");
     final long parsedTimestamp = Long.valueOf(splittedFilename[0]);
 
@@ -210,7 +229,7 @@ public class LandscapeResource {
       Landscape parsedLandscape = null;
 
       final String convertedInputStream =
-          ResourceHelper.convertInputstreamToString(uploadedInputStream);
+          UploadHelper.convertInputstreamToString(uploadedInputStream);
 
       try {
         parsedLandscape = this.serializationHelper.deserialize(convertedInputStream);
