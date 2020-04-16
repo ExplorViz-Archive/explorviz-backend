@@ -104,7 +104,7 @@ public class MongoReplayJsonApiRepository implements ReplayRepository<String> {
 
   @Override
   public Optional<String> getByTimestamp(final Timestamp timestamp) {
-    return this.getByTimestamp(timestamp.getTimestamp());
+    return this.getByTimestamp(timestamp.getUnixTimestamp());
   }
 
   @Override

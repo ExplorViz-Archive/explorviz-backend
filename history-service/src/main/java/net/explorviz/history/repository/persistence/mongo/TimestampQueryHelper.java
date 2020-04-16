@@ -35,7 +35,7 @@ public final class TimestampQueryHelper {
         throw new IllegalArgumentException(MUST_BE_POSITIVE_INTEGER);
       }
       result = timestamps.parallelStream()
-          .filter(t -> fromTs <= t.getTimestamp())
+          .filter(t -> fromTs <= t.getUnixTimestamp())
           .collect(Collectors.toList());
     }
     if (to != null) {
@@ -44,7 +44,7 @@ public final class TimestampQueryHelper {
         throw new IllegalArgumentException(MUST_BE_POSITIVE_INTEGER);
       }
       result = result.parallelStream()
-          .filter(t -> toTs >= t.getTimestamp())
+          .filter(t -> toTs >= t.getUnixTimestamp())
           .collect(Collectors.toList());
     }
     return result;
@@ -60,10 +60,10 @@ public final class TimestampQueryHelper {
     final List<Timestamp> result = new ArrayList<>(timestamps);
     // Sort descending
     result.sort((t1, t2) -> {
-      if (t1.getTimestamp() == t2.getTimestamp()) {
+      if (t1.getUnixTimestamp() == t2.getUnixTimestamp()) {
         return 0;
       }
-      return t1.getTimestamp() > t2.getTimestamp() ? -1 : 1;
+      return t1.getUnixTimestamp() > t2.getUnixTimestamp() ? -1 : 1;
     });
     return result;
   }

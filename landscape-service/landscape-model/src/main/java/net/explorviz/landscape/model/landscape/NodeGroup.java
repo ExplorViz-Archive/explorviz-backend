@@ -53,6 +53,10 @@ public class NodeGroup extends BaseEntity {
     return this.nodes;
   }
 
+  /**
+   * Updates the name of the node group to a concatenation
+   * of names of all contained nodes.
+   */
   public void updateName() {
     final List<String> allNames = this.getNodeNames();
     Collections.sort(allNames, new NameComperator());
@@ -72,10 +76,11 @@ public class NodeGroup extends BaseEntity {
   private List<String> getNodeNames() {
     final List<String> allNames = new ArrayList<>();
     for (final Node node : this.nodes) {
-      if (node.getName() != null && !node.getName().isEmpty() && !node.getName().startsWith("<")) { // NOPMD
-        allNames.add(node.getName());
-      } else {
+      if (node.getName() == null || node.getName().isEmpty() || node.getName()
+          .startsWith("<")) { // NOPMD
         allNames.add(node.getIpAddress());
+      } else {
+        allNames.add(node.getName());
       }
     }
     return allNames;

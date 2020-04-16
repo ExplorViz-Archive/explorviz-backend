@@ -106,7 +106,7 @@ public class MongoLandscapeJsonApiRepository implements LandscapeRepository<Stri
 
   @Override
   public Optional<String> getByTimestamp(final Timestamp timestamp) {
-    return this.getByTimestamp(timestamp.getTimestamp());
+    return this.getByTimestamp(timestamp.getUnixTimestamp());
   }
 
   @Override

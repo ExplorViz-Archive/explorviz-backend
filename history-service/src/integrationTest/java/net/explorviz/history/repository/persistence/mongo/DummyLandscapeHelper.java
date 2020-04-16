@@ -103,8 +103,8 @@ public final class DummyLandscapeHelper {
 
     // set random usage
     node.setCpuUtilization((double) getRandomNum(10, 100) / 100);
-    node.setFreeRAM((long) getRandomNum(1, 4) * LandscapeDummyCreator.formatFactor);
-    node.setUsedRAM((long) getRandomNum(1, 4) * LandscapeDummyCreator.formatFactor);
+    node.setFreeRam((long) getRandomNum(1, 4) * LandscapeDummyCreator.formatFactor);
+    node.setUsedRam((long) getRandomNum(1, 4) * LandscapeDummyCreator.formatFactor);
 
     // create a new node event
     landscape.createNewEvent(idGen.generateId(),

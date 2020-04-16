@@ -233,7 +233,7 @@ public class LandscapeResource {
 
       try {
         parsedLandscape = this.serializationHelper.deserialize(convertedInputStream);
-        this.replayStringRepo.save(parsedLandscape.getTimestamp().getTimestamp(),
+        this.replayStringRepo.save(parsedLandscape.getTimestamp().getUnixTimestamp(),
             parsedLandscape,
             parsedLandscape.getTimestamp().getTotalRequests());
       } catch (final DocumentSerializationException e) {

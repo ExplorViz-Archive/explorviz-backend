@@ -1,7 +1,7 @@
 package net.explorviz.landscape.injection;
 
-
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.Properties;
 import javax.inject.Inject;
 import net.explorviz.landscape.server.main.DependencyInjectionBinder;
