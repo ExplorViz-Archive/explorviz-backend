@@ -56,10 +56,10 @@ public final class GenericExplorVizExternalLogAdapter {
         interfaceImpl);
   }
 
-  private static void sendBeforeGeneric(final byte ID, final long timestamp, final long traceId,
+  private static void sendBeforeGeneric(final byte id, final long timestamp, final long traceId,
       final int orderIndex, final int objectId, final String operationSignature, final String clazz,
       final String implementedInterface) {
-    EXPLORVIZ_BUFFER.put(ID);
+    EXPLORVIZ_BUFFER.put(id);
     EXPLORVIZ_BUFFER.putLong(traceId);
     EXPLORVIZ_BUFFER.putInt(orderIndex);
     EXPLORVIZ_BUFFER.putInt(objectId);
@@ -77,7 +77,7 @@ public final class GenericExplorVizExternalLogAdapter {
       if (firstTimestamp == -1) {
         firstTimestamp = timestamp;
         // firstWallclockTimestamp = System.nanoTime();
-      } else {
+      } else { // NOPMD
         // final long passedTime = timestamp - firstTimestamp;
 
         // while (REPLAY_IN_REALTIME && System.nanoTime() - firstWallclockTimestamp < passedTime) {
@@ -105,9 +105,9 @@ public final class GenericExplorVizExternalLogAdapter {
         orderIndex);
   }
 
-  private static void sendAfterGeneric(final byte ID, final long timestamp,
+  private static void sendAfterGeneric(final byte id, final long timestamp,
       final long methodDuration, final long traceId, final int orderIndex) {
-    EXPLORVIZ_BUFFER.put(ID);
+    EXPLORVIZ_BUFFER.put(id);
     EXPLORVIZ_BUFFER.putLong(methodDuration);
     EXPLORVIZ_BUFFER.putLong(traceId);
     EXPLORVIZ_BUFFER.putInt(orderIndex);
@@ -125,9 +125,9 @@ public final class GenericExplorVizExternalLogAdapter {
         cause);
   }
 
-  private static void sendAfterFailedGeneric(final byte ID, final long timestamp,
+  private static void sendAfterFailedGeneric(final byte id, final long timestamp,
       final long methodDuration, final long traceId, final int orderIndex, final String cause) {
-    EXPLORVIZ_BUFFER.put(ID);
+    EXPLORVIZ_BUFFER.put(id);
     EXPLORVIZ_BUFFER.putLong(methodDuration);
     EXPLORVIZ_BUFFER.putLong(traceId);
     EXPLORVIZ_BUFFER.putInt(orderIndex);
@@ -138,7 +138,7 @@ public final class GenericExplorVizExternalLogAdapter {
 
   /**
    * Mapping towards Kieker (ApplicationTraceMetaDataRecord) and ExplorViz
-   * (HostApplicationMetaDataRecord)
+   * (HostApplicationMetaDataRecord).
    *
    * @param timestamp (as configured in Kieker)
    * @param systemName (synthetic clustering of applications and nodes, is configured in ExplorViz)
@@ -162,23 +162,23 @@ public final class GenericExplorVizExternalLogAdapter {
 
   /**
    * Mapping towards Kieker (CPUUtilizationRecord and MemSwapUsageRecord) and ExplorViz
-   * (MemSwapUsageRecord)
+   * (MemSwapUsageRecord).
    *
    * @param timestamp (as configured in Kieker)
    * @param hostname (of the monitored application)
    * @param cpuUtilization (between 0 and 1)
-   * @param usedRAM (in byte)
-   * @param absoluteRAM (in byte)
+   * @param usedRam (in byte)
+   * @param absoluteRam (in byte)
    */
   public static void sendSystemMonitoringRecord(final long timestamp, final String hostname,
-      final double cpuUtilization, final long usedRAM, final long absoluteRAM) {
+      final double cpuUtilization, final long usedRam, final long absoluteRam) {
 
     // a value of "0" marks that the information is not available, either memory or
     // cpu usage
     EXPLORVIZ_BUFFER.put(SystemMonitoringRecord.CLAZZ_ID);
     EXPLORVIZ_BUFFER.putDouble(cpuUtilization);
-    EXPLORVIZ_BUFFER.putLong(usedRAM);
-    EXPLORVIZ_BUFFER.putLong(absoluteRAM);
+    EXPLORVIZ_BUFFER.putLong(usedRam);
+    EXPLORVIZ_BUFFER.putLong(absoluteRam);
 
     sendBufferIfHasElements(timestamp);
 
