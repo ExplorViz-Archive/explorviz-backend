@@ -10,6 +10,8 @@ import net.explorviz.landscape.model.store.Timestamp;
  */
 public final class TimestampQueryHelper {
 
+  private static final String MUST_BE_POSITIVE_INTEGER = "Timestamp must be positive integer";
+
   private TimestampQueryHelper() {
     // Utility class
   }
@@ -29,12 +31,18 @@ public final class TimestampQueryHelper {
     List<Timestamp> result = new ArrayList<>(timestamps);
     if (from != null) {
       final long fromTs = Long.parseLong(from);
+      if (fromTs < 0) {
+        throw new IllegalArgumentException(MUST_BE_POSITIVE_INTEGER);
+      }
       result = timestamps.parallelStream()
           .filter(t -> fromTs <= t.getTimestamp())
           .collect(Collectors.toList());
     }
     if (to != null) {
       final long toTs = Long.parseLong(to);
+      if (toTs < 0) {
+        throw new IllegalArgumentException(MUST_BE_POSITIVE_INTEGER);
+      }
       result = result.parallelStream()
           .filter(t -> toTs >= t.getTimestamp())
           .collect(Collectors.toList());

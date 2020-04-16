@@ -2,6 +2,7 @@ package net.explorviz.history.server.resources;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -26,11 +27,18 @@ import org.mockito.junit.jupiter.MockitoExtension;
  * requests.
  */
 @ExtendWith(MockitoExtension.class)
+@SuppressWarnings("MagicNumber")
 public class TimestampResourceTest {
 
+  private static final String FILTER_TYPE = "filter[type]";
+  private static final String TYPE_LANDSCAPE = "landscape";
+  private static final String TYPE_REPLAY = "replay";
+  private static final String PAGE_NUMBER = "page[number]";
+  private static final String PAGE_SIZE = "page[size]";
+  private static final String FILTER_FROM = "filter[from]";
   private TimestampResource timestampResource;
 
-
+  // CHECKSTYLE.OFF: MultipleStringLiteralsCheck - Much more readable than NOCS in many lines
 
   @Mock(lenient = true)
   private TimestampRepository timestampRepo;
@@ -38,6 +46,11 @@ public class TimestampResourceTest {
   private List<Timestamp> serviceGeneratedTimestamps;
   private List<Timestamp> userUploadedTimestamps;
 
+  /**
+   * Creates a bunch of timestamp to run the tests against and initializes the mocks.
+   *
+   * @throws QueryException Ignore, mocking
+   */
   @BeforeEach
   public void setUp() throws QueryException {
 
@@ -70,7 +83,7 @@ public class TimestampResourceTest {
   @DisplayName("Return all service-generated timestamps.")
   public void giveAllServiceGenerated() {
     final MultivaluedHashMap<String, String> params = new MultivaluedHashMap<>();
-    params.add("filter[type]", "landscape");
+    params.add(FILTER_TYPE, TYPE_LANDSCAPE);
     final UriInfo ui = Mockito.mock(UriInfo.class);
     when(ui.getQueryParameters(true)).thenReturn(params);
     assertEquals(this.reverse(this.serviceGeneratedTimestamps),
@@ -82,7 +95,7 @@ public class TimestampResourceTest {
   @DisplayName("Return all user-uploaded timestamps.")
   public void giveAllUserUploadedOnlyFlag() {
     final MultivaluedHashMap<String, String> params = new MultivaluedHashMap<>();
-    params.add("filter[type]", "replay");
+    params.add(FILTER_TYPE, TYPE_REPLAY);
     final UriInfo ui = Mockito.mock(UriInfo.class);
     when(ui.getQueryParameters(true)).thenReturn(params);
     assertEquals(this.reverse(this.userUploadedTimestamps),
@@ -94,9 +107,9 @@ public class TimestampResourceTest {
   @DisplayName("Return first two service-generated timestamps.")
   public void giveServiceGeneratedBasedOnMaxLength() {
     final MultivaluedHashMap<String, String> params = new MultivaluedHashMap<>();
-    params.add("page[number]", "2");
-    params.add("page[size]", "2");
-    params.add("filter[type]", "landscape");
+    params.add(PAGE_NUMBER, "2");
+    params.add(PAGE_SIZE, "2");
+    params.add(FILTER_TYPE, TYPE_LANDSCAPE);
     final UriInfo ui = Mockito.mock(UriInfo.class);
     when(ui.getQueryParameters(true)).thenReturn(params);
     final List<Timestamp> resultList =
@@ -114,9 +127,9 @@ public class TimestampResourceTest {
   public void giveUserUploadedOnlyFlagBasedOnMaxLength() {
 
     final MultivaluedHashMap<String, String> params = new MultivaluedHashMap<>();
-    params.add("page[number]", "2");
-    params.add("page[size]", "2");
-    params.add("filter[type]", "replay");
+    params.add(PAGE_NUMBER, "2");
+    params.add(PAGE_SIZE, "2");
+    params.add(FILTER_TYPE, TYPE_REPLAY);
     final UriInfo ui = Mockito.mock(UriInfo.class);
     when(ui.getQueryParameters(true)).thenReturn(params);
     final List<Timestamp> resultList =
@@ -136,8 +149,8 @@ public class TimestampResourceTest {
   public void giveAllServiceTimestampsAfterPassedTimestamp() {
 
     final MultivaluedHashMap<String, String> params = new MultivaluedHashMap<>();
-    params.add("filter[from]", "1556302820");
-    params.add("filter[type]", "landscape");
+    params.add(FILTER_FROM, "1556302820");
+    params.add(FILTER_TYPE, TYPE_LANDSCAPE);
     final UriInfo ui = Mockito.mock(UriInfo.class);
     when(ui.getQueryParameters(true)).thenReturn(params);
 
@@ -161,8 +174,8 @@ public class TimestampResourceTest {
 
 
     final MultivaluedHashMap<String, String> params = new MultivaluedHashMap<>();
-    params.add("filter[from]", "1556302880");
-    params.add("filter[type]", "replay");
+    params.add(FILTER_FROM, "1556302880");
+    params.add(FILTER_TYPE, TYPE_REPLAY);
     final UriInfo ui = Mockito.mock(UriInfo.class);
     when(ui.getQueryParameters(true)).thenReturn(params);
 
@@ -185,11 +198,11 @@ public class TimestampResourceTest {
   public void giveConcreteIntervalOfUserUploadedTimestamps() {
 
     final MultivaluedHashMap<String, String> params = new MultivaluedHashMap<>();
-    params.add("filter[from]", "1556302880");
+    params.add(FILTER_FROM, "1556302880");
     params.add("filter[to]", "1556302900");
-    params.add("filter[type]", "replay");
-    params.add("page[size]", "3");
-    params.add("page[number]", "0");
+    params.add(FILTER_TYPE, TYPE_REPLAY);
+    params.add(PAGE_SIZE, "3");
+    params.add(PAGE_NUMBER, "0");
     final UriInfo ui = Mockito.mock(UriInfo.class);
     when(ui.getQueryParameters(true)).thenReturn(params);
 
@@ -211,8 +224,8 @@ public class TimestampResourceTest {
   public void giveRemainingIntervalOfUserUploadedTimestamps() {
 
     final MultivaluedHashMap<String, String> params = new MultivaluedHashMap<>();
-    params.add("filter[from]", "1556302880");
-    params.add("filter[type]", "replay");
+    params.add(FILTER_FROM, "1556302880");
+    params.add(FILTER_TYPE, TYPE_REPLAY);
 
     final UriInfo ui = Mockito.mock(UriInfo.class);
     when(ui.getQueryParameters(true)).thenReturn(params);
@@ -236,8 +249,8 @@ public class TimestampResourceTest {
   @DisplayName("Return concrete interval of service-generated timestamps.")
   public void giveConcreteIntervalOfServiceGeneratedTimestamps() {
     final MultivaluedHashMap<String, String> params = new MultivaluedHashMap<>();
-    params.add("filter[from]", "1556302810");
-    params.add("filter[type]", "landscape");
+    params.add(FILTER_FROM, "1556302810");
+    params.add(FILTER_TYPE, TYPE_LANDSCAPE);
     final UriInfo ui = Mockito.mock(UriInfo.class);
     when(ui.getQueryParameters(true)).thenReturn(params);
 
@@ -263,10 +276,10 @@ public class TimestampResourceTest {
   public void giveRemainingIntervalOfServiceGeneratedTimestamps() {
 
     final MultivaluedHashMap<String, String> params = new MultivaluedHashMap<>();
-    params.add("filter[from]", "1556302809");
-    params.add("filter[type]", "landscape");
-    params.add("page[number]", "0");
-    params.add("page[size]", "5");
+    params.add(FILTER_FROM, "1556302809");
+    params.add(FILTER_TYPE, TYPE_LANDSCAPE);
+    params.add(PAGE_NUMBER, "0");
+    params.add(PAGE_SIZE, "5");
     final UriInfo ui = Mockito.mock(UriInfo.class);
     when(ui.getQueryParameters(true)).thenReturn(params);
 
@@ -286,13 +299,16 @@ public class TimestampResourceTest {
   }
 
   @Test
-  @DisplayName("Return interval of user-uploaded timestamps starting at newest, when no timestamp was passed.") // NOCS
+  @DisplayName(
+      "Return interval of user-uploaded timestamps starting at newest, "
+          + "when no timestamp was passed.")
+  // NOCS
   public void giveMaxLengthIntervalOfUserPloadedTimestamps() {
 
     final MultivaluedHashMap<String, String> params = new MultivaluedHashMap<>();
-    params.add("filter[type]", "replay");
-    params.add("page[number]", "0");
-    params.add("page[size]", "2");
+    params.add(FILTER_TYPE, TYPE_REPLAY);
+    params.add(PAGE_NUMBER, "0");
+    params.add(PAGE_SIZE, "2");
     final UriInfo ui = Mockito.mock(UriInfo.class);
     when(ui.getQueryParameters(true)).thenReturn(params);
 
@@ -311,13 +327,15 @@ public class TimestampResourceTest {
   }
 
   @Test
-  @DisplayName("Return interval of service-generated timestamps starting at newest, when no timestamp was passed.") // NOCS
+  @DisplayName("Return interval of service-generated timestamps starting at newest,"
+                   + " when no timestamp was passed.")
+  // NOCS
   public void giveMaxLengthIntervalOfServiceGeneratedTimestamps() {
 
     final MultivaluedHashMap<String, String> params = new MultivaluedHashMap<>();
-    params.add("filter[type]", "landscape");
-    params.add("page[number]", "0");
-    params.add("page[size]", "2");
+    params.add(FILTER_TYPE, TYPE_LANDSCAPE);
+    params.add(PAGE_NUMBER, "0");
+    params.add(PAGE_SIZE, "2");
     final UriInfo ui = Mockito.mock(UriInfo.class);
     when(ui.getQueryParameters(true)).thenReturn(params);
 

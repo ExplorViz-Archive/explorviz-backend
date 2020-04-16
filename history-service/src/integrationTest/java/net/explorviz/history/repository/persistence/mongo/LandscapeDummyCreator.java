@@ -20,8 +20,8 @@ public final class LandscapeDummyCreator {
   // CHECKSTYLE.OFF: MultipleStringLiteralsCheck - Much more readable than NOCS in many lines
   // CHECKSTYLE.OFF: MagicNumberCheck - Much more readable than NOCS in many lines
 
-  public static int applicationId = 0;
-  public static int formatFactor = 1024 * 1024 * 1024;
+  public static int applicationId = 0; // NOCS
+  public static int formatFactor = 1024 * 1024 * 1024; // NOCS
 
   private static IdGenerator idGen;
 
@@ -32,7 +32,7 @@ public final class LandscapeDummyCreator {
 
 
   /**
-   * Create a dummy landscape for demo and mocking purposes
+   * Create a dummy landscape for demo and mocking purposes.
    *
    * @return a prepared dummy landscape
    */
@@ -314,17 +314,10 @@ public final class LandscapeDummyCreator {
   }
 
   /**
-   * <<<<<<< HEAD Creates a dummy webshop application within the dummy landscape
+   * Creates a dummy webshop application within the dummy landscape.
    *
-   * @param application
-   * @return webshop application ======= Creating a communication between two clazzes within the
-   *         dummy landscape.
-   *
-   * @param traceId the id of the trace
-   * @param requests the request
-   * @param sourceClazz the source class
-   * @param targetClazz the target class
-   * @param application the appliaction >>>>>>> dev-1
+   * @param application the base application
+   * @return webshop application
    */
   private static Application createWebshopApplication(final Application application) {
 
@@ -456,9 +449,9 @@ public final class LandscapeDummyCreator {
   }
 
   /**
-   * Creates a dummy database-query including application within the dummy landscape
+   * Creates a dummy database-query including application within the dummy landscape.
    *
-   * @param application
+   * @param application the application
    * @return database connector application
    */
   private static Application createDatabaseConnector(final Application application) {

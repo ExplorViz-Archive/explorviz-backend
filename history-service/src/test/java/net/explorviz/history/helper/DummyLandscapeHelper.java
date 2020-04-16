@@ -1,5 +1,5 @@
 package net.explorviz.history.helper;
-
+// CHECKSTYLE:OFF
 import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -27,6 +27,8 @@ public final class DummyLandscapeHelper {
     // Utility Class
   }
 
+
+
   /**
    * Returns a random number between minValue and maxValue.
    *
@@ -52,9 +54,9 @@ public final class DummyLandscapeHelper {
   }
 
   /**
-   * Creates a new system
+   * Creates a new system.
    *
-   * @param name - name of the system
+   * @param name            - name of the system
    * @param parentLandscape - parent landscape
    * @return created system
    */
@@ -72,9 +74,9 @@ public final class DummyLandscapeHelper {
   }
 
   /**
-   * Creates a new nodeGroup
+   * Creates a new nodeGroup.
    *
-   * @param name - name of the nodeGroup
+   * @param name   - name of the nodeGroup
    * @param system - parent system
    * @return created nodeGroup
    */
@@ -86,14 +88,14 @@ public final class DummyLandscapeHelper {
   }
 
   /**
-   * Creates a new node
+   * Creates a new node.
    *
-   * @param ipAddress - ipAddress of the node
+   * @param ipAddress       - ipAddress of the node
    * @param parentNodeGroup - parent nodeGroup
    * @return created node
    */
   public static Node createNode(final String ipAddress, final NodeGroup parentNodeGroup,
-      final Landscape landscape) {
+                                final Landscape landscape) {
     final Node node = new Node(idGen.generateId());
     node.setIpAddress(ipAddress);
     node.setParent(parentNodeGroup);
@@ -113,15 +115,15 @@ public final class DummyLandscapeHelper {
   }
 
   /**
-   * Creates a new application
+   * Creates a new application.
    *
-   * @param name - name of the application
+   * @param name       - name of the application
    * @param parentNode - name of the parent node
-   * @param landscape - name of the landscape
+   * @param landscape  - name of the landscape
    * @return created application
    */
   public static Application createApplication(final String name, final Node parentNode,
-      final Landscape landscape) {
+                                              final Landscape landscape) {
     final Application application = new Application(idGen.generateId());
 
     LandscapeDummyCreator.applicationId = LandscapeDummyCreator.applicationId + 1;
@@ -147,16 +149,18 @@ public final class DummyLandscapeHelper {
   }
 
   /**
-   * Create communication between applications
+   * Create communication between applications.
    *
-   * @param source - sourceApplication
-   * @param target - targetApplication
+   * @param source    - sourceApplication
+   * @param target    - targetApplication
    * @param landscape - parent landscape
-   * @param requests - number of requests
+   * @param requests  - number of requests
    * @return created ApplicationCommunication
    */
   public static ApplicationCommunication createApplicationCommunication(final Application source,
-      final Application target, final Landscape landscape, final int requests) {
+                                                                        final Application target,
+                                                                        final Landscape landscape,
+                                                                        final int requests) {
     final ApplicationCommunication communication = new ApplicationCommunication(idGen.generateId());
     communication.setSourceApplication(source);
     communication.setTargetApplication(target);
@@ -172,15 +176,15 @@ public final class DummyLandscapeHelper {
   }
 
   /**
-   * Creates a component
+   * Creates a component.
    *
-   * @param name - name of the component
+   * @param name   - name of the component
    * @param parent - parent component
-   * @param app - parent application
+   * @param app    - parent application
    * @return created component
    */
   public static Component createComponent(final String name, final Component parent,
-      final Application app) {
+                                          final Application app) {
     final Component component = new Component(idGen.generateId());
     component.setName(name);
     component.setParentComponent(parent);
@@ -195,15 +199,15 @@ public final class DummyLandscapeHelper {
   }
 
   /**
-   * Creates a clazz
+   * Creates a clazz.
    *
-   * @param name - name of the clazz
-   * @param component - parent component
+   * @param name          - name of the clazz
+   * @param component     - parent component
    * @param instanceCount - number of instances
    * @return created clazz
    */
   public static Clazz createClazz(final String name, final Component component,
-      final int instanceCount) {
+                                  final int instanceCount) {
     final Clazz clazz = new Clazz(idGen.generateId());
     clazz.setName(name);
     clazz.setFullQualifiedName(component.getFullQualifiedName() + "." + name);
@@ -215,17 +219,18 @@ public final class DummyLandscapeHelper {
   }
 
   /**
-   * Creating a communication between two clazzes within the dummy landscape
+   * Creating a communication between two clazzes within the dummy landscape.
    *
-   * @param traceId - id of the trace
-   * @param requests - number of requests
+   * @param traceId     - id of the trace
+   * @param requests    - number of requests
    * @param sourceClazz - sourceClazz
    * @param targetClazz - targetClazz
    * @param application - parent application
    */
   public static void createClazzCommunication(final String traceId, final int tracePosition,
-      final int requests, final Clazz sourceClazz, final Clazz targetClazz,
-      final Application application) {
+                                              final int requests, final Clazz sourceClazz,
+                                              final Clazz targetClazz,
+                                              final Application application) {
 
     final float averageResponseTime = 0L + getRandomNum(10, 1000);
     final float overallTraceDuration = 0L + getRandomNum(1000, 10000);

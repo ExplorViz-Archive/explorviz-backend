@@ -25,7 +25,6 @@ import org.slf4j.LoggerFactory;
  * {@code explorviz.properties} resource.
  *
  * <p>
- * <p>
  * This repository will return all requested landscape objects in the json api format, which is the
  * format the objects are persisted in internally. Prefer this class over
  * {@link MongoLandscapeRepository} if you don't need an actually landscape object to avoid costy

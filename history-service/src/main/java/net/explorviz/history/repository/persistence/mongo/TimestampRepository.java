@@ -13,15 +13,11 @@ import net.explorviz.shared.querying.QueryException;
 import net.explorviz.shared.querying.QueryResult;
 import net.explorviz.shared.querying.Queryable;
 import org.bson.Document;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Auxiliary repository for accessing timestamps of persistent landscapes objects.
  */
 public class TimestampRepository implements Queryable<Timestamp> {
-
-  private static final Logger LOGGER = LoggerFactory.getLogger(TimestampRepository.class);
 
   private static final String FILTER_ARG_TYPE = "type";
   private static final String FILTER_ARG_FROM = "from";
@@ -48,20 +44,22 @@ public class TimestampRepository implements Queryable<Timestamp> {
       findOfType(query.getFilters().get(FILTER_ARG_TYPE), result);
     }
 
+    final List<String> fromFilters = query.getFilters().get(FILTER_ARG_FROM);
+    final List<String> toFilters = query.getFilters().get(FILTER_ARG_TO);
 
-    if (query.getFilters().get(FILTER_ARG_FROM).size() > 1 && LOGGER.isWarnEnabled()) {
-      LOGGER.warn("More than one 'from' given, only applying the first");
-    }
 
-    if (query.getFilters().get(FILTER_ARG_TO).size() > 1 && LOGGER.isWarnEnabled()) {
-      LOGGER.warn("More than one 'to' given, only applying the first");
+    String from = null;
+    String to = null;
+    if (toFilters != null && !toFilters.isEmpty()) {
+      to = toFilters.get(0);
     }
-    final String from = query.getFilters().get(FILTER_ARG_FROM).get(0);
-    final String to = query.getFilters().get(FILTER_ARG_FROM).get(0);
+    if (fromFilters != null && !fromFilters.isEmpty()) {
+      from = fromFilters.get(0);
+    }
 
     try {
       result = TimestampQueryHelper.filterByTimeRange(result, from, to);
-    } catch (final NumberFormatException e) {
+    } catch (final IllegalArgumentException e) {
       throw new QueryException("Filters 'from' and 'to' must be integral values", e);
     }
 

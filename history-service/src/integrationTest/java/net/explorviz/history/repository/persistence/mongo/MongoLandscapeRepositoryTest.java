@@ -1,6 +1,7 @@
 package net.explorviz.history.repository.persistence.mongo;
 
 import static org.junit.Assert.assertEquals;
+
 import java.util.Optional;
 import java.util.Random;
 import javax.inject.Inject;
@@ -17,10 +18,12 @@ import org.junit.Test;
 
 /**
  * Tests the {@link MongoLandscapeRepositoryTest}. Expects a running mongodb server.
- *
  */
 public class MongoLandscapeRepositoryTest {
 
+
+
+  public static final String IDS_DONT_MATCH = "Ids don't match";
   @Inject
   private MongoLandscapeRepository repo;
 
@@ -41,8 +44,9 @@ public class MongoLandscapeRepositoryTest {
       final DependencyInjectionBinder binder = new DependencyInjectionBinder();
       final ServiceLocator locator = ServiceLocatorUtilities.bind(binder);
       locator.inject(this);
+    } else {
+      this.repo.clear();
     }
-    this.repo.clear();
   }
 
 
@@ -61,8 +65,8 @@ public class MongoLandscapeRepositoryTest {
 
     final Optional<Landscape> landscapeRetrieved = this.repo.getByTimestamp(ts);
 
-    assertEquals("Ids don't match", landscape.getId(), landscapeRetrieved.get().getId()); // NOPMD
-                                                                                          // NOCS
+    assertEquals(IDS_DONT_MATCH, landscape.getId(), landscapeRetrieved.get().getId()); // NOPMD
+    // NOCS
 
   }
 
@@ -75,7 +79,8 @@ public class MongoLandscapeRepositoryTest {
 
     final Optional<Landscape> landscapeRetrieved = this.repo.getByTimestamp(ts);
 
-    assertEquals("Requests don't match", landscape.getId(), landscapeRetrieved.get().getId()); // NOPMD
+    assertEquals("Requests don't match", landscape.getId(),
+        landscapeRetrieved.get().getId()); // NOPMD
   }
 
   @Test
@@ -90,7 +95,7 @@ public class MongoLandscapeRepositoryTest {
 
     final Optional<Landscape> landscapeRetrieved = this.repo.getByTimestamp(ts);
 
-    assertEquals("Ids don't match", id, landscapeRetrieved.get().getId());
+    assertEquals(IDS_DONT_MATCH, id, landscapeRetrieved.get().getId());
 
   }
 
