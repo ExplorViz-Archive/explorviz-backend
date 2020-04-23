@@ -66,6 +66,7 @@ public class RangeSetting extends Setting {
   @SuppressWarnings("unused")
   private RangeSetting() {
     // Morphia
+    super();
   }
 
 
@@ -124,7 +125,7 @@ public class RangeSetting extends Setting {
 
   @Override
   public int hashCode() {
-    return new HashCodeBuilder(17, 37).appendSuper(super.hashCode())
+    return new HashCodeBuilder(17, 37).appendSuper(super.hashCode()) // NOCS
         .append(this.defaultValue)
         .append(this.min)
         .append(this.max)

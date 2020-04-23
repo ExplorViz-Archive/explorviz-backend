@@ -13,7 +13,11 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-class SettingsInfoCreation {
+// CHECKSTYLE.OFF: MagicNumberCheck
+// CHECKSTYLE.OFF: MultipleStringLiteralsCheck
+
+@SuppressWarnings({"PMD.JUnitTestsShouldIncludeAssert", "PMD.AvoidDuplicateLiterals"})
+class SettingsCreation {
 
   private static final String SETTINGS_URL = "http://localhost:8090/v1/settings";
 
@@ -33,22 +37,22 @@ class SettingsInfoCreation {
    * @throws IOException if serialization fails
    */
   @BeforeAll
-  static void setUpAll() throws IOException {
+  public static void setUpAll() throws IOException {
     adminToken = AuthorizationHelper.getAdminToken();
     normieToken = AuthorizationHelper.getNormieToken();
   }
 
   @BeforeEach
-  void setUp() {
+  public void setUp() {
     this.authHeaderAdmin = new Header("authorization", "Bearer " + adminToken);
     this.authHeaderNormie = new Header("authorization", "Bearer " + normieToken);
   }
 
 
   @Test
-  void createAsAdmin() {
+  public void createAsAdmin() {
     final Setting toCreate =
-        new FlagSetting("testname", "a test setting", DefaultSettings.origin, false);
+        new FlagSetting("testname", "a test setting", DefaultSettings.ORIGIN, false);
 
     final Setting created = given().header(this.authHeaderAdmin)
         .contentType(MEDIA_TYPE)
@@ -70,9 +74,9 @@ class SettingsInfoCreation {
   }
 
   @Test
-  void createAsANormie() {
+  public void createAsANormie() {
     final Setting toCreate =
-        new FlagSetting("testname", "a test setting", DefaultSettings.origin, false);
+        new FlagSetting("testname", "a test setting", DefaultSettings.ORIGIN, false);
     given().header(this.authHeaderNormie)
         .contentType(MEDIA_TYPE)
         .body(toCreate, new JsonAPIMapper<>(Setting.class))

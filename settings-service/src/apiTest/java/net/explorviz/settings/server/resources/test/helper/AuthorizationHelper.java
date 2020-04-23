@@ -6,7 +6,7 @@ import io.restassured.mapper.ObjectMapperType;
 import java.util.Optional;
 import net.explorviz.security.user.User;
 
-public class AuthorizationHelper {
+public final class AuthorizationHelper {
 
   private static final String AUTH_URL = "http://localhost:8090/v1/tokens/";
   private static final String ADMIN_NAME = "admin";
@@ -15,11 +15,10 @@ public class AuthorizationHelper {
   private static final String NORMIE_PW = "password";
 
 
-  private static String normieToken = null;
-  private static String adminToken = null;
+  private static User admin;
+  private static User normie;
 
-  private static User admin = null;
-  private static User normie = null;
+  private AuthorizationHelper(){/* Utility Class */}
 
   public static Optional<User> login(final String name, final String password) {
 
@@ -50,11 +49,11 @@ public class AuthorizationHelper {
       if (normie.isPresent()) {
         AuthorizationHelper.normie = normie.get();
       } else {
-        // Not existent, create and try again
+        // Not existing, create and try again
         // Will fail if normie user exists with another password
-        final Optional<User> created_normie =
+        final Optional<User> createdNormie =
             UsersHelper.getInstance().createUser(NORMIE_NAME, NORMIE_PW, null);
-        if (created_normie.isPresent()) {
+        if (createdNormie.isPresent()) {
           return getNormie();
         } else {
           throw new IllegalStateException("Can no login as normie, does no exist");
@@ -78,7 +77,7 @@ public class AuthorizationHelper {
   }
 
 
-  static class UserCredentials {
+  private static class UserCredentials {
     public String username;
     public String password;
 

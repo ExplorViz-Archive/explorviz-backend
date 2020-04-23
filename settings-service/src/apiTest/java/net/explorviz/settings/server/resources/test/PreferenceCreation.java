@@ -1,6 +1,7 @@
 package net.explorviz.settings.server.resources.test;
 
 import static io.restassured.RestAssured.given;
+
 import io.restassured.http.Header;
 import java.io.IOException;
 import net.explorviz.security.user.User;
@@ -13,13 +14,16 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+// CHECKSTYLE.OFF: MagicNumberCheck
+// CHECKSTYLE.OFF: MultipleStringLiteralsCheck
+
+@SuppressWarnings({"PMD.JUnitTestsShouldIncludeAssert", "PMD.AvoidDuplicateLiterals"})
 public class PreferenceCreation {
 
   // private static final String USER_PREF_URL =
   // "http://localhost:8090/v1/users/{uid}/settings/preferences";
   private static final String PREF_URL = "http://localhost:8090/v1/preferences";
 
-  private static String adminToken;
   private static String normieToken;
 
   // private Header authHeaderAdmin;
@@ -35,19 +39,17 @@ public class PreferenceCreation {
    * @throws IOException if serialization fails
    */
   @BeforeAll
-  static void setUpAll() throws IOException {
-    adminToken = AuthorizationHelper.getAdminToken();
+  public static void setUpAll() throws IOException {
     normieToken = AuthorizationHelper.getNormieToken();
   }
 
   @BeforeEach
-  void setUp() {
-    // this.authHeaderAdmin = new Header("authorization", "Bearer " + adminToken);
+  public void setUp() {
     this.authHeaderNormie = new Header("authorization", "Bearer " + normieToken);
   }
 
   @Test
-  void createForSelf() {
+  public void createForSelf() {
     final User testUser = UsersHelper.getInstance()
         .createUser("tester", "test", null)
         .orElseThrow(IllegalStateException::new);
@@ -61,7 +63,7 @@ public class PreferenceCreation {
         .getToken();
     final Header auth = new Header("authorization", "Bearer " + myToken);
 
-    final UserPreference created = given().header(auth)
+    given().header(auth)
         .contentType(MEDIA_TYPE)
         .body(toCreate, new JsonAPIMapper<>(UserPreference.class))
         .when()
@@ -76,7 +78,7 @@ public class PreferenceCreation {
   }
 
   @Test
-  void createForOther() {
+  public void createForOther() {
     final User testUser = UsersHelper.getInstance()
         .createUser("tester", "test", null)
         .orElseThrow(IllegalStateException::new);
@@ -96,7 +98,7 @@ public class PreferenceCreation {
   }
 
   @Test
-  void createWithInvalidValue() {
+  public void createWithInvalidValue() {
     final User testUser = UsersHelper.getInstance()
         .createUser("tester", "test", null)
         .orElseThrow(IllegalStateException::new);

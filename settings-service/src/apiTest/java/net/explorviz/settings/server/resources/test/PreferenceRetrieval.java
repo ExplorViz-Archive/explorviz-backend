@@ -17,6 +17,10 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+// CHECKSTYLE.OFF: MagicNumberCheck
+// CHECKSTYLE.OFF: MultipleStringLiteralsCheck
+
+@SuppressWarnings({"PMD.JUnitTestsShouldIncludeAssert", "PMD.AvoidDuplicateLiterals"})
 public class PreferenceRetrieval {
 
   private static final String USER_PREF_URL =
@@ -39,13 +43,13 @@ public class PreferenceRetrieval {
    * @throws IOException if serialization fails
    */
   @BeforeAll
-  static void setUpAll() throws IOException {
+  public static void setUpAll() throws IOException {
     adminToken = AuthorizationHelper.getAdminToken();
     normieToken = AuthorizationHelper.getNormieToken();
   }
 
   @BeforeEach
-  void setUp() {
+  public void setUp() {
     this.authHeaderAdmin = new Header("authorization", "Bearer " + adminToken);
     this.authHeaderNormie = new Header("authorization", "Bearer " + normieToken);
   }
@@ -63,7 +67,7 @@ public class PreferenceRetrieval {
 
   @Test
   @SuppressWarnings("unchecked")
-  void getOwnPrefs() {
+  public void retrieveOwnPrefs() {
     final User testUser = UsersHelper.getInstance()
         .createUser("tester", "test", null)
         .orElseThrow(IllegalStateException::new);
@@ -97,16 +101,10 @@ public class PreferenceRetrieval {
   }
 
   @Test
-  void getPrefsOfOtherUser() {
+  public void retrievePrefsOfOtherUser() {
     final User testUser = UsersHelper.getInstance()
         .createUser("tester", "test", null)
         .orElseThrow(IllegalStateException::new);
-
-
-    final String user1token = AuthorizationHelper.login("tester", "test")
-        .orElseThrow(IllegalStateException::new)
-        .getToken();
-    final Header auth = new Header("authorization", "Bearer " + user1token);
 
 
     given().header(this.authHeaderNormie)
@@ -119,7 +117,7 @@ public class PreferenceRetrieval {
   }
 
   @Test
-  void getPrefsOfOtherAsAdmin() {
+  public void retrievePrefsOfOtherAsAdmin() {
     final User testUser = UsersHelper.getInstance()
         .createUser("tester", "test", null)
         .orElseThrow(IllegalStateException::new);

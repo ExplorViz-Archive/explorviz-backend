@@ -14,10 +14,12 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+// CHECKSTYLE.OFF: MagicNumberCheck
+// CHECKSTYLE.OFF: MultipleStringLiteralsCheck
+
+@SuppressWarnings({"PMD.JUnitTestsShouldIncludeAssert", "PMD.AvoidDuplicateLiterals"})
 class PreferenceUpdate {
 
-  private static final String USER_PREF_URL =
-          "http://localhost:8090/v1/preferences?filter[user]={uid}";
   private static final String PREF_URL = "http://localhost:8090/v1/preferences";
 
   private static String adminToken;
@@ -36,18 +38,18 @@ class PreferenceUpdate {
    * @throws IOException if serialization fails
    */
   @BeforeAll
-  static void setUpAll() throws IOException {
+  public static void setUpAll() throws IOException {
     adminToken = AuthorizationHelper.getAdminToken();
     normieToken = AuthorizationHelper.getNormieToken();
   }
 
   @BeforeEach
-  void setUp() {
+  public void setUp() {
     this.authHeaderAdmin = new Header("authorization", "Bearer " + adminToken);
     this.authHeaderNormie = new Header("authorization", "Bearer " + normieToken);
   }
 
-  private UserPreference setPref(final String uid, final String settingId, final Object value) {
+  private UserPreference createPref(final String uid, final String settingId, final Object value) {
     final UserPreference up = new UserPreference(null, uid, settingId, value);
 
     return given().header(this.authHeaderAdmin)
@@ -59,14 +61,14 @@ class PreferenceUpdate {
   }
 
   @Test
-  void updateOwnPref() {
+  public void updateOwnPref() {
     final User testUser = UsersHelper.getInstance()
         .createUser("tester", "test", null)
         .orElseThrow(IllegalStateException::new);
 
     final String settingId = DefaultSettings.appVizCommArrowSize.getId();
     final Double val = 2.0; // Default = 1.0, (0, 5)
-    final UserPreference createdPref = this.setPref(testUser.getId(), settingId, val);
+    final UserPreference createdPref = this.createPref(testUser.getId(), settingId, val);
 
     final UserPreference toUpdate =
         new UserPreference(createdPref.getId(), testUser.getId(), settingId, val + 1);
@@ -94,14 +96,14 @@ class PreferenceUpdate {
   }
 
   @Test
-  void updateOwnPrefInvalidValue() {
+  public void updateOwnPrefInvalidValue() {
     final User testUser = UsersHelper.getInstance()
         .createUser("tester", "test", null)
         .orElseThrow(IllegalStateException::new);
 
     final String settingId = DefaultSettings.appVizCommArrowSize.getId();
     final Double val = 2.0; // Default = 1.0, (0, 5)
-    final UserPreference createdPref = this.setPref(testUser.getId(), settingId, val);
+    final UserPreference createdPref = this.createPref(testUser.getId(), settingId, val);
 
     final UserPreference toUpdate = new UserPreference(createdPref.getId(), testUser.getId(),
         settingId, DefaultSettings.appVizCommArrowSize.getMax() + 1);
@@ -123,22 +125,17 @@ class PreferenceUpdate {
   }
 
   @Test
-  void updatePrefsOfOtherUser() {
+  public void updatePrefsOfOtherUser() {
     final User testUser = UsersHelper.getInstance()
         .createUser("tester", "test", null)
         .orElseThrow(IllegalStateException::new);
 
     final String settingId = DefaultSettings.appVizCommArrowSize.getId();
     final Double val = 2.0; // Default = 1.0, (0, 5)
-    final UserPreference createdPref = this.setPref(testUser.getId(), settingId, val);
+    final UserPreference createdPref = this.createPref(testUser.getId(), settingId, val);
 
     final UserPreference toUpdate =
         new UserPreference(createdPref.getId(), testUser.getId(), settingId, val + 1);
-
-    final String myToken = AuthorizationHelper.login("tester", "test")
-        .orElseThrow(IllegalStateException::new)
-        .getToken();
-    final Header auth = new Header("authorization", "Bearer " + myToken);
 
     given().header(this.authHeaderNormie)
         .contentType(MEDIA_TYPE)

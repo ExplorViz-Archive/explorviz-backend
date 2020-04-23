@@ -21,21 +21,20 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 @com.github.jasminb.jsonapi.annotations.Type("setting")
 @JsonSubTypes({@Type(name = "RangeSetting", value = RangeSetting.class),
     @Type(name = "FlagSeting", value = FlagSetting.class)})
-public abstract class Setting {
+public abstract class Setting { // NOPMD
 
 
   /**
    * Contains all Subclasses of Setting, i.e., all concrete implementations of a Setting.
    */
   @SuppressWarnings("serial")
-  public static final List<Class<? extends Setting>> TYPES =
-      new ArrayList<Class<? extends Setting>>() {
-        {
-          this.add(RangeSetting.class);
-          this.add(FlagSetting.class);
-        }
-      };
+  public static final List<Class<? extends Setting>> TYPES;
 
+  static {
+    TYPES = new ArrayList<>();
+    TYPES.add(RangeSetting.class);
+    TYPES.add(FlagSetting.class);
+  }
 
   @Id
   @xyz.morphia.annotations.Id
@@ -74,7 +73,6 @@ public abstract class Setting {
    * @param origin the origin
    */
   public Setting(final String displayName, final String description, final String origin) {
-    this.id = null;
     this.displayName = displayName;
     this.description = description;
     this.origin = origin;
@@ -134,7 +132,7 @@ public abstract class Setting {
 
   @Override
   public int hashCode() {
-    return new HashCodeBuilder(17, 37).append(this.id)
+    return new HashCodeBuilder(17, 37).append(this.id) // NOCS
         .append(this.displayName)
         .append(this.description)
         .append(this.origin)

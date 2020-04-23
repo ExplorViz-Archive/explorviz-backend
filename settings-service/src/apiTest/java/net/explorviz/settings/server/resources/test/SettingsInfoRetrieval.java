@@ -20,6 +20,10 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+// CHECKSTYLE.OFF: MagicNumberCheck
+// CHECKSTYLE.OFF: MultipleStringLiteralsCheck
+
+@SuppressWarnings({"PMD.JUnitTestsShouldIncludeAssert", "PMD.AvoidDuplicateLiterals"})
 public class SettingsInfoRetrieval {
 
   private static final String SETTINGS_URL = "http://localhost:8090/v1/settings";
@@ -40,13 +44,13 @@ public class SettingsInfoRetrieval {
    * @throws IOException if serialization fails
    */
   @BeforeAll
-  static void setUpAll() throws IOException {
+  public static void setUpAll() throws IOException {
     adminToken = AuthorizationHelper.getAdminToken();
     normieToken = AuthorizationHelper.getNormieToken();
   }
 
   @BeforeEach
-  void setUp() {
+  public void setUp() {
     this.authHeaderAdmin = new Header("authorization", "Bearer " + adminToken);
     this.authHeaderNormie = new Header("authorization", "Bearer " + normieToken);
   }
@@ -54,7 +58,7 @@ public class SettingsInfoRetrieval {
 
   @Test
   @SuppressWarnings("unchecked")
-  void getAllAsAdmin() {
+  public void retrieveAllAsAdmin() {
     final List<Setting> retrieved = given().header(this.authHeaderNormie)
         .when()
         .get(SETTINGS_URL)
@@ -75,7 +79,7 @@ public class SettingsInfoRetrieval {
   }
 
   @Test
-  void getAllAsNormie() {
+  public void retrieveAllAsNormie() {
     given().header(this.authHeaderAdmin)
         .when()
         .get(SETTINGS_URL)
@@ -86,7 +90,7 @@ public class SettingsInfoRetrieval {
   }
 
   @Test
-  void pagniationFirstPage() {
+  public void pagniationFirstPage() {
     final int size = 2;
     final int num = 0;
     given().contentType(MEDIA_TYPE)
@@ -104,7 +108,7 @@ public class SettingsInfoRetrieval {
   }
 
   @Test
-  void paginationMiddlePage() {
+  public void paginationMiddlePage() {
     final int size = 1;
     final int num = DefaultSettings.all.size() / 2;
     given().contentType(MEDIA_TYPE)
@@ -123,8 +127,8 @@ public class SettingsInfoRetrieval {
 
 
   @Test
-  void filterByOrigin() {
-    final String origin = DefaultSettings.origin;
+  public void filterByOrigin() {
+    final String origin = DefaultSettings.ORIGIN;
     given().contentType(MEDIA_TYPE)
         .header(this.authHeaderAdmin)
         .params("filter[origin]", origin)
@@ -137,7 +141,7 @@ public class SettingsInfoRetrieval {
 
   @Test
   @SuppressWarnings("unchecked")
-  void filterByType() {
+  public void filterByType() {
     final int rangeSettings = (int) DefaultSettings.all.stream()
         .filter(s -> s.getClass().equals(RangeSetting.class))
         .count();

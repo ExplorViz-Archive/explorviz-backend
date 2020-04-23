@@ -31,9 +31,8 @@ public class JsonAPIMapper<T> implements ObjectMapper {
 
   @Override
   public T deserialize(final ObjectMapperDeserializationContext context) {
-    final T deserialized =
-        this.converter.readDocument(context.getDataToDeserialize().asByteArray(), this.cls).get();
-    return deserialized;
+    return this.converter.readDocument(context.getDataToDeserialize().asByteArray(), this.cls)
+        .get();
   }
 
   @Override
@@ -43,9 +42,8 @@ public class JsonAPIMapper<T> implements ObjectMapper {
       final byte[] serialized = this.converter.writeDocument(doc);
       return new String(serialized);
     } catch (final DocumentSerializationException e) {
-      e.printStackTrace();
+      throw new IllegalStateException("Could not serialize", e);
     }
-    return null;
   }
 
   public String serializeRaw(final T object) {
@@ -54,8 +52,7 @@ public class JsonAPIMapper<T> implements ObjectMapper {
       final byte[] serialized = this.converter.writeDocument(doc);
       return new String(serialized);
     } catch (final DocumentSerializationException e) {
-      e.printStackTrace();
+      throw new IllegalStateException("Could not deserialize", e);
     }
-    return null;
   }
 }

@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.time.Duration;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.Properties;
 import net.explorviz.shared.config.annotations.Config;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -17,7 +17,6 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Consumes user events published on Kafka.
- *
  */
 @Service
 public class UserEventConsumer implements Runnable {
@@ -30,6 +29,12 @@ public class UserEventConsumer implements Runnable {
   private UserEventHandler handler;
 
 
+  /**
+   * Creates a new consumer that ingests user events from kafka once run.
+   *
+   * @param kafkaBootStrapServerList the bootstrap server
+   * @param groupId                  the kafka group id to use
+   */
   public UserEventConsumer(
       @Config("exchange.kafka.bootstrap.servers") final String kafkaBootStrapServerList,
       @Config("exchange.kafka.group.id") final String groupId) {
@@ -39,7 +44,8 @@ public class UserEventConsumer implements Runnable {
     properties.put("group.id", groupId);
     properties.put("enable.auto.commit", "true");
     properties.put("auto.commit.interval.ms", "1000");
-    properties.put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");// NOCS
+    properties
+        .put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");// NOCS
     properties.put("value.deserializer",
         "org.apache.kafka.common.serialization.StringDeserializer");
 
@@ -54,8 +60,8 @@ public class UserEventConsumer implements Runnable {
   public void run() {
     LOGGER.info("Starting Kafka Exchange \n");
 
-    this.kafkaConsumer.subscribe(Arrays.asList(TOPIC));
-
+    this.kafkaConsumer.subscribe(Collections.singletonList(TOPIC));
+    final ObjectMapper mapper = new ObjectMapper();
     while (true) {
       final ConsumerRecords<String, String> records =
           this.kafkaConsumer.poll(Duration.ofMillis(100));
@@ -65,15 +71,17 @@ public class UserEventConsumer implements Runnable {
         LOGGER.debug("Recevied landscape Kafka record: {}", record.value());
 
         final String serializedUserEvent = record.value();
-
-        final ObjectMapper mapper = new ObjectMapper();
-        UserEvent e = null;
+        UserEvent e;
         try {
           e = mapper.readValue(serializedUserEvent, UserEvent.class);
-          LOGGER.info("Received User Event: " + e.toString());
+          if (LOGGER.isInfoEnabled()) {
+            LOGGER.info("Received User Event: " + e.toString());
+          }
           this.notifyHandler(e);
         } catch (final IOException ex) {
-          LOGGER.error("Could not deserialize value", ex);
+          if (LOGGER.isErrorEnabled()) {
+            LOGGER.error("Could not deserialize value", ex);
+          }
         }
       }
     }
@@ -87,15 +95,28 @@ public class UserEventConsumer implements Runnable {
           break;
         case DELETED:
           this.handler.onDelete(event.getId());
+          break;
+        default:
+          if (LOGGER.isWarnEnabled()) {
+            LOGGER.warn("Received unknown user event: {}", event.getEvent());
+          }
+          break;
       }
     }
   }
 
-  static class UserEvent {
+  /**
+   * User events read from Kafka topic.
+   */
+  public static class UserEvent {
 
+    /**
+     * Denotes which type of event occurred for the user of given id.
+     */
     public enum EventType {
       CREATED, DELETED;
     }
+
 
     @JsonProperty("event")
     private EventType event;
@@ -103,14 +124,8 @@ public class UserEventConsumer implements Runnable {
     @JsonProperty("id")
     private String id;
 
-
-    public UserEvent(final EventType event, final String id) {
-      this.event = event;
-      this.id = id;
-    }
-
-    public UserEvent() {
-
+    public UserEvent() { // NOPMD
+      /* Jackson */
     }
 
     public EventType getEvent() {

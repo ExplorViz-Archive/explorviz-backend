@@ -12,6 +12,10 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+// CHECKSTYLE.OFF: MagicNumberCheck
+// CHECKSTYLE.OFF: MultipleStringLiteralsCheck
+
+@SuppressWarnings({"PMD.JUnitTestsShouldIncludeAssert", "PMD.AvoidDuplicateLiterals"})
 class SettingsInfoDeletion {
 
   private static final String SETTINGS_URL = "http://localhost:8090/v1/settings";
@@ -32,20 +36,20 @@ class SettingsInfoDeletion {
    * @throws IOException if serialization fails
    */
   @BeforeAll
-  static void setUpAll() throws IOException {
+  public static void setUpAll() throws IOException {
     adminToken = AuthorizationHelper.getAdminToken();
     normieToken = AuthorizationHelper.getNormieToken();
   }
 
   @BeforeEach
-  void setUp() {
+  public void setUp() {
     this.authHeaderAdmin = new Header("authorization", "Bearer " + adminToken);
     this.authHeaderNormie = new Header("authorization", "Bearer " + normieToken);
   }
 
   private Setting create() {
     final Setting toCreate =
-        new FlagSetting("testname", "a test setting", DefaultSettings.origin, false);
+        new FlagSetting("testname", "a test setting", DefaultSettings.ORIGIN, false);
 
     final Setting created = given().header(this.authHeaderAdmin)
         .contentType(MEDIA_TYPE)
@@ -57,7 +61,7 @@ class SettingsInfoDeletion {
   }
 
   @Test
-  void deleteAsAdmin() {
+  public void deleteAsAdmin() {
     final Setting toDelete = this.create();
 
     given().header(this.authHeaderAdmin)
@@ -69,7 +73,7 @@ class SettingsInfoDeletion {
   }
 
   @Test
-  void deleteAsNormie() {
+  public void deleteAsNormie() {
     given().header(this.authHeaderNormie)
         .contentType(MEDIA_TYPE)
         .when()

@@ -42,9 +42,8 @@ public class JsonAPIListMapper<T> implements ObjectMapper {
       final byte[] serialized = this.converter.writeDocumentCollection(doc);
       return new String(serialized);
     } catch (final DocumentSerializationException e) {
-      e.printStackTrace();
+      throw new IllegalStateException("Could not deserialize", e);
     }
-    return null;
   }
 
 }

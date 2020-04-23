@@ -6,7 +6,10 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.io.IOException;
 import net.explorviz.security.user.User;
 
-public class UserSerializationHelper {
+public final class UserSerializationHelper {
+
+
+  private UserSerializationHelper(){/* Utility class */}
 
   /**
    * Serializes a user WITH the password attribute, which otherwise is ignored by Jackson

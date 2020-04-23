@@ -14,32 +14,32 @@ import net.explorviz.settings.model.Setting;
 public class DefaultSettings {
 
 
-  public final static String origin = "backend";
+  public final static String ORIGIN = "backend";
 
   public static FlagSetting showFpsCounter = new FlagSetting("showFpsCounter", "Show FPS Counter",
-      "\'Frames Per Second\' metrics in visualizations", origin, false);
+      "\'Frames Per Second\' metrics in visualizations", ORIGIN, false);
   public static FlagSetting appVizTransparency = new FlagSetting("appVizTransparency",
       "Enable Transparent Components",
-      "Transparency effect for selection (left click) in application visualization", origin, true);
+      "Transparency effect for selection (left click) in application visualization", ORIGIN, true);
   public static FlagSetting keepHighlightingOnOpenOrClose = new FlagSetting(
       "keepHighlightingOnOpenOrClose", "Keep Highlighting On Open Or Close",
       "Toggle if highlighting should be resetted on double click in application" + " visualization",
-      origin, true);
+      ORIGIN, true);
   public static FlagSetting enableHoverEffects = new FlagSetting("enableHoverEffects",
-      "Enable Hover Effects", "Hover effect (flashing entities) for mouse cursor", origin, true);
+      "Enable Hover Effects", "Hover effect (flashing entities) for mouse cursor", ORIGIN, true);
 
   public static RangeSetting appVizCommArrowSize = new RangeSetting("appVizCommArrowSize",
       "Arrow Size in Application Visualization",
-      "Arrow Size for selected communications in application visualization", origin, 1.0, 0.0, 5.0);
+      "Arrow Size for selected communications in application visualization", ORIGIN, 1.0, 0.0, 5.0);
   public static RangeSetting appVizTransparencyIntensity = new RangeSetting(
       "appVizTransparencyIntensity", "Transparency Intensity in Application Visualization",
-      "Transparency effect intensity (\'Enable Transparent Components\' must be enabled)", origin,
+      "Transparency effect intensity (\'Enable Transparent Components\' must be enabled)", ORIGIN,
       0.1, 0.1, 0.5);
   public static RangeSetting appVizCurvyCommHeight =
       new RangeSetting("appVizCurvyCommHeight", "Curviness of the Communication Lines",
           "If greater 0.0, communication lines are rendered arc-shaped with set height (Straight "
               + "lines: 0.0)",
-          origin, 0.0, 0.0, 50.0);
+          ORIGIN, 0.0, 0.0, 50.0);
 
 
   public static List<Setting> all = new ArrayList<>(Arrays.asList(showFpsCounter,

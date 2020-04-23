@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+
 import com.mongodb.WriteResult;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -26,12 +27,14 @@ import xyz.morphia.Datastore;
 import xyz.morphia.Key;
 import xyz.morphia.query.Query;
 
+// CHECKSTYLE.OFF: MagicNumberCheck
+// CHECKSTYLE.OFF: MultipleStringLiteralsCheck
+
 /**
  * Unit test for {@link UserPreferenceRepository}.
- *
- *
  */
 @ExtendWith(MockitoExtension.class)
+@SuppressWarnings({"PMD.AvoidDuplicateLiterals"})
 public class UserPreferenceRepositoryTest {
 
   @Mock
