@@ -38,15 +38,18 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Helper service for batch creation of users.
- *
  */
 @Service
 public class BatchService {
+
+  public static final int MAX_COUNT = 300;
 
   private static final Logger LOGGER = LoggerFactory.getLogger(BatchService.class);
   private static final String MEDIA_TYPE = "application/vnd.api+json";
   private static final String HTTP = "http://";
   private static final String MSG_FAIL = "Batch request failed, rolling back";
+
+
 
   private final UserService userService;
 
@@ -61,14 +64,15 @@ public class BatchService {
   /**
    * Creates a new service.
    *
-   * @param userService instance of {@link UserService}
-   * @param converter instance of {@link ResourceConverter}
+   * @param userService        instance of {@link UserService}
+   * @param converter          instance of {@link ResourceConverter}
    * @param settingServiceHost host of the settings service
    */
   @Inject
   public BatchService(final UserService userService, final ResourceConverter converter,
-      final IdGenerator idGen, @Config("services.settings") final String settingServiceHost,
-      @Config("services.settings.preferences") final String settingsPrefPath) {
+                      final IdGenerator idGen,
+                      @Config("services.settings") final String settingServiceHost,
+                      @Config("services.settings.preferences") final String settingsPrefPath) {
     this.userService = userService;
     this.settingsServiceHost = settingServiceHost;
     this.settingsPrefPath = settingsPrefPath;
@@ -79,16 +83,16 @@ public class BatchService {
   /**
    * Creates and persists a set of users.
    *
-   * @param batch the batch request
+   * @param batch      the batch request
    * @param authHeader of an admin user
    * @return as list of all users created
    * @throws UserCrudException if the batch creation was unsuccessful. If this exception is thrown,
-   *         no user is persisted.
+   *                           no user is persisted.
    */
   public List<User> create(final UserBatchRequest batch, final String authHeader)
       throws UserCrudException {
 
-
+    validate(batch);
     final List<User> createdUsers = new ArrayList<>();
     final List<String> createdPrefs = new ArrayList<>();
     final String batchId = this.idGenerator.generateId();
@@ -105,7 +109,7 @@ public class BatchService {
           LOGGER.error(MSG_FAIL);
         }
         this.rollbackUsers(createdUsers);
-        throw new UserCrudException("Could not hash password");
+        throw new UserCrudException("Could not hash password", e1);
       }
 
 
@@ -127,6 +131,22 @@ public class BatchService {
     return createdUsers;
   }
 
+
+  private void validate(final UserBatchRequest batch) throws MalformedBatchRequestException {
+    if (batch.getCount() > MAX_COUNT) {
+      throw new MalformedBatchRequestException("Count must be smaller than " + MAX_COUNT);
+    }
+
+    if (batch.getCount() == 0) {
+      throw new MalformedBatchRequestException("Count must be bigger than 0");
+    }
+    if (batch.getPrefix() == null || batch.getPrefix().isEmpty()) {
+      throw new MalformedBatchRequestException("Prefix can't be empty");
+    }
+    if (batch.getPasswords() == null || batch.getPasswords().size() != batch.getCount()) {
+      throw new MalformedBatchRequestException("Passwords must match size of users to create");
+    }
+  }
 
   /**
    * Rolls back previously created users.
@@ -150,7 +170,7 @@ public class BatchService {
    * Rolls back all preferences given by dispatching DELETE requests.
    *
    * @param created preferences to delete
-   * @param auth http auth header header to authorize at the settings service
+   * @param auth    http auth header header to authorize at the settings service
    */
   private void rollbackPrefs(final List<String> created, final String auth) {
 
@@ -173,7 +193,7 @@ public class BatchService {
 
       final Response r = i.invoke();
 
-      if (r.getStatus() != HttpStatus.NO_CONTENT_204) {
+      if (r.getStatus() != HttpStatus.NO_CONTENT_204 && LOGGER.isErrorEnabled()) {
         LOGGER.error("Deletion of a preference failed, id: " + id);
       }
     }
@@ -184,15 +204,13 @@ public class BatchService {
    * Creates the preferences defined in {@code prefs} for the given user, by dispatching an HTTP
    * request to the Settings-Service.
    *
-   * @param user the user to create the preferences for
+   * @param user  the user to create the preferences for
    * @param prefs the settings with the values
-   *
    * @return a list of the ids of the created settings
-   *
    * @throws UserCrudException if the creation of a single preference failed
    */
   private List<String> createPrefs(final User user, final Map<String, Object> prefs,
-      final String auth) throws UserCrudException {
+                                   final String auth) throws UserCrudException {
 
     final List<String> ids = new ArrayList<>();
 
@@ -209,7 +227,6 @@ public class BatchService {
     final Invocation.Builder invocationBuilder =
         target.request(MEDIA_TYPE).header(HttpHeaders.AUTHORIZATION, auth);
 
-    System.out.println(HTTP + this.settingsServiceHost + this.settingsPrefPath);
 
     // Create a request for each entry
     for (final Entry<String, Object> pref : prefs.entrySet()) {
@@ -235,7 +252,9 @@ public class BatchService {
               || r.getStatus() == HttpStatus.NOT_FOUND_404) {
             throw new MalformedBatchRequestException(err.getDetail());
           } else {
-            LOGGER.error("Unkown settings-service error: " + err.getDetail());
+            if (LOGGER.isErrorEnabled()) {
+              LOGGER.error("Unkown settings-service error: " + err.getDetail());
+            }
             throw new UserCrudException(err.getDetail());
           }
         }
@@ -249,7 +268,7 @@ public class BatchService {
           throw new UserCrudException("Settings-Service unreachable", e);
         } else {
           LOGGER.error("Could not create preferences: ", e);
-          throw new UserCrudException("Could not create preferences");
+          throw new UserCrudException("Could not create preferences", e);
         }
       }
     }
@@ -259,7 +278,8 @@ public class BatchService {
   }
 
   private User newUser(final String pref, final int num, final String password,
-      final List<String> roles, final String batchId) throws CannotPerformOperationException {
+                       final List<String> roles, final String batchId)
+      throws CannotPerformOperationException {
     final StringBuilder sb = new StringBuilder();
     final String name = sb.append(pref).append('-').append(num).toString();
 
@@ -273,20 +293,24 @@ public class BatchService {
 
   /**
    * Delets a users that belong to the given batch id.
-   * 
+   *
    * @param batchId The id of the batch to delete all users of
    */
-  public void deleteBatch(String batchId) {
-    MultivaluedHashMap<String, String> queryParams = new MultivaluedHashMap<>();
+  public void deleteBatch(final String batchId) {
+    final MultivaluedHashMap<String, String> queryParams = new MultivaluedHashMap<>();
     queryParams.putSingle("filter[batchid]", batchId);
-    Query<User> batchQuery = Query.fromParameterMap(queryParams);
-    QueryResult<User> res = userService.query(batchQuery);
-    LOGGER.info("Delete batch of " + res.getData().size() + " users");
+    final Query<User> batchQuery = Query.fromParameterMap(queryParams);
+    final QueryResult<User> res = userService.query(batchQuery);
+    if (LOGGER.isInfoEnabled()) {
+      LOGGER.info("Delete batch of " + res.getData().size() + " users");
+    }
     res.getData().forEach(u -> {
       try {
         this.userService.deleteEntityById(u.getId());
       } catch (final UserCrudException e) {
-        LOGGER.warn("Skipped a user during batch deletion: " + e.getMessage());
+        if (LOGGER.isWarnEnabled()) {
+          LOGGER.warn("Skipped a user during batch deletion: " + e.getMessage());
+        }
       }
     });
   }

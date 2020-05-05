@@ -19,11 +19,11 @@ import javax.ws.rs.core.MediaType;
 import net.explorviz.security.model.Token;
 import net.explorviz.security.model.UserCredentials;
 import net.explorviz.security.services.TokenService;
-import net.explorviz.security.services.exceptions.UserValidationService;
+import net.explorviz.security.services.UserValidationService;
 import net.explorviz.security.user.User;
 import net.explorviz.shared.security.TokenBasedSecurityContext;
-import net.explorviz.shared.security.filters.Secure;
 import net.explorviz.shared.security.TokenDetails;
+import net.explorviz.shared.security.filters.Secure;
 
 
 /**
@@ -58,14 +58,14 @@ public class TokenResource {
   @Produces(MEDIA_TYPE)
   @Operation(description = "Request an API token")
   @ApiResponse(responseCode = "200",
-      description = "If the credentials are valid, the associated user is returned. "
-          + "The object includes a fresh bearer token to be used for authentication"
-          + "and authorization at all services."
-          + "The token expires after 1 hour and can be refreshed once ",
-      content = @Content(schema = @Schema(implementation = User.class)))
+               description = "If the credentials are valid, the associated user is returned. "
+                   + "The object includes a fresh bearer token to be used for authentication"
+                   + "and authorization at all services."
+                   + "The token expires after 1 hour and can be refreshed once ",
+               content = @Content(schema = @Schema(implementation = User.class)))
   @ApiResponse(responseCode = "403", description = "Invalid credentials.")
   @RequestBody(description = "The credentials",
-      content = @Content(schema = @Schema(implementation = UserCredentials.class)))
+               content = @Content(schema = @Schema(implementation = UserCredentials.class)))
   public User issueToken(final UserCredentials credentials) {
 
     // curl -X POST
@@ -94,9 +94,9 @@ public class TokenResource {
       + "The HTTP POST body must not contain data and the "
       + "to-be refreshed token inside of the ' Authorization: Bearer' header.")
   @ApiResponse(responseCode = "200",
-      description = "New token, which again is valid for 1 hour. "
-          + "A refreshed token can't be refreshed further.",
-      content = @Content(schema = @Schema(implementation = User.class)))
+               description = "New token, which again is valid for 1 hour. "
+                   + "A refreshed token can't be refreshed further.",
+               content = @Content(schema = @Schema(implementation = User.class)))
   @ApiResponse(responseCode = "403", description = "Token can't be refreshed.")
   @SecurityRequirement(name = "token")
   @Secure

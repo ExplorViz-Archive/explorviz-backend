@@ -1,6 +1,7 @@
 package net.explorviz.security.server.resources.test.helper;
 
 import static io.restassured.RestAssured.given;
+
 import com.github.jasminb.jsonapi.exceptions.ResourceParseException;
 import io.restassured.http.Header;
 import java.io.IOException;
@@ -19,14 +20,7 @@ public class UsersHelper {
   private static final Logger LOGGER = LoggerFactory.getLogger(UsersHelper.class);
 
   private static final String MEDIA_TYPE = "application/vnd.api+json";
-  private final static String USERS_URI = "http://localhost:8090/v1/users/";
-
-  public static UsersHelper getInstance() {
-    if (instance == null) {
-      instance = new UsersHelper();
-    }
-    return instance;
-  }
+  private static final String USERS_URI = "http://localhost:8090/v1/users/";
 
   private static UsersHelper instance = null;
 
@@ -37,18 +31,33 @@ public class UsersHelper {
     this.auth = new Header("authorization", "Bearer " + tok);
   }
 
+  /**
+   * Returns the instance.
+   */
+  public static UsersHelper getInstance() {
+    if (instance == null) {
+      instance = new UsersHelper();
+    }
+    return instance;
+  }
+
+
+
+
+
+
 
   /**
    * Creates a new user by issuing a post request.
    *
-   * @param name name of the user
+   * @param name     name of the user
    * @param password password of the user
-   * @param roles roles of the user
+   * @param roles    roles of the user
    * @return An optional containing the created user as returned by the API or null if an error
-   *         occured.
+   *     occured.
    */
   public Optional<User> createUser(final String name, final String password,
-      final List<String> roles) {
+                                   final List<String> roles) {
     final User toCreate = new User(null, name, password, roles);
 
     try {
@@ -57,7 +66,7 @@ public class UsersHelper {
           .header(this.auth)
           .when()
           .post(USERS_URI)
-          .as(User.class, new JsonAPIMapper<>(User.class));
+          .as(User.class, new JsonApiMapper<>(User.class));
       return Optional.of(u);
     } catch (final IOException e) {
       return Optional.empty();
@@ -68,7 +77,7 @@ public class UsersHelper {
   }
 
   /**
-   * Delete a user by id
+   * Delete a user by id.
    *
    * @param id if of the user to delete
    */
@@ -77,12 +86,15 @@ public class UsersHelper {
   }
 
 
+  /**
+   * Returns all users.
+   */
   public List<User> getAll() {
     return given().contentType(MEDIA_TYPE)
         .header(this.auth)
         .when()
         .get(USERS_URI)
-        .as(List.class, new JsonAPIListMapper<>(User.class));
+        .as(List.class, new JsonApiListMapper<>(User.class));
   }
 
   public int count() {

@@ -7,7 +7,9 @@ import java.util.List;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
-
+/**
+ * The roles of a user reflect its privileges/permissions.
+ */
 @Type("role")
 public class Role {
 
@@ -24,27 +26,13 @@ public class Role {
    */
   public static final String USER_NAME = "user";
 
-  public static final  Role USER = new Role(USER_NAME);
+  public static final Role USER = new Role(USER_NAME);
 
+  public static final List<Role> ROLES = new ArrayList<>();
 
-  public static final List<Role> ROLES = new ArrayList<Role>() { /**
-     * 
-     */
-    private static final long serialVersionUID = 1L;
-
-  {
-      add(ADMIN);
-      add(USER);
-    } };
-
-  
-  /**
-   * Checks whether a role with the given name exists.
-   * @param roleName Name of the role to check
-   * @return {@code true} iff a role with the given name exists
-   */
-  public static boolean exists(String roleName) {
-    return ROLES.stream().anyMatch(r -> r.getName().equals(roleName));
+  static {
+    ROLES.add(ADMIN);
+    ROLES.add(USER);
   }
 
   @Id
@@ -53,13 +41,23 @@ public class Role {
   /**
    * Creates a new roles.
    */
-  private Role(String name) {
+  private Role(final String name) {
     this.name = name;
   }
 
-  // Jackson
-  public Role(){
 
+  public Role() {/* Jackson */ }
+
+
+
+  /**
+   * Checks whether a role with the given name exists.
+   *
+   * @param roleName Name of the role to check
+   * @return {@code true} iff a role with the given name exists
+   */
+  public static boolean exists(final String roleName) {
+    return ROLES.stream().anyMatch(r -> r.getName().equals(roleName));
   }
 
 
@@ -68,7 +66,8 @@ public class Role {
     return name;
   }
 
-  @Override public boolean equals(Object o) {
+  @Override
+  public boolean equals(final Object o) {
     if (this == o) {
       return true;
     }
@@ -77,7 +76,7 @@ public class Role {
       return false;
     }
 
-    Role role = (Role) o;
+    final Role role = (Role) o;
 
     return new EqualsBuilder().append(name, role.name).isEquals();
   }

@@ -7,16 +7,24 @@ import io.restassured.mapper.ObjectMapper;
 import io.restassured.mapper.ObjectMapperDeserializationContext;
 import io.restassured.mapper.ObjectMapperSerializationContext;
 import java.util.List;
-import net.explorviz.settings.model.UserPreference;
-import net.explorviz.security.user.User;
 import net.explorviz.security.user.Role;
+import net.explorviz.security.user.User;
+import net.explorviz.settings.model.UserPreference;
 
-public class JsonAPIListMapper<T> implements ObjectMapper {
+/**
+ * Custom mapper to de/serialize JSON:API collections to lists.
+ * @param <T> Type to de/serialize
+ */
+public class JsonApiListMapper<T> implements ObjectMapper {
   private final ResourceConverter converter;
 
   private final Class<T> cls;
 
-  public JsonAPIListMapper(final Class<T> cls) {
+  /**
+   * Creates a new mapper.
+   * @param cls The class to de/serialize the list entries into.
+   */
+  public JsonApiListMapper(final Class<T> cls) {
     this.cls = cls;
     this.converter = new ResourceConverter();
     this.converter.registerType(User.class);

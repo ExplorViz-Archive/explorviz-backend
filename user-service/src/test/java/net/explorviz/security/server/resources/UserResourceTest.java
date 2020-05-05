@@ -1,11 +1,11 @@
 package net.explorviz.security.server.resources;
 
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -16,17 +16,15 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.ws.rs.BadRequestException;
+import javax.ws.rs.NotFoundException;
 import javax.ws.rs.core.MultivaluedHashMap;
 import javax.ws.rs.core.UriInfo;
 import net.explorviz.security.services.UserService;
 import net.explorviz.security.services.exceptions.UserCrudException;
+import net.explorviz.security.user.Role;
 import net.explorviz.security.user.User;
-import net.explorviz.security.util.PasswordStorage;
-import net.explorviz.security.util.PasswordStorage.CannotPerformOperationException;
-import net.explorviz.security.util.PasswordStorage.InvalidHashException;
 import net.explorviz.shared.querying.Query;
 import net.explorviz.shared.querying.QueryResult;
-import net.explorviz.security.user.Role;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -36,12 +34,14 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+// CHECKSTYLE.OFF: MultipleStringLiteralsCheck
+
+
 /**
  * Unit tests for {@link UserResource}. All tests are performed by just calling the methods of
  * {@link UserResource}.
  */
 @ExtendWith(MockitoExtension.class)
-@SuppressWarnings("PMD")
 class UserResourceTest {
 
   @InjectMocks
@@ -69,9 +69,8 @@ class UserResourceTest {
       return newUser;
     });
 
-    Mockito.lenient().when(this.userCrudService.getEntityById(any())).thenAnswer(inv -> {
-      return Optional.ofNullable(this.users.get(inv.getArgument(0)));
-    });
+    Mockito.lenient().when(this.userCrudService.getEntityById(any()))
+        .thenAnswer(inv -> Optional.ofNullable(this.users.get(inv.getArgument(0))));
 
     Mockito.lenient().doAnswer(inv -> {
       this.users.remove(inv.getArgument(0));
@@ -79,7 +78,7 @@ class UserResourceTest {
     }).when(this.userCrudService).deleteEntityById(any());
 
     Mockito.lenient().when(this.userCrudService.query(any())).thenAnswer(inv -> {
-      final Query<User> query = (Query<User>) inv.getArgument(0);
+      final Query<User> query = inv.getArgument(0);
       Collection<User> data = this.users.values();
       if (query.doFilter()) {
         final String role = query.getFilters().get("role").get(0);
@@ -92,9 +91,10 @@ class UserResourceTest {
 
     });
 
-    Mockito.lenient().when(this.userCrudService.getAll()).thenAnswer(inv -> {
-      return this.users.values().stream().collect(Collectors.toList());
-    });
+    Mockito.lenient().when(this.userCrudService.getAll())
+        .thenAnswer(inv -> new ArrayList<>(this.users.values()));
+
+
 
   }
 
@@ -198,61 +198,9 @@ class UserResourceTest {
     final User newUser = this.userResource.newUser(u1);
 
     this.userResource.removeUser(newUser.getId());
-  }
 
-  @Test
-  public void testChangePassword() throws CannotPerformOperationException, InvalidHashException {
-
-    // Will always fail if passwords are hashed
-
-    final User u1 = new User("testuser");
-    u1.setPassword("password");
-    final User newUser = this.userResource.newUser(u1);
-    final String uid = newUser.getId();
-
-    final User update = new User(null, null, "newpw", null);
-
-    final User updatedUser = this.userResource.updateUser(uid, update);
-
-    assertTrue(PasswordStorage.verifyPassword("newpw", updatedUser.getPassword()));
-    assertEquals(newUser.getId(), updatedUser.getId());
-    assertEquals(u1.getUsername(), updatedUser.getUsername());
-    assertEquals(u1.getRoles(), updatedUser.getRoles());
-  }
-
-
-  @Test
-  public void testChangeUsername() {
-    final User u1 = new User("testuser");
-    u1.setPassword("password");
-    final User newUser = this.userResource.newUser(u1);
-    final String uid = newUser.getId();
-
-    final User update = new User(null, "newname", null, null);
-    final User updatedUser = this.userResource.updateUser(uid, update);
-
-    assertEquals("newname", updatedUser.getUsername());
-    assertEquals(newUser.getId(), updatedUser.getId());
-    assertEquals(u1.getRoles(), updatedUser.getRoles());
-    assertEquals(u1.getPassword(), updatedUser.getPassword());
-  }
-
-
-  @Test
-  public void testChangeRoles() {
-    final User u1 = new User("testuser");
-    u1.setPassword("password");
-    final User newUser = this.userResource.newUser(u1);
-
-    final String uid = newUser.getId();
-
-    final User update = new User(null, null, null, Arrays.asList(Role.USER_NAME));
-    final User updatedUser = this.userResource.updateUser(uid, update);
-
-    assertTrue(updatedUser.getRoles().stream().anyMatch(r -> r.equals(Role.USER_NAME)));
-    assertEquals(newUser.getId(), updatedUser.getId());
-    assertEquals(u1.getUsername(), updatedUser.getUsername());
-    assertEquals(u1.getPassword(), updatedUser.getPassword());
+    assertThrows(NotFoundException.class,
+        () -> this.userResource.userById(newUser.getId()));
   }
 
 

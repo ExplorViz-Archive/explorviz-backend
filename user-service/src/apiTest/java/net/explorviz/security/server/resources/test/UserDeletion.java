@@ -1,10 +1,12 @@
 package net.explorviz.security.server.resources.test;
 
 import static io.restassured.RestAssured.given;
+
 import io.restassured.http.Header;
 import java.io.IOException;
 import java.util.Optional;
 import net.explorviz.security.server.resources.test.helper.AuthorizationHelper;
+import net.explorviz.security.server.resources.test.helper.StatusCodes;
 import net.explorviz.security.server.resources.test.helper.UsersHelper;
 import net.explorviz.security.user.User;
 import org.junit.jupiter.api.Assertions;
@@ -13,9 +15,16 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+// CHECKSTYLE.OFF: MagicNumberCheck
+// CHECKSTYLE.OFF: MultipleStringLiteralsCheck
+
+
+/**
+ * Tests deletion of users.
+ */
 public class UserDeletion {
 
-  private final static String BASE_URI = "http://localhost:8090/v1/";
+  private static final String BASE_URI = "http://localhost:8090/v1/";
 
 
   private static String adminToken;
@@ -50,13 +59,13 @@ public class UserDeletion {
         .when()
         .delete(BASE_URI + "users/" + deleteMe.get().getId())
         .then()
-        .statusCode(204);
+        .statusCode(StatusCodes.STATUS_NO_CONTEND);
 
     given().header(this.authHeaderAdmin)
         .when()
         .get(BASE_URI + deleteMe.get().getId())
         .then()
-        .statusCode(404);
+        .statusCode(StatusCodes.STATUS_NOT_FOUND);
   }
 
   @Test
@@ -64,7 +73,7 @@ public class UserDeletion {
   void deleteUserAsNormie() {
     final Optional<User> deleteMe = UsersHelper.getInstance().createUser("deleteme", "pw", null);
 
-    if (!deleteMe.isPresent()) {
+    if (deleteMe.isEmpty()) {
       Assertions.fail();
     }
 
@@ -72,7 +81,7 @@ public class UserDeletion {
         .when()
         .delete(BASE_URI + "users/" + deleteMe.get().getId())
         .then()
-        .statusCode(401);
+        .statusCode(StatusCodes.STATUS_UNAUTHORIZED);
 
     UsersHelper.getInstance().deleteUserById(deleteMe.get().getId());
   }
@@ -96,7 +105,7 @@ public class UserDeletion {
         .when()
         .delete(BASE_URI + "users/" + id)
         .then()
-        .statusCode(400);
+        .statusCode(StatusCodes.STATUS_BAD_REQUEST);
 
   }
 

@@ -8,15 +8,23 @@ import io.restassured.mapper.ObjectMapper;
 import io.restassured.mapper.ObjectMapperDeserializationContext;
 import io.restassured.mapper.ObjectMapperSerializationContext;
 import net.explorviz.security.model.UserBatchRequest;
-import net.explorviz.security.user.User;
 import net.explorviz.security.user.Role;
+import net.explorviz.security.user.User;
 
-public class JsonAPIMapper<T> implements ObjectMapper {
+/**
+ * Custom mapper to de/serialize JSON:API.
+ * @param <T> Type to de/serialize
+ */
+public class JsonApiMapper<T> implements ObjectMapper {
   private final ResourceConverter converter;
 
   private final Class<T> cls;
 
-  public JsonAPIMapper(final Class<T> cls) {
+  /**
+   * Creates a new mapper.
+   * @param cls The class to de/serialize.
+   */
+  public JsonApiMapper(final Class<T> cls) {
     this.cls = cls;
     this.converter = new ResourceConverter();
     this.converter.registerType(User.class);
@@ -44,6 +52,11 @@ public class JsonAPIMapper<T> implements ObjectMapper {
     return null;
   }
 
+  /**
+   * Wrapper to serialize an object.
+   * @param object the object to serialize
+   * @return JSON:API string representation of the given object
+   */
   public String serializeRaw(final T object) {
     final JSONAPIDocument<T> doc = new JSONAPIDocument<>(object);
     try {

@@ -35,7 +35,6 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Resource that handle batch creation requests.
- *
  */
 @Tags(value = {@Tag(name = "Batch"), @Tag(name = "User")})
 @SecurityRequirement(name = "token")
@@ -43,11 +42,10 @@ import org.slf4j.LoggerFactory;
 @Path("v1/userbatch")
 public class BatchRequestResource {
 
+
+
   private static final Logger LOGGER = LoggerFactory.getLogger(BatchRequestResource.class);
-
   private static final String MEDIA_TYPE = "application/vnd.api+json";
-  public static final int MAX_COUNT = 300;
-
 
   private final BatchService bcs;
 
@@ -68,39 +66,25 @@ public class BatchRequestResource {
   @RolesAllowed({Role.ADMIN_NAME})
   @Operation(summary = "Create a batch of users with a single request")
   @ApiResponse(responseCode = "200",
-      description = "Contains all users created through this batch request. "
-          + "All users created by the same batch request have the same value"
-          + " for the attribute 'batchId'.",
-      content = @Content(mediaType = MEDIA_TYPE,
-          schema = @Schema(implementation = UserBatchRequest.class)))
+               description = "Contains all users created through this batch request. "
+                   + "All users created by the same batch request have the same value"
+                   + " for the attribute 'batchId'.",
+               content = @Content(mediaType = MEDIA_TYPE,
+                                  schema = @Schema(implementation = UserBatchRequest.class)))
   @ApiResponse(responseCode = "400", description = "Invalid request body or a user already exists. "
       + "In this case, the whole request is rolled back.")
   @RequestBody(
       description = "An object specifying the batch request. "
           + "The 'count' attribute denotes how many users to create."
-          + "It must be greater than 0 but smaller than " + MAX_COUNT + ". "
+          + "It must be greater than 0 but smaller than " + BatchService.MAX_COUNT + ". "
           + "The name of alle users start with the 'prefix' and end with an index "
           + "The prefix thus must not be empty."
           + "The size of the password list must match the amount of users to create. "
           + "The given preferences are valid for all users.",
       content = @Content(schema = @Schema(implementation = UserBatchRequest.class)))
   public UserBatchRequest batchCreate(@Context final HttpHeaders headers,
-      final UserBatchRequest batch) {
+                                      final UserBatchRequest batch) {
     try {
-      if (batch.getCount() > MAX_COUNT) {
-        throw new MalformedBatchRequestException("Count must be smaller than " + MAX_COUNT);
-      }
-
-      if (batch.getCount() == 0) {
-        throw new MalformedBatchRequestException("Count must be bigger than 0");
-      }
-      if (batch.getPrefix() == null || batch.getPrefix().isEmpty()) {
-        throw new MalformedBatchRequestException("Prefix can't be empty");
-      }
-      if (batch.getPasswords() == null || batch.getPasswords().size() != batch.getCount()) {
-        throw new MalformedBatchRequestException("Passwords must match size of users to create");
-      }
-
       final List<User> created =
           this.bcs.create(batch, headers.getHeaderString(HttpHeaders.AUTHORIZATION));
 
@@ -110,17 +94,22 @@ public class BatchRequestResource {
 
     } catch (final DuplicateUserException e) {
       throw new BadRequestException(
-          "At least one of the users to create already exists. No user was created");
+          "At least one of the users to create already exists. No user was created", e);
     } catch (final MalformedBatchRequestException e) {
       LOGGER.error(e.getMessage());
-      throw new BadRequestException(e.getMessage());
+      throw new BadRequestException(e.getMessage(), e);
     } catch (final UserCrudException e) {
       LOGGER.error(e.getMessage());
-      throw new InternalServerErrorException("No user created.");
+      throw new InternalServerErrorException("No user created.", e);
     }
   }
 
 
+  /**
+   * Deletes all users that were created through a batch creation request.
+   *
+   * @param batchid the id of the batch the users were created by
+   */
   @DELETE
   @Path("/{batch_id}")
   public Response deleteBatch(@PathParam("batch_id") final String batchid) {

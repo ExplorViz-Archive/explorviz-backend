@@ -2,6 +2,7 @@ package net.explorviz.security.server.resources.test;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.is;
+
 import io.restassured.http.Header;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -13,32 +14,41 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import net.explorviz.security.model.UserBatchRequest;
-import net.explorviz.security.server.resources.BatchRequestResource;
 import net.explorviz.security.server.resources.test.helper.AuthorizationHelper;
-import net.explorviz.security.server.resources.test.helper.JsonAPIListMapper;
-import net.explorviz.security.server.resources.test.helper.JsonAPIMapper;
+import net.explorviz.security.server.resources.test.helper.JsonApiListMapper;
+import net.explorviz.security.server.resources.test.helper.JsonApiMapper;
+import net.explorviz.security.server.resources.test.helper.StatusCodes;
 import net.explorviz.security.server.resources.test.helper.UsersHelper;
-import net.explorviz.settings.model.UserPreference;
+import net.explorviz.security.services.BatchService;
 import net.explorviz.security.user.User;
+import net.explorviz.settings.model.UserPreference;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+// CHECKSTYLE.OFF: MagicNumberCheck
+// CHECKSTYLE.OFF: MultipleStringLiteralsCheck
+
+
+/**
+ * Tests user batch requests.
+ */
 public class BatchRequest {
 
   private static final String BATCH_URL = "http://localhost:8090/v1/userbatch";
   private static final String USER_URL = "http://localhost:8090/v1/users/";
   private static final String PREF_URL =
       "http://localhost:8090/v1/preferences?filter[user]={uid}";
+  private static final String MEDIA_TYPE = "application/vnd.api+json";
+  private static final String PW_CHARSET = "abcdefghijklmnopqrstuvwxyz";
+  private static final String ROLE_USER = "user";
 
   private static String adminToken;
-  private static String normieToken;
-
   private Header authHeaderAdmin;
 
-  private static final String MEDIA_TYPE = "application/vnd.api+json";
+
 
 
   /**
@@ -50,7 +60,6 @@ public class BatchRequest {
   @BeforeAll
   static void setUpAll() throws IOException {
     adminToken = AuthorizationHelper.getAdminToken();
-    normieToken = AuthorizationHelper.getNormieToken();
   }
 
   @BeforeEach
@@ -62,22 +71,22 @@ public class BatchRequest {
   void createValid() {
     final int count = 10;
     final List<String> passwords = IntStream.range(0, count)
-        .mapToObj(i -> RandomStringUtils.random(5, "abcdefghijklmnopqrstuvwxyz"))
+        .mapToObj(i -> RandomStringUtils.random(5, PW_CHARSET))
         .collect(Collectors.toList());
-    final List<String> roles = new ArrayList<>(Arrays.asList("user"));
+    final List<String> roles = new ArrayList<>(Arrays.asList(ROLE_USER));
 
     final UserBatchRequest ubr = new UserBatchRequest("test", count, passwords, roles, null);
 
     final UserBatchRequest retrieved = given().header(this.authHeaderAdmin)
-        .body(ubr, new JsonAPIMapper<>(UserBatchRequest.class))
+        .body(ubr, new JsonApiMapper<>(UserBatchRequest.class))
         .contentType(MEDIA_TYPE)
         .when()
         .post(BATCH_URL)
         .then()
-        .statusCode(200)
+        .statusCode(StatusCodes.STATUS_OK)
         .extract()
         .body()
-        .as(UserBatchRequest.class, new JsonAPIMapper<>(UserBatchRequest.class));
+        .as(UserBatchRequest.class, new JsonApiMapper<>(UserBatchRequest.class));
 
     Assertions.assertEquals(count, retrieved.getUsers().size());
 
@@ -94,23 +103,23 @@ public class BatchRequest {
   void filterByBatchId() {
     final int count = 10;
     final List<String> passwords = IntStream.range(0, count)
-        .mapToObj(i -> RandomStringUtils.random(5, "abcdefghijklmnopqrstuvwxyz"))
+        .mapToObj(i -> RandomStringUtils.random(5, PW_CHARSET))
         .collect(Collectors.toList());
-    final List<String> roles = new ArrayList<>(Arrays.asList("user"));
+    final List<String> roles = new ArrayList<>(Arrays.asList(ROLE_USER));
 
     final UserBatchRequest ubr = new UserBatchRequest("test", count, passwords, roles, null);
 
     // Create the batch
     final String bid = given().header(this.authHeaderAdmin)
-        .body(ubr, new JsonAPIMapper<>(UserBatchRequest.class))
+        .body(ubr, new JsonApiMapper<>(UserBatchRequest.class))
         .contentType(MEDIA_TYPE)
         .when()
         .post(BATCH_URL)
         .then()
-        .statusCode(200)
+        .statusCode(StatusCodes.STATUS_OK)
         .extract()
         .body()
-        .as(UserBatchRequest.class, new JsonAPIMapper<>(UserBatchRequest.class))
+        .as(UserBatchRequest.class, new JsonApiMapper<>(UserBatchRequest.class))
         .getUsers()
         .get(0)
         .getBatchId();
@@ -122,11 +131,11 @@ public class BatchRequest {
         .when()
         .get(USER_URL)
         .then()
-        .statusCode(200)
+        .statusCode(StatusCodes.STATUS_OK)
         .body("data.size()", is(count))
         .extract()
         .body()
-        .as(List.class, new JsonAPIListMapper<>(User.class));
+        .as(List.class, new JsonApiListMapper<>(User.class));
 
     // Delete the just created users
     retrieved.stream().map(User::getId).forEach(i -> UsersHelper.getInstance().deleteUserById(i));
@@ -137,9 +146,9 @@ public class BatchRequest {
   void validWithPrefs() {
     final int count = 10;
     final List<String> passwords = IntStream.range(0, count)
-        .mapToObj(i -> RandomStringUtils.random(5, "abcdefghijklmnopqrstuvwxyz"))
+        .mapToObj(i -> RandomStringUtils.random(5, PW_CHARSET))
         .collect(Collectors.toList());
-    final List<String> roles = new ArrayList<>(Arrays.asList("user"));
+    final List<String> roles = new ArrayList<>(Arrays.asList(ROLE_USER));
 
     final float appVizTransparencyIntensity = 0.5f;
     final boolean showFpsCounter = true;
@@ -150,15 +159,15 @@ public class BatchRequest {
 
     // Create batch and retrieve the ids of the created users
     final List<String> retrievedUids = given().header(this.authHeaderAdmin)
-        .body(ubr, new JsonAPIMapper<>(UserBatchRequest.class))
+        .body(ubr, new JsonApiMapper<>(UserBatchRequest.class))
         .contentType(MEDIA_TYPE)
         .when()
         .post(BATCH_URL)
         .then()
-        .statusCode(200)
+        .statusCode(StatusCodes.STATUS_OK)
         .extract()
         .body()
-        .as(UserBatchRequest.class, new JsonAPIMapper<>(UserBatchRequest.class))
+        .as(UserBatchRequest.class, new JsonApiMapper<>(UserBatchRequest.class))
         .getUsers()
         .stream()
         .map(User::getId)
@@ -172,10 +181,10 @@ public class BatchRequest {
           .when()
           .get(url)
           .then()
-          .statusCode(200)
+          .statusCode(StatusCodes.STATUS_OK)
           .extract()
           .body()
-          .as(List.class, new JsonAPIListMapper<>(UserPreference.class));
+          .as(List.class, new JsonApiListMapper<>(UserPreference.class));
 
       // Test if both prefs are present and the values are correct
       final double appVizPref = (double) retrievedPrefs.stream()
@@ -202,19 +211,19 @@ public class BatchRequest {
   void invalidPasswordsLength() {
     final int count = 10;
     final List<String> passwords = IntStream.range(0, count - 1)
-        .mapToObj(i -> RandomStringUtils.random(5, "abcdefghijklmnopqrstuvwxyz"))
+        .mapToObj(i -> RandomStringUtils.random(5, PW_CHARSET))
         .collect(Collectors.toList());
-    final List<String> roles = new ArrayList<>(Arrays.asList("user"));
+    final List<String> roles = new ArrayList<>(Arrays.asList(ROLE_USER));
 
     final UserBatchRequest ubr = new UserBatchRequest("test", count, passwords, roles, null);
 
     given().header(this.authHeaderAdmin)
-        .body(ubr, new JsonAPIMapper<>(UserBatchRequest.class))
+        .body(ubr, new JsonApiMapper<>(UserBatchRequest.class))
         .contentType(MEDIA_TYPE)
         .when()
         .post(BATCH_URL)
         .then()
-        .statusCode(400);
+        .statusCode(StatusCodes.STATUS_BAD_REQUEST);
 
     // TODO: How to test that no users were actually created?
   }
@@ -222,21 +231,21 @@ public class BatchRequest {
 
   @Test
   void countLimit() {
-    final int count = BatchRequestResource.MAX_COUNT + 1;
+    final int count = BatchService.MAX_COUNT + 1;
     final List<String> passwords = IntStream.range(0, count)
-        .mapToObj(i -> RandomStringUtils.random(5, "abcdefghijklmnopqrstuvwxyz"))
+        .mapToObj(i -> RandomStringUtils.random(5, PW_CHARSET))
         .collect(Collectors.toList());
-    final List<String> roles = new ArrayList<>(Arrays.asList("user"));
+    final List<String> roles = new ArrayList<>(Arrays.asList(ROLE_USER));
 
     final UserBatchRequest ubr = new UserBatchRequest("test", count, passwords, roles, null);
 
     given().header(this.authHeaderAdmin)
-        .body(ubr, new JsonAPIMapper<>(UserBatchRequest.class))
+        .body(ubr, new JsonApiMapper<>(UserBatchRequest.class))
         .contentType(MEDIA_TYPE)
         .when()
         .post(BATCH_URL)
         .then()
-        .statusCode(400);
+        .statusCode(StatusCodes.STATUS_BAD_REQUEST);
 
     // TODO: How to test that no users were actually created?
   }
@@ -251,19 +260,19 @@ public class BatchRequest {
       Assertions.fail();
     }
     final List<String> passwords = IntStream.range(0, count)
-        .mapToObj(i -> RandomStringUtils.random(5, "abcdefghijklmnopqrstuvwxyz"))
+        .mapToObj(i -> RandomStringUtils.random(5, PW_CHARSET))
         .collect(Collectors.toList());
-    final List<String> roles = new ArrayList<>(Arrays.asList("user"));
+    final List<String> roles = new ArrayList<>(Arrays.asList(ROLE_USER));
 
     final UserBatchRequest ubr = new UserBatchRequest("test", count, passwords, roles, null);
 
     given().header(this.authHeaderAdmin)
-        .body(ubr, new JsonAPIMapper<>(UserBatchRequest.class))
+        .body(ubr, new JsonApiMapper<>(UserBatchRequest.class))
         .contentType(MEDIA_TYPE)
         .when()
         .post(BATCH_URL)
         .then()
-        .statusCode(400);
+        .statusCode(StatusCodes.STATUS_BAD_REQUEST);
 
     // TODO: How to test that no users were actually created?
 
