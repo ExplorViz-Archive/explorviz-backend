@@ -13,6 +13,7 @@ import net.explorviz.security.user.User;
 
 /**
  * Custom mapper to de/serialize JSON:API.
+ *
  * @param <T> Type to de/serialize
  */
 public class JsonApiMapper<T> implements ObjectMapper {
@@ -22,6 +23,7 @@ public class JsonApiMapper<T> implements ObjectMapper {
 
   /**
    * Creates a new mapper.
+   *
    * @param cls The class to de/serialize.
    */
   public JsonApiMapper(final Class<T> cls) {
@@ -35,9 +37,8 @@ public class JsonApiMapper<T> implements ObjectMapper {
 
   @Override
   public T deserialize(final ObjectMapperDeserializationContext context) {
-    final T deserialized =
-        this.converter.readDocument(context.getDataToDeserialize().asByteArray(), this.cls).get();
-    return deserialized;
+    return this.converter.readDocument(context.getDataToDeserialize().asByteArray(), this.cls)
+        .get();
   }
 
   @Override
@@ -46,14 +47,14 @@ public class JsonApiMapper<T> implements ObjectMapper {
     try {
       final byte[] serialized = this.converter.writeDocument(doc);
       return new String(serialized);
-    } catch (final DocumentSerializationException e) {
-      e.printStackTrace();
+    } catch (final DocumentSerializationException ignored) {
     }
     return null;
   }
 
   /**
    * Wrapper to serialize an object.
+   *
    * @param object the object to serialize
    * @return JSON:API string representation of the given object
    */
@@ -62,8 +63,7 @@ public class JsonApiMapper<T> implements ObjectMapper {
     try {
       final byte[] serialized = this.converter.writeDocument(doc);
       return new String(serialized);
-    } catch (final DocumentSerializationException e) {
-      e.printStackTrace();
+    } catch (final DocumentSerializationException ignored) {
     }
     return null;
   }

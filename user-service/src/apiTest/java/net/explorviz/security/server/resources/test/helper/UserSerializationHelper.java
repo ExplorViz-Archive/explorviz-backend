@@ -10,7 +10,9 @@ import net.explorviz.security.user.User;
  * Helper class for serializing {@link User} objects with passwords.
  * Using the default converter, the password is omitted. This class prevents this.
  */
-public class UserSerializationHelper {
+public final class UserSerializationHelper {
+
+  private UserSerializationHelper(){/* Utility */}
 
   /**
    * Serializes a user WITH the password attribute, which otherwise is ignored by Jackson.

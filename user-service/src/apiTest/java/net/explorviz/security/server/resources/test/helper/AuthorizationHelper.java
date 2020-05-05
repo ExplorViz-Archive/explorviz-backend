@@ -22,8 +22,8 @@ public final class AuthorizationHelper {
   private static final String NORMIE_PW = ADMIN_PW;
 
 
-  private static User admin = null;
-  private static User normie = null;
+  private static User admin;
+  private static User normie;
 
   private AuthorizationHelper(){/* Utility */}
 
@@ -61,9 +61,9 @@ public final class AuthorizationHelper {
       } else {
         // Not existent, create and try again
         // Will fail if normie user exists with another password
-        final Optional<User> created_normie =
+        final Optional<User> createdNormie =
             UsersHelper.getInstance().createUser(NORMIE_NAME, NORMIE_PW, null);
-        if (created_normie.isPresent()) {
+        if (createdNormie.isPresent()) {
           return getNormie();
         } else {
           throw new IllegalStateException("Can no login as normie, does no exist");

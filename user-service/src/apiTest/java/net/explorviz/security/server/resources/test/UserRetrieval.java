@@ -52,14 +52,14 @@ public class UserRetrieval {
 
 
   @BeforeAll
-  static void setUpAll() {
+  public static void setUpAll() {
     adminToken = AuthorizationHelper.getAdminToken();
     normieToken = AuthorizationHelper.getNormieToken();
   }
 
 
   @BeforeEach
-  void setUp() {
+  public void setUp() {
     this.authHeaderAdmin = new Header("authorization", "Bearer " + adminToken);
     this.authHeaderNormie = new Header("authorization", "Bearer " + normieToken);
   }
@@ -87,7 +87,7 @@ public class UserRetrieval {
 
   @Test
   @DisplayName("Get all users in the database")
-  public void getAllAsAdmin() throws UserCrudException {
+  public void retrieveAllAsAdmin() throws UserCrudException {
     final List<User> created = this.createUsers(5, "test", "pw", null);
     // All users must be >= 1
     given().contentType(MEDIA_TYPE)
@@ -103,7 +103,7 @@ public class UserRetrieval {
 
   @Test
   @DisplayName("Get all users in the database as normie")
-  public void getAllAsNormie() {
+  public void retrieveAllAsNormie() {
     // Should return 401 status code
     given().contentType(MEDIA_TYPE)
         .header(this.authHeaderNormie)
@@ -116,7 +116,7 @@ public class UserRetrieval {
 
   @Test
   @DisplayName("Get user by id as admin")
-  public void getSelfAsAdmin() {
+  public void retrieveSelfAsAdmin() {
     final String id = AuthorizationHelper.getAdmin().getId();
     given().contentType(MEDIA_TYPE)
         .header(this.authHeaderAdmin)
@@ -130,7 +130,7 @@ public class UserRetrieval {
 
   @Test
   @DisplayName("Get user by id as normie")
-  public void getUserAsNormie() {
+  public void retrieveUserAsNormie() {
     final String id = AuthorizationHelper.getNormie().getId();
     given().contentType(MEDIA_TYPE)
         .header(this.authHeaderNormie)

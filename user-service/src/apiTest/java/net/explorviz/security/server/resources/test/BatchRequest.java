@@ -58,17 +58,17 @@ public class BatchRequest {
    * @throws IOException if serialization fails
    */
   @BeforeAll
-  static void setUpAll() throws IOException {
+  public static void setUpAll() throws IOException {
     adminToken = AuthorizationHelper.getAdminToken();
   }
 
   @BeforeEach
-  void setUp() {
+  public void setUp() {
     this.authHeaderAdmin = new Header("authorization", "Bearer " + adminToken);
   }
 
   @Test
-  void createValid() {
+  public void createValid() {
     final int count = 10;
     final List<String> passwords = IntStream.range(0, count)
         .mapToObj(i -> RandomStringUtils.random(5, PW_CHARSET))
@@ -100,7 +100,7 @@ public class BatchRequest {
 
   @Test
   @SuppressWarnings("unchecked")
-  void filterByBatchId() {
+  public void filterByBatchId() {
     final int count = 10;
     final List<String> passwords = IntStream.range(0, count)
         .mapToObj(i -> RandomStringUtils.random(5, PW_CHARSET))
@@ -143,7 +143,7 @@ public class BatchRequest {
 
   @SuppressWarnings("unchecked")
   @Test
-  void validWithPrefs() {
+  public void validWithPrefs() {
     final int count = 10;
     final List<String> passwords = IntStream.range(0, count)
         .mapToObj(i -> RandomStringUtils.random(5, PW_CHARSET))
@@ -208,7 +208,7 @@ public class BatchRequest {
 
 
   @Test
-  void invalidPasswordsLength() {
+  public void invalidPasswordsLength() {
     final int count = 10;
     final List<String> passwords = IntStream.range(0, count - 1)
         .mapToObj(i -> RandomStringUtils.random(5, PW_CHARSET))
@@ -230,7 +230,7 @@ public class BatchRequest {
 
 
   @Test
-  void countLimit() {
+  public void countLimit() {
     final int count = BatchService.MAX_COUNT + 1;
     final List<String> passwords = IntStream.range(0, count)
         .mapToObj(i -> RandomStringUtils.random(5, PW_CHARSET))
@@ -252,7 +252,7 @@ public class BatchRequest {
 
 
   @Test
-  void createExistingUser() {
+  public void createExistingUser() {
     final String prefix = "test";
     final int count = 5;
     final Optional<User> u = UsersHelper.getInstance().createUser(prefix + "-3", "pass", null);

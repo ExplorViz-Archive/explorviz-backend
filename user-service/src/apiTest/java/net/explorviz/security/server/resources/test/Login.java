@@ -25,7 +25,7 @@ public class Login {
 
 
   @Test
-  void testValidLogin() {
+  public void testValidLogin() {
     given().contentType("application/json")
         .body(new UserCredentials(ADMIN_NAME, ADMIN_PW), ObjectMapperType.JACKSON_2)
         .when()
@@ -37,7 +37,7 @@ public class Login {
 
 
   @Test
-  void testInvalidLogin() {
+  public void testInvalidLogin() {
     given().contentType("application/json")
         .body(new UserCredentials(ADMIN_NAME, "invalidpw"), ObjectMapperType.JACKSON_2)
         .when()

@@ -53,13 +53,13 @@ public class UserUpdate {
   private String userUri;
 
   @BeforeAll
-  static void setUpAll() {
+  public static void setUpAll() {
     adminToken = AuthorizationHelper.getAdminToken();
     normieToken = AuthorizationHelper.getNormieToken();
   }
 
   @BeforeEach
-  void setUp() {
+  public void setUp() {
     this.authHeaderAdmin = new Header("authorization", "Bearer " + adminToken);
     this.authHeaderNormie = new Header("authorization", "Bearer " + normieToken);
 
@@ -76,12 +76,12 @@ public class UserUpdate {
   }
 
   @AfterEach
-  void tearDown() {
+  public void tearDown() {
     UsersHelper.getInstance().deleteUserById(this.theUser.getId());
   }
 
   @Test
-  void changePassword() throws IOException {
+  public void changePassword() throws IOException {
 
     final String newpw = "newpw";
     final User changeTo = new User(null, this.USER_NAME, newpw, null);
@@ -109,7 +109,7 @@ public class UserUpdate {
 
 
   @Test
-  void changeName() throws IOException {
+  public void changeName() throws IOException {
 
     final String newname = "newname";
     final User changeTo = new User(null, newname, USER_PW, null);
@@ -135,7 +135,7 @@ public class UserUpdate {
   }
 
   @Test
-  void updateAsNormie() throws IOException {
+  public void updateAsNormie() throws IOException {
     final String newname = "newname";
     final User changeTo = new User(null, newname, this.USER_PW, null);
 
@@ -151,7 +151,7 @@ public class UserUpdate {
   }
 
   @Test
-  void addRole() throws IOException {
+  public void addRole() throws IOException {
     final List<String> adminRole = new ArrayList<>(Collections.singletonList("admin"));
     final User changeTo = new User(null, USER_NAME, USER_PW, adminRole);
 
@@ -173,7 +173,7 @@ public class UserUpdate {
 
 
   @Test
-  void updateId() throws IOException {
+  public void updateId() throws IOException {
     final User changeTo = new User("someid", USER_NAME, USER_PW, null);
 
     // Perform patch

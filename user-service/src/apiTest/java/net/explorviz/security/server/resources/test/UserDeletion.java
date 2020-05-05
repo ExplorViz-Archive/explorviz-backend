@@ -34,13 +34,13 @@ public class UserDeletion {
   private Header authHeaderNormie;
 
   @BeforeAll
-  static void setUpAll() throws IOException {
+  public static void setUpAll() throws IOException {
     adminToken = AuthorizationHelper.getAdminToken();
     normieToken = AuthorizationHelper.getNormieToken();
   }
 
   @BeforeEach
-  void setUp() {
+  public void setUp() {
     this.authHeaderAdmin = new Header("authorization", "Bearer " + adminToken);
     this.authHeaderNormie = new Header("authorization", "Bearer " + normieToken);
   }
@@ -48,7 +48,7 @@ public class UserDeletion {
 
   @Test
   @DisplayName("Delete a User")
-  void deleteUser() {
+  public void deleteUser() {
     final Optional<User> deleteMe = UsersHelper.getInstance().createUser("deleteme", "pw", null);
 
     if (!deleteMe.isPresent()) {
@@ -70,7 +70,7 @@ public class UserDeletion {
 
   @Test
   @DisplayName("Delete a User without privileges")
-  void deleteUserAsNormie() {
+  public void deleteUserAsNormie() {
     final Optional<User> deleteMe = UsersHelper.getInstance().createUser("deleteme", "pw", null);
 
     if (deleteMe.isEmpty()) {
@@ -88,7 +88,7 @@ public class UserDeletion {
 
   @Test
   @DisplayName("Delete last admin")
-  void deleteLastAdmin() {
+  public void deleteLastAdmin() {
 
     // Check if there are other admins next to the default admin, and delete them
     UsersHelper.getInstance()

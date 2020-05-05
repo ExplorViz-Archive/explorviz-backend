@@ -15,14 +15,14 @@ import org.slf4j.LoggerFactory;
  * Helper class for manipulating users through HTTP. Represents a minimal client to the user API.
  * All requests are performed as the default admin.
  */
-public class UsersHelper {
+public final class UsersHelper {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(UsersHelper.class);
 
   private static final String MEDIA_TYPE = "application/vnd.api+json";
   private static final String USERS_URI = "http://localhost:8090/v1/users/";
 
-  private static UsersHelper instance = null;
+  private static UsersHelper instance; //NOPMD
 
   private final Header auth;
 
@@ -35,7 +35,7 @@ public class UsersHelper {
    * Returns the instance.
    */
   public static UsersHelper getInstance() {
-    if (instance == null) {
+    if (instance == null) { //NOPMD
       instance = new UsersHelper();
     }
     return instance;

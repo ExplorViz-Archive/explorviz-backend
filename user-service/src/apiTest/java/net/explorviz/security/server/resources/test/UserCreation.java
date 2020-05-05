@@ -46,13 +46,13 @@ class UserCreation {
    *
    */
   @BeforeAll
-  static void setUpAll() {
+  public static void setUpAll() {
     adminToken = AuthorizationHelper.getAdminToken();
     normieToken = AuthorizationHelper.getNormieToken();
   }
 
   @BeforeEach
-  void setUp() {
+  public void setUp() {
     this.authHeaderAdmin = new Header("authorization", "Bearer " + adminToken);
     this.authHeaderNormie = new Header("authorization", "Bearer " + normieToken);
   }
@@ -128,7 +128,7 @@ class UserCreation {
 
   @Test
   @DisplayName("Create user without password")
-  void createUserWithNoPassword() {
+  public void createUserWithNoPassword() {
     final User u = new User(null, "name", null, null);
 
     given().body(u, new JsonApiMapper<>(User.class))
@@ -143,7 +143,7 @@ class UserCreation {
 
   @Test
   @DisplayName("Create user without token.")
-  void createUserUnauthenticated() {
+  public void createUserUnauthenticated() {
     final User u = new User(null, "name", null, null);
 
     given().body(u, new JsonApiMapper<>(User.class))
@@ -156,7 +156,7 @@ class UserCreation {
 
   @Test
   @DisplayName("Create user unauthenticated.")
-  void createUserAsNormie() {
+  public void createUserAsNormie() {
     final User u = new User(null, "name", null, null);
 
     given().body(u, new JsonApiMapper<>(User.class))

@@ -41,13 +41,13 @@ public class RoleRetrieval {
    *
    */
   @BeforeAll
-  static void setUpAll() {
+  public static void setUpAll() {
     adminToken = AuthorizationHelper.getAdminToken();
     normieToken = AuthorizationHelper.getNormieToken();
   }
 
   @BeforeEach
-  void setUp() {
+  public void setUp() {
     this.authHeaderAdmin = new Header("authorization", "Bearer " + adminToken); // NOCS
     this.authHeaderNormie = new Header("authorization", "Bearer " + normieToken);
   }
