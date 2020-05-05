@@ -1,14 +1,14 @@
 package net.explorviz.settings.server.resources.test;
 
 import static io.restassured.RestAssured.given;
+
 import io.restassured.http.Header;
-import java.io.IOException;
+import net.explorviz.security.user.User;
 import net.explorviz.settings.model.UserPreference;
 import net.explorviz.settings.server.resources.test.helper.AuthorizationHelper;
 import net.explorviz.settings.server.resources.test.helper.DefaultSettings;
-import net.explorviz.settings.server.resources.test.helper.JsonAPIMapper;
+import net.explorviz.settings.server.resources.test.helper.JsonApiMapper;
 import net.explorviz.settings.server.resources.test.helper.UsersHelper;
-import net.explorviz.security.user.User;
 import org.junit.Assert;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,10 +17,15 @@ import org.junit.jupiter.api.Test;
 // CHECKSTYLE.OFF: MagicNumberCheck
 // CHECKSTYLE.OFF: MultipleStringLiteralsCheck
 
+
+/**
+ * Tests preference updates.
+ */
 @SuppressWarnings({"PMD.JUnitTestsShouldIncludeAssert", "PMD.AvoidDuplicateLiterals"})
 class PreferenceUpdate {
 
   private static final String PREF_URL = "http://localhost:8090/v1/preferences";
+  private static final String MEDIA_TYPE = "application/vnd.api+json";
 
   private static String adminToken;
   private static String normieToken;
@@ -28,17 +33,16 @@ class PreferenceUpdate {
   private Header authHeaderAdmin;
   private Header authHeaderNormie;
 
-  private static final String MEDIA_TYPE = "application/vnd.api+json";
+
 
 
   /**
    * Retrieves token for both an admin and an unprivileged user ("normie"). The default admin is
    * used for the former, a normie is created.
    *
-   * @throws IOException if serialization fails
    */
   @BeforeAll
-  public static void setUpAll() throws IOException {
+  public static void setUpAll() {
     adminToken = AuthorizationHelper.getAdminToken();
     normieToken = AuthorizationHelper.getNormieToken();
   }
@@ -54,10 +58,10 @@ class PreferenceUpdate {
 
     return given().header(this.authHeaderAdmin)
         .contentType(MEDIA_TYPE)
-        .body(up, new JsonAPIMapper<>(UserPreference.class))
+        .body(up, new JsonApiMapper<>(UserPreference.class))
         .when()
         .post(PREF_URL)
-        .as(UserPreference.class, new JsonAPIMapper<>(UserPreference.class));
+        .as(UserPreference.class, new JsonApiMapper<>(UserPreference.class));
   }
 
   @Test
@@ -66,7 +70,7 @@ class PreferenceUpdate {
         .createUser("tester", "test", null)
         .orElseThrow(IllegalStateException::new);
 
-    final String settingId = DefaultSettings.appVizCommArrowSize.getId();
+    final String settingId = DefaultSettings.APP_VIZ_COMM_ARROW_SIZE.getId();
     final Double val = 2.0; // Default = 1.0, (0, 5)
     final UserPreference createdPref = this.createPref(testUser.getId(), settingId, val);
 
@@ -80,14 +84,14 @@ class PreferenceUpdate {
 
     final UserPreference updated = given().header(auth)
         .contentType(MEDIA_TYPE)
-        .body(toUpdate, new JsonAPIMapper<>(UserPreference.class))
+        .body(toUpdate, new JsonApiMapper<>(UserPreference.class))
         .when()
         .patch(PREF_URL + "/" + createdPref.getId())
         .then()
         .statusCode(200)
         .extract()
         .body()
-        .as(UserPreference.class, new JsonAPIMapper<>(UserPreference.class));
+        .as(UserPreference.class, new JsonApiMapper<>(UserPreference.class));
 
     Assert.assertEquals(updated.getValue(), toUpdate.getValue());
     Assert.assertEquals(updated, toUpdate);
@@ -101,12 +105,12 @@ class PreferenceUpdate {
         .createUser("tester", "test", null)
         .orElseThrow(IllegalStateException::new);
 
-    final String settingId = DefaultSettings.appVizCommArrowSize.getId();
+    final String settingId = DefaultSettings.APP_VIZ_COMM_ARROW_SIZE.getId();
     final Double val = 2.0; // Default = 1.0, (0, 5)
     final UserPreference createdPref = this.createPref(testUser.getId(), settingId, val);
 
     final UserPreference toUpdate = new UserPreference(createdPref.getId(), testUser.getId(),
-        settingId, DefaultSettings.appVizCommArrowSize.getMax() + 1);
+        settingId, DefaultSettings.APP_VIZ_COMM_ARROW_SIZE.getMax() + 1);
 
     final String myToken = AuthorizationHelper.login("tester", "test")
         .orElseThrow(IllegalStateException::new)
@@ -115,7 +119,7 @@ class PreferenceUpdate {
 
     given().header(auth)
         .contentType(MEDIA_TYPE)
-        .body(toUpdate, new JsonAPIMapper<>(UserPreference.class))
+        .body(toUpdate, new JsonApiMapper<>(UserPreference.class))
         .when()
         .patch(PREF_URL + "/" + createdPref.getId())
         .then()
@@ -130,7 +134,7 @@ class PreferenceUpdate {
         .createUser("tester", "test", null)
         .orElseThrow(IllegalStateException::new);
 
-    final String settingId = DefaultSettings.appVizCommArrowSize.getId();
+    final String settingId = DefaultSettings.APP_VIZ_COMM_ARROW_SIZE.getId();
     final Double val = 2.0; // Default = 1.0, (0, 5)
     final UserPreference createdPref = this.createPref(testUser.getId(), settingId, val);
 
@@ -139,7 +143,7 @@ class PreferenceUpdate {
 
     given().header(this.authHeaderNormie)
         .contentType(MEDIA_TYPE)
-        .body(toUpdate, new JsonAPIMapper<>(UserPreference.class))
+        .body(toUpdate, new JsonApiMapper<>(UserPreference.class))
         .when()
         .patch(PREF_URL + "/" + createdPref.getId())
         .then()

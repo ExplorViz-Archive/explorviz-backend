@@ -1,14 +1,15 @@
 package net.explorviz.settings.server.resources.test;
 
 import static io.restassured.RestAssured.given;
+
 import io.restassured.http.Header;
 import java.io.IOException;
+import net.explorviz.security.user.User;
 import net.explorviz.settings.model.UserPreference;
 import net.explorviz.settings.server.resources.test.helper.AuthorizationHelper;
 import net.explorviz.settings.server.resources.test.helper.DefaultSettings;
-import net.explorviz.settings.server.resources.test.helper.JsonAPIMapper;
+import net.explorviz.settings.server.resources.test.helper.JsonApiMapper;
 import net.explorviz.settings.server.resources.test.helper.UsersHelper;
-import net.explorviz.security.user.User;
 import org.hamcrest.CoreMatchers;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,6 +18,10 @@ import org.junit.jupiter.api.Test;
 // CHECKSTYLE.OFF: MagicNumberCheck
 // CHECKSTYLE.OFF: MultipleStringLiteralsCheck
 
+
+/**
+ * Tests preference deletion.
+ */
 @SuppressWarnings({"PMD.JUnitTestsShouldIncludeAssert", "PMD.AvoidDuplicateLiterals"})
 class PreferenceDeletion {
 
@@ -24,13 +29,15 @@ class PreferenceDeletion {
           "http://localhost:8090/v1/preferences?filter[user]={uid}";
   private static final String PREF_URL = "http://localhost:8090/v1/preferences";
 
+  private static final String MEDIA_TYPE = "application/vnd.api+json";
+
   private static String adminToken;
   private static String normieToken;
 
   private Header authHeaderAdmin;
   private Header authHeaderNormie;
 
-  private static final String MEDIA_TYPE = "application/vnd.api+json";
+
 
 
   /**
@@ -56,10 +63,10 @@ class PreferenceDeletion {
 
     return given().header(this.authHeaderAdmin)
         .contentType(MEDIA_TYPE)
-        .body(up, new JsonAPIMapper<>(UserPreference.class))
+        .body(up, new JsonApiMapper<>(UserPreference.class))
         .when()
         .post(PREF_URL)
-        .as(UserPreference.class, new JsonAPIMapper<>(UserPreference.class));
+        .as(UserPreference.class, new JsonApiMapper<>(UserPreference.class));
   }
 
 
@@ -70,8 +77,8 @@ class PreferenceDeletion {
         .createUser("tester", "test", null)
         .orElseThrow(IllegalStateException::new);
 
-    final String settingId = DefaultSettings.keepHighlightingOnOpenOrClose.getId();
-    final Boolean val = !DefaultSettings.keepHighlightingOnOpenOrClose.getDefaultValue();
+    final String settingId = DefaultSettings.KEEP_HIGHLIGHTING_ON_OPEN_OR_CLOSE.getId();
+    final Boolean val = !DefaultSettings.KEEP_HIGHLIGHTING_ON_OPEN_OR_CLOSE.getDefaultValue();
     final UserPreference createdPref = this.updatePref(testUser.getId(), settingId, val);
 
     final String myToken = AuthorizationHelper.login("tester", "test")
@@ -97,7 +104,7 @@ class PreferenceDeletion {
   }
 
   /**
-   * All preference should be deleted if the corresponding user is removed
+   * All preference should be deleted if the corresponding user is removed.
    */
   @Test
   public void testDeletionByUserDeletion() throws InterruptedException {
@@ -105,8 +112,8 @@ class PreferenceDeletion {
         .createUser("tester", "test", null)
         .orElseThrow(IllegalStateException::new);
 
-    final String settingId = DefaultSettings.keepHighlightingOnOpenOrClose.getId();
-    final Boolean val = !DefaultSettings.keepHighlightingOnOpenOrClose.getDefaultValue();
+    final String settingId = DefaultSettings.KEEP_HIGHLIGHTING_ON_OPEN_OR_CLOSE.getId();
+    final Boolean val = !DefaultSettings.KEEP_HIGHLIGHTING_ON_OPEN_OR_CLOSE.getDefaultValue();
     this.updatePref(testUser.getId(), settingId, val);
 
 
@@ -133,8 +140,8 @@ class PreferenceDeletion {
         .createUser("tester", "test", null)
         .orElseThrow(IllegalStateException::new);
 
-    final String settingId = DefaultSettings.keepHighlightingOnOpenOrClose.getId();
-    final Boolean val = !DefaultSettings.keepHighlightingOnOpenOrClose.getDefaultValue();
+    final String settingId = DefaultSettings.KEEP_HIGHLIGHTING_ON_OPEN_OR_CLOSE.getId();
+    final Boolean val = !DefaultSettings.KEEP_HIGHLIGHTING_ON_OPEN_OR_CLOSE.getDefaultValue();
     final String id = this.updatePref(testUser.getId(), settingId, val).getId();
 
     given().header(this.authHeaderNormie)
@@ -153,8 +160,8 @@ class PreferenceDeletion {
         .createUser("tester", "test", null)
         .orElseThrow(IllegalStateException::new);
 
-    final String settingId = DefaultSettings.keepHighlightingOnOpenOrClose.getId();
-    final Boolean val = !DefaultSettings.keepHighlightingOnOpenOrClose.getDefaultValue();
+    final String settingId = DefaultSettings.KEEP_HIGHLIGHTING_ON_OPEN_OR_CLOSE.getId();
+    final Boolean val = !DefaultSettings.KEEP_HIGHLIGHTING_ON_OPEN_OR_CLOSE.getDefaultValue();
     final String id = this.updatePref(testUser.getId(), settingId, val).getId();
 
     given().header(this.authHeaderAdmin)

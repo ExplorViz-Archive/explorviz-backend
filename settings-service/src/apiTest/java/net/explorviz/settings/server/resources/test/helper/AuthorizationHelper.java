@@ -1,18 +1,22 @@
 package net.explorviz.settings.server.resources.test.helper;
 
 import static io.restassured.RestAssured.given;
+
 import com.github.jasminb.jsonapi.exceptions.ResourceParseException;
 import io.restassured.mapper.ObjectMapperType;
 import java.util.Optional;
 import net.explorviz.security.user.User;
 
+/**
+ * Utility class handle authorization.
+ */
 public final class AuthorizationHelper {
 
   private static final String AUTH_URL = "http://localhost:8090/v1/tokens/";
   private static final String ADMIN_NAME = "admin";
   private static final String NORMIE_NAME = "normie";
   private static final String ADMIN_PW = "password";
-  private static final String NORMIE_PW = "password";
+  private static final String NORMIE_PW = ADMIN_PW;
 
 
   private static User admin;
@@ -20,6 +24,12 @@ public final class AuthorizationHelper {
 
   private AuthorizationHelper(){/* Utility Class */}
 
+  /**
+   * Performs a login.
+   * @param name The username
+   * @param password the password
+   * @return an optional containing a user, iff the login was successful
+   */
   public static Optional<User> login(final String name, final String password) {
 
     try {
@@ -27,7 +37,7 @@ public final class AuthorizationHelper {
           .body(new UserCredentials(name, password), ObjectMapperType.JACKSON_2)
           .when()
           .post(AUTH_URL)
-          .as(User.class, new JsonAPIMapper<>(User.class));
+          .as(User.class, new JsonApiMapper<>(User.class));
       return Optional.of(u);
     } catch (final ResourceParseException ex) {
       return Optional.empty();
@@ -43,6 +53,9 @@ public final class AuthorizationHelper {
     return getAdmin().getToken();
   }
 
+  /**
+   * Returns a user without any roles.
+   */
   public static User getNormie() {
     final Optional<User> normie = login(NORMIE_NAME, NORMIE_PW);
     if (AuthorizationHelper.normie == null) {
@@ -64,6 +77,9 @@ public final class AuthorizationHelper {
     return AuthorizationHelper.normie;
   }
 
+  /**
+   * Returns a user with the admin role assigned.
+   */
   public static User getAdmin() {
     if (AuthorizationHelper.admin == null) {
       final Optional<User> admin = login(ADMIN_NAME, ADMIN_PW);
@@ -78,8 +94,8 @@ public final class AuthorizationHelper {
 
 
   private static class UserCredentials {
-    public String username;
-    public String password;
+    private String username;
+    private String password;
 
     public UserCredentials(final String username, final String password) {
       this.username = username;

@@ -1,13 +1,14 @@
 package net.explorviz.settings.server.resources.test;
 
 import static io.restassured.RestAssured.given;
+
 import io.restassured.http.Header;
 import java.io.IOException;
 import net.explorviz.settings.model.FlagSetting;
 import net.explorviz.settings.model.Setting;
 import net.explorviz.settings.server.resources.test.helper.AuthorizationHelper;
 import net.explorviz.settings.server.resources.test.helper.DefaultSettings;
-import net.explorviz.settings.server.resources.test.helper.JsonAPIMapper;
+import net.explorviz.settings.server.resources.test.helper.JsonApiMapper;
 import org.junit.Assert;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,10 +17,16 @@ import org.junit.jupiter.api.Test;
 // CHECKSTYLE.OFF: MagicNumberCheck
 // CHECKSTYLE.OFF: MultipleStringLiteralsCheck
 
+
+/**
+ * Tests preference creation.
+ */
 @SuppressWarnings({"PMD.JUnitTestsShouldIncludeAssert", "PMD.AvoidDuplicateLiterals"})
 class SettingsCreation {
 
   private static final String SETTINGS_URL = "http://localhost:8090/v1/settings";
+  private static final String MEDIA_TYPE = "application/vnd.api+json";
+
 
   private static String adminToken;
   private static String normieToken;
@@ -27,7 +34,6 @@ class SettingsCreation {
   private Header authHeaderAdmin;
   private Header authHeaderNormie;
 
-  private static final String MEDIA_TYPE = "application/vnd.api+json";
 
 
   /**
@@ -56,14 +62,14 @@ class SettingsCreation {
 
     final Setting created = given().header(this.authHeaderAdmin)
         .contentType(MEDIA_TYPE)
-        .body(toCreate, new JsonAPIMapper<>(Setting.class))
+        .body(toCreate, new JsonApiMapper<>(Setting.class))
         .when()
         .post(SETTINGS_URL)
         .then()
         .statusCode(200)
         .extract()
         .body()
-        .as(Setting.class, new JsonAPIMapper<>(Setting.class));
+        .as(Setting.class, new JsonApiMapper<>(Setting.class));
 
     // Delete to not affect other tests
     this.deleteSetting(created.getId());
@@ -79,7 +85,7 @@ class SettingsCreation {
         new FlagSetting("testname", "a test setting", DefaultSettings.ORIGIN, false);
     given().header(this.authHeaderNormie)
         .contentType(MEDIA_TYPE)
-        .body(toCreate, new JsonAPIMapper<>(Setting.class))
+        .body(toCreate, new JsonApiMapper<>(Setting.class))
         .when()
         .post(SETTINGS_URL)
         .then()

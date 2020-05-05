@@ -7,18 +7,26 @@ import com.github.jasminb.jsonapi.exceptions.DocumentSerializationException;
 import io.restassured.mapper.ObjectMapper;
 import io.restassured.mapper.ObjectMapperDeserializationContext;
 import io.restassured.mapper.ObjectMapperSerializationContext;
+import net.explorviz.security.user.User;
 import net.explorviz.settings.model.FlagSetting;
 import net.explorviz.settings.model.RangeSetting;
 import net.explorviz.settings.model.Setting;
 import net.explorviz.settings.model.UserPreference;
-import net.explorviz.security.user.User;
 
-public class JsonAPIMapper<T> implements ObjectMapper {
+/**
+ * Mapper to de/serialize JSON:API into objects.
+ * @param <T> The type
+ */
+public class JsonApiMapper<T> implements ObjectMapper {
   private final ResourceConverter converter;
 
   private final Class<T> cls;
 
-  public JsonAPIMapper(final Class<T> cls) {
+  /**
+   * Creates a new mapper.
+   * @param cls the type to map
+   */
+  public JsonApiMapper(final Class<T> cls) {
     this.cls = cls;
     this.converter = new ResourceConverter();
     this.converter.registerType(Setting.class);
@@ -46,6 +54,11 @@ public class JsonAPIMapper<T> implements ObjectMapper {
     }
   }
 
+  /**
+   * Serializes an object.
+   * @param object the object
+   * @return JSON:API string representation of the object
+   */
   public String serializeRaw(final T object) {
     final JSONAPIDocument<T> doc = new JSONAPIDocument<>(object);
     try {

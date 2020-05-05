@@ -6,20 +6,23 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.io.IOException;
 import net.explorviz.security.user.User;
 
+/**
+ * Helper class to to serialize user objects.
+ */
 public final class UserSerializationHelper {
 
 
   private UserSerializationHelper(){/* Utility class */}
 
   /**
-   * Serializes a user WITH the password attribute, which otherwise is ignored by Jackson
+   * Serializes a user WITH the password attribute, which otherwise is ignored by Jackson.
    * 
    * @param u the user
    * @return a JSON:API string representing the user
    * @throws IOException if the json is invalid
    */
   public static String serialize(final User u) throws IOException {
-    final String serialized = new JsonAPIMapper<>(User.class).serializeRaw(u);
+    final String serialized = new JsonApiMapper<>(User.class).serializeRaw(u);
 
     // Password is ignored we need to add it manually into the JSON tree
     final ObjectMapper mapper = new ObjectMapper();
