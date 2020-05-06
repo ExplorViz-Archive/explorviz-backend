@@ -157,7 +157,7 @@ public class UserService implements Queryable<User> {
     }
 
     try {
-      this.datastore.save(update);
+      this.datastore.save(targetUser);
       return targetUser;
     } catch (final DuplicateKeyException ex) {
       throw new UserCrudException("Username already exists", ex);

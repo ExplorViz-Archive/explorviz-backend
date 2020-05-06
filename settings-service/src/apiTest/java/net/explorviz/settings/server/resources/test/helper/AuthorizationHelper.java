@@ -2,6 +2,8 @@ package net.explorviz.settings.server.resources.test.helper;
 
 import static io.restassured.RestAssured.given;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.github.jasminb.jsonapi.exceptions.ResourceParseException;
 import io.restassured.mapper.ObjectMapperType;
 import java.util.Optional;
@@ -92,11 +94,14 @@ public final class AuthorizationHelper {
     return AuthorizationHelper.admin;
   }
 
-
-  private static class UserCredentials {
+  @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
+  public static class UserCredentials {
     private String username;
     private String password;
 
+    public UserCredentials() {/* Jackson */}
+
+    @JsonCreator
     public UserCredentials(final String username, final String password) {
       this.username = username;
       this.password = password;

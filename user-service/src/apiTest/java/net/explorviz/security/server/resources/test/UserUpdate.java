@@ -37,7 +37,7 @@ public class UserUpdate {
   private static final String MEDIA_TYPE_APPLICATION_JSON = "application/json";
   private static final String MEDIA_TYPE = "application/vnd.api+json";
 
-  private static final String USER_PW = "pass";
+  private static final String USER_PW = "password";
   private static final String USER_NAME = "user";
 
 
@@ -84,7 +84,7 @@ public class UserUpdate {
   public void changePassword() throws IOException {
 
     final String newpw = "newpw";
-    final User changeTo = new User(null, this.USER_NAME, newpw, null);
+    final User changeTo = new User(null, null, newpw, null);
 
     // Perform patch
     given().header(this.authHeaderAdmin)
@@ -94,6 +94,7 @@ public class UserUpdate {
         .patch(this.userUri)
         .then()
         .statusCode(StatusCodes.STATUS_OK);
+
 
     // Try to login with new pw
 
@@ -121,7 +122,10 @@ public class UserUpdate {
         .when()
         .patch(this.userUri)
         .then()
-        .statusCode(StatusCodes.STATUS_OK);
+        .statusCode(StatusCodes.STATUS_OK)
+        .extract().body()
+        .as(User.class, new JsonApiMapper<>(User.class));
+
 
     // Try to login with new name
     given().body(new UserCredentials(newname, USER_PW), ObjectMapperType.JACKSON_2)
