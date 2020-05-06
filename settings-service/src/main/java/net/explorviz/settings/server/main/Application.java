@@ -5,7 +5,7 @@ import net.explorviz.settings.model.RangeSetting;
 import net.explorviz.settings.model.Setting;
 import net.explorviz.settings.model.UserPreference;
 import net.explorviz.settings.server.providers.SettingJsonApiDeserializer;
-import net.explorviz.settings.server.providers.UserSettingJsonApiDeserializer;
+import net.explorviz.settings.server.providers.UserPreferenceJsonApiDeserializer;
 import net.explorviz.settings.server.resources.EntryPointResource;
 import net.explorviz.settings.server.resources.SettingsResource;
 import net.explorviz.settings.server.resources.UserPreferencesResource;
@@ -24,16 +24,20 @@ import net.explorviz.shared.security.filters.AuthorizationFilter;
 import net.explorviz.shared.security.filters.CorsResponseFilter;
 import org.glassfish.jersey.server.ResourceConfig;
 
+/**
+ * Configuration for the Settings-Service web application used to boot the JAX-RS servlet.
+ */
 public class Application extends ResourceConfig {
 
+  /**
+   * Initiates a new applications configuration.
+   */
   public Application() {
-
+    super();
     GenericTypeFinder.getTypeMap().put("Setting", Setting.class);
     GenericTypeFinder.getTypeMap().put("RangeSetting", RangeSetting.class);
     GenericTypeFinder.getTypeMap().put("FlagSetting", FlagSetting.class);
     GenericTypeFinder.getTypeMap().put("UserPreference", UserPreference.class);
-
-
 
     // register CDI
     this.register(new DependencyInjectionBinder());
@@ -54,7 +58,7 @@ public class Application extends ResourceConfig {
 
     // JSON API Serializing
     this.register(SettingJsonApiDeserializer.class);
-    this.register(UserSettingJsonApiDeserializer.class);
+    this.register(UserPreferenceJsonApiDeserializer.class);
     this.register(JsonApiProvider.class);
     this.register(JsonApiListProvider.class);
     this.register(ResourceConverterFactory.class);

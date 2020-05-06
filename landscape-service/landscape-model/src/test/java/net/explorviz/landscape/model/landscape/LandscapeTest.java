@@ -1,7 +1,5 @@
 package net.explorviz.landscape.model.landscape;
 
-
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import net.explorviz.landscape.model.event.EEventType;
@@ -10,13 +8,19 @@ import net.explorviz.landscape.model.store.Timestamp;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+/**
+ * Tests the landscape model.
+ */
 public class LandscapeTest {
 
-  private Landscape l;
+  // CHECKSTYLE.OFF: MagicNumberCheck
+
+  private Landscape landscape;
 
   @BeforeEach
   public void setUp() {
-    this.l = new Landscape("1", new Timestamp("2", 1556558138878L, 300));
+    this.landscape =
+        new Landscape("1", new Timestamp("2", 1556558138878L, 300));
   }
 
   /**
@@ -34,9 +38,9 @@ public class LandscapeTest {
         new Event("3", currentMillis, EEventType.NEWAPPLICATION, expectedEventMessage);
 
     // test the method and verify
-    this.l.createNewEvent("3", EEventType.NEWAPPLICATION, expectedEventMessage);
+    this.landscape.createNewEvent("3", EEventType.NEWAPPLICATION, expectedEventMessage);
 
-    final Event actualEvent = this.l.getEvents().get(0);
+    final Event actualEvent = this.landscape.getEvents().get(0);
 
     // the attributes must be equal
     assertEquals(expectedEvent.getEventType(), actualEvent.getEventType());
@@ -44,7 +48,7 @@ public class LandscapeTest {
   }
 
   /**
-   * Tests the creation of a new exception event
+   * Tests the creation of a new exception event.
    */
   @Test
   public void testCreateNewException() {
@@ -53,13 +57,14 @@ public class LandscapeTest {
     final long currentMillis = java.lang.System.currentTimeMillis();
 
     final String expectedCause =
-        "Exception thrown in application 'sampleApplication' by class 'boolean java.sql.Statement.execute(String)':\\n ...";
+        "Exception thrown in application 'sampleApplication' by class "
+            + "'boolean java.sql.Statement.execute(String)':\\n ...";
     final Event expectedEvent = new Event("4", currentMillis, EEventType.EXCEPTION, expectedCause);
 
     // test the method and verify
-    this.l.createNewException("4", expectedCause);
+    this.landscape.createNewException("4", expectedCause);
 
-    final Event actualEvent = this.l.getEvents().get(0);
+    final Event actualEvent = this.landscape.getEvents().get(0);
 
     // the attributes must be equal
     assertEquals(expectedEvent.getEventType(), actualEvent.getEventType());

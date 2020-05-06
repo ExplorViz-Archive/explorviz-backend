@@ -24,7 +24,8 @@ public class RemoteCallRepositoryPart {
 
   private final Map<BeforeSentRemoteCallRecord, RemoteRecordBuffer> sentRemoteCallRecordCache =
       new HashMap<>();
-  private final Map<BeforeReceivedRemoteCallRecord, RemoteRecordBuffer> receivedRemoteCallRecordCache =
+  private final Map<BeforeReceivedRemoteCallRecord, RemoteRecordBuffer>
+      receivedRemoteCallRecordCache =
       new HashMap<>();
 
   protected void checkForTimedoutRemoteCalls() {
@@ -56,8 +57,9 @@ public class RemoteCallRepositoryPart {
   }
 
   public void insertSentRecord(final String potentialNewAppCommuId, final Clazz callerClazz,
-      final BeforeSentRemoteCallRecord sentRemoteCallRecord, final Landscape landscape,
-      final InsertionRepositoryPart inserter, final int runtimeIndex) {
+                               final BeforeSentRemoteCallRecord sentRemoteCallRecord,
+                               final Landscape landscape,
+                               final InsertionRepositoryPart inserter, final int runtimeIndex) {
     final BeforeReceivedRemoteCallRecord receivedRecord =
         this.seekMatchingReceivedRemoteRecord(sentRemoteCallRecord);
 
@@ -81,8 +83,10 @@ public class RemoteCallRepositoryPart {
   }
 
   public void insertReceivedRecord(final String potentialNewAppCommuId,
-      final BeforeReceivedRemoteCallRecord receivedRemoteCallRecord, final Clazz firstReceiverClazz,
-      final Landscape landscape, final InsertionRepositoryPart inserter, final int runtimeIndex) {
+                                   final BeforeReceivedRemoteCallRecord receivedRemoteCallRecord,
+                                   final Clazz firstReceiverClazz,
+                                   final Landscape landscape,
+                                   final InsertionRepositoryPart inserter, final int runtimeIndex) {
     final BeforeSentRemoteCallRecord sentRecord =
         this.seekSentRemoteTraceIdandOrderId(receivedRemoteCallRecord);
 
@@ -133,10 +137,13 @@ public class RemoteCallRepositoryPart {
 
   // Communication between applications (landscape-perspective)
   private void seekOrCreateAppCommunication(final String potentialNewAppCommuId,
-      final BeforeSentRemoteCallRecord sentRemoteCallRecord,
-      final BeforeReceivedRemoteCallRecord receivedRemoteCallRecord, final Clazz sentRemoteClazz,
-      final Clazz receivedRemoteClazz, final Landscape landscape,
-      final InsertionRepositoryPart inserter, final int runtimeIndex) {
+                                            final BeforeSentRemoteCallRecord sentRemoteCallRecord,
+                                            final BeforeReceivedRemoteCallRecord receivedRemoteCallRecord,
+                                            final Clazz sentRemoteClazz,
+                                            final Clazz receivedRemoteClazz,
+                                            final Landscape landscape,
+                                            final InsertionRepositoryPart inserter,
+                                            final int runtimeIndex) {
 
     final Application callerApplication =
         this.getHostApplication(sentRemoteCallRecord, inserter, landscape);
@@ -147,7 +154,7 @@ public class RemoteCallRepositoryPart {
       if (commu.getSourceApplication() == callerApplication
           && commu.getTargetApplication() == currentApplication
           || commu.getSourceApplication() == currentApplication
-              && commu.getTargetApplication() == callerApplication) {
+          && commu.getTargetApplication() == callerApplication) {
         commu.setRequests(
             commu.getRequests() + sentRemoteCallRecord.getRuntimeStatisticInformationList()
                 .get(runtimeIndex)
@@ -163,8 +170,8 @@ public class RemoteCallRepositoryPart {
         landscape.getTimestamp()
             .setTotalRequests(landscape.getTimestamp().getTotalRequests()
                 + sentRemoteCallRecord.getRuntimeStatisticInformationList()
-                    .get(runtimeIndex)
-                    .getCount());
+                .get(runtimeIndex)
+                .getCount());
         return;
       }
     }
@@ -193,12 +200,13 @@ public class RemoteCallRepositoryPart {
     landscape.getTimestamp()
         .setTotalRequests(landscape.getTimestamp().getTotalRequests()
             + sentRemoteCallRecord.getRuntimeStatisticInformationList()
-                .get(runtimeIndex)
-                .getCount());
+            .get(runtimeIndex)
+            .getCount());
   }
 
   public Application getHostApplication(final AbstractEventRecord record,
-      final InsertionRepositoryPart inserter, final Landscape landscape) {
+                                        final InsertionRepositoryPart inserter,
+                                        final Landscape landscape) {
     final HostApplicationMetaDataRecord hostMeta =
         record.getHostApplicationMetadataList().iterator().next();
     final Node host = inserter.seekOrCreateNode(hostMeta, landscape);

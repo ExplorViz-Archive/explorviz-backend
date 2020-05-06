@@ -12,6 +12,9 @@ import net.explorviz.shared.discovery.model.Procezz;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * In-Memory repository for {@link Agent}s.
+ */
 public class AgentRepository {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(AgentRepository.class);
@@ -22,19 +25,34 @@ public class AgentRepository {
 
   private final BroadcastService broadcastService;
 
+  /**
+   * Creates a new repository. Handled by DI.
+   * @param broadcastService the used
+   */
   @Inject
   public AgentRepository(final BroadcastService broadcastService) {
     this.broadcastService = broadcastService;
   }
 
-  public String getUniqueIdString() {
+  private String getUniqueIdString() {
     return String.valueOf(this.idGenerator.incrementAndGet());
   }
 
+  /**
+   * Get all agents.
+   *
+   * @return list of all registered agents.
+   */
   public List<Agent> getAgents() {
     return this.agents;
   }
 
+  /**
+   * Find a specific agent.
+   *
+   * @param agent the agent to search for.
+   * @return the agent if it exists in this repository or {@code null} otherwise
+   */
   public Agent lookupAgent(final Agent agent) {
     synchronized (this.agents) {
       return this.agents.stream()
@@ -45,6 +63,13 @@ public class AgentRepository {
     }
   }
 
+  /**
+   * Register a new agent. If the agent to register already existed, it is re-registered with the
+   * same Id.
+   *
+   * @param agent the agent to register
+   * @return the registered agent
+   */
   public Agent registerAgent(final Agent agent) {
     synchronized (this.agents) {
       final Agent possibleOldAgent = this.lookupAgent(agent);
@@ -69,6 +94,12 @@ public class AgentRepository {
     return agent;
   }
 
+  /**
+   * Generates and assigns a unique Id for each process in a list.
+   *
+   * @param procezzList the list of {@link Procezz} objects
+   * @return the same list of procezzes where each object has an Id now
+   */
   public List<Procezz> insertIdsInProcezzList(final List<Procezz> procezzList) {
 
     for (final Procezz p : procezzList) {
@@ -79,6 +110,12 @@ public class AgentRepository {
 
   }
 
+  /**
+   * Find an agent by its Id.
+   *
+   * @param id the Id to look for
+   * @return An optional containing the agent with the given Id if found
+   */
   public Optional<Agent> lookupAgentById(final String id) {
     synchronized (this.agents) {
       for (final Agent agent : this.agents) {
@@ -91,6 +128,10 @@ public class AgentRepository {
     return Optional.empty();
   }
 
+  /**
+   * Updates an existing agent. Fails silently if such agent does not exist.
+   * @param a the agent to update
+   */
   public void updateAgent(final Agent a) {
     synchronized (this.agents) {
       final Agent potentialAgent = this.lookupAgent(a);
@@ -105,6 +146,7 @@ public class AgentRepository {
       }
     }
   }
+
 
   public void exchangeProcezzInAgent(final Procezz proc, final Agent a) {
 

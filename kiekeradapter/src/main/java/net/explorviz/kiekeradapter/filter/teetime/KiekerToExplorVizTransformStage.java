@@ -16,20 +16,14 @@ import kieker.common.record.flow.trace.operation.constructor.BeforeConstructorEv
 import kieker.common.record.system.CPUUtilizationRecord;
 import kieker.common.record.system.MemSwapUsageRecord;
 import net.explorviz.kiekeradapter.configuration.GenericExplorVizExternalLogAdapter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import teetime.framework.AbstractConsumerStage;
 
 /**
  * Kieker Analysis Filter: Transforms Kieker Records to ExplorViz Records.
  *
- * @author Christian Zirkelbach (czi@informatik.uni-kiel.de)
- *
  */
 public class KiekerToExplorVizTransformStage extends AbstractConsumerStage<IMonitoringRecord> {
 
-  private static final  Logger LOGGER =
-      LoggerFactory.getLogger(KiekerToExplorVizTransformStage.class.getName());
   private final Stack<IMonitoringRecord> stack = new Stack<>();
 
   @Override
@@ -64,11 +58,11 @@ public class KiekerToExplorVizTransformStage extends AbstractConsumerStage<IMoni
           kiekerMetaDataRecord.getApplicationName(),
           programmingLanguage);
     } else if (kiekerRecord instanceof CPUUtilizationRecord) {
-      final CPUUtilizationRecord kiekerCPUUtilRecord = (CPUUtilizationRecord) kiekerRecord;
-      final String hostname = kiekerCPUUtilRecord.getHostname();
+      final CPUUtilizationRecord kiekerCpuUtilRecord = (CPUUtilizationRecord) kiekerRecord;
+      final String hostname = kiekerCpuUtilRecord.getHostname();
 
-      GenericExplorVizExternalLogAdapter.sendSystemMonitoringRecord(kiekerCPUUtilRecord
-          .getTimestamp(), hostname, kiekerCPUUtilRecord.getTotalUtilization(), 0, 0);
+      GenericExplorVizExternalLogAdapter.sendSystemMonitoringRecord(kiekerCpuUtilRecord
+          .getTimestamp(), hostname, kiekerCpuUtilRecord.getTotalUtilization(), 0, 0);
     } else if (kiekerRecord instanceof MemSwapUsageRecord) {
       final MemSwapUsageRecord kiekerMemUsageRecord = (MemSwapUsageRecord) kiekerRecord;
       final String hostname = kiekerMemUsageRecord.getHostname();
@@ -187,9 +181,8 @@ public class KiekerToExplorVizTransformStage extends AbstractConsumerStage<IMoni
           methodDuration,
           kiekerAfter.getTraceId(),
           kiekerAfter.getOrderIndex());
-    }
-    // DatabaseEvent records
-    else if (kiekerRecord instanceof BeforeDatabaseEvent) {
+    } else if (kiekerRecord instanceof BeforeDatabaseEvent) {
+      // DatabaseEvent records
       this.stack.push(kiekerRecord);
       final BeforeDatabaseEvent beforeDatabaseEvent = (BeforeDatabaseEvent) kiekerRecord;
 

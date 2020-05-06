@@ -62,8 +62,14 @@ public class KafkaUserService {
     LOGGER.info("Published creation event to kafka");
   }
 
-  static class UserEvent {
+  /**
+   * Written to a Kafka topic to notify other services about user events.
+   */
+  public static class UserEvent {
 
+    /**
+     * Type of the event. Deletion or creation.
+     */
     public enum EventType {
       CREATED, DELETED;
     }

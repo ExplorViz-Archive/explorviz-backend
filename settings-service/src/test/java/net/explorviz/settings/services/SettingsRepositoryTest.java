@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+
 import com.mongodb.WriteResult;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -30,9 +31,12 @@ import xyz.morphia.Datastore;
 import xyz.morphia.Key;
 import xyz.morphia.query.Query;
 
+// CHECKSTYLE.OFF: MagicNumberCheck
+// CHECKSTYLE.OFF: MultipleStringLiteralsCheck
+
+
 /**
  * Unit tests for {@link SettingsRepository}.
- *
  */
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
@@ -104,11 +108,10 @@ public class SettingsRepositoryTest {
 
   @Test
   public void testRemove() {
-    when(this.ds.delete(RangeSetting.class, this.flagSettings.get(0).getId())).then(i -> {
-      return new WriteResult(0, false, null);
-    });
+    when(this.ds.delete(RangeSetting.class, this.flagSettings.get(0).getId()))
+        .then(i -> new WriteResult(0, false, null));
     when(this.ds.delete(FlagSetting.class, this.flagSettings.get(0).getId())).then(i -> {
-      SettingsRepositoryTest.this.flagSettings.remove(0);
+      this.flagSettings.remove(0);
       return new WriteResult(1, false, null);
     });
 

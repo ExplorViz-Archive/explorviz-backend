@@ -16,6 +16,7 @@ import explorviz.live_trace_processing.record.trace.Trace;
 import gnu.trove.set.hash.TIntHashSet;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Stack;
 import net.explorviz.landscape.model.application.Application;
@@ -38,6 +39,9 @@ import net.explorviz.shared.common.idgen.IdGenerator;
  */
 public class InsertionRepositoryPart {
 
+  // CHECKSTYLE.OFF: MultipleStringLiteralsCheck
+  // CHECKSTYLE.OFF: MagicNumberCheck
+
   private static final String DEFAULT_COMPONENT_NAME = "(default)";
 
   private final Map<String, Node> nodeCache = new HashMap<>();
@@ -54,12 +58,12 @@ public class InsertionRepositoryPart {
   /**
    * Inserts a record into the data model (landscape).
    *
-   * @param inputIRecord - Record that will be inserted into the passed landscape
-   * @param landscape - Target for the insertion of records
+   * @param inputIRecord             - Record that will be inserted into the passed landscape
+   * @param landscape                - Target for the insertion of records
    * @param remoteCallRepositoryPart - TODOa
    */
   public void insertIntoModel(final IRecord inputIRecord, final Landscape landscape,
-      final RemoteCallRepositoryPart remoteCallRepositoryPart) {
+                              final RemoteCallRepositoryPart remoteCallRepositoryPart) {
 
     if (inputIRecord instanceof Trace) {
       final Trace trace = (Trace) inputIRecord;
@@ -91,29 +95,28 @@ public class InsertionRepositoryPart {
             node.setParent(nodeGroup);
 
             nodeGroup.updateName();
-          } else {
-            if (isNewApplication) {
-              // if new app, node might be placed in a different
-              // nodeGroup
+          } else if (isNewApplication) {
+            // if new app, node might be placed in a different
+            // nodeGroup
 
-              final NodeGroup oldNodeGroup = node.getParent();
-              oldNodeGroup.getNodes().remove(node);
+            final NodeGroup oldNodeGroup = node.getParent();
+            oldNodeGroup.getNodes().remove(node);
 
-              final NodeGroup nodeGroup = this.seekOrCreateNodeGroup(system, node);
+            final NodeGroup nodeGroup = this.seekOrCreateNodeGroup(system, node);
 
-              if (!oldNodeGroup.equals(nodeGroup)) {
-                if (oldNodeGroup.getNodes().isEmpty()) {
-                  oldNodeGroup.getParent().getNodeGroups().remove(oldNodeGroup);
-                } else {
-                  oldNodeGroup.updateName();
-                }
+            if (!oldNodeGroup.equals(nodeGroup)) {
+              if (oldNodeGroup.getNodes().isEmpty()) {
+                oldNodeGroup.getParent().getNodeGroups().remove(oldNodeGroup);
+              } else {
+                oldNodeGroup.updateName();
               }
-
-              nodeGroup.getNodes().add(node);
-              node.setParent(nodeGroup);
-
-              nodeGroup.updateName();
             }
+
+            nodeGroup.getNodes().add(node);
+            node.setParent(nodeGroup);
+
+            nodeGroup.updateName();
+
           }
 
           this.createCommuInApp(trace,
@@ -133,13 +136,13 @@ public class InsertionRepositoryPart {
         if (node.getName()
             .equalsIgnoreCase(systemMonitoringRecord.getHostApplicationMetadata().getHostname())
             && node.getIpAddress()
-                .equalsIgnoreCase(
-                    systemMonitoringRecord.getHostApplicationMetadata().getIpaddress())) {
+            .equalsIgnoreCase(
+                systemMonitoringRecord.getHostApplicationMetadata().getIpaddress())) {
 
           node.setCpuUtilization(systemMonitoringRecord.getCpuUtilization());
-          node.setFreeRAM(
+          node.setFreeRam(
               systemMonitoringRecord.getAbsoluteRAM() - systemMonitoringRecord.getUsedRAM());
-          node.setUsedRAM(systemMonitoringRecord.getUsedRAM());
+          node.setUsedRam(systemMonitoringRecord.getUsedRAM());
         }
       }
     }
@@ -149,7 +152,7 @@ public class InsertionRepositoryPart {
   /**
    * Seeks or creates a new system.
    *
-   * @param landscape - passed landscape
+   * @param landscape  - passed landscape
    * @param systemname - name of the system
    * @return the retrieved or created system
    */
@@ -180,11 +183,11 @@ public class InsertionRepositoryPart {
    * Seeks or creates a new node.
    *
    * @param hostApplicationRecord - monitoring information about the host
-   * @param landscape - the passed landscape
+   * @param landscape             - the passed landscape
    * @return the retrieved or created node
    */
   protected Node seekOrCreateNode(final HostApplicationMetaDataRecord hostApplicationRecord,
-      final Landscape landscape) {
+                                  final Landscape landscape) {
     final String nodeName =
         hostApplicationRecord.getHostname() + "_" + hostApplicationRecord.getIpaddress();
     Node node = this.nodeCache.get(nodeName);
@@ -213,7 +216,7 @@ public class InsertionRepositoryPart {
    * Seeks or creates a new nodeGroup.
    *
    * @param system - the related system
-   * @param node - the related node
+   * @param node   - the related node
    * @return the retrieved or created nodeGroup
    */
   private NodeGroup seekOrCreateNodeGroup(final System system, final Node node) {
@@ -237,9 +240,9 @@ public class InsertionRepositoryPart {
   }
 
   /**
-   * Check whether two nodes are similar or not
+   * Check whether two nodes are similar or not.
    *
-   * @param node - the first node
+   * @param node  - the first node
    * @param node2 - the second node
    * @return if the node is similar or not
    */
@@ -266,13 +269,14 @@ public class InsertionRepositoryPart {
   /**
    * Seeks or creates an application.
    *
-   * @param node - the related node
+   * @param node               - the related node
    * @param hostMetaDataRecord - monitoring information about the host
-   * @param landscape - the related landscape
+   * @param landscape          - the related landscape
    * @return the retrieved or created application
    */
-  Application seekOrCreateApplication(final Node node,
-      final HostApplicationMetaDataRecord hostMetaDataRecord, final Landscape landscape) {
+  /* default */ Application seekOrCreateApplication(final Node node,
+                                      final HostApplicationMetaDataRecord hostMetaDataRecord,
+                                      final Landscape landscape) {
     final String applicationName = hostMetaDataRecord.getApplication();
     Application application = this.applicationCache.get(node.getName() + "_" + applicationName);
 
@@ -286,26 +290,37 @@ public class InsertionRepositoryPart {
 
       final String language = hostMetaDataRecord.getProgrammingLanguage();
 
-      if ("JAVA".equalsIgnoreCase(language)) {
-        application.setProgrammingLanguage(EProgrammingLanguage.JAVA);
-      } else if ("C".equalsIgnoreCase(language)) {
-        application.setProgrammingLanguage(EProgrammingLanguage.C);
-      } else if ("CPP".equalsIgnoreCase(language)) {
-        application.setProgrammingLanguage(EProgrammingLanguage.CPP);
-      } else if ("CSHARP".equalsIgnoreCase(language)) {
-        application.setProgrammingLanguage(EProgrammingLanguage.CSHARP);
-      } else if ("PERL".equalsIgnoreCase(language)) {
-        application.setProgrammingLanguage(EProgrammingLanguage.PERL);
-      } else if ("JAVASCRIPT".equalsIgnoreCase(language)) {
-        application.setProgrammingLanguage(EProgrammingLanguage.JAVASCRIPT);
-      } else if ("PYTHON".equalsIgnoreCase(language)) {
-        application.setProgrammingLanguage(EProgrammingLanguage.PYTHON);
-      } else if ("RUBY".equalsIgnoreCase(language)) {
-        application.setProgrammingLanguage(EProgrammingLanguage.RUBY);
-      } else if ("PHP".equalsIgnoreCase(language)) {
-        application.setProgrammingLanguage(EProgrammingLanguage.PHP);
-      } else {
-        application.setProgrammingLanguage(EProgrammingLanguage.UNKNOWN);
+      switch (language.toUpperCase(Locale.ENGLISH)) {
+        case "JAVA":
+          application.setProgrammingLanguage(EProgrammingLanguage.JAVA);
+          break;
+        case "C":
+          application.setProgrammingLanguage(EProgrammingLanguage.C);
+          break;
+        case "CPP":
+          application.setProgrammingLanguage(EProgrammingLanguage.CPP);
+          break;
+        case "CSHARP":
+          application.setProgrammingLanguage(EProgrammingLanguage.CSHARP);
+          break;
+        case "PERL":
+          application.setProgrammingLanguage(EProgrammingLanguage.PERL);
+          break;
+        case "JAVASCRIPT":
+          application.setProgrammingLanguage(EProgrammingLanguage.JAVASCRIPT);
+          break;
+        case "PYTHON":
+          application.setProgrammingLanguage(EProgrammingLanguage.PYTHON);
+          break;
+        case "RUBY":
+          application.setProgrammingLanguage(EProgrammingLanguage.RUBY);
+          break;
+        case "PHP":
+          application.setProgrammingLanguage(EProgrammingLanguage.PHP);
+          break;
+        default:
+          application.setProgrammingLanguage(EProgrammingLanguage.UNKNOWN);
+          break;
       }
 
       application.setParent(node);
@@ -326,16 +341,17 @@ public class InsertionRepositoryPart {
   /**
    * Communication between clazzes within a single application.
    *
-   * @param trace - the related trace
-   * @param currentHostname - the current hostname
-   * @param currentApplication - the current application
-   * @param landscape - the related landscape
+   * @param trace                    - the related trace
+   * @param currentHostname          - the current hostname
+   * @param currentApplication       - the current application
+   * @param landscape                - the related landscape
    * @param remoteCallRepositoryPart - the RemoteCallRepositoryPart
-   * @param runtimeIndex - the position within the trace
+   * @param runtimeIndex             - the position within the trace
    */
   private void createCommuInApp(final Trace trace, final String currentHostname,
-      final Application currentApplication, final Landscape landscape,
-      final RemoteCallRepositoryPart remoteCallRepositoryPart, final int runtimeIndex) {
+                                final Application currentApplication, final Landscape landscape,
+                                final RemoteCallRepositoryPart remoteCallRepositoryPart,
+                                final int runtimeIndex) {
     Clazz callerClazz = null;
     final Stack<Clazz> callerClazzesHistory = new Stack<>();
 
@@ -538,9 +554,11 @@ public class InsertionRepositoryPart {
   }
 
   private void createOrUpdateCall(final Clazz caller, final Clazz callee,
-      final Application application, final int requests, final double average,
-      final double overallTraceDuration, final String traceId, final int orderIndex,
-      final String operationName, final Landscape landscape) {
+                                  final Application application, final int requests,
+                                  final double average,
+                                  final double overallTraceDuration, final String traceId,
+                                  final int orderIndex,
+                                  final String operationName, final Landscape landscape) {
 
     landscape.getTimestamp()
         .setTotalRequests(landscape.getTimestamp().getTotalRequests() + requests);
@@ -563,7 +581,7 @@ public class InsertionRepositoryPart {
   }
 
   private Clazz seekOrCreateClazz(final String fullQName, final Application application,
-      final TIntHashSet objectIds) {
+                                  final TIntHashSet objectIds) {
     final String[] splittedName = fullQName.split("\\.");
 
     Map<String, Clazz> appCached = this.clazzCache.get(application);
@@ -586,7 +604,8 @@ public class InsertionRepositoryPart {
   }
 
   private Clazz seekrOrCreateClazzHelper(final String fullQName, final String[] splittedName,
-      final Application application, final Component parent, final int index) {
+                                         final Application application, final Component parent,
+                                         final int index) {
     final String currentPart = splittedName[index];
 
     Component potentialParent = parent;
@@ -608,12 +627,13 @@ public class InsertionRepositoryPart {
       }
       final Component component = new Component(this.idGen.generateId());
 
-      String fullQNameComponent = "";
+      StringBuilder fullQNameComponent = new StringBuilder();
       for (int i = 0; i <= index; i++) {
-        fullQNameComponent += splittedName[i] + ".";
+        fullQNameComponent.append(splittedName[i]).append(".");
       }
-      fullQNameComponent = fullQNameComponent.substring(0, fullQNameComponent.length() - 1);
-      component.setFullQualifiedName(fullQNameComponent);
+      fullQNameComponent =
+          new StringBuilder(fullQNameComponent.substring(0, fullQNameComponent.length() - 1));
+      component.setFullQualifiedName(fullQNameComponent.toString());
       component.setName(currentPart);
       component.setParentComponent(potentialParent);
       component.setBelongingApplication(application);
@@ -660,7 +680,7 @@ public class InsertionRepositoryPart {
   }
 
   public static String getMethodName(final String operationSignatureStr,
-      final boolean constructor) {
+                                     final boolean constructor) {
     final Signature signature = SignatureParser.parse(operationSignatureStr, constructor);
     return signature.getOperationName();
   }

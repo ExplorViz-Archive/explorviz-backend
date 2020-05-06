@@ -11,7 +11,9 @@ import org.glassfish.hk2.api.Factory;
 import xyz.morphia.Datastore;
 import xyz.morphia.Morphia;
 
-
+/**
+ * Factory for Morphia {@link Datastore} to use for injection.
+ */
 public class DatastoreFactory implements Factory<Datastore> {
 
   private final Datastore datastore;

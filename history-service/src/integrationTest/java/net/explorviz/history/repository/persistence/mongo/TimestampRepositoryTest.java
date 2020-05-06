@@ -2,6 +2,7 @@ package net.explorviz.history.repository.persistence.mongo;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import java.util.Collection;
 import javax.inject.Inject;
 import javax.ws.rs.core.MultivaluedHashMap;
@@ -18,9 +19,15 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+/**
+ * Tests the time {@link TimestampRepository}, expects a running MongoDB.
+ */
 public class TimestampRepositoryTest {
 
+  // CHECKSTYLE.OFF: MultipleStringLiteralsCheck - Much more readable than NOCS in many lines
+  // CHECKSTYLE.OFF: MagicNumberCheck - Much more readable than NOCS in many lines
 
+  public static final String FILTER_TYPE = "filter[type]";
   @Inject
   private MongoLandscapeRepository landscapeRepo;
   @Inject
@@ -35,6 +42,9 @@ public class TimestampRepositoryTest {
     HistoryApplication.registerLandscapeModels();
   }
 
+  /**
+   * Injects the dependencies.
+   */
   @BeforeEach
   public void setUp() {
     if (this.timestampRepo == null) {
@@ -87,7 +97,7 @@ public class TimestampRepositoryTest {
     this.addReplays();
 
     final MultivaluedHashMap<String, String> paramters = new MultivaluedHashMap<>();
-    paramters.add("filter[type]", "landscape");
+    paramters.add(FILTER_TYPE, "landscape");
     final Query<Timestamp> q = Query.fromParameterMap(paramters);
     final Collection<Timestamp> result = this.timestampRepo.query(q).getData();
     assertEquals(2, result.size());
@@ -99,7 +109,7 @@ public class TimestampRepositoryTest {
     this.addReplays();
 
     final MultivaluedHashMap<String, String> paramters = new MultivaluedHashMap<>();
-    paramters.add("filter[type]", "replay");
+    paramters.add(FILTER_TYPE, "replay");
     final Query<Timestamp> q = Query.fromParameterMap(paramters);
     final Collection<Timestamp> result = this.timestampRepo.query(q).getData();
     assertEquals(2, result.size());
@@ -118,22 +128,21 @@ public class TimestampRepositoryTest {
 
   @Test
   public void testQueryFrom() throws QueryException {
-    final Landscape landscape = LandscapeDummyCreator.createDummyLandscape(this.idGenerator);
-    final long ts = 1l;
-    final Landscape landscape2 = LandscapeDummyCreator.createDummyLandscape(this.idGenerator);
-    final long ts2 = 2l;
-    final Landscape landscape3 = LandscapeDummyCreator.createDummyLandscape(this.idGenerator);
-    final long ts3 = 3l;
 
-    this.landscapeRepo.save(ts, landscape, 0);
-    this.landscapeRepo.save(ts2, landscape2, 0);
-    this.landscapeRepo.save(ts3, landscape3, 0);
+    final Landscape landscape = LandscapeDummyCreator.createDummyLandscape(this.idGenerator);
+    final Landscape landscape2 = LandscapeDummyCreator.createDummyLandscape(this.idGenerator);
+    final Landscape landscape3 = LandscapeDummyCreator.createDummyLandscape(this.idGenerator);
+
+
+    this.landscapeRepo.save(1L, landscape, 0);
+    this.landscapeRepo.save(2L, landscape2, 0);
+    this.landscapeRepo.save(3L, landscape3, 0);
 
     final MultivaluedHashMap<String, String> paramters = new MultivaluedHashMap<>();
     paramters.add("filter[from]", "2");
     final Query<Timestamp> q = Query.fromParameterMap(paramters);
     final Collection<Timestamp> result = this.timestampRepo.query(q).getData();
-    assertEquals(2l, result.size());
+    assertEquals(2L, result.size());
 
   }
 

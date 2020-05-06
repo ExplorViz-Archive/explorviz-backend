@@ -23,7 +23,7 @@ public class PreferenceValidator {
 
   /**
    * Creates a new validator specific for the given {@link UserPreference}. The validator works by
-   * checking all constraints defined in the given {@link FlagSetting} object hold regarding the
+   * checking all constraints defined in the given {@link Setting} object hold regarding the
    * given user preference.
    *
    * @param userPreference the user preference object
@@ -64,12 +64,12 @@ public class PreferenceValidator {
    * @throws PreferenceValidationException thrown if the preference is invalid according to the
    *         setting object. The message of the exception contains the reason.
    */
+  @SuppressWarnings("unused")
   private void validate(final FlagSetting setting) throws PreferenceValidationException {
     try {
-      @SuppressWarnings("unused")
       final boolean val = (boolean) this.up.getValue();
     } catch (final ClassCastException e) {
-      throw new PreferenceValidationException("Given value is not a boolean");
+      throw new PreferenceValidationException("Given value is not a boolean", e);
     }
 
   }
@@ -85,14 +85,14 @@ public class PreferenceValidator {
 
     // check if types match
     Number num;
-    final Double val;
+    double val;
     try {
       num = (Number) this.up.getValue();
       val = num.doubleValue();
     } catch (final ClassCastException e) {
       throw new PreferenceValidationException(
           String.format("Given value is not of type double but %s",
-              this.up.getValue().getClass().toString()));
+              this.up.getValue().getClass().toString()), e);
     }
 
     // Types match, check if value lies within min an max

@@ -8,6 +8,9 @@ import net.explorviz.settings.services.UserPreferenceService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Handler for user events as received by {@link UserEventConsumer}.
+ */
 public class UserEventHandlerImpl implements UserEventHandler {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(UserEventHandlerImpl.class);
@@ -27,7 +30,7 @@ public class UserEventHandlerImpl implements UserEventHandler {
 
     // Delete all preference associated with the deleted user
     final List<UserPreference> prefs = this.ups.getPreferencesForUser(userId);
-    prefs.stream().map(p -> p.getId()).forEach(i -> this.upr.delete(i));
+    prefs.stream().map(UserPreference::getId).forEach(this.upr::delete);
     LOGGER.info(String.format("Deleted %d preferences for user with id %s", prefs.size(), userId));
 
   }

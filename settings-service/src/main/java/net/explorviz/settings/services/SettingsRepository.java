@@ -2,6 +2,7 @@ package net.explorviz.settings.services;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.inject.Inject;
@@ -28,6 +29,9 @@ public class SettingsRepository implements MongoRepository<Setting, String>, Que
 
 
   private static final Logger LOGGER = LoggerFactory.getLogger(SettingsRepository.class);
+
+  private static final String FILTER_ORIGIN_FIELD = "origin";
+  private static final String FILTER_TYPE_FIELD = "type";
 
   private final IdGenerator idgen;
 
@@ -148,20 +152,15 @@ public class SettingsRepository implements MongoRepository<Setting, String>, Que
 
   @Override
   public QueryResult<Setting> query(final net.explorviz.shared.querying.Query<Setting> query) {
-    final String originField = "origin";
-    final String typeField = "type";
-
-    String originFilter = null;
-
 
     List<Class<? extends Setting>> classes = new ArrayList<>(Setting.TYPES);
 
-    if (query.getFilters().get(typeField) != null) {
-      if (query.getFilters().get(typeField).size() == 1) {
+    if (query.getFilters().get(FILTER_TYPE_FIELD) != null) {
+      if (query.getFilters().get(FILTER_TYPE_FIELD).size() == 1) {
         // Reduce the subclasses to process to only contain the class filtered for
-        final String typeFilter = query.getFilters().get(typeField).get(0);
+        final String typeFilter = query.getFilters().get(FILTER_TYPE_FIELD).get(0);
         classes = classes.stream()
-            .filter(c -> c.getSimpleName().toLowerCase().contentEquals(typeFilter))
+            .filter(c -> c.getSimpleName().toLowerCase(Locale.ENGLISH).contentEquals(typeFilter))
             .collect(Collectors.toList());
       } else {
         // Filters work conjunctive and settings can only be of a single type
@@ -170,9 +169,10 @@ public class SettingsRepository implements MongoRepository<Setting, String>, Que
       }
     }
 
-    if (query.getFilters().get(originField) != null) {
-      if (query.getFilters().get(originField).size() == 1) {
-        originFilter = query.getFilters().get(originField).get(0);
+    String originFilter = null;
+    if (query.getFilters().get(FILTER_ORIGIN_FIELD) != null) {
+      if (query.getFilters().get(FILTER_ORIGIN_FIELD).size() == 1) {
+        originFilter = query.getFilters().get(FILTER_ORIGIN_FIELD).get(0);
       } else {
         // Filters work conjunctive and settings can only be of a origin type
         // thus the query result is empty
@@ -185,9 +185,9 @@ public class SettingsRepository implements MongoRepository<Setting, String>, Que
 
 
     for (final Class<?> cls : classes) {
-      final xyz.morphia.query.Query<Setting> q = (Query<Setting>) this.datastore.createQuery(cls);
+      final Query<Setting> q = (Query<Setting>) this.datastore.createQuery(cls);
       if (originFilter != null) {
-        q.field(originField).contains(originFilter);
+        q.field(FILTER_ORIGIN_FIELD).contains(originFilter);
       }
       data.addAll(q.asList());
     }

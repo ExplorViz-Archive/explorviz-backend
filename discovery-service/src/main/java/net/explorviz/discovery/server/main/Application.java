@@ -23,7 +23,7 @@ import org.glassfish.jersey.server.ResourceConfig;
 class Application extends ResourceConfig {
 
   public Application() {
-
+    super();
     GenericTypeFinder.getTypeMap().put("Agent", Agent.class);
     GenericTypeFinder.getTypeMap().put("Procezz", Procezz.class);
 

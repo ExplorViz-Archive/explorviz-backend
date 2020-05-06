@@ -4,6 +4,7 @@ import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.hasKey;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
+
 import io.restassured.http.ContentType;
 import io.restassured.http.Header;
 import java.io.IOException;
@@ -11,19 +12,23 @@ import java.util.Arrays;
 import java.util.List;
 import net.explorviz.security.model.UserCredentials;
 import net.explorviz.security.server.resources.test.helper.AuthorizationHelper;
-import net.explorviz.security.server.resources.test.helper.JsonAPIMapper;
+import net.explorviz.security.server.resources.test.helper.JsonApiMapper;
+import net.explorviz.security.server.resources.test.helper.StatusCodes;
 import net.explorviz.security.server.resources.test.helper.UserSerializationHelper;
-import net.explorviz.security.user.User;
 import net.explorviz.security.user.Role;
+import net.explorviz.security.user.User;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+// CHECKSTYLE.OFF: MagicNumberCheck
+// CHECKSTYLE.OFF: MultipleStringLiteralsCheck
+
 class UserCreation {
 
-  private final static String AUTH_ROUTE = "http://localhost:8090/v1/tokens";
-  private final static String BASE_URI = "http://localhost:8090/v1/";
+  private static final String AUTH_ROUTE = "http://localhost:8090/v1/tokens";
+  private static final String BASE_URI = "http://localhost:8090/v1/";
 
   private static final String MEDIA_TYPE = "application/vnd.api+json";
 
@@ -39,16 +44,15 @@ class UserCreation {
    * Retrieves token for both an admin and an unprivileged user ("normie"). The default admin is
    * used for the former, a normie is created.
    *
-   * @throws IOException if serialization fails
    */
   @BeforeAll
-  static void setUpAll() throws IOException {
+  public static void setUpAll() {
     adminToken = AuthorizationHelper.getAdminToken();
     normieToken = AuthorizationHelper.getNormieToken();
   }
 
   @BeforeEach
-  void setUp() {
+  public void setUp() {
     this.authHeaderAdmin = new Header("authorization", "Bearer " + adminToken);
     this.authHeaderNormie = new Header("authorization", "Bearer " + normieToken);
   }
@@ -67,7 +71,7 @@ class UserCreation {
         .when()
         .post(BASE_URI + "users/")
         .then()
-        .statusCode(200)
+        .statusCode(StatusCodes.STATUS_OK)
         .body("$", hasKey("data"))
         .body("data.attributes.username", is(name))
         .body("data", not(hasKey("relationship")));
@@ -88,7 +92,7 @@ class UserCreation {
         .when()
         .post(BASE_URI + "users/")
         .then()
-        .statusCode(200)
+        .statusCode(StatusCodes.STATUS_OK)
         .body("$", hasKey("data"))
         .body("data.attributes.username", is(name))
         .body("data.attributes.roles", is(roles));
@@ -115,7 +119,7 @@ class UserCreation {
         .when()
         .post(AUTH_ROUTE)
         .then()
-        .statusCode(200)
+        .statusCode(StatusCodes.STATUS_OK)
         .body("$", hasKey("data"))
         .body("data.attributes", hasKey("token"));
 
@@ -124,43 +128,43 @@ class UserCreation {
 
   @Test
   @DisplayName("Create user without password")
-  void createUserWithNoPassword() {
+  public void createUserWithNoPassword() {
     final User u = new User(null, "name", null, null);
 
-    given().body(u, new JsonAPIMapper<>(User.class))
+    given().body(u, new JsonApiMapper<>(User.class))
         .contentType(MEDIA_TYPE)
         .header(this.authHeaderAdmin)
         .when()
         .post(BASE_URI + "users/")
         .then()
-        .statusCode(400);
+        .statusCode(StatusCodes.STATUS_BAD_REQUEST);
   }
 
 
   @Test
   @DisplayName("Create user without token.")
-  void createUserUnauthenticated() {
+  public void createUserUnauthenticated() {
     final User u = new User(null, "name", null, null);
 
-    given().body(u, new JsonAPIMapper<>(User.class))
+    given().body(u, new JsonApiMapper<>(User.class))
         .contentType(MEDIA_TYPE)
         .when()
         .post(BASE_URI + "users/")
         .then()
-        .statusCode(401);
+        .statusCode(StatusCodes.STATUS_UNAUTHORIZED);
   }
 
   @Test
   @DisplayName("Create user unauthenticated.")
-  void createUserAsNormie() {
+  public void createUserAsNormie() {
     final User u = new User(null, "name", null, null);
 
-    given().body(u, new JsonAPIMapper<>(User.class))
+    given().body(u, new JsonApiMapper<>(User.class))
         .contentType(MEDIA_TYPE)
         .header(this.authHeaderNormie)
         .when()
         .post(BASE_URI + "users/")
         .then()
-        .statusCode(401);
+        .statusCode(StatusCodes.STATUS_UNAUTHORIZED);
   }
 }

@@ -211,12 +211,10 @@ public class UserPreferencesResource {
       this.userPrefService.validate(updatedPref);
     } catch (final PreferenceValidationException e) {
       if (LOGGER.isDebugEnabled()) {
-        LOGGER.debug("Invalid preference: %s", e.getMessage());
+        LOGGER.debug("Invalid preference: {}", e.getMessage());
       }
-      throw new BadRequestException(e.getMessage());
+      throw new BadRequestException(e.getMessage(), e);
     }
-
-
 
     found.setValue(updatedPref.getValue());
 
@@ -262,14 +260,14 @@ public class UserPreferencesResource {
       this.userPrefService.validate(preference);
     } catch (final PreferenceValidationException e) {
       if (LOGGER.isDebugEnabled()) {
-        LOGGER.debug("Invalid preference: %s", e.getMessage());
+        LOGGER.debug("Invalid preference: {}", e.getMessage(), e);
       }
-      throw new BadRequestException(e.getMessage());
+      throw new BadRequestException(e.getMessage(), e);
     }
     try {
       return this.userPrefRepo.createOrUpdate(preference);
     } catch (final IllegalStateException e) {
-      throw new BadRequestException(e.getMessage());
+      throw new BadRequestException(e.getMessage(), e);
     }
 
   }

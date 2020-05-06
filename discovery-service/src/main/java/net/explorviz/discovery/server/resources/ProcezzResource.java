@@ -33,6 +33,9 @@ import net.explorviz.shared.security.filters.Secure;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Resource to access processes associated to agents.
+ */
 @Secure
 @PermitAll
 public class ProcezzResource {
@@ -50,6 +53,7 @@ public class ProcezzResource {
     this.agentRepository = agentRepository;
     this.clientService = clientService;
   }
+
 
   @PATCH
   @Path("{id}")
@@ -81,12 +85,12 @@ public class ProcezzResource {
   }
 
   private Response forwardPatchRequest(final Procezz procezz, final String urlPath)
-      throws ProcezzGenericException, AgentNotFoundException, AgentNoConnectionException {
+      throws ProcezzGenericException, AgentNoConnectionException {
 
     final Optional<Agent> agentOptional =
         this.agentRepository.lookupAgentById(procezz.getAgent().getId());
 
-    if (!agentOptional.isPresent()) {
+    if (agentOptional.isEmpty()) {
       throw new WebApplicationException("No agent for this process is registered.",
           UNPROCESSABLE_ENTITY);
     }

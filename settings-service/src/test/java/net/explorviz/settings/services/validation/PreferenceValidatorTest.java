@@ -2,6 +2,7 @@ package net.explorviz.settings.services.validation;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.fail;
+
 import net.explorviz.settings.model.FlagSetting;
 import net.explorviz.settings.model.RangeSetting;
 import net.explorviz.settings.model.UserPreference;
@@ -60,8 +61,7 @@ public class PreferenceValidatorTest {
     try {
       this.validator.validate(this.range);
     } catch (final PreferenceValidationException e) {
-      e.printStackTrace();
-      fail(ERROR);
+      fail(e);
     }
 
   }

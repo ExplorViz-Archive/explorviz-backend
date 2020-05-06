@@ -22,7 +22,7 @@ public class TraceStep extends BaseEntity {
   private Trace parentTrace;
 
   // position in the related trace (first position = 1)
-  private int tracePosition = 0;
+  private int tracePosition;
 
   @Relationship("clazzCommunication")
   private ClazzCommunication clazzCommunication;
@@ -54,8 +54,8 @@ public class TraceStep extends BaseEntity {
       @JsonProperty("averageResponseTime") final float averageResponseTime,
       @JsonProperty("currentTraceDuration") final float currentTraceDuration) {
     super(id);
-    this.setParentTrace(parentTrace);
-    this.setClazzCommunication(clazzCommunication);
+    this.parentTrace = parentTrace;
+    this.clazzCommunication = clazzCommunication;
     this.setTracePosition(tracePosition);
     this.setAverageResponseTime(averageResponseTime);
     this.setRequests(requests);

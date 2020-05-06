@@ -1,24 +1,35 @@
 package net.explorviz.settings.server.resources.test;
 
 import static io.restassured.RestAssured.given;
+
 import io.restassured.http.Header;
 import java.io.IOException;
+import net.explorviz.security.user.User;
 import net.explorviz.settings.model.UserPreference;
 import net.explorviz.settings.server.resources.test.helper.AuthorizationHelper;
 import net.explorviz.settings.server.resources.test.helper.DefaultSettings;
-import net.explorviz.settings.server.resources.test.helper.JsonAPIMapper;
+import net.explorviz.settings.server.resources.test.helper.JsonApiMapper;
 import net.explorviz.settings.server.resources.test.helper.UsersHelper;
-import net.explorviz.security.user.User;
 import org.hamcrest.CoreMatchers;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+// CHECKSTYLE.OFF: MagicNumberCheck
+// CHECKSTYLE.OFF: MultipleStringLiteralsCheck
+
+
+/**
+ * Tests preference deletion.
+ */
+@SuppressWarnings({"PMD.JUnitTestsShouldIncludeAssert", "PMD.AvoidDuplicateLiterals"})
 class PreferenceDeletion {
 
   private static final String USER_PREF_URL =
           "http://localhost:8090/v1/preferences?filter[user]={uid}";
   private static final String PREF_URL = "http://localhost:8090/v1/preferences";
+
+  private static final String MEDIA_TYPE = "application/vnd.api+json";
 
   private static String adminToken;
   private static String normieToken;
@@ -26,7 +37,7 @@ class PreferenceDeletion {
   private Header authHeaderAdmin;
   private Header authHeaderNormie;
 
-  private static final String MEDIA_TYPE = "application/vnd.api+json";
+
 
 
   /**
@@ -36,39 +47,39 @@ class PreferenceDeletion {
    * @throws IOException if serialization fails
    */
   @BeforeAll
-  static void setUpAll() throws IOException {
+  public static void setUpAll() throws IOException {
     adminToken = AuthorizationHelper.getAdminToken();
     normieToken = AuthorizationHelper.getNormieToken();
   }
 
   @BeforeEach
-  void setUp() {
+  public void setUp() {
     this.authHeaderAdmin = new Header("authorization", "Bearer " + adminToken);
     this.authHeaderNormie = new Header("authorization", "Bearer " + normieToken);
   }
 
-  private UserPreference setPref(final String uid, final String settingId, final Object value) {
+  private UserPreference updatePref(final String uid, final String settingId, final Object value) {
     final UserPreference up = new UserPreference(null, uid, settingId, value);
 
     return given().header(this.authHeaderAdmin)
         .contentType(MEDIA_TYPE)
-        .body(up, new JsonAPIMapper<>(UserPreference.class))
+        .body(up, new JsonApiMapper<>(UserPreference.class))
         .when()
         .post(PREF_URL)
-        .as(UserPreference.class, new JsonAPIMapper<>(UserPreference.class));
+        .as(UserPreference.class, new JsonApiMapper<>(UserPreference.class));
   }
 
 
 
   @Test
-  void deleteOwnPref() {
+  public void deleteOwnPref() {
     final User testUser = UsersHelper.getInstance()
         .createUser("tester", "test", null)
         .orElseThrow(IllegalStateException::new);
 
-    final String settingId = DefaultSettings.keepHighlightingOnOpenOrClose.getId();
-    final Boolean val = !DefaultSettings.keepHighlightingOnOpenOrClose.getDefaultValue();
-    final UserPreference createdPref = this.setPref(testUser.getId(), settingId, val);
+    final String settingId = DefaultSettings.KEEP_HIGHLIGHTING_ON_OPEN_OR_CLOSE.getId();
+    final Boolean val = !DefaultSettings.KEEP_HIGHLIGHTING_ON_OPEN_OR_CLOSE.getDefaultValue();
+    final UserPreference createdPref = this.updatePref(testUser.getId(), settingId, val);
 
     final String myToken = AuthorizationHelper.login("tester", "test")
         .orElseThrow(IllegalStateException::new)
@@ -93,23 +104,24 @@ class PreferenceDeletion {
   }
 
   /**
-   * All preference should be deleted if the corresponding user is removed
+   * All preference should be deleted if the corresponding user is removed.
    */
   @Test
-  void testDeletionByUserDeletion() throws InterruptedException {
+  public void testDeletionByUserDeletion() throws InterruptedException {
     final User testUser = UsersHelper.getInstance()
         .createUser("tester", "test", null)
         .orElseThrow(IllegalStateException::new);
 
-    final String settingId = DefaultSettings.keepHighlightingOnOpenOrClose.getId();
-    final Boolean val = !DefaultSettings.keepHighlightingOnOpenOrClose.getDefaultValue();
-    this.setPref(testUser.getId(), settingId, val);
+    final String settingId = DefaultSettings.KEEP_HIGHLIGHTING_ON_OPEN_OR_CLOSE.getId();
+    final Boolean val = !DefaultSettings.KEEP_HIGHLIGHTING_ON_OPEN_OR_CLOSE.getDefaultValue();
+    this.updatePref(testUser.getId(), settingId, val);
+
 
     // Delete User
     UsersHelper.getInstance().deleteUserById(testUser.getId());
 
-    // Wait until event handled
-    Thread.sleep(500);
+    // Wait sufficient amount of time such that the event has been handled
+    Thread.sleep(2000);
 
     given().header(this.authHeaderAdmin)
         .when()
@@ -123,14 +135,14 @@ class PreferenceDeletion {
 
 
   @Test
-  void deletePrefOfOtherUser() {
+  public void deletePrefOfOtherUser() {
     final User testUser = UsersHelper.getInstance()
         .createUser("tester", "test", null)
         .orElseThrow(IllegalStateException::new);
 
-    final String settingId = DefaultSettings.keepHighlightingOnOpenOrClose.getId();
-    final Boolean val = !DefaultSettings.keepHighlightingOnOpenOrClose.getDefaultValue();
-    final String id = this.setPref(testUser.getId(), settingId, val).getId();
+    final String settingId = DefaultSettings.KEEP_HIGHLIGHTING_ON_OPEN_OR_CLOSE.getId();
+    final Boolean val = !DefaultSettings.KEEP_HIGHLIGHTING_ON_OPEN_OR_CLOSE.getDefaultValue();
+    final String id = this.updatePref(testUser.getId(), settingId, val).getId();
 
     given().header(this.authHeaderNormie)
         .contentType(MEDIA_TYPE)
@@ -143,14 +155,14 @@ class PreferenceDeletion {
   }
 
   @Test
-  void deletePrefOfOtherUserAsAdmin() {
+  public void deletePrefOfOtherUserAsAdmin() {
     final User testUser = UsersHelper.getInstance()
         .createUser("tester", "test", null)
         .orElseThrow(IllegalStateException::new);
 
-    final String settingId = DefaultSettings.keepHighlightingOnOpenOrClose.getId();
-    final Boolean val = !DefaultSettings.keepHighlightingOnOpenOrClose.getDefaultValue();
-    final String id = this.setPref(testUser.getId(), settingId, val).getId();
+    final String settingId = DefaultSettings.KEEP_HIGHLIGHTING_ON_OPEN_OR_CLOSE.getId();
+    final Boolean val = !DefaultSettings.KEEP_HIGHLIGHTING_ON_OPEN_OR_CLOSE.getDefaultValue();
+    final String id = this.updatePref(testUser.getId(), settingId, val).getId();
 
     given().header(this.authHeaderAdmin)
         .contentType(MEDIA_TYPE)

@@ -1,15 +1,16 @@
 package net.explorviz.security.services;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import net.explorviz.security.model.UserBatchRequest;
 import net.explorviz.security.services.exceptions.UserCrudException;
+import net.explorviz.security.user.Role;
 import net.explorviz.security.user.User;
 import net.explorviz.shared.common.idgen.IdGenerator;
-import net.explorviz.security.user.Role;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,7 +23,6 @@ import org.mockito.stubbing.Answer;
 
 /**
  * Unit test for {@link BatchService}.
- *
  */
 @ExtendWith(MockitoExtension.class)
 public class BatchCreationServiceTest {
@@ -34,8 +34,6 @@ public class BatchCreationServiceTest {
   private IdGenerator idGenerator;
 
   private final AtomicInteger id = new AtomicInteger(0);
-
-  private UserService userService;
 
   private BatchService bcs;
 

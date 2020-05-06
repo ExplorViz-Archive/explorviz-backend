@@ -77,7 +77,12 @@ public class AggregatedClazzCommunication extends BaseEntity {
     this.averageResponseTime = averageResponseTime;
   }
 
-  // adds a clazzCommunication if sourceClazz and targetClazz matches
+  /**
+   * adds a clazzCommunication if sourceClazz and targetClazz matches.
+   *
+   * @param clazzcommunication the clazz communication to add
+   * @return {@code true} iff the communication was added
+   */
   public boolean addClazzCommunication(final ClazzCommunication clazzcommunication) {
 
     if (this.sourceClazz.equals(clazzcommunication.getSourceClazz())
@@ -88,11 +93,4 @@ public class AggregatedClazzCommunication extends BaseEntity {
     }
     return false;
   }
-
-  public void reset() {
-    this.totalRequests = 0;
-    this.clazzCommunications.clear();
-    this.averageResponseTime = 0;
-  }
-
 }

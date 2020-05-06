@@ -1,26 +1,37 @@
 package net.explorviz.settings.server.resources.test.helper;
 
 import static io.restassured.RestAssured.given;
+
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.github.jasminb.jsonapi.exceptions.ResourceParseException;
 import io.restassured.mapper.ObjectMapperType;
 import java.util.Optional;
 import net.explorviz.security.user.User;
 
-public class AuthorizationHelper {
+/**
+ * Utility class handle authorization.
+ */
+public final class AuthorizationHelper {
 
   private static final String AUTH_URL = "http://localhost:8090/v1/tokens/";
   private static final String ADMIN_NAME = "admin";
   private static final String NORMIE_NAME = "normie";
   private static final String ADMIN_PW = "password";
-  private static final String NORMIE_PW = "password";
+  private static final String NORMIE_PW = ADMIN_PW;
 
 
-  private static String normieToken = null;
-  private static String adminToken = null;
+  private static User admin;
+  private static User normie;
 
-  private static User admin = null;
-  private static User normie = null;
+  private AuthorizationHelper(){/* Utility Class */}
 
+  /**
+   * Performs a login.
+   * @param name The username
+   * @param password the password
+   * @return an optional containing a user, iff the login was successful
+   */
   public static Optional<User> login(final String name, final String password) {
 
     try {
@@ -28,7 +39,7 @@ public class AuthorizationHelper {
           .body(new UserCredentials(name, password), ObjectMapperType.JACKSON_2)
           .when()
           .post(AUTH_URL)
-          .as(User.class, new JsonAPIMapper<>(User.class));
+          .as(User.class, new JsonApiMapper<>(User.class));
       return Optional.of(u);
     } catch (final ResourceParseException ex) {
       return Optional.empty();
@@ -44,17 +55,20 @@ public class AuthorizationHelper {
     return getAdmin().getToken();
   }
 
+  /**
+   * Returns a user without any roles.
+   */
   public static User getNormie() {
     final Optional<User> normie = login(NORMIE_NAME, NORMIE_PW);
     if (AuthorizationHelper.normie == null) {
       if (normie.isPresent()) {
         AuthorizationHelper.normie = normie.get();
       } else {
-        // Not existent, create and try again
+        // Not existing, create and try again
         // Will fail if normie user exists with another password
-        final Optional<User> created_normie =
+        final Optional<User> createdNormie =
             UsersHelper.getInstance().createUser(NORMIE_NAME, NORMIE_PW, null);
-        if (created_normie.isPresent()) {
+        if (createdNormie.isPresent()) {
           return getNormie();
         } else {
           throw new IllegalStateException("Can no login as normie, does no exist");
@@ -65,6 +79,9 @@ public class AuthorizationHelper {
     return AuthorizationHelper.normie;
   }
 
+  /**
+   * Returns a user with the admin role assigned.
+   */
   public static User getAdmin() {
     if (AuthorizationHelper.admin == null) {
       final Optional<User> admin = login(ADMIN_NAME, ADMIN_PW);
@@ -77,11 +94,14 @@ public class AuthorizationHelper {
     return AuthorizationHelper.admin;
   }
 
+  @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
+  public static class UserCredentials {
+    private String username;
+    private String password;
 
-  static class UserCredentials {
-    public String username;
-    public String password;
+    public UserCredentials() {/* Jackson */}
 
+    @JsonCreator
     public UserCredentials(final String username, final String password) {
       this.username = username;
       this.password = password;

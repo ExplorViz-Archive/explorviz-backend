@@ -1,6 +1,7 @@
 package net.explorviz.history.repository.persistence.mongo;
 
 import static org.junit.Assert.assertEquals;
+
 import java.util.Optional;
 import java.util.Random;
 import javax.inject.Inject;
@@ -44,8 +45,9 @@ public class MongoReplayRepositoryTest {
       final DependencyInjectionBinder binder = new DependencyInjectionBinder();
       final ServiceLocator locator = ServiceLocatorUtilities.bind(binder);
       locator.inject(this);
+    } else {
+      this.repo.clear();
     }
-    this.repo.clear();
   }
 
 

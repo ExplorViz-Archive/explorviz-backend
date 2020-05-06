@@ -18,24 +18,31 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 @JsonIdentityInfo(generator = ObjectIdGenerators.StringIdGenerator.class, property = "super.id")
 public class Timestamp extends BaseEntity {
 
-  private long timestamp;
+  private long unixTimestamp;
   private int totalRequests;
 
+  /**
+   * Constructs a new timestamp.
+   *
+   * @param id             the id
+   * @param timestampValue the actual unix epoch timestamp
+   * @param requests       the total amount of requests at this point in time
+   */
   @JsonCreator
   public Timestamp(@JsonProperty("id") final String id,
-      @JsonProperty("timestampValue") final long timestampValue,
-      @JsonProperty("requests") final int requests) {
+                   @JsonProperty("timestampValue") final long timestampValue,
+                   @JsonProperty("requests") final int requests) {
     super(id);
-    this.setTimestamp(timestampValue);
+    this.setUnixTimestamp(timestampValue);
     this.setTotalRequests(requests);
   }
 
-  public long getTimestamp() {
-    return this.timestamp;
+  public long getUnixTimestamp() {
+    return this.unixTimestamp;
   }
 
-  public void setTimestamp(final long timestamp) {
-    this.timestamp = timestamp;
+  public void setUnixTimestamp(final long unixTimestamp) {
+    this.unixTimestamp = unixTimestamp;
   }
 
   public int getTotalRequests() {
@@ -48,7 +55,8 @@ public class Timestamp extends BaseEntity {
 
   @Override
   public int hashCode() {
-    return new HashCodeBuilder().append(this.timestamp).append(this.totalRequests).append(this.id)
+    return new HashCodeBuilder().append(this.unixTimestamp).append(this.totalRequests)
+        .append(this.id)
         .build();
   }
 
@@ -64,18 +72,15 @@ public class Timestamp extends BaseEntity {
       return false;
     }
     final Timestamp other = (Timestamp) obj;
-    if (this.timestamp != other.timestamp) {
+    if (this.unixTimestamp != other.unixTimestamp) {
       return false;
     }
-    if (this.totalRequests != other.totalRequests) {
-      return false;
-    }
-    return true;
+    return this.totalRequests == other.totalRequests;
   }
 
   @Override
   public String toString() {
-    return new ToStringBuilder(this).append(this.id).append(this.timestamp).toString();
+    return new ToStringBuilder(this).append(this.id).append(this.unixTimestamp).toString();
   }
 
 
