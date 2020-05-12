@@ -1,18 +1,24 @@
 package net.explorviz.analysis;
 
-import explorviz.live_trace_processing.main.MonitoringStringRegistry;
-import io.quarkus.runtime.Startup;
-import javax.annotation.PostConstruct;
-import javax.inject.Singleton;
+import io.quarkus.runtime.Quarkus;
+import io.quarkus.runtime.QuarkusApplication;
+import io.quarkus.runtime.annotations.QuarkusMain;
 import net.explorviz.kiekeradapter.main.KiekerAdapter;
 
-@Startup
-@Singleton
+@QuarkusMain
 public class Main {
-
-  @PostConstruct
-  public void run() {
-    KiekerAdapter.getInstance().startReader();
+  public static void main(String... args) {
+    Quarkus.run(MyApp.class, args);
   }
 
+  public static class MyApp implements QuarkusApplication {
+
+    @Override
+    public int run(String... args) throws Exception {
+      System.out.println("Do startup logic here");
+      KiekerAdapter adapter = KiekerAdapter.getInstance();
+      adapter.startReader();
+      return 0;
+    }
+  }
 }
