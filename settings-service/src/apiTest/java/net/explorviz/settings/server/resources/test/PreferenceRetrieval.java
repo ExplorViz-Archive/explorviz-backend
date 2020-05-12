@@ -1,27 +1,37 @@
 package net.explorviz.settings.server.resources.test;
 
 import static io.restassured.RestAssured.given;
+
 import io.restassured.http.Header;
 import java.io.IOException;
 import java.util.List;
+import net.explorviz.security.user.User;
 import net.explorviz.settings.model.UserPreference;
 import net.explorviz.settings.server.resources.test.helper.AuthorizationHelper;
 import net.explorviz.settings.server.resources.test.helper.DefaultSettings;
-import net.explorviz.settings.server.resources.test.helper.JsonAPIListMapper;
-import net.explorviz.settings.server.resources.test.helper.JsonAPIMapper;
+import net.explorviz.settings.server.resources.test.helper.JsonApiListMapper;
+import net.explorviz.settings.server.resources.test.helper.JsonApiMapper;
 import net.explorviz.settings.server.resources.test.helper.UsersHelper;
-import net.explorviz.security.user.User;
 import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+// CHECKSTYLE.OFF: MagicNumberCheck
+// CHECKSTYLE.OFF: MultipleStringLiteralsCheck
+
+
+/**
+ * Tests preference retrieval.
+ */
+@SuppressWarnings({"PMD.JUnitTestsShouldIncludeAssert", "PMD.AvoidDuplicateLiterals"})
 public class PreferenceRetrieval {
 
   private static final String USER_PREF_URL =
           "http://localhost:8090/v1/preferences?filter[user]={uid}";
   private static final String PREF_URL = "http://localhost:8090/v1/preferences";
+  private static final String MEDIA_TYPE = "application/vnd.api+json";
 
   private static String adminToken;
   private static String normieToken;
@@ -29,7 +39,7 @@ public class PreferenceRetrieval {
   private Header authHeaderAdmin;
   private Header authHeaderNormie;
 
-  private static final String MEDIA_TYPE = "application/vnd.api+json";
+
 
 
   /**
@@ -39,13 +49,13 @@ public class PreferenceRetrieval {
    * @throws IOException if serialization fails
    */
   @BeforeAll
-  static void setUpAll() throws IOException {
+  public static void setUpAll() throws IOException {
     adminToken = AuthorizationHelper.getAdminToken();
     normieToken = AuthorizationHelper.getNormieToken();
   }
 
   @BeforeEach
-  void setUp() {
+  public void setUp() {
     this.authHeaderAdmin = new Header("authorization", "Bearer " + adminToken);
     this.authHeaderNormie = new Header("authorization", "Bearer " + normieToken);
   }
@@ -55,7 +65,7 @@ public class PreferenceRetrieval {
 
     given().header(this.authHeaderAdmin)
         .contentType(MEDIA_TYPE)
-        .body(up, new JsonAPIMapper<>(UserPreference.class))
+        .body(up, new JsonApiMapper<>(UserPreference.class))
         .when()
         .post(PREF_URL);
   }
@@ -63,13 +73,13 @@ public class PreferenceRetrieval {
 
   @Test
   @SuppressWarnings("unchecked")
-  void getOwnPrefs() {
+  public void retrieveOwnPrefs() {
     final User testUser = UsersHelper.getInstance()
         .createUser("tester", "test", null)
         .orElseThrow(IllegalStateException::new);
 
-    final String settingId = DefaultSettings.keepHighlightingOnOpenOrClose.getId();
-    final Boolean val = !DefaultSettings.keepHighlightingOnOpenOrClose.getDefaultValue();
+    final String settingId = DefaultSettings.KEEP_HIGHLIGHTING_ON_OPEN_OR_CLOSE.getId();
+    final Boolean val = !DefaultSettings.KEEP_HIGHLIGHTING_ON_OPEN_OR_CLOSE.getDefaultValue();
     this.setPref(testUser.getId(), settingId, val);
 
     final String myToken = AuthorizationHelper.login("tester", "test")
@@ -85,7 +95,7 @@ public class PreferenceRetrieval {
         .body("data.size()", CoreMatchers.is(1))
         .extract()
         .body()
-        .as(List.class, new JsonAPIListMapper<>(UserPreference.class));
+        .as(List.class, new JsonApiListMapper<>(UserPreference.class));
 
     final UserPreference pref = prefs.get(0);
 
@@ -97,16 +107,10 @@ public class PreferenceRetrieval {
   }
 
   @Test
-  void getPrefsOfOtherUser() {
+  public void retrievePrefsOfOtherUser() {
     final User testUser = UsersHelper.getInstance()
         .createUser("tester", "test", null)
         .orElseThrow(IllegalStateException::new);
-
-
-    final String user1token = AuthorizationHelper.login("tester", "test")
-        .orElseThrow(IllegalStateException::new)
-        .getToken();
-    final Header auth = new Header("authorization", "Bearer " + user1token);
 
 
     given().header(this.authHeaderNormie)
@@ -119,13 +123,13 @@ public class PreferenceRetrieval {
   }
 
   @Test
-  void getPrefsOfOtherAsAdmin() {
+  public void retrievePrefsOfOtherAsAdmin() {
     final User testUser = UsersHelper.getInstance()
         .createUser("tester", "test", null)
         .orElseThrow(IllegalStateException::new);
 
-    final String settingId = DefaultSettings.keepHighlightingOnOpenOrClose.getId();
-    final Boolean val = !DefaultSettings.keepHighlightingOnOpenOrClose.getDefaultValue();
+    final String settingId = DefaultSettings.KEEP_HIGHLIGHTING_ON_OPEN_OR_CLOSE.getId();
+    final Boolean val = !DefaultSettings.KEEP_HIGHLIGHTING_ON_OPEN_OR_CLOSE.getDefaultValue();
     this.setPref(testUser.getId(), settingId, val);
 
     given().header(this.authHeaderAdmin)

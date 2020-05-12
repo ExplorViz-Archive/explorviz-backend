@@ -143,10 +143,9 @@ public class SettingsResource {
       description = "Setting to create. The id must not be set.")
   public Setting createSetting(final Setting s) {
     try {
-      final Setting updated = this.repo.createOrUpdate(s);
-      return updated;
-    } catch (final Exception e) {
-      throw new BadRequestException(e.getMessage());
+      return this.repo.createOrUpdate(s);
+    } catch (final IllegalArgumentException e) {
+      throw new BadRequestException(e.getMessage(), e);
     }
 
   }

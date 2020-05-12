@@ -1,7 +1,7 @@
 package net.explorviz.security.server.resources;
 
-
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import net.explorviz.security.user.Role;
 import org.junit.jupiter.api.Test;
 

@@ -32,7 +32,7 @@ public class Trace extends BaseEntity {
   @JsonCreator
   public Trace(@JsonProperty("id") final String id, @JsonProperty("traceId") final String traceId) {
     super(id);
-    this.setTraceId(traceId);
+    this.traceId = traceId;
   }
 
   /**

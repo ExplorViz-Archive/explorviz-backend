@@ -21,7 +21,10 @@ import net.explorviz.shared.common.idgen.IdGenerator;
  */
 public final class DummyLandscapeHelper {
 
-  public static IdGenerator idGen;
+  // CHECKSTYLE.OFF: MultipleStringLiteralsCheck - Much more readable than NOCS in many lines
+  // CHECKSTYLE.OFF: MagicNumberCheck - Much more readable than NOCS in many lines
+
+  public static IdGenerator idGen; //NOCS
 
   private DummyLandscapeHelper() {
     // Utility Class
@@ -52,7 +55,7 @@ public final class DummyLandscapeHelper {
   }
 
   /**
-   * Creates a new system
+   * Creates a new system.
    *
    * @param name - name of the system
    * @param parentLandscape - parent landscape
@@ -72,7 +75,7 @@ public final class DummyLandscapeHelper {
   }
 
   /**
-   * Creates a new nodeGroup
+   * Creates a new nodeGroup.
    *
    * @param name - name of the nodeGroup
    * @param system - parent system
@@ -86,7 +89,7 @@ public final class DummyLandscapeHelper {
   }
 
   /**
-   * Creates a new node
+   * Creates a new node.
    *
    * @param ipAddress - ipAddress of the node
    * @param parentNodeGroup - parent nodeGroup
@@ -100,8 +103,8 @@ public final class DummyLandscapeHelper {
 
     // set random usage
     node.setCpuUtilization((double) getRandomNum(10, 100) / 100);
-    node.setFreeRAM((long) getRandomNum(1, 4) * LandscapeDummyCreator.formatFactor);
-    node.setUsedRAM((long) getRandomNum(1, 4) * LandscapeDummyCreator.formatFactor);
+    node.setFreeRam((long) getRandomNum(1, 4) * LandscapeDummyCreator.formatFactor);
+    node.setUsedRam((long) getRandomNum(1, 4) * LandscapeDummyCreator.formatFactor);
 
     // create a new node event
     landscape.createNewEvent(idGen.generateId(),
@@ -113,7 +116,7 @@ public final class DummyLandscapeHelper {
   }
 
   /**
-   * Creates a new application
+   * Creates a new application.
    *
    * @param name - name of the application
    * @param parentNode - name of the parent node
@@ -147,7 +150,7 @@ public final class DummyLandscapeHelper {
   }
 
   /**
-   * Create communication between applications
+   * Create communication between applications.
    *
    * @param source - sourceApplication
    * @param target - targetApplication
@@ -172,7 +175,7 @@ public final class DummyLandscapeHelper {
   }
 
   /**
-   * Creates a component
+   * Creates a component.
    *
    * @param name - name of the component
    * @param parent - parent component
@@ -195,7 +198,7 @@ public final class DummyLandscapeHelper {
   }
 
   /**
-   * Creates a clazz
+   * Creates a clazz.
    *
    * @param name - name of the clazz
    * @param component - parent component
@@ -215,7 +218,7 @@ public final class DummyLandscapeHelper {
   }
 
   /**
-   * Creating a communication between two clazzes within the dummy landscape
+   * Creating a communication between two clazzes within the dummy landscape.
    *
    * @param traceId - id of the trace
    * @param requests - number of requests

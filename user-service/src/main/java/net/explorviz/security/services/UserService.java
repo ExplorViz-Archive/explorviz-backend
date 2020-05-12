@@ -9,9 +9,12 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import javax.inject.Inject;
+import javax.ws.rs.BadRequestException;
 import net.explorviz.security.services.exceptions.DuplicateUserException;
 import net.explorviz.security.services.exceptions.UserCrudException;
+import net.explorviz.security.user.Role;
 import net.explorviz.security.user.User;
+import net.explorviz.security.util.PasswordStorage;
 import net.explorviz.shared.common.idgen.IdGenerator;
 import net.explorviz.shared.querying.Query;
 import net.explorviz.shared.querying.QueryResult;
@@ -31,7 +34,6 @@ import xyz.morphia.query.FindOptions;
  * <li>password: hashed password</li>
  * <li>roles: list of role that are assigned to the user</li>
  * </ul>
- *
  */
 @Service
 public class UserService implements Queryable<User> {
@@ -40,7 +42,8 @@ public class UserService implements Queryable<User> {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(UserService.class);
 
-
+  private static final String MSG_INVALID_PASSWORD = "Invalid password";
+  private static final String MSG_INVALID_USERNAME = "Invalid username";
 
   private final Datastore datastore;
 
@@ -56,7 +59,7 @@ public class UserService implements Queryable<User> {
    */
   @Inject
   public UserService(final Datastore datastore, final IdGenerator idGenerator,
-      final KafkaUserService kafkaService) {
+                     final KafkaUserService kafkaService) {
     this.idGenerator = idGenerator;
     this.datastore = datastore;
     this.kafkaService = kafkaService;
@@ -87,7 +90,7 @@ public class UserService implements Queryable<User> {
       }
     } catch (final DuplicateKeyException e) {
       throw new DuplicateUserException(
-          String.format("User with %s already exists", user.getUsername()));
+          String.format("User with %s already exists", user.getUsername()), e);
     } catch (final MongoException e) {
       if (LOGGER.isErrorEnabled()) {
         LOGGER.error("Could not save user: " + e.getMessage());
@@ -103,8 +106,62 @@ public class UserService implements Queryable<User> {
     return user;
   }
 
-  public void updateEntity(final User user) {
-    this.datastore.save(user);
+  /**
+   * Updates a user.
+   *
+   * @param id     the id if the user to update
+   * @param update the updated user entity
+   * @throws UserCrudException if no user with the given ID is found or the update is invalid
+   */
+  public User updateEntity(final String id, final User update) throws UserCrudException {
+
+    if (update.getId() != null && !update.getId().equals(id)) { // NOPMD
+      LOGGER.info("Won't update id");
+      throw new UserCrudException("Can't update id, leave null");
+    }
+
+    final User targetUser =
+        getEntityById(id).orElseThrow(() -> new UserCrudException("No user with such id"));
+
+
+
+    if (update.getPassword() != null) {
+      if (update.getPassword().equals("")) {
+        throw new BadRequestException(MSG_INVALID_PASSWORD);
+      }
+      try {
+        targetUser.setPassword(PasswordStorage.createHash(update.getPassword()));
+      } catch (final PasswordStorage.CannotPerformOperationException e) {
+        if (LOGGER.isWarnEnabled()) {
+          LOGGER.warn("Could not update user due to password hashing failure: " + e.getMessage());
+        }
+        throw new UserCrudException(MSG_INVALID_PASSWORD, e);
+      }
+    }
+
+    if (update.getUsername() != null) {
+      if (update.getUsername().equals("")) {
+        throw new UserCrudException(MSG_INVALID_USERNAME);
+      }
+
+      targetUser.setUsername(update.getUsername());
+    }
+
+    if (update.getRoles() != null) {
+      for (final String r : update.getRoles()) {
+        if (!Role.exists(r)) {
+          throw new UserCrudException("Unknown role: " + r);
+        }
+      }
+      targetUser.setRoles(update.getRoles());
+    }
+
+    try {
+      this.datastore.save(targetUser);
+      return targetUser;
+    } catch (final DuplicateKeyException ex) {
+      throw new UserCrudException("Username already exists", ex);
+    }
   }
 
   /**
@@ -112,7 +169,7 @@ public class UserService implements Queryable<User> {
    *
    * @param id the id of the user to retrieve
    * @return and {@link Optional} which contains the user with given id or is empty if such a user
-   *         does not exist
+   *     does not exist
    */
   public Optional<User> getEntityById(final String id) {
 
@@ -126,7 +183,7 @@ public class UserService implements Queryable<User> {
    *
    * @param id id of the user to delete
    * @throws UserCrudException if the id belongs to the a user with the admin role and there are no
-   *         other admin users. This prevents the deletion of the last admin.
+   *                           other admin users. This prevents the deletion of the last admin.
    */
   public void deleteEntityById(final String id) throws UserCrudException {
 
@@ -155,7 +212,7 @@ public class UserService implements Queryable<User> {
    *
    * @param id user id
    * @return {@code true} iff the user with the given id has the role "admin" and there is no other
-   *         user with this role.
+   *     user with this role.
    */
   private boolean isLastAdmin(final String id) {
     User user;

@@ -2,6 +2,7 @@ package net.explorviz.history.repository.persistence.mongo;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+
 import java.util.Optional;
 import java.util.Random;
 import javax.inject.Inject;
@@ -47,8 +48,9 @@ public class MongoLandscapeJsonApiRepositoryTest {
       final DependencyInjectionBinder binder = new DependencyInjectionBinder();
       final ServiceLocator locator = ServiceLocatorUtilities.bind(binder);
       locator.inject(this);
+    } else {
+      this.repo.clear();
     }
-    this.repo.clear();
   }
 
 

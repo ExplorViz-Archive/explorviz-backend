@@ -295,6 +295,7 @@
     <module name="ModifiedControlVariable" />
     <module name="MultipleStringLiterals">
       <property name="ignoreStringsRegexp" value='^.{0,5}$' />
+      <!-- <property name="allowedDuplicates" value="2"/> -->
     </module>
     <module name="SimplifyBooleanExpression" />
     <module name="SimplifyBooleanReturn" />
@@ -313,7 +314,9 @@
     <module name="SuppressWithNearbyCommentFilter">
       <property name="commentFormat" value="NOCS" />
     </module>
-            
+
+    <module name="SuppressionCommentFilter"/>
+
     <module name="SuppressionCommentFilter">
       <property name="offCommentFormat"
         value="CHECKSTYLE.OFF\: ([\w\|]+)" />
@@ -321,6 +324,10 @@
         value="CHECKSTYLE.ON\: ([\w\|]+)" />
       <property name="checkFormat" value="$1" />
     </module>
+
+
+
+
 
     <!-- TODO - we require a rule to enforce only fqn for @link (afterwards, 
       UnusedImports->processJavadoc can be removed) - we require a rule to enforce 

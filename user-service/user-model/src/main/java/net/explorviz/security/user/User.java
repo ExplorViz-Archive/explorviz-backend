@@ -111,7 +111,7 @@ public class User {
     return batchId;
   }
   
-  public void setBatchId(String batchId) {
+  public void setBatchId(final String batchId) {
     this.batchId = batchId;
   }
 

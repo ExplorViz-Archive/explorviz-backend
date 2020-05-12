@@ -26,6 +26,8 @@ public class UserPreferenceRepository
 
   private static final Logger LOGGER = LoggerFactory.getLogger(SettingsRepository.class);
 
+  private static final String UID_FIELD = "userId";
+  private static final String FILTER_USER_FIELD = "user";
 
   private final Datastore datastore;
 
@@ -98,18 +100,17 @@ public class UserPreferenceRepository
 
   @Override
   public QueryResult<UserPreference> query(final Query<UserPreference> query) {
-    final String userIdField = "userId";
-    final String userFilterField = "user";
+
 
     final xyz.morphia.query.Query<UserPreference> q =
         this.datastore.createQuery(UserPreference.class);
 
 
     // Filter for user
-    final List<String> userFilter = query.getFilters().get(userFilterField);
+    final List<String> userFilter = query.getFilters().get(FILTER_USER_FIELD);
 
     if (userFilter != null && userFilter.size() == 1) {
-      q.field(userIdField).contains(userFilter.get(0));
+      q.field(UID_FIELD).contains(userFilter.get(0));
     }
 
 

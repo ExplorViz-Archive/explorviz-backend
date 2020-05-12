@@ -51,10 +51,10 @@ public class FlagSetting extends Setting {
 
   @SuppressWarnings("unused")
   private FlagSetting() {
-    // Morphia
+    super();
   }
 
-  public boolean getDefaultValue() {
+  public boolean getDefaultValue() { // NOPMD
     return this.defaultValue;
   }
 
@@ -91,7 +91,8 @@ public class FlagSetting extends Setting {
 
   @Override
   public int hashCode() {
-    return new HashCodeBuilder(17, 37).appendSuper(super.hashCode())
+
+    return new HashCodeBuilder(17, 37).appendSuper(super.hashCode()) // NOCS
         .append(this.defaultValue)
         .toHashCode();
   }

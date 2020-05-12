@@ -23,7 +23,7 @@ public class UserBatchRequest {
 
 
   @Id
-  private String id;
+  private String id; // NOPMD
 
   private final String prefix;
   private final int count;

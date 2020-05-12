@@ -1,14 +1,13 @@
-package net.explorviz.security.services.exceptions;
+package net.explorviz.security.services;
 
 import javax.inject.Inject;
 import javax.ws.rs.ForbiddenException;
 import net.explorviz.security.model.UserCredentials;
-import net.explorviz.security.services.UserService;
+import net.explorviz.security.user.User;
 import net.explorviz.security.util.PasswordStorage;
 import net.explorviz.security.util.PasswordStorage.CannotPerformOperationException;
 import net.explorviz.security.util.PasswordStorage.InvalidHashException;
 import org.jvnet.hk2.annotations.Service;
-import net.explorviz.security.user.User;
 
 /**
  * Injectable service that contains utility methods for {@link UserCredentials} validation.

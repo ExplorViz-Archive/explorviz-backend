@@ -59,7 +59,7 @@ public class MongoLandscapeRepository implements LandscapeRepository<Landscape> 
 
   @Override
   public Optional<Landscape> getByTimestamp(final Timestamp timestamp) {
-    return this.getByTimestamp(timestamp.getTimestamp());
+    return this.getByTimestamp(timestamp.getUnixTimestamp());
   }
 
   @Override

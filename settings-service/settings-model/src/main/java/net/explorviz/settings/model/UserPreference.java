@@ -68,8 +68,8 @@ public class UserPreference {
         .build();
   }
 
-  @PreLoad
-  void fixup(final DBObject obj) {
+  @PreLoad // NOPMD
+  void fixup(final DBObject obj) { // NOPMD
     /*
      * this fixes morphia trying to cast value to a DBObject, which will fail in case of a primitive
      * Type (i.e. an integer can't be cast to DBObject). Thus we just take the raw value.
@@ -99,7 +99,7 @@ public class UserPreference {
 
   @Override
   public int hashCode() {
-    return new HashCodeBuilder(17, 37).append(this.id)
+    return new HashCodeBuilder(17, 37).append(this.id) // NOCS
         .append(this.userId)
         .append(this.settingId)
         .append(this.value)

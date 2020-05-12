@@ -9,7 +9,10 @@ import org.glassfish.jersey.servlet.ServletContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class Main {
+/**
+ * Contains the entry point which boots the Settings-Service.
+ */
+public final class Main {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(Main.class);
   private static final int DEFAULT_PORT = 8084;

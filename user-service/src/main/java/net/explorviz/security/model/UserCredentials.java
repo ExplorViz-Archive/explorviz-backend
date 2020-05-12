@@ -13,7 +13,7 @@ public class UserCredentials {
     this.password = password;
   }
 
-  public UserCredentials() {}
+  public UserCredentials() {/* Jackson */}
 
   public String getUsername() {
     return this.username;

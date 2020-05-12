@@ -22,6 +22,9 @@ public class Event extends BaseEntity {
 
   private String eventMessage;
 
+  /**
+   * Constructs a new event.
+   */
   @JsonCreator
   public Event(@JsonProperty("id") final String id, @JsonProperty("timestamp") final long timestamp,
       @JsonProperty("eventType") final EEventType eventType,

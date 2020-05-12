@@ -20,8 +20,17 @@ import net.explorviz.landscape.model.landscape.NodeGroup;
 import net.explorviz.landscape.model.landscape.System;
 import net.explorviz.landscape.model.store.Timestamp;
 
-public class TypeProvider {
+/**
+ * Provides helper functions to manage ExplorViz core types as strings.
+ */
+public final class TypeProvider {
 
+  private TypeProvider(){/* Utility Class */}
+
+  /**
+   * Returns a map where each K-V pair is the name name of an ExplorViz core type
+   * along with its implementing class.
+   */
   public static Map<String, Class<?>> getExplorVizCoreTypesAsMap() {
 
     final Map<String, Class<?>> typeMap = new HashMap<>();
@@ -52,7 +61,7 @@ public class TypeProvider {
 
   public static Class<?>[] getExplorVizCoreTypesAsArray() {
     final List<Class<?>> typeList = TypeProvider.getExplorVizCoreTypesAsList();
-    return typeList.toArray(new Class<?>[typeList.size()]);
+    return typeList.toArray(new Class<?>[0]);
   }
 
 }

@@ -38,7 +38,7 @@ public class ClazzCommunication extends BaseEntity {
   private int totalRequests;
 
   // average response time (for all involved related tracesteps)
-  private float averageResponseTime = 0;
+  private float averageResponseTime;
 
   @JsonCreator
   public ClazzCommunication(@JsonProperty("id") final String id) {
@@ -77,7 +77,14 @@ public class ClazzCommunication extends BaseEntity {
     this.traceSteps = traceSteps;
   }
 
-  // returns a trace for a given traceId or creates a new one
+  /**
+   * Returns a trace for a given traceId or creates a new one.
+   *
+   * @param potentialNewTraceId the id to use if a new trace is created
+   * @param application the application to add the new trace to
+   * @param traceId the id of the trace
+   * @return the found or created trace
+   */
   public Trace seekOrCreateTraceByTraceId(final String potentialNewTraceId,
       final Application application, final String traceId) {
     final List<Trace> traces = application.getTraces();
@@ -94,7 +101,9 @@ public class ClazzCommunication extends BaseEntity {
     return newTrace;
   }
 
-  // checks if a trace is existing and if not creates one and adds the runtime information
+  /**
+   * Checks if a trace is existing and if not creates one and adds the runtime information.
+   */
   public void addTraceStep(final String potentialNewTraceId, final String traceStepId,
       final Application application, final String traceId, final int tracePosition,
       final int requests, final float averageResponseTime, final float currentTraceDuration) {
@@ -123,6 +132,10 @@ public class ClazzCommunication extends BaseEntity {
     this.averageResponseTime = averageRepsonseTime;
   }
 
+  /**
+   * Resets the communication, i.e., sets {@link #totalRequests} and
+   * {@link #averageResponseTime} to {@code 0}
+   */
   public void reset() {
     this.totalRequests = 0;
     this.averageResponseTime = 0;

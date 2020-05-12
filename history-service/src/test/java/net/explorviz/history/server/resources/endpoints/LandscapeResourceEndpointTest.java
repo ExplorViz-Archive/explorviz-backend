@@ -3,6 +3,7 @@ package net.explorviz.history.server.resources.endpoints;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.when;
+
 import com.github.jasminb.jsonapi.ResourceConverter;
 import com.github.jasminb.jsonapi.SerializationFeature;
 import com.github.jasminb.jsonapi.exceptions.DocumentSerializationException;
@@ -79,7 +80,7 @@ public class LandscapeResourceEndpointTest extends JerseyTest {
 
     when(this.landscapeStringRepo.getById(this.currentLandscapeId))
         .thenReturn(Optional.of(this.currentLandscape));
-    when(this.landscapeStringRepo.getByTimestamp(this.currentLandscapeTimestamp.getTimestamp()))
+    when(this.landscapeStringRepo.getByTimestamp(this.currentLandscapeTimestamp.getUnixTimestamp()))
         .thenReturn(Optional.of(this.currentLandscape));
     when(this.landscapeStringRepo.getById("2L"))
         .thenThrow(new NotFoundException("Landscape not found for provided 2L."));
@@ -100,7 +101,7 @@ public class LandscapeResourceEndpointTest extends JerseyTest {
 
     response = this.target()
         .path(BASE_URL)
-        .queryParam(QUERY_PARAM_TIMESTAMP, this.currentLandscapeTimestamp.getTimestamp())
+        .queryParam(QUERY_PARAM_TIMESTAMP, this.currentLandscapeTimestamp.getUnixTimestamp())
         .request()
         .accept(MEDIA_TYPE)
         .get();
@@ -177,7 +178,7 @@ public class LandscapeResourceEndpointTest extends JerseyTest {
   public void checkQueryEndpointSuccess() {
     final Response response = this.target()
         .path(BASE_URL)
-        .queryParam(QUERY_PARAM_TIMESTAMP, this.currentLandscapeTimestamp.getTimestamp())
+        .queryParam(QUERY_PARAM_TIMESTAMP, this.currentLandscapeTimestamp.getUnixTimestamp())
         .request()
         .accept(MEDIA_TYPE)
         .get();

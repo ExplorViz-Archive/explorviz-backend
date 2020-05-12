@@ -3,6 +3,7 @@ package net.explorviz.history.server.resources;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
+
 import com.github.jasminb.jsonapi.ResourceConverter;
 import com.github.jasminb.jsonapi.SerializationFeature;
 import com.github.jasminb.jsonapi.exceptions.DocumentSerializationException;
@@ -44,6 +45,11 @@ public class LandscapeResourceTest {
   @Mock(lenient = true)
   private ReplayRepository<String> replayStringRepo;
 
+  /**
+   * Initializes dummy landscapes test against and the resource converter.
+   *
+   * @throws DocumentSerializationException on resource converter fails
+   */
   @BeforeEach
   public void setUp() throws DocumentSerializationException {
 

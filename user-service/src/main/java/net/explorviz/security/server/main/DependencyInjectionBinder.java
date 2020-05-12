@@ -8,7 +8,7 @@ import net.explorviz.security.services.BatchService;
 import net.explorviz.security.services.KafkaUserService;
 import net.explorviz.security.services.TokenService;
 import net.explorviz.security.services.UserService;
-import net.explorviz.security.services.exceptions.UserValidationService;
+import net.explorviz.security.services.UserValidationService;
 import net.explorviz.shared.common.idgen.IdGenerator;
 import net.explorviz.shared.common.injection.CommonDependencyInjectionBinder;
 import org.apache.kafka.clients.producer.KafkaProducer;

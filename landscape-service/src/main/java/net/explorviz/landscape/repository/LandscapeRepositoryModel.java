@@ -88,7 +88,7 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
    * Key functionality in the backend. Handles the persistence of a landscape every 10 seconds
    * passed. The employed time unit is defined as following in the Kieker configuration file
    * (monitoring.properties):
-   *
+   * <p/>
    * TimeSource: 'kieker.monitoring.timer.SystemNanoTimer' Time in nanoseconds (with nanoseconds
    * precision) since Thu Jan 01 01:00:00 CET 1970'
    */
@@ -138,7 +138,7 @@ public final class LandscapeRepositoryModel implements IPeriodicTimeSignalReceiv
         LOGGER.debug(
             "Sending Kafka record with landscape id {}, timestamp {}, and payload to topic {}",
             l.getId(),
-            l.getTimestamp().getTimestamp(),
+            l.getTimestamp().getUnixTimestamp(),
             kafkaTopicName);
       }
     } catch (final DocumentSerializationException e) {

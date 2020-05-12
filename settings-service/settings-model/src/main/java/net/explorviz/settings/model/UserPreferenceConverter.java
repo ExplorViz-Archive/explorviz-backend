@@ -5,7 +5,10 @@ import xyz.morphia.converters.SimpleValueConverter;
 import xyz.morphia.converters.TypeConverter;
 import xyz.morphia.mapping.MappedField;
 
-
+/**
+ * Custom converter to decode {@link UserPreference} object retrieved from a MongoDB instance.
+ * Used by Morphia.
+ */
 public class UserPreferenceConverter extends TypeConverter implements SimpleValueConverter {
 
 

@@ -29,7 +29,8 @@ public final class MongoHelper { // NOPMD
   private static final String LANDSCAPE_COLLECTION = "landscape";
   private static final String REPLAY_COLLECTION = "replay";
 
-  private MongoClient client;
+  @SuppressWarnings("PMD")
+  private static MongoClient client;
 
   private final String host;
 
@@ -54,10 +55,10 @@ public final class MongoHelper { // NOPMD
     this.port = port;
     this.dbName = dbName;
 
-    if (this.client == null) {
-      this.client = new MongoClient(new MongoClientURI(this.getUri()));
+    if (client == null) {
+      client = new MongoClient(new MongoClientURI(this.getUri()));
     } else {
-      throw new IllegalStateException("Onl y one instance allowed");
+      throw new IllegalStateException("Only one instance allowed");
     }
   }
 
