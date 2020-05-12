@@ -15,9 +15,9 @@ public class Main {
 
     @Override
     public int run(String... args) throws Exception {
-      System.out.println("Do startup logic here");
       KiekerAdapter adapter = KiekerAdapter.getInstance();
       adapter.startReader();
+      Quarkus.waitForExit();
       return 0;
     }
   }
