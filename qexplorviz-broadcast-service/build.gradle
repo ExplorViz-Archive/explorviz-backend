@@ -1,43 +1,47 @@
 plugins {
-    id 'java'
-    id 'io.quarkus'
+  id 'java'
+  id 'io.quarkus'
 }
 
 repositories {
-     mavenLocal()
-     mavenCentral()
+  mavenLocal()
+  mavenCentral()
 }
 
 dependencies {
-    implementation 'io.quarkus:quarkus-resteasy-jackson'
-    implementation 'io.quarkus:quarkus-kafka-client'
-    implementation enforcedPlatform("${quarkusPlatformGroupId}:${quarkusPlatformArtifactId}:${quarkusPlatformVersion}")
-    implementation 'io.quarkus:quarkus-resteasy'
+  implementation 'io.quarkus:quarkus-resteasy-jackson'
+  implementation 'io.quarkus:quarkus-kafka-client'
+  implementation enforcedPlatform("${quarkusPlatformGroupId}:${quarkusPlatformArtifactId}:${quarkusPlatformVersion}")
+  implementation 'io.quarkus:quarkus-resteasy'
 
-    // Support for servlets
-    implementation 'io.quarkus:quarkus-undertow'
+  // Support for servlets
+  implementation 'io.quarkus:quarkus-undertow'
 
-    testImplementation 'io.quarkus:quarkus-junit5'
-    testImplementation 'io.rest-assured:rest-assured'
+  // Reactive messagign
+  implementation 'io.quarkus:quarkus-smallrye-reactive-messaging-kafka'
+
+
+  testImplementation 'io.quarkus:quarkus-junit5'
+  testImplementation 'io.rest-assured:rest-assured'
 }
 
 group 'net.explorviz'
 version '1.0.0-SNAPSHOT'
 
 compileJava {
-    options.encoding = 'UTF-8'
-    options.compilerArgs << '-parameters'
+  options.encoding = 'UTF-8'
+  options.compilerArgs << '-parameters'
 }
 
 compileTestJava {
-    options.encoding = 'UTF-8'
+  options.encoding = 'UTF-8'
 }
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_11
-    targetCompatibility = JavaVersion.VERSION_11
+  sourceCompatibility = JavaVersion.VERSION_11
+  targetCompatibility = JavaVersion.VERSION_11
 }
 
 test {
-    systemProperty "java.util.logging.manager", "org.jboss.logmanager.LogManager"
+  systemProperty "java.util.logging.manager", "org.jboss.logmanager.LogManager"
 }

@@ -12,7 +12,7 @@ public class MockLandscapeBroadcast implements SseBroadcast<String> {
 
   @Override
   public void broadcast(String message) {
-    
+    System.out.println(message);
   }
 
   @Override
