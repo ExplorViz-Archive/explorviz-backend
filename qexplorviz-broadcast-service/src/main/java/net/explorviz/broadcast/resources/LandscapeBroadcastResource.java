@@ -9,14 +9,15 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.sse.SseEventSink;
 import net.explorviz.broadcast.service.LandscapeBroadcastService;
+import net.explorviz.broadcast.service.SseBroadcast;
 
 @Path("v1/landscapes/broadcast")
 public class LandscapeBroadcastResource {
 
-  private final LandscapeBroadcastService broadcastService;
+  private final SseBroadcast<String> broadcastService;
 
   @Inject
-  public LandscapeBroadcastResource(final LandscapeBroadcastService service) {
+  public LandscapeBroadcastResource(final SseBroadcast<String> service) {
     this.broadcastService = service;
   }
 
@@ -24,13 +25,15 @@ public class LandscapeBroadcastResource {
    * Endpoint that clients can use to register for landscape updates.
    *
    * @param eventSink - The to-be registered event sink.
-   * @param response - {@link HttpServletResponse} which is enriched with header information.
+   * @param response  - {@link HttpServletResponse} which is enriched with header information.
    */
   @GET
   @Produces(MediaType.SERVER_SENT_EVENTS)
   public void listenToBroadcast(@Context final SseEventSink eventSink,
                                 @Context final HttpServletResponse response) {
-
+    if (eventSink == null) {
+      throw new IllegalStateException("No client connected.");
+    }
     // https://serverfault.com/a/801629
     response.addHeader("Cache-Control", "no-cache");
     response.addHeader("X-Accel-Buffering", "no");

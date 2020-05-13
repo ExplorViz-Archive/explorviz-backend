@@ -1,7 +1,5 @@
 package net.explorviz.broadcast.service;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.sse.OutboundSseEvent;
@@ -11,10 +9,17 @@ import javax.ws.rs.sse.SseEventSink;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/*
+ * Fails due to an issue when injecting SSE with @Context issues:
+ *  https://github.com/quarkusio/quarkus/issues/6515
+ * Was resolved an should be included in Quarkus 1.5:
+ *  https://github.com/quarkusio/quarkus/pull/9037
+ */
+
 /**
  * Broadcasts landscapes represented as strings to a set of registered sinks using SSE.
  */
-@Singleton
+//@Singleton
 public class LandscapeBroadcastService implements SseBroadcast<String> {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(LandscapeBroadcastService.class);
@@ -26,13 +31,14 @@ public class LandscapeBroadcastService implements SseBroadcast<String> {
   private final Sse sse;
   private final SseBroadcaster broadcaster;
 
+
+
   /**
    * Creates a new broadcast service.
    *
    * @param sse - Sse entry point
    */
-  @Inject
-  public LandscapeBroadcastService(final Sse sse) {
+  public LandscapeBroadcastService(@Context final Sse sse) {
     this.sse = sse;
     this.broadcaster = sse.newBroadcaster();
     this.broadcaster.onClose(this::onCloseOperation);
