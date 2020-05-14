@@ -11,12 +11,12 @@ public class MockLandscapeBroadcast implements SseBroadcast<String> {
 
 
   @Override
-  public void broadcast(String message) {
-    System.out.println(message);
+  public void broadcast(final String message) {
+    System.out.println(message); // NOPMD
   }
 
   @Override
-  public void register(SseEventSink sink) {
-
+  public void register(final SseEventSink sink) {
+    // NOPMD
   }
 }

@@ -8,9 +8,12 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.sse.SseEventSink;
-import net.explorviz.broadcast.service.LandscapeBroadcastService;
 import net.explorviz.broadcast.service.SseBroadcast;
 
+/**
+ * Resource clients can use to register for periodic landscape updates,
+ * broadcasted via SSE.
+ */
 @Path("v1/landscapes/broadcast")
 public class LandscapeBroadcastResource {
 

@@ -6,7 +6,6 @@ import javax.ws.rs.sse.OutboundSseEvent;
 import javax.ws.rs.sse.Sse;
 import javax.ws.rs.sse.SseBroadcaster;
 import javax.ws.rs.sse.SseEventSink;
-import org.eclipse.microprofile.reactive.messaging.Incoming;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,8 +16,11 @@ import org.slf4j.LoggerFactory;
  *  https://github.com/quarkusio/quarkus/pull/9037
  */
 
+
 /**
  * Broadcasts landscapes represented as strings to a set of registered sinks using SSE.
+ * The clients need to register first, see
+ * {@link net.explorviz.broadcast.resources.LandscapeBroadcastResource}
  */
 //@Singleton
 public class LandscapeBroadcastService implements SseBroadcast<String> {
@@ -31,7 +33,7 @@ public class LandscapeBroadcastService implements SseBroadcast<String> {
 
   private final Sse sse;
   private final SseBroadcaster broadcaster;
-  
+
   /**
    * Creates a new broadcast service.
    *
@@ -50,7 +52,7 @@ public class LandscapeBroadcastService implements SseBroadcast<String> {
    * @param landscape - The to-be broadcasted landscape
    */
   @Override
-  public void broadcast(String landscape) {
+  public void broadcast(final String landscape) {
     final OutboundSseEvent event = this.sse.newEventBuilder()
         .name(SSE_EVENT_NAME)
         .mediaType(APPLICATION_JSON_API_TYPE)
@@ -65,9 +67,11 @@ public class LandscapeBroadcastService implements SseBroadcast<String> {
 
   /**
    * Registers a new sink to receive messages.
+   *
    * @param eventSink the sink to register
    */
-  public void register(SseEventSink eventSink){
+  @Override
+  public void register(final SseEventSink eventSink) {
     this.broadcaster.register(eventSink);
   }
 

@@ -1,0 +1,14 @@
+Commit-Hashes for configuration files in this folder
+based on https://github.com/cau-se/code-quality-configurations/tree/master/java
+
+Eclipse:
+- eclipse-cleanup.xml : 062f70c6e4d4bf4dd1463a68046d15fa38bc34ae
+- eclipse-formatter.xml : 04cfa08821d0bc2a7658c330fe834f5cd1466e62
+- eclipse-import-order.importorder : 975e0d8089a2ce11a24613273d264d80de22c6ab
+- org.eclipse.jdt.ui.prefs : 062f70c6e4d4bf4dd1463a68046d15fa38bc34ae
+
+Tooling:
+- checkstyle-suppression.xml : 975e0d8089a2ce11a24613273d264d80de22c6ab
+- checkstyle.xml : 975e0d8089a2ce11a24613273d264d80de22c6ab
+- pmd.xml : fc3b8e35374be04c0d9d3d1ab73293cd894772e4
+- spotbugs-exclude-filter.xml : 6cc511bb5ca97912c6963756e5844a515fe3efb1

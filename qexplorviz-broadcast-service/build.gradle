@@ -1,6 +1,8 @@
 plugins {
   id 'java'
   id 'io.quarkus'
+  id 'pmd'
+  id 'checkstyle'
 }
 
 repositories {
@@ -8,7 +10,11 @@ repositories {
   mavenCentral()
 }
 
+
+
 dependencies {
+
+
   implementation 'io.quarkus:quarkus-resteasy-jackson'
   implementation 'io.quarkus:quarkus-kafka-client'
   implementation enforcedPlatform("${quarkusPlatformGroupId}:${quarkusPlatformArtifactId}:${quarkusPlatformVersion}")
@@ -44,4 +50,34 @@ java {
 
 test {
   systemProperty "java.util.logging.manager", "org.jboss.logmanager.LogManager"
+}
+
+pmd {
+  ruleSets = []
+  ruleSetFiles = files("conf/pmd.xml")
+  ignoreFailures = true
+  toolVersion = "6.7.0"
+}
+
+checkstyle {
+  configFile = "conf/checkstyle.xml" as File
+  configDir = "conf" as File
+  maxWarnings = 0
+  ignoreFailures = true
+  toolVersion = "8.12"
+}
+
+
+task checkstyle {
+  group 'Quality Assurance'
+  description 'Run Checkstyle'
+  dependsOn 'checkstyleMain'
+  dependsOn 'checkstyleTest'
+}
+
+task pmd {
+  group 'Quality Assurance'
+  description 'Run PMD'
+  dependsOn 'pmdMain'
+  dependsOn 'pmdTest'
 }

@@ -14,10 +14,10 @@ public class LandscapeUpdateListener {
   private static final String LANDSCAPE_STREAM = "landscape-update";
 
   // Sink for retrieved landscapes
-  private SseBroadcast<String> sink;
+  private final SseBroadcast<String> sink;
 
   @Inject
-  public LandscapeUpdateListener(SseBroadcast<String> sink) {
+  public LandscapeUpdateListener(final SseBroadcast<String> sink) {
     this.sink = sink;
   }
 
@@ -26,7 +26,8 @@ public class LandscapeUpdateListener {
    * @param update the most recently generated landscape
    */
   @Incoming(LANDSCAPE_STREAM)
-  void retrieveLandscape(String update) {
+  @SuppressWarnings("PMD")
+  private void retrieveLandscape(final String update) {
     sink.broadcast(update);
   }
 }
