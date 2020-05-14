@@ -29,6 +29,12 @@ dependencies {
 
   testImplementation 'io.quarkus:quarkus-junit5'
   testImplementation 'io.rest-assured:rest-assured'
+
+  //implementation 'io.quarkus:quarkus-smallrye-jwt'
+  implementation 'io.jsonwebtoken:jjwt-api:0.11.1'
+  implementation 'io.jsonwebtoken:jjwt-impl:0.11.1'
+  implementation 'io.jsonwebtoken:jjwt-jackson:0.11.1'
+
 }
 
 group 'net.explorviz'

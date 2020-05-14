@@ -12,7 +12,7 @@ import net.explorviz.broadcast.service.SseBroadcast;
 
 /**
  * Resource clients can use to register for periodic landscape updates,
- * broadcasted via SSE.
+ * broadcast happens via SSE.
  */
 @Path("v1/landscapes/broadcast")
 public class LandscapeBroadcastResource {
