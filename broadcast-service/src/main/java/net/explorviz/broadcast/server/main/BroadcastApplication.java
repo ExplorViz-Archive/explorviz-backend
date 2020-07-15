@@ -1,5 +1,6 @@
 package net.explorviz.broadcast.server.main;
 
+import net.explorviz.broadcast.server.resources.HealthResource;
 import net.explorviz.broadcast.server.resources.LandscapeBroadcastResource;
 import net.explorviz.landscape.model.helper.TypeProvider;
 import net.explorviz.shared.common.provider.GenericTypeFinder;
@@ -46,6 +47,7 @@ public class BroadcastApplication extends ResourceConfig {
 
     // resources
     this.register(LandscapeBroadcastResource.class);
+    this.register(HealthResource.class);
 
     // exception handling (mind the order !)
     this.register(InvalidJsonApiResourceExceptionMapper.class);

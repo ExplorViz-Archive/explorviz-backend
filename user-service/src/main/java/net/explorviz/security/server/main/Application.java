@@ -74,6 +74,7 @@ public class Application extends ResourceConfig {
     this.register(RoleResource.class);
     this.register(BatchRequestResource.class);
     this.register(EntryPointResource.class);
+    this.register(HealthResource.class);
 
     this.packages("io.swagger.v3.jaxrs2.integration.resources");
   }

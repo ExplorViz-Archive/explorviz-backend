@@ -45,6 +45,7 @@ public final class Main {
     Runtime.getRuntime().addShutdownHook(new Thread(() -> {
       try {
         server.stop();
+        System.exit(1);
       } catch (final Exception e) { // NOPMD
         LOGGER.error("Server stop failed", e);
       }

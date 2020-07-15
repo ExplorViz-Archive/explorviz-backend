@@ -7,6 +7,7 @@ import net.explorviz.settings.model.UserPreference;
 import net.explorviz.settings.server.providers.SettingJsonApiDeserializer;
 import net.explorviz.settings.server.providers.UserSettingJsonApiDeserializer;
 import net.explorviz.settings.server.resources.EntryPointResource;
+import net.explorviz.settings.server.resources.HealthResource;
 import net.explorviz.settings.server.resources.SettingsResource;
 import net.explorviz.settings.server.resources.UserPreferencesResource;
 import net.explorviz.shared.common.jsonapi.ResourceConverterFactory;
@@ -65,6 +66,7 @@ public class Application extends ResourceConfig {
     this.register(SettingsResource.class);
     this.register(UserPreferencesResource.class);
     this.register(EntryPointResource.class);
+    this.register(HealthResource.class);
 
     // swagger
     this.packages("io.swagger.v3.jaxrs2.integration.resources");

@@ -1,5 +1,6 @@
 package net.explorviz.history.server.main; // NOPMD
 
+import net.explorviz.history.server.resources.HealthResource;
 import net.explorviz.history.server.resources.LandscapeResource;
 import net.explorviz.history.server.resources.TimestampResource;
 import net.explorviz.landscape.model.application.AggregatedClazzCommunication;
@@ -80,6 +81,7 @@ public class HistoryApplication extends ResourceConfig {
 
     this.register(LandscapeResource.class);
     this.register(TimestampResource.class);
+    this.register(HealthResource.class);
 
     // swagger
     this.packages("io.swagger.v3.jaxrs2.integration.resources");
