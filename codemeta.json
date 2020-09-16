@@ -1,0 +1,53 @@
+{
+    "@context": "https://doi.org/10.5063/schema/codemeta-2.0",
+    "@type": "SoftwareSourceCode",
+    "license": "https://spdx.org/licenses/Apache-2.0",
+    "codeRepository": "https://github.com/ExplorViz/explorviz-backend",
+    "dateModified": "2020-09-15",
+    "issueTracker": "https://github.com/ExplorViz/explorviz-backend/issues",
+    "name": "ExplorViz",
+    "version": "1.5.0",
+    "description": "ExplorViz supports research on software visualization, software comprehension tasks and software collaboration. To achieve this, ExplorViz provides multi-level visualization from the software landscape layer toward the level of individual software applications. Via immersive 3D visualizations in virtual reality, ExplorViz also supports collaboration in software development teams.",
+    "referencePublication": "https://doi.org/10.1016/j.simpa.2020.100034",
+    "programmingLanguage": [
+        "JavaScript", "TypeScript", "HTML", "CSS"
+    ],
+    "runtimePlatform": [
+        "JVM"
+    ],
+    "author": [
+        {
+            "@type": "Person",
+            "@id": "https://orcid.org/0000-0001-6625-4335",
+            "givenName": "Wilhelm",
+            "familyName": "Hasselbring",
+            "email": "hasselbring@email.uni-kiel.de",
+            "affiliation": {
+                "@type": "Organization",
+                "name": "Kiel University"
+            }
+        },
+        {
+            "@type": "Person",
+            "@id": "https://orcid.org/0000-0003-4847-4443",
+            "givenName": "Alexander",
+            "familyName": "Krause",
+            "email": "akr@informatik.uni-kiel.de",
+            "affiliation": {
+                "@type": "Organization",
+                "name": "Kiel University"
+            }
+        },
+        {
+            "@type": "Person",
+            "@id": "https://orcid.org/0000-0003-0964-8674",
+            "givenName": "Christian",
+            "familyName": "Zirkelbach",
+            "email": "czi@informatik.uni-kiel.de",
+            "affiliation": {
+                "@type": "Organization",
+                "name": "Kiel University"
+            }
+        }
+    ]
+}
