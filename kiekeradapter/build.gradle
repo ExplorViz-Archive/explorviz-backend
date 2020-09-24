@@ -17,7 +17,7 @@ dependencies {
 	implementation group: 'net.sourceforge.teetime-stages', name: 'teetime-stages', version: '3.0-SNAPSHOT'
 	
 	// Kieker Monitoring Framework
-	implementation group: 'net.kieker-monitoring', name: 'kieker', version: '1.14-SNAPSHOT'
+	implementation group: 'net.kieker-monitoring', name: 'kieker', version: '1.14'
 }
 
 // disable integration tests, since there are none
